@@ -27,15 +27,15 @@
 
 ### Frontend
 
-- Framework: `React`, `Electron`
-- Router: `react-router-dom`
-- State Management: `zustand`
-- UI Library: `chakra-ui`
-- Icon: `lucide-react`
+- Framework: [`React`](https://react.dev/), [`Electron`](https://www.electronjs.org/)
+- State Management: [`zustand`](https://zustand.docs.pmnd.rs/)
+- UI Library: [`chakra-ui`](https://chakra-ui.com/)
+- Router: [`react-router-dom`](https://reactrouter.com/)
+- Icon: [`lucide-react`](https://lucide.dev/)
 
 ### Backend
 
-- Framework: -, `Electron`
+- Framework: -, [`Electron`](https://www.electronjs.org/)
 - Database: -
 - ORM: -
 - MQTT: -
