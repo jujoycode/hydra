@@ -24,17 +24,15 @@ export const Navbar = function Navbar(): JSX.Element {
   const PopoverButton = memo(({ label, content }: { label: string; content: React.ReactNode }) => {
     return (
       <PopoverRoot>
-        <Box>
-          <PopoverTrigger asChild>
-            <Button variant='plain' role='menuitem'>
-              {label} <ChevronDown />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent w='auto'>
-            <PopoverArrow />
-            <PopoverBody>{content}</PopoverBody>
-          </PopoverContent>
-        </Box>
+        <PopoverTrigger asChild>
+          <Button variant='plain' role='menuitem'>
+            {label} <ChevronDown />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent w='auto'>
+          <PopoverArrow />
+          <PopoverBody>{content}</PopoverBody>
+        </PopoverContent>
       </PopoverRoot>
     )
   })
@@ -58,7 +56,7 @@ export const Navbar = function Navbar(): JSX.Element {
   })
 
   return (
-    <Box as='nav' px={4} position='fixed' w='full' shadow='sm'>
+    <Box as='nav' px={4} w='full' shadow='sm'>
       <Flex h={16} alignItems='center' justifyContent='space-between' maxW='7xl' mx='auto'>
         <HStack gap={8}>
           <Box marginLeft={4}>
