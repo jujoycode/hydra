@@ -2,18 +2,18 @@
 
 ## 1. Goal
 
-- 경량화된 설치형 프로젝트/이슈 관리 도구 개발
-- 무료이면서, 사용성을 갖춘 프로젝트/이슈 관리 도구 제공
+- 경량화된 설치형 `프로젝트/이슈 관리 도구` 개발
+- 무료이면서, 사용성을 갖춘 `프로젝트/이슈 관리 도구` 제공
 
 ## 2. Member
 
-- 유주형 (@jujoycode) - Developer
+- 유주형 ([@jujoycode](https://github.com/jujoycode)) - Developer
 
   - 프로젝트 기획
   - Frontend 개발
   - Backend 개발
 
-- 이연국 (@abruption) - Backend Developer
+- 이연국 ([@abruption](https://github.com/abruption)) - Backend Developer
 
   - Backend 개발
 
@@ -27,15 +27,15 @@
 
 ### Frontend
 
-- Framework: React, Electron
-- Router: react-router-dom
-- State Management: zustand
-- UI Library: chakra-ui
-- Icon: lucide-react
+- Framework: `React`, `Electron`
+- Router: `react-router-dom`
+- State Management: `zustand`
+- UI Library: `chakra-ui`
+- Icon: `lucide-react`
 
 ### Backend
 
-- Framework: -, Electron
+- Framework: -, `Electron`
 - Database: -
 - ORM: -
 - MQTT: -
