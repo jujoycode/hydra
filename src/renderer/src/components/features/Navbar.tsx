@@ -60,7 +60,12 @@ export const Navbar = function Navbar(): JSX.Element {
       <Flex h={16} alignItems='center' justifyContent='space-between' maxW='7xl' mx='auto'>
         <HStack gap={8}>
           <Box marginLeft={4}>
-            <Text fontSize='xl' fontWeight='semibold'>
+            <Text
+              fontSize='xl'
+              fontWeight='semibold'
+              onClick={() => navigate('/')}
+              cursor='pointer'
+            >
               Hydra
             </Text>
           </Box>
