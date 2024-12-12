@@ -15,6 +15,7 @@
 
 - 이연국 ([@abruption](https://github.com/abruption)) - Backend Developer
 
+  - 프로젝트 기획
   - Backend 개발
 
 ### Communication
@@ -35,10 +36,10 @@
 
 ### Backend
 
-- Framework: -, [`Electron`](https://www.electronjs.org/)
-- Database: -
-- ORM: -
-- MQTT: -
+- Framework: [`Electron`](https://www.electronjs.org/)
+- Database: [`PostgreSQL`](https://www.postgresql.org/) + [`MongoDB`](https://www.mongodb.com/)
+- ORM: [`TypeORM`](https://typeorm.io/)
+- MQTT: [`Redis Pub/Sub`](https://redis.io/docs/latest/develop/interact/pubsub/)
 
 ## 4. Project Schedule
 
