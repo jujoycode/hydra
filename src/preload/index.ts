@@ -2,7 +2,13 @@ import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  getOS: () => ({
+    isMac: process.platform === 'darwin',
+    isWin: process.platform === 'win32',
+    isLinux: process.platform === 'linux'
+  })
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

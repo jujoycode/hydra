@@ -1,16 +1,18 @@
+import { useRef } from 'react'
+import { useHotKey } from '@hooks/useHotKey'
 import { useParams } from 'react-router-dom'
 import { Search, ChevronDown } from 'lucide-react'
 import { Button, Group, Input, Kbd } from '@chakra-ui/react'
 import { InputGroup } from '@components/ui/input-group'
 import { PageTitle } from '@components/common/PageTitle'
 import { List } from '@components/features/List'
-import { useHotKey } from '@hooks/useHotKey'
 
 export function ProjectPage() {
   const { projectId } = useParams()
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  useHotKey({ key: 'k', meta: true }, () => {
-    console.log('hotkey pressed')
+  useHotKey({ key: 'k', command: true }, () => {
+    inputRef.current?.focus()
   })
 
   const FilterButton = ({ label }: { label: string }): JSX.Element => {
@@ -36,7 +38,7 @@ export function ProjectPage() {
             </Kbd>
           }
         >
-          <Input size='sm' placeholder='search issues' />
+          <Input ref={inputRef} size='sm' placeholder='search issues' />
         </InputGroup>
 
         <FilterButton label='유형' />
