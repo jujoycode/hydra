@@ -1,3 +1,3 @@
 export function HomePage(): JSX.Element {
-  return <></>
+  return <p>Home Page</p>
 }
