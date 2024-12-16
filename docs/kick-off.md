@@ -15,6 +15,7 @@
 
 - 이연국 ([@abruption](https://github.com/abruption)) - Backend Developer
 
+  - 프로젝트 기획
   - Backend 개발
 
 ### Communication
@@ -27,18 +28,18 @@
 
 ### Frontend
 
-- Framework: `React`, `Electron`
-- Router: `react-router-dom`
-- State Management: `zustand`
-- UI Library: `chakra-ui`
-- Icon: `lucide-react`
+- Framework: [`React`](https://react.dev/), [`Electron`](https://www.electronjs.org/)
+- State Management: [`zustand`](https://zustand.docs.pmnd.rs/)
+- UI Library: [`chakra-ui`](https://chakra-ui.com/)
+- Router: [`react-router-dom`](https://reactrouter.com/)
+- Icon: [`lucide-react`](https://lucide.dev/)
 
 ### Backend
 
-- Framework: -, `Electron`
-- Database: -
-- ORM: -
-- MQTT: -
+- Framework: [`Electron`](https://www.electronjs.org/)
+- Database: [`PostgreSQL`](https://www.postgresql.org/) + [`MongoDB`](https://www.mongodb.com/)
+- ORM: [`TypeORM`](https://typeorm.io/)
+- MQTT: [`Redis Pub/Sub`](https://redis.io/docs/latest/develop/interact/pubsub/)
 
 ## 4. Project Schedule
 
