@@ -1,34 +1,49 @@
 # Hydra
 
-Easy-to-use light issue manager.
+<div align="center">
+  <!-- 여기에 로고나 스크린샷 -->
+  <h3>Easy-to-use Desktop Issue Manager</h3>
+</div>
 
-## Recommended Stack
+## 🚀 Overview
 
-- [electron-vite](https://electron-vite.org/) + [React](https://react.dev/) + [Chakra UI](https://www.chakra-ui.com/)
+Hydra is a lightweight, installable project/issue management tool built with Electron. It provides a free alternative to existing issue trackers while maintaining professional usability.
 
-## Project Setup
+### Key Features
 
-### Install
+- 🎯 Simple and intuitive issue tracking
+- 💻 Cross-platform desktop application
+- 🚀 Fast and responsive UI
 
-```bash
-$ pnpm install
-```
+## 🛠️ Tech Stack
 
-### Development
+- **Frontend**: React, Electron, Chakra UI
+- **State Management**: Zustand
+- **Backend**: Electron IPC, Supabase
+- **Database**: PostgreSQL
+- **Build Tool**: electron-vite
 
-```bash
-$ pnpm dev
-```
+## 📸 Screenshots
 
-### Build
+<!-- 주요 기능의 스크린샷 3-4장 -->
 
-```bash
-# For windows
-$ pnpm build:win
+## 🔍 Key Implementations
 
-# For macOS
-$ pnpm build:mac
+- Custom issue workflow management
+- Cross-platform compatibility
 
-# For Linux
-$ pnpm build:linux
-```
+## 📚 Documentation
+
+- [Project Kick-off](docs/kick-off.md)
+- [Database Schema](docs/table-erd.md)
+
+## 👨‍💻 Contributors
+
+- Project Lead & Front/Backend Developer: [@jujoycode](https://github.com/jujoycode)
+- Backend Developer: [@abruption](https://github.com/abruption)
+
+## 📄 License
+
+This project is open-sourced under the MIT License
+
+ <!-- - see the [LICENSE](LICENSE) file for details. -->
