@@ -77,9 +77,9 @@ erDiagram
     }
 
     users_projects_link {
-        uuid user_project_link_id PK "NOT NULL"
-        uuid user_id FK "NOT NULL"
-        uuid project_id FK "NOT NULL"
+        uuid user_project_link_id PK
+        uuid user_id FK
+        uuid project_id FK
     }
 
     users }|--|| users_projects_link : "has"
