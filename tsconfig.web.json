@@ -22,6 +22,7 @@
     "baseUrl": ".",
     "paths": {
       "@components/*": ["src/renderer/src/components/*"],
+      "@layouts/*": ["src/renderer/src/layouts/*"],
       "@pages/*": ["src/renderer/src/pages/*"],
       "@hooks/*": ["src/renderer/src/hooks/*"],
       "@assets/*": ["src/renderer/assets/*"]

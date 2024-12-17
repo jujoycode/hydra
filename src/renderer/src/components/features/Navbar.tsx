@@ -2,16 +2,10 @@ import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Box, Flex, HStack, Button, Text, For } from '@chakra-ui/react'
 import { ColorModeButton } from '@components/ui/color-mode'
-import {
-  PopoverRoot,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverArrow,
-  PopoverBody
-} from '@components/ui/popover'
+import { PopoverRoot, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody } from '@components/ui/popover'
 import { ChevronDown } from 'lucide-react'
 
-export const Navbar = function Navbar(): JSX.Element {
+export function Navbar(): JSX.Element {
   const navigate = useNavigate()
 
   const projectList = [
@@ -60,12 +54,7 @@ export const Navbar = function Navbar(): JSX.Element {
       <Flex h={16} alignItems='center' justifyContent='space-between' maxW='7xl' mx='auto'>
         <HStack gap={8}>
           <Box marginLeft={4}>
-            <Text
-              fontSize='xl'
-              fontWeight='semibold'
-              onClick={() => navigate('/')}
-              cursor='pointer'
-            >
+            <Text fontSize='xl' fontWeight='semibold' onClick={() => navigate('/')} cursor='pointer'>
               Hydra
             </Text>
           </Box>
