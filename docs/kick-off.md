@@ -36,10 +36,11 @@
 
 ### Backend
 
+- Platform: [`Supabase`](https://supabase.com/)
 - Framework: [`Electron`](https://www.electronjs.org/)
-- Database: [`PostgreSQL`](https://www.postgresql.org/) + [`MongoDB`](https://www.mongodb.com/)
-- ORM: [`TypeORM`](https://typeorm.io/)
-- MQTT: [`Redis Pub/Sub`](https://redis.io/docs/latest/develop/interact/pubsub/)
+- Database: [`PostgreSQL`](https://www.postgresql.org/)
+- ORM: [`Prisma`](https://www.prisma.io/) (w. [supabase](https://supabase.com/docs/guides/database/prisma))
+- MQTT: [`Supabase-realtime`](https://supabase.com/docs/guides/realtime)
 
 ## 4. Project Schedule
 
@@ -49,20 +50,25 @@
 ### Main Milestones
 
 1. 기획 및 설계 (3일)
-2. MVP 개발 (3주)
+2. 개발 (3주)
 3. 테스트 및 배포 (1주)
 
 ## 5. Issue Handling Flow
 
 1. Issue Creation
+
    - Title Format: `[Type] 간단한 설명`
    - Types: Feature, Bug, Hotfix, Docs, Refactor
    - Priority Labels: P0(Urgent), P1(High), P2(Medium), P3(Low)
+
 2. Branch Strategy (GitHub Flow)
+
    - main (production)
+   - develop (development)
    - feature/\* (새로운 기능)
    - bugfix/\* (버그 수정)
    - hotfix/\* (긴급 수정)
+
 3. Development Flow
 
    1. Issue 생성 및 할당
