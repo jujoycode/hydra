@@ -5,14 +5,15 @@ import { CoreUtil } from '@util/CoreUtil'
 import { initHandler } from '@handler/initHandler'
 
 function createWindow() {
+  const coreUtil = new CoreUtil()
+
   const main = new BrowserWindow({
     width: 1100,
     height: 650,
     show: false,
     autoHideMenuBar: true,
-    icon: CoreUtil.pathJoin(__dirname, '..', 'assets', 'icons', 'mac', 'hydra.icns'),
     webPreferences: {
-      preload: CoreUtil.pathJoin(__dirname, '..', 'preload', 'index.js'),
+      preload: coreUtil.pathJoin(__dirname, '..', 'preload', 'index.js'),
       sandbox: false
     }
   })
@@ -30,7 +31,7 @@ function createWindow() {
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     main.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    main.loadFile(CoreUtil.pathJoin(__dirname, '..', 'renderer', 'index.html'))
+    main.loadFile(coreUtil.pathJoin(__dirname, '..', 'renderer', 'index.html'))
   }
 }
 

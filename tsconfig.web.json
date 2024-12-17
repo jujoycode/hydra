@@ -24,7 +24,6 @@
       "@components/*": ["src/renderer/src/components/*"],
       "@pages/*": ["src/renderer/src/pages/*"],
       "@hooks/*": ["src/renderer/src/hooks/*"],
-      "@assets/*": ["src/renderer/assets/*"]
     },
     "composite": true, 
     // define class fields

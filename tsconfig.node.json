@@ -9,7 +9,8 @@
       "@base/*": ["src/main/core/base/*"],
       "@constant/*": ["src/main/core/constant/*"],
       "@util/*": ["src/main/core/util/*"],
-      "@handler/*": ["src/main/handler/*"]
+      "@handler/*": ["src/main/handler/*"],
+      "@interface/*": ["src/main/core/interface/*"]
     }
   }
 }

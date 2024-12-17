@@ -1,6 +1,6 @@
 export class CoreConstant {
   static readonly OS_TYPE = {
-    WINDOWS: 'windows',
+    WINDOWS: 'wind32',
     MAC: 'darwin',
     LINUX: 'linux'
   }

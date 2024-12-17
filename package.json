@@ -24,6 +24,8 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
     "@emotion/react": "^11.14.0",
+    "@supabase/supabase-js": "^2.47.8",
+    "chalk": "4.1.2",
     "lucide-react": "^0.468.0",
     "next-themes": "^0.4.4",
     "react-router-dom": "^7.0.2"
