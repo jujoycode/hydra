@@ -1,17 +1,16 @@
 # [Hydra] DB ERD
 
-### 1. PROJECT
+### 1. users
 
 ```mermaid
 erDiagram
-    PROJECT {
-        uuid PRJ_ID
-        string PRJ_NAME
-        string PRJ_DESCRIPTION
-        string PRJ_CREATED_BY
-        string PRJ_MODIFIED_BY
-        date PRJ_START_DATE
-        date PRJ_END_DATE
+    users {
+        uuid user_id
+        string user_name
+        string user_email
+        string user_password
+        string user_created_at
+        string user_updated_at
     }
 ```
 
