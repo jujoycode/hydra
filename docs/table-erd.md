@@ -51,6 +51,7 @@ erDiagram
         uuid issue_id PK "NOT NULL"
         uuid project_id FK "NOT NULL"
         string issue_title "NOT NULL"
+        string issue_key "NOT NULL"
         string issue_desc
         string issue_created_by
         string issue_modified_by
