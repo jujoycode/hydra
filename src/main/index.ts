@@ -10,6 +10,7 @@ function createWindow() {
     height: 650,
     show: false,
     autoHideMenuBar: true,
+    icon: CoreUtil.pathJoin(__dirname, '..', 'assets', 'icons', 'mac', 'hydra.icns'),
     webPreferences: {
       preload: CoreUtil.pathJoin(__dirname, '..', 'preload', 'index.js'),
       sandbox: false
