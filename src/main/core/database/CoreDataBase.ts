@@ -1,27 +1,24 @@
 import { CoreBase } from '@base/CoreBase'
-import { PrismaDataBase } from './PrismaDataBase'
-import { CoreInterface, SupaClient, PrisClient, SupaAuthClient } from '@interface/CoreInterface'
-import { SupaDataBase } from './SupaDataBase'
-
+import { PrismaBaseUtil } from '@util/PrismaBaseUtil'
+import { CoreInterface, PrisClient } from '@interface/CoreInterface'
 export class CoreDataBase extends CoreBase implements CoreInterface {
-  private supaClient: SupaClient
+  private static instance: CoreDataBase
   private prismaClient: PrisClient
-  
-  constructor() {
+
+  private constructor() {
     super()
-    this.supaClient = new SupaDataBase().getSupabaseClient()
-    this.prismaClient = new PrismaDataBase().getPrismaClient()
+    this.prismaClient = new PrismaBaseUtil().getPrismaClient()
+  }
+
+  public static getInstance(): CoreDataBase {
+    if (!CoreDataBase.instance) {
+      CoreDataBase.instance = new CoreDataBase()
+    }
+
+    return CoreDataBase.instance
   }
 
   public getPrismaClient(): PrisClient {
     return this.prismaClient
-  }
-
-  public getSupabaseClient(): SupaClient {
-    return this.supaClient
-  }
-
-  public getSupabaseAuthClient(): SupaAuthClient {
-    return this.supaClient.auth
   }
 }
