@@ -1,7 +1,9 @@
+import { CoreBase } from '@base/CoreBase'
 import { CoreUtil } from '@util/CoreUtil'
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import type { SupaAuthClient, SupaStorageClient } from '@interface/CoreInterface'
-export class SupabaseUtil extends CoreUtil {
+
+export class SupabaseLib extends CoreBase {
   private supa: SupabaseClient
 
   constructor() {
@@ -17,7 +19,7 @@ export class SupabaseUtil extends CoreUtil {
    */
   private createSupabaseClient() {
     try {
-      return createClient(this.getEnv('VITE_SUPABASE_PROJECT_URL'), this.getEnv('VITE_SUPABASE_ANON_KEY'))
+      return createClient(CoreUtil.getEnv('VITE_SUPABASE_PROJECT_URL'), CoreUtil.getEnv('VITE_SUPABASE_ANON_KEY'))
     } catch (error) {
       this.logError('Failed to create Supabase client')
       throw error

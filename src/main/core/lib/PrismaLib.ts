@@ -1,7 +1,7 @@
+import { CoreBase } from '@base/CoreBase'
 import { PrismaClient } from '@prisma/client'
-import { CoreUtil } from '@util/CoreUtil'
 
-export class PrismaBaseUtil extends CoreUtil {
+export class PrismaLib extends CoreBase {
   private prisma: PrismaClient
 
   constructor() {

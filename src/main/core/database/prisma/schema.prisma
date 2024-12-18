@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -40,17 +34,16 @@ model users_projects_link {
   user_project_link_id String   @id
   user_id              String
   project_id           String
-  user                 users    @relation(fields: [user_id], references: [user_id])
   project              projects @relation(fields: [project_id], references: [project_id])
+  user                 users    @relation(fields: [user_id], references: [user_id])
 
-  @@index([user_id], name: "idx_user_id")
-  @@index([project_id], name: "idx_project_id")
+  @@index([user_id], map: "idx_user_id")
+  @@index([project_id], map: "idx_project_id")
 }
 
 model issues {
   issue_id          String    @id
   project_id        String
-  project           projects  @relation(fields: [project_id], references: [project_id])
   issue_title       String
   issue_key         String
   issue_desc        String?
@@ -58,6 +51,7 @@ model issues {
   issue_modified_by String?
   issue_created_at  DateTime? @default(now())
   issue_updated_at  DateTime? @updatedAt
+  project           projects  @relation(fields: [project_id], references: [project_id])
 
-  @@index([project_id], name: "idx_issues_project_id")
+  @@index([project_id], map: "idx_issues_project_id")
 }

@@ -3,6 +3,23 @@ import { join, resolve, dirname, basename, extname } from 'path'
 import { readFile, writeFile, mkdir } from 'fs/promises'
 
 export class CoreUtil extends CoreBase {
+  /**
+   * getEnv
+   * @param key 조회할 환경변수 Key
+   */
+  static getEnv(key: string): string {
+    if (!key) {
+      throw new Error('Environment variable key is required')
+    }
+
+    const value = process.env[key]
+    if (!value) {
+      throw new Error(`Environment variable ${key} is not set`)
+    }
+
+    return value
+  }
+
   private parseError(error: unknown): string {
     if (error instanceof Error) return error.message
     else return `Unknown error: ${error}`
@@ -46,19 +63,5 @@ export class CoreUtil extends CoreBase {
     } catch (error) {
       throw new Error(`Failed to write file at ${this.parseError(error)}`)
     }
-  }
-
-  // Environment
-  public getEnv(key: string): string {
-    if (!key) {
-      throw new Error('Environment variable key is required')
-    }
-
-    const value = process.env[key]
-    if (!value) {
-      throw new Error(`Environment variable ${key} is not set`)
-    }
-
-    return value
   }
 }
