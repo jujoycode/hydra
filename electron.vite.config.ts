@@ -25,7 +25,8 @@ export default defineConfig({
         '@components': resolve('src/renderer/src/components'),
         '@layouts': resolve('src/renderer/src/layouts'),
         '@pages': resolve('src/renderer/src/pages'),
-        '@hooks': resolve('src/renderer/src/hooks')
+        '@hooks': resolve('src/renderer/src/hooks'),
+        '@stores': resolve('src/renderer/src/stores')
       }
     },
     plugins: [react()]
