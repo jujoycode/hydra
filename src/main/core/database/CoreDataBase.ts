@@ -1,18 +1,27 @@
 import { CoreBase } from '@base/CoreBase'
-import { SupabaseUtil } from '@util/SupabaseUtil'
-import type { SupaClient } from '@interface/CoreInterface'
+import { PrismaDataBase } from './PrismaDataBase'
+import { CoreInterface, SupaClient, PrisClient, SupaAuthClient } from '@interface/CoreInterface'
+import { SupaDataBase } from './SupaDataBase'
 
-export class CoreDataBase extends CoreBase {
+export class CoreDataBase extends CoreBase implements CoreInterface {
   private supaClient: SupaClient
-
+  private prismaClient: PrisClient
+  
   constructor() {
     super()
-    this.supaClient = new SupabaseUtil().getSupabaseClient()
+    this.supaClient = new SupaDataBase().getSupabaseClient()
+    this.prismaClient = new PrismaDataBase().getPrismaClient()
   }
 
-  public async getData(table: string, column: string, id: string) {
-    const { data, error } = await this.supaClient.from(table).select(column).eq('id', id)
-    if (error) this.logError(error.message)
-    return data
+  public getPrismaClient(): PrisClient {
+    return this.prismaClient
+  }
+
+  public getSupabaseClient(): SupaClient {
+    return this.supaClient
+  }
+
+  public getSupabaseAuthClient(): SupaAuthClient {
+    return this.supaClient.auth
   }
 }

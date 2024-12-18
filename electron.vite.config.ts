@@ -11,7 +11,8 @@ export default defineConfig({
         '@constant': resolve('src/main/core/constant'),
         '@util': resolve('src/main/core/util'),
         '@handler': resolve('src/main/handler'),
-        '@interface': resolve('src/main/core/interface')
+        '@interface': resolve('src/main/core/interface'),
+        '@database': resolve('src/main/core/database')
       }
     }
   },

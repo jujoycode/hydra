@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("LOCAL_DATABASE_URL")
+}
+
+model users {
+  user_id             String                @id
+  user_name           String
+  user_login_id       String
+  user_email          String
+  user_password       String?
+  user_created_at     DateTime?             @default(now())
+  user_updated_at     DateTime?             @updatedAt
+  users_projects_link users_projects_link[]
+}
+
+model projects {
+  project_id          String                @id
+  project_name        String
+  project_desc        String?
+  project_created_by  String?
+  project_modified_by String?
+  project_start_date  DateTime?
+  project_end_date    DateTime?
+  issues              issues[]
+  users_projects_link users_projects_link[]
+}
+
+model users_projects_link {
+  user_project_link_id String   @id
+  user_id              String
+  project_id           String
+  user                 users    @relation(fields: [user_id], references: [user_id])
+  project              projects @relation(fields: [project_id], references: [project_id])
+
+  @@index([user_id], name: "idx_user_id")
+  @@index([project_id], name: "idx_project_id")
+}
+
+model issues {
+  issue_id          String    @id
+  project_id        String
+  project           projects  @relation(fields: [project_id], references: [project_id])
+  issue_title       String
+  issue_key         String
+  issue_desc        String?
+  issue_created_by  String?
+  issue_modified_by String?
+  issue_created_at  DateTime? @default(now())
+  issue_updated_at  DateTime? @updatedAt
+
+  @@index([project_id], name: "idx_issues_project_id")
+}
