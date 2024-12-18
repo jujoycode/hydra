@@ -1,5 +1,5 @@
 import { CoreDataBase } from '../database/CoreDataBase'
-import type { PrisClient } from '@interface/CoreInterface'
+import type { PrismaClient } from '@interface/CoreInterface'
 
 export abstract class CoreBaseHandler {
   private CoreDataBase: CoreDataBase
@@ -10,7 +10,7 @@ export abstract class CoreBaseHandler {
     this.ipcChannel = channel
   }
 
-  public getDatabase(): PrisClient {
+  public getDatabase(): PrismaClient {
     return this.CoreDataBase.getPrismaClient()
   }
 

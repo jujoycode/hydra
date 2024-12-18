@@ -1,9 +1,10 @@
 import { CoreBase } from '@base/CoreBase'
 import { PrismaBaseUtil } from '@util/PrismaBaseUtil'
-import { CoreInterface, PrisClient } from '@interface/CoreInterface'
+import { CoreInterface, PrismaClient } from '@interface/CoreInterface'
+
 export class CoreDataBase extends CoreBase implements CoreInterface {
   private static instance: CoreDataBase
-  private prismaClient: PrisClient
+  private prismaClient: PrismaClient
 
   private constructor() {
     super()
@@ -18,7 +19,7 @@ export class CoreDataBase extends CoreBase implements CoreInterface {
     return CoreDataBase.instance
   }
 
-  public getPrismaClient(): PrisClient {
+  public getPrismaClient(): PrismaClient {
     return this.prismaClient
   }
 }

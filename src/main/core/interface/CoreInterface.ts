@@ -8,4 +8,4 @@ export interface CoreInterface {
 export type SupaAuthClient = SupabaseClient['auth']
 export type SupaStorageClient = SupabaseClient['storage']
 
-export type { SupabaseClient as SupaClient, PrismaClient as PrisClient, issues, projects, users, users_projects_link }
+export type { SupabaseClient as SupaClient, PrismaClient, issues, projects, users, users_projects_link }
