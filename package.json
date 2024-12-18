@@ -4,6 +4,9 @@
   "description": "Light and convenient project/issue management",
   "main": "./out/main/index.js",
   "author": "example.com",
+  "prisma": {
+    "schema": "src/main/core/database/prisma/schema.prisma"
+  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -42,7 +45,7 @@
     "electron": "^33.2.1",
     "electron-builder": "^24.13.3",
     "electron-vite": "^2.3.0",
-    "eslint": "^8.57.1",
+    "eslint": "^9.17.0",
     "eslint-plugin-react": "^7.37.2",
     "prettier": "^3.4.2",
     "prisma": "^6.1.0",
