@@ -1,12 +1,3 @@
----
-name: Pull Request
-about: Pull Request Template
-title: '[PR] '
-labels: ['enhancement', 'triage']
-assignees: ''
-reviewers: ''
----
-
 ## 💬 PR 유형
 
 <!-- 해당되는 항목에 x 표시해주세요 -->
