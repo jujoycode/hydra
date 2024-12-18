@@ -37,8 +37,8 @@ model users_projects_link {
   project              projects @relation(fields: [project_id], references: [project_id])
   user                 users    @relation(fields: [user_id], references: [user_id])
 
-  @@index([user_id], map: "idx_user_id")
-  @@index([project_id], map: "idx_project_id")
+  @@index([user_id], name: "idx_user_id")
+  @@index([project_id], name: "idx_project_id")
 }
 
 model issues {
@@ -53,5 +53,5 @@ model issues {
   issue_updated_at  DateTime? @updatedAt
   project           projects  @relation(fields: [project_id], references: [project_id])
 
-  @@index([project_id], map: "idx_issues_project_id")
+  @@index([project_id], name: "idx_issues_project_id")
 }
