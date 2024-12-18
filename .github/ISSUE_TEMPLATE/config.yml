@@ -4,12 +4,17 @@ blank_issues_enabled: false
 # 이슈 템플릿 순서와 표시 방법 설정
 template_chooser:
   types:
+    - name:
+      template: 1.feature.md
+      labels: ['planned']
+      description: 기능 설계
+
     - name: 버그 리포트
-      template: 1.bug_report.md
+      template: 2.bug_report.md
       labels: ['bug']
       description: 버그를 발견하셨나요?
 
     - name: 기능 요청
-      template: 2.feature_request.md
+      template: 3.feature_request.md
       labels: ['enhancement']
       description: 새로운 기능을 제안하고 싶으신가요?
