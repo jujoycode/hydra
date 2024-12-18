@@ -32,21 +32,23 @@ export function Navbar(): JSX.Element {
   })
 
   const ProjectContent = memo(() => {
+    const navigateProject = (id: string) => {
+      navigate(`/projects/${id}`)
+    }
+
     return (
       <For each={projectList}>
         {(item, index) => (
-          <Button
-            key={index}
-            variant='subtle'
-            onClick={() => {
-              navigate(`/projects/${item.id}`)
-            }}
-          >
+          <Button key={index} variant='subtle' onClick={() => navigateProject(item.id)}>
             {item.name}
           </Button>
         )}
       </For>
     )
+  })
+
+  const MemberContent = memo(() => {
+    return <Text>Members</Text>
   })
 
   return (
@@ -60,7 +62,7 @@ export function Navbar(): JSX.Element {
           </Box>
           <HStack gap={4}>
             <PopoverButton label='Projects' content={<ProjectContent />} />
-            <PopoverButton label='Members' content={<Text>Members</Text>} />
+            <PopoverButton label='Members' content={<MemberContent />} />
           </HStack>
         </HStack>
 

@@ -25,7 +25,6 @@
       "@layouts/*": ["src/renderer/src/layouts/*"],
       "@pages/*": ["src/renderer/src/pages/*"],
       "@hooks/*": ["src/renderer/src/hooks/*"],
-      "@assets/*": ["src/renderer/assets/*"]
     },
     "composite": true, 
     // define class fields

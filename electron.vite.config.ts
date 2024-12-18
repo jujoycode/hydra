@@ -10,7 +10,9 @@ export default defineConfig({
         '@base': resolve('src/main/core/base'),
         '@constant': resolve('src/main/core/constant'),
         '@util': resolve('src/main/core/util'),
-        '@handler': resolve('src/main/handler')
+        '@handler': resolve('src/main/handler'),
+        '@interface': resolve('src/main/core/interface'),
+        '@database': resolve('src/main/core/database')
       }
     }
   },
@@ -23,8 +25,7 @@ export default defineConfig({
         '@components': resolve('src/renderer/src/components'),
         '@layouts': resolve('src/renderer/src/layouts'),
         '@pages': resolve('src/renderer/src/pages'),
-        '@hooks': resolve('src/renderer/src/hooks'),
-        '@assets': resolve(__dirname, './src/renderer/assets')
+        '@hooks': resolve('src/renderer/src/hooks')
       }
     },
     plugins: [react()]
