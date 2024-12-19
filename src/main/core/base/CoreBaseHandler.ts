@@ -14,5 +14,5 @@ export abstract class CoreBaseHandler {
     return this.CoreDataBase.getPrismaClient()
   }
 
-  abstract handler(): void
+  abstract handler(params: unknown): void
 }

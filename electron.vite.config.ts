@@ -9,10 +9,11 @@ export default defineConfig({
       alias: {
         '@base': resolve('src/main/core/base'),
         '@constant': resolve('src/main/core/constant'),
-        '@util': resolve('src/main/core/util'),
-        '@handler': resolve('src/main/handler'),
+        '@database': resolve('src/main/core/database'),
         '@interface': resolve('src/main/core/interface'),
-        '@database': resolve('src/main/core/database')
+        '@lib': resolve('src/main/core/lib'),
+        '@util': resolve('src/main/core/util'),
+        '@handler': resolve('src/main/handler')
       }
     }
   },

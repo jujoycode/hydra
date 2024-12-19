@@ -1,5 +1,5 @@
 import { CoreBase } from '@base/CoreBase'
-import { PrismaBaseUtil } from '@util/PrismaBaseUtil'
+import { PrismaLib } from '@lib/PrismaLib'
 import { CoreInterface, PrismaClient } from '@interface/CoreInterface'
 
 export class CoreDataBase extends CoreBase implements CoreInterface {
@@ -8,7 +8,7 @@ export class CoreDataBase extends CoreBase implements CoreInterface {
 
   private constructor() {
     super()
-    this.prismaClient = new PrismaBaseUtil().getPrismaClient()
+    this.prismaClient = new PrismaLib().getPrismaClient()
   }
 
   public static getInstance(): CoreDataBase {

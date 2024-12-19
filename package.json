@@ -4,6 +4,9 @@
   "description": "Light and convenient project/issue management",
   "main": "./out/main/index.js",
   "author": "example.com",
+  "prisma": {
+    "schema": "src/main/core/database/prisma/schema.prisma"
+  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
