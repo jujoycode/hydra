@@ -1,6 +1,7 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
   "include": [
+    "src/main/core/interface/CoreInterface.ts",
     "src/renderer/src/env.d.ts",
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.tsx",
@@ -24,6 +25,7 @@
       "@components/*": ["src/renderer/src/components/*"],
       "@pages/*": ["src/renderer/src/pages/*"],
       "@hooks/*": ["src/renderer/src/hooks/*"],
+      "@interface/*": ["src/main/core/interface/*"]
     },
     "composite": true, 
     // define class fields
