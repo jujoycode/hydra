@@ -23,12 +23,6 @@ importers:
       '@prisma/client':
         specifier: ^6.1.0
         version: 6.1.0(prisma@6.1.0)
-      '@supabase/auth-ui-react':
-        specifier: ^0.4.7
-        version: 0.4.7(@supabase/supabase-js@2.47.9)
-      '@supabase/auth-ui-shared':
-        specifier: ^0.1.8
-        version: 0.1.8(@supabase/supabase-js@2.47.9)
       '@supabase/supabase-js':
         specifier: ^2.47.8
         version: 2.47.9
@@ -3616,19 +3610,6 @@ snapshots:
   '@supabase/auth-js@2.67.3':
     dependencies:
       '@supabase/node-fetch': 2.6.15
-
-  '@supabase/auth-ui-react@0.4.7(@supabase/supabase-js@2.47.9)':
-    dependencies:
-      '@stitches/core': 1.2.8
-      '@supabase/auth-ui-shared': 0.1.8(@supabase/supabase-js@2.47.9)
-      '@supabase/supabase-js': 2.47.9
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@supabase/auth-ui-shared@0.1.8(@supabase/supabase-js@2.47.9)':
-    dependencies:
-      '@supabase/supabase-js': 2.47.9
 
   '@supabase/functions-js@2.4.3':
     dependencies:

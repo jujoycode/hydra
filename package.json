@@ -28,8 +28,6 @@
     "@electron-toolkit/utils": "^3.0.0",
     "@emotion/react": "^11.14.0",
     "@prisma/client": "^6.1.0",
-    "@supabase/auth-ui-react": "^0.4.7",
-    "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.47.8",
     "chalk": "4.1.2",
     "lucide-react": "^0.468.0",

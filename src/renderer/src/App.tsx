@@ -4,7 +4,7 @@ import { AppLayout } from '@layouts/AppLayout'
 import { ProjectLayout } from '@layouts/ProjectLayout'
 import { HomePage } from '@pages/HomePage'
 import { ProjectPage } from '@pages/ProjectPage'
-import { LoginPage } from '@pages/LoginPage'
+import { SignInPage } from '@pages/SignInPage'
 
 function App(): JSX.Element {
   const { session } = useAuthStore()
@@ -23,7 +23,7 @@ function App(): JSX.Element {
           </Routes>
         </HashRouter>
       ) : (
-        <LoginPage />
+        <SignInPage />
       )}
     </>
   )

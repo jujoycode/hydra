@@ -13,7 +13,6 @@ interface AuthStore {
 export const useAuthStore = create<AuthStore>((_) => ({
   // State
   session: undefined
-
   // Actions
   // setSessions: set({ session })
 }))
