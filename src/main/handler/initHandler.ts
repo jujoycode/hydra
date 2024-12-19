@@ -7,6 +7,7 @@ import { SignOutHandler } from './auth/SignOutHandler'
 import { SignInWithOtpHandler } from './auth/SignInWithOtpHandler'
 import { VerifyOtpTokenHandler } from './auth/VerifyOtpTokenHandler'
 import { GetSessionHandler } from './auth/GetSessionHandler'
+import { UpdateUserHandler } from './auth/UpdateUserHandler'
 
 
 export function initHandler() {
@@ -15,7 +16,8 @@ export function initHandler() {
     new SignOutHandler(),
     new SignInWithOtpHandler(),
     new VerifyOtpTokenHandler(),
-    new GetSessionHandler()
+    new GetSessionHandler(),
+    new UpdateUserHandler()
   ]
   handler.forEach(({ ipcChannel, handler }) => ipcMain.on(ipcChannel, handler))
 }

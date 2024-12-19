@@ -26,3 +26,8 @@ export interface AuthDeleteUserParams {
   id: string
   shouldSoftDelete: boolean
 }
+
+export interface AuthUpdateUserParams {
+  data: Record<string, string>,
+  phone?: string
+}
