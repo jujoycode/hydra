@@ -18,14 +18,20 @@ export default defineConfig({
     }
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    resolve: {
+      alias: {
+        '@interface': resolve('src/main/core/interface')
+      }
+    }
   },
   renderer: {
     resolve: {
       alias: {
         '@components': resolve('src/renderer/src/components'),
         '@pages': resolve('src/renderer/src/pages'),
-        '@hooks': resolve('src/renderer/src/hooks')
+        '@hooks': resolve('src/renderer/src/hooks'),
+        '@interface': resolve('src/main/core/interface')
       }
     },
     plugins: [react()]
