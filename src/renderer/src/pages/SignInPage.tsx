@@ -1,14 +1,15 @@
+import { useState } from 'react'
+import { IpcChannel } from '@interface/CoreInterface'
 import { Container, Box, Text, Input, Button } from '@chakra-ui/react'
 import { InputGroup } from '@components/ui/input-group'
-// import { PasswordInput } from '@components/ui/password-input'
 import { Mail } from 'lucide-react'
-import { useState } from 'react'
+// import { PasswordInput } from '@components/ui/password-input'
 
 export function SignInPage() {
   const [mail, setMail] = useState<string>('')
 
-  function signInWithOtp() {
-    window.electron.ipcRenderer.send('authSignInWithOtp', { email: mail })
+  async function signInWithOtp() {
+    await window.callApi(IpcChannel.AUTH_SIGN_IN_WITH_OTP, { email: mail })
   }
 
   return (
