@@ -1,5 +1,6 @@
 import { HashRouter, Route, Routes } from 'react-router-dom'
-import { useAuthStore } from '@stores/authStore'
+import { Toaster } from '@components/ui/toaster'
+import { useAuthStore } from '@stores/AuthStore'
 import { AppLayout } from '@layouts/AppLayout'
 import { ProjectLayout } from '@layouts/ProjectLayout'
 import { HomePage } from '@pages/HomePage'
@@ -25,6 +26,7 @@ function App(): JSX.Element {
       ) : (
         <SignInPage />
       )}
+      <Toaster />
     </>
   )
 }

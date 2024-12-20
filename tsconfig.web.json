@@ -27,6 +27,7 @@
       "@pages/*": ["src/renderer/src/pages/*"],
       "@hooks/*": ["src/renderer/src/hooks/*"],
       "@stores/*": ["src/renderer/src/stores/*"],
+      "@utils/*": ["src/renderer/src/utils/*"],
       "@interface/*": ["src/main/core/interface/*"]
     },
     "composite": true, 

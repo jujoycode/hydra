@@ -32,8 +32,9 @@ export default defineConfig({
         '@layouts': resolve('src/renderer/src/layouts'),
         '@pages': resolve('src/renderer/src/pages'),
         '@hooks': resolve('src/renderer/src/hooks'),
-        '@interface': resolve('src/main/core/interface'),
-        '@stores': resolve('src/renderer/src/stores')
+        '@stores': resolve('src/renderer/src/stores'),
+        '@utils': resolve('src/renderer/src/utils'),
+        '@interface': resolve('src/main/core/interface')
       }
     },
     plugins: [react()]

@@ -1,22 +1,69 @@
-import { useState } from 'react'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { isEmpty } from '@utils/CommonUtil'
 import { IpcChannel } from '@interface/CoreInterface'
-import { Container, Box, Text, Input, Button } from '@chakra-ui/react'
+import { Center, Box, Text, Input, Link, Show } from '@chakra-ui/react'
+import { Button } from '@components/ui/button'
 import { InputGroup } from '@components/ui/input-group'
+import { PinInput } from '@components/ui/pin-input'
+import { toaster } from '@components/ui/toaster'
+import { PopoverRoot, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody } from '@components/ui/popover'
 import { Mail } from 'lucide-react'
-// import { PasswordInput } from '@components/ui/password-input'
 
 export function SignInPage() {
   const [mail, setMail] = useState<string>('')
+  const [isLoginRequest, setIsLoginRequest] = useState(false)
+  const [showOtpPopover, setShowOtpPopover] = useState(false)
+  const [otp, setOtp] = useState(['', '', '', ''])
 
-  async function signInWithOtp() {
-    await window.callApi(IpcChannel.AUTH_SIGN_IN_WITH_OTP, { email: mail })
+  useEffect(() => {
+    setOtp(['', '', '', ''])
+  }, [showOtpPopover])
+
+  /**
+   * signInFailed
+   * @desc 프로세스 실패 시 실행되는 함수, 전체 상태 초기화 및 toast 알림
+   */
+  const signInFailed = (error: any) => {
+    toaster.create({
+      type: 'error',
+      title: error.code,
+      description: error.message
+    })
+
+    setMail('')
+    setIsLoginRequest(false)
+    setShowOtpPopover(false)
+    setOtp(['', '', '', ''])
+  }
+
+  /**
+   * signInRequest
+   * @desc main 프로세스로 로그인 요청, OTP 입력 대기
+   */
+  const signInRequest = async () => {
+    // 1. login 요청 상태
+    setIsLoginRequest(true)
+
+    // 2. main 프로세스로 로그인 요청
+    const { error } = await window.callApi(IpcChannel.AUTH_SIGN_IN_WITH_OTP, {
+      email: mail!
+    })
+
+    // *. 에러 발생 시, 실패 처리
+    if (error) {
+      signInFailed(error)
+    }
+
+    // 3. 요청이 성공했다면, 유저의 OTP 입력 대기
+    setShowOtpPopover(true)
   }
 
   return (
-    <Box p={0} w='100%' h='100vh' display='flex' flexDirection='row'>
-      <Container w='60%' h='100%' m={0} p={0} bg='blackAlpha.800' />
-      <Container w='40%' h='100%' m={0} p={0} alignContent='center' justifyItems='center'>
-        <Box w='3/4'>
+    <Box p={0} w='full' h='100vh'>
+      <Center w='1/2' h='full'>
+        <Box w='3/5'>
           <Text fontWeight='semibold' fontSize='xl' color='gray.700'>
             Welcome to Hydra! 👋🏻
           </Text>
@@ -26,7 +73,7 @@ export function SignInPage() {
             manage issues
           </Text>
 
-          <InputGroup mt={4} mb={2} w='100%' flex='1' startElement={<Mail size={16} />}>
+          <InputGroup mt={4} mb={2} w='full' startElement={<Mail size={16} />}>
             <Input
               size='md'
               borderRadius='md'
@@ -35,13 +82,35 @@ export function SignInPage() {
               onChange={(e) => setMail(e.target.value)}
             />
           </InputGroup>
-          {/* <PasswordInput size='md' borderRadius='md' placeholder='Password' /> */}
 
-          <Button mt={4} size='md' w='100%' onClick={() => signInWithOtp()}>
-            SIGN IN
-          </Button>
+          <PopoverRoot open={showOtpPopover} onOpenChange={(e) => setShowOtpPopover(e.open)}>
+            <PopoverTrigger asChild w='full' mt={4}>
+              <Button
+                size='md'
+                disabled={isEmpty(mail)}
+                loading={isLoginRequest && showOtpPopover}
+                onClick={async () => await signInRequest()}
+              >
+                SIGN IN
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent w='auto'>
+              <PopoverArrow />
+              <PopoverBody>
+                <PinInput otp value={otp} onValueChange={(e) => setOtp(e.value)} />
+              </PopoverBody>
+            </PopoverContent>
+          </PopoverRoot>
+
+          <Show when={isLoginRequest}>
+            <Center mt={2}>
+              <Link variant='underline' fontSize='xs' onClick={() => setShowOtpPopover(true)}>
+                enter otp
+              </Link>
+            </Center>
+          </Show>
         </Box>
-      </Container>
+      </Center>
     </Box>
   )
 }
