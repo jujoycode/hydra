@@ -1,25 +1,18 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("LOCAL_DATABASE_URL")
-}
-
 model users {
-  user_id             String                @id
-  user_name           String
-  user_login_id       String
-  user_email          String
-  user_password       String?
-  user_created_at     DateTime?             @default(now())
-  user_updated_at     DateTime?             @updatedAt
+  user_id             String                @id @db.Uuid
+  user_name           String?               @db.VarChar
+  user_email          String?               @db.VarChar
+  user_created_at     DateTime?             @db.Timestamp(6)
+  user_updated_at     DateTime?             @db.Timestamp(6)
+  users               auth_users            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   users_projects_link users_projects_link[]
+
+  @@map("users")
+  @@schema("public")
 }
 
 model projects {
-  project_id          String                @id
+  project_id          String                @id @db.Uuid
   project_name        String
   project_desc        String?
   project_created_by  String?
@@ -27,22 +20,25 @@ model projects {
   project_start_date  DateTime?
   project_end_date    DateTime?
   users_projects_link users_projects_link[]
+
+  @@schema("public")
 }
 
 model users_projects_link {
-  user_project_link_id String   @id
-  user_id              String
-  project_id           String
+  user_project_link_id String   @id @db.Uuid
+  user_id              String   @db.Uuid
+  project_id           String   @db.Uuid
   project              projects @relation(fields: [project_id], references: [project_id])
   user                 users    @relation(fields: [user_id], references: [user_id])
 
   @@index([user_id], map: "idx_user_id")
   @@index([project_id], map: "idx_project_id")
+  @@schema("public")
 }
 
 model issues {
-  issue_id          String    @id
-  project_id        String
+  issue_id          String    @id @db.Uuid
+  project_id        String    @db.Uuid
   issue_title       String
   issue_key         String
   issue_desc        String?
@@ -50,4 +46,5 @@ model issues {
   issue_modified_by String?
   issue_created_at  DateTime? @default(now())
   issue_updated_at  DateTime? @updatedAt
+  @@schema("public")
 }

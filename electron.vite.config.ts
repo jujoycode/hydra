@@ -18,7 +18,12 @@ export default defineConfig({
     }
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    resolve: {
+      alias: {
+        '@interface': resolve('src/main/core/interface')
+      }
+    }
   },
   renderer: {
     resolve: {
@@ -27,6 +32,7 @@ export default defineConfig({
         '@layouts': resolve('src/renderer/src/layouts'),
         '@pages': resolve('src/renderer/src/pages'),
         '@hooks': resolve('src/renderer/src/hooks'),
+        '@interface': resolve('src/main/core/interface'),
         '@stores': resolve('src/renderer/src/stores')
       }
     },
