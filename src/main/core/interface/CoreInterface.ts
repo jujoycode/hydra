@@ -6,6 +6,7 @@ import type {
   Session
 } from '@supabase/supabase-js'
 import type { PrismaClient, issues, projects, users, users_projects_link } from '@prisma/client'
+import { extname } from 'path'
 
 export interface CoreInterface {
   getPrismaClient(): PrismaClient
@@ -52,17 +53,29 @@ export interface AuthUpdateUserParams {
  * @desc Ipc 채널 정의
  */
 export enum IpcChannel {
-  AUTH_SIGN_IN_WITH_OTP = 'authSignInWithOtp'
+  AUTH_SIGN_IN_WITH_OTP = 'authSignInWithOtp',
+  AUTH_VERIFY_OTP_TOKEN = 'authVerifyOtpToken'
+}
+
+interface BaseIpcPayloads<SendType = unknown, ReceiveType = unknown> {
+  [key: string]: {
+    send: SendType
+    receive: ReceiveType
+  }
 }
 
 /**
  * IpcPayloads
  * @desc Ipc 페이로드 정의
  */
-export interface IpcPayloads {
+export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.AUTH_SIGN_IN_WITH_OTP]: {
     send: AuthSignInWithOtpParams
     receive: AuthOtpResponse
+  }
+  [IpcChannel.AUTH_VERIFY_OTP_TOKEN]: {
+    send: AuthVerifyOtpTokenParams
+    receive: AuthResponse
   }
 }
 

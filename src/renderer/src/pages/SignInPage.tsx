@@ -21,6 +21,13 @@ export function SignInPage() {
     setOtp(['', '', '', ''])
   }, [showOtpPopover])
 
+  const signInSucceed = (userInfo) => {
+    toaster.create({
+      type: 'success',
+      title: `Welcome, ${userInfo.id}`
+    })
+  }
+
   /**
    * signInFailed
    * @desc 프로세스 실패 시 실행되는 함수, 전체 상태 초기화 및 toast 알림
@@ -35,7 +42,6 @@ export function SignInPage() {
     setMail('')
     setIsLoginRequest(false)
     setShowOtpPopover(false)
-    setOtp(['', '', '', ''])
   }
 
   /**
@@ -58,6 +64,32 @@ export function SignInPage() {
 
     // 3. 요청이 성공했다면, 유저의 OTP 입력 대기
     setShowOtpPopover(true)
+  }
+
+  /**
+   * verifyOtpToken
+   * @desc main 프로세스로 OTP 인증 요청, 확인 대기
+   */
+  const verifyOtpToken = async (token: string[]) => {
+    // 1. main 프로세스로 OTP 인증 요청
+    const { data, error } = await window.callApi(IpcChannel.AUTH_VERIFY_OTP_TOKEN, {
+      email: mail,
+      token: token.join(),
+      type: 'email'
+    })
+
+    // *. 에러 발생 시, 실패 처리
+    if (error) {
+      signInFailed(error)
+    }
+
+    console.log('user:', data.user)
+    console.log('session:', data.session)
+
+    // 2. 유저 정보 및 세션을 전역 객체로 세팅
+
+    // 3. 로그인 완료 처리 및 경로 이동 (/)
+    signInSucceed(data.user)
   }
 
   return (
@@ -97,7 +129,12 @@ export function SignInPage() {
             <PopoverContent w='auto'>
               <PopoverArrow />
               <PopoverBody>
-                <PinInput otp value={otp} onValueChange={(e) => setOtp(e.value)} />
+                <PinInput
+                  otp
+                  value={otp}
+                  onValueChange={(e) => setOtp(e.value)}
+                  onValueComplete={async () => await verifyOtpToken(otp)}
+                />
               </PopoverBody>
             </PopoverContent>
           </PopoverRoot>
