@@ -3,10 +3,10 @@ import type {
   VerifyEmailOtpParams,
   AuthResponse,
   AuthOtpResponse,
+  User,
   Session
 } from '@supabase/supabase-js'
 import type { PrismaClient, issues, projects, users, users_projects_link } from '@prisma/client'
-import { extname } from 'path'
 
 export interface CoreInterface {
   getPrismaClient(): PrismaClient
@@ -23,6 +23,7 @@ export type {
   PrismaClient,
   issues,
   projects,
+  User,
   users,
   users_projects_link,
   AuthOtpResponse,

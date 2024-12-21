@@ -1,18 +1,53 @@
 import { create } from 'zustand'
+import { Session } from '@interface/CoreInterface'
 
-interface Session {}
+export enum SignInProcess {
+  WELCOME = 'welcome',
+  REQUEST = 'request',
+  OTP_WAIT = 'otpWait',
+  SUCCEED = 'succeed',
+  FAILED = 'failed'
+}
 
 interface AuthStore {
   // State
+  mail: string
+  otpToken: string[]
   session?: Session
+  signInProcess: SignInProcess
+
+  processError?: Error
 
   // Actions
-  // setSessions: (session: Session) => void
+  setMail: (mail: string) => void
+  setOtpToken: (otpToken: string[]) => void
+  setSessions: (session?: Session) => void
+  setSignInProcess: (signInProcess: SignInProcess) => void
+  setProcessError: (processError?: Error) => void
+
+  setClear: () => void
 }
 
-export const useAuthStore = create<AuthStore>((_) => ({
+export const useAuthStore = create<AuthStore>((set) => ({
   // State
-  session: undefined
+  mail: '',
+  otpToken: ['', '', '', '', '', ''],
+  session: undefined,
+  signInProcess: SignInProcess.WELCOME,
+  processError: undefined,
+
   // Actions
-  // setSessions: set({ session })
+  setMail: (mail) => set({ mail }),
+  setOtpToken: (otpToken) => set({ otpToken }),
+  setSessions: (session) => set({ session }),
+  setSignInProcess: (signInProcess) => set({ signInProcess }),
+  setProcessError: (processError) => set({ processError }),
+
+  setClear() {
+    this.setMail('')
+    this.setOtpToken(['', '', '', '', '', ''])
+    this.setSessions(undefined)
+    this.setSignInProcess(SignInProcess.WELCOME)
+    this.setProcessError(undefined)
+  }
 }))
