@@ -35,7 +35,9 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
       type: params.type
     })
 
-    if(error === null) {
+    if (error !== null) {
+      console.error(error.code)
+      console.error(error.message)
       throw new Error('OTP verification failed')
     }
 

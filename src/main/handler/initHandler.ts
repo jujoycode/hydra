@@ -19,5 +19,14 @@ export function initHandler() {
     new UpdateUserHandler()
   ]
 
-  handler.forEach(({ ipcChannel, handler }) => ipcMain.on(ipcChannel, (_, params: unknown) => handler(params)))
+  handler.forEach(({ ipcChannel, handler }) =>
+    ipcMain.on(ipcChannel, async (_, params: unknown) => {
+      try {
+        const ipcReturn = await handler(params)
+        _.reply(ipcChannel, ipcReturn)
+      } catch (error) {
+        _.reply(ipcChannel, error)
+      }
+    })
+  )
 }
