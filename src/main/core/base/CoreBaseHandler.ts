@@ -8,6 +8,7 @@ export abstract class CoreBaseHandler {
   protected constructor(channel: string) {
     this.CoreDataBase = CoreDataBase.getInstance()
     this.ipcChannel = channel
+    this.handler = this.handler.bind(this)
   }
 
   public getDatabase(): PrismaClient {
