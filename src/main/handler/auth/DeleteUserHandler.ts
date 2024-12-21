@@ -17,7 +17,6 @@ export class DeleteUserHandler extends CoreBaseHandler {
   constructor() {
     super('authDeleteUser')
     this.supaAuthClient = new SupabaseLib().getSupabaseAuth()
-    this.handler = this.handler.bind(this)
   }
 
   /**

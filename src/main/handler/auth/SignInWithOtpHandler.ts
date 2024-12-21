@@ -16,7 +16,6 @@ export class SignInWithOtpHandler extends CoreBaseHandler {
   constructor() {
     super('authSignInWithOtp')
     this.supaAuthClient = new SupabaseLib().getSupabaseAuth()
-    this.handler = this.handler.bind(this)
   }
 
   /**

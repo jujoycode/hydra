@@ -17,7 +17,6 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
   constructor() {
     super('authVerifyOtpToken')
     this.supaAuthClient = new SupabaseLib().getSupabaseAuth()
-    this.handler = this.handler.bind(this)
   }
 
   /**

@@ -17,7 +17,6 @@ export class SignOutHandler extends CoreBaseHandler {
   constructor() {
     super('authSignOut')
     this.supaAuthClient = new SupabaseLib().getSupabaseAuth()
-    this.handler = this.handler.bind(this)
   }
 
   /**
