@@ -9,13 +9,21 @@ export default defineConfig({
       alias: {
         '@base': resolve('src/main/core/base'),
         '@constant': resolve('src/main/core/constant'),
+        '@database': resolve('src/main/core/database'),
+        '@interface': resolve('src/main/core/interface'),
+        '@lib': resolve('src/main/core/lib'),
         '@util': resolve('src/main/core/util'),
         '@handler': resolve('src/main/handler')
       }
     }
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    resolve: {
+      alias: {
+        '@interface': resolve('src/main/core/interface')
+      }
+    }
   },
   renderer: {
     resolve: {
@@ -23,7 +31,7 @@ export default defineConfig({
         '@components': resolve('src/renderer/src/components'),
         '@pages': resolve('src/renderer/src/pages'),
         '@hooks': resolve('src/renderer/src/hooks'),
-        '@assets': resolve(__dirname, './src/renderer/assets')
+        '@interface': resolve('src/main/core/interface')
       }
     },
     plugins: [react()]
