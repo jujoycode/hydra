@@ -4,7 +4,8 @@ import type {
   AuthResponse,
   AuthOtpResponse,
   User,
-  Session
+  Session,
+  AuthError
 } from '@supabase/supabase-js'
 import type { PrismaClient, issues, projects, users, users_projects_link } from '@prisma/client'
 
@@ -28,6 +29,7 @@ export type {
   users_projects_link,
   AuthOtpResponse,
   AuthResponse,
+  AuthError,
   Session
 }
 

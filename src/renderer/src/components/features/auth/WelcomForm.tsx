@@ -1,38 +1,14 @@
+'use client'
+
 import { SignInProcess, useAuthStore } from '@stores/AuthStore'
 import { isEmpty } from '@utils/CommonUtil'
 import { Input, Text } from '@chakra-ui/react'
 import { InputGroup } from '@components/ui/input-group'
 import { Button } from '@components/ui/button'
 import { Mail } from 'lucide-react'
-import { IpcChannel } from '@interface/CoreInterface'
 
 export function WelcomeForm() {
-  const { signInProcess, setSignInProcess, setProcessError, mail, setMail } = useAuthStore()
-
-  /**
-   * signInRequest
-   * @desc main 프로세스로 로그인 요청, OTP 입력 대기
-   */
-  const signInRequest = async () => {
-    // 1. login 요청 상태
-    setSignInProcess(SignInProcess.REQUEST)
-
-    // 2. main 프로세스로 로그인 요청
-    const { error } = await window.callApi(IpcChannel.AUTH_SIGN_IN_WITH_OTP, {
-      email: mail!
-    })
-
-    // *. 에러 발생 시, 실패 처리
-    if (error) {
-      setSignInProcess(SignInProcess.FAILED)
-      setProcessError(error)
-
-      return
-    }
-
-    // 3. 요청 완료 처리 및 OTP 입력 대기
-    setSignInProcess(SignInProcess.OTP_WAIT)
-  }
+  const { mail, signInProcess, setMail, setSignInProcess } = useAuthStore()
 
   return (
     <>
@@ -52,7 +28,7 @@ export function WelcomeForm() {
         w='full'
         disabled={isEmpty(mail)}
         loading={signInProcess === SignInProcess.REQUEST}
-        onClick={() => signInRequest()}
+        onClick={() => setSignInProcess(SignInProcess.REQUEST)}
       >
         SIGN IN
       </Button>

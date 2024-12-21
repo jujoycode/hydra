@@ -6,44 +6,53 @@ import { Center, Box, Text } from '@chakra-ui/react'
 import { toaster } from '@components/ui/toaster'
 import { WelcomeForm } from '@components/features/auth/WelcomForm'
 import { OtpForm } from '@components/features/auth/OtpForm'
-import { User } from '@interface/CoreInterface'
+import { AuthError, IpcChannel } from '@interface/CoreInterface'
 
 export function SignInPage() {
-  const { session, signInProcess, processError, setClear } = useAuthStore()
+  const { mail, signInProcess, processError, setSignInProcess, setProcessError } = useAuthStore()
 
   useEffect(() => {
-    if (signInProcess === SignInProcess.FAILED) {
-      signInFailed(processError)
-    }
+    if (signInProcess === SignInProcess.REQUEST) signInRequest()
+    if (signInProcess === SignInProcess.RESEND) signInRequest()
 
-    if (signInProcess === SignInProcess.SUCCEED) {
-      signInSucceed(session!.user)
-    }
-  }, [signInProcess])
+    if (processError !== undefined) verifyFailed()
+  }, [signInProcess, processError])
 
   /**
-   * signInFailed
-   * @desc 프로세스 성공 시 실행되는 함수, toast 알림 및 경로 이동
+   * verifyFailed
+   * @desc 인증 실패 시 호출, toast로 실패 사유 안내
    */
-  const signInSucceed = (userInfo: User) => {
-    toaster.create({
-      type: 'success',
-      title: `Welcome, ${userInfo.id}`
+  const verifyFailed = () => {
+    toaster.error({
+      title: (processError as AuthError).code,
+      description: (processError as AuthError).message
     })
+
+    setProcessError(undefined)
   }
 
   /**
-   * signInFailed
-   * @desc 프로세스 실패 시 실행되는 함수, 전체 상태 초기화 및 toast 알림
+   * signInRequest
+   * @desc main 프로세스로 로그인 요청, OTP 입력 대기
    */
-  const signInFailed = (error: any) => {
-    toaster.create({
-      type: 'error',
-      title: error.code,
-      description: error.message
+  const signInRequest = async () => {
+    // 1. login 요청 상태
+    setSignInProcess(SignInProcess.REQUEST)
+
+    // 2. main 프로세스로 로그인 요청
+    const { error } = await window.callApi(IpcChannel.AUTH_SIGN_IN_WITH_OTP, {
+      email: mail!
     })
 
-    setClear()
+    // *. 에러 발생 시, 실패 처리
+    if (error) {
+      setProcessError(error)
+
+      return
+    }
+
+    // 3. 요청 완료 처리 및 OTP 입력 대기
+    setSignInProcess(SignInProcess.OTP_WAIT)
   }
 
   return (
@@ -54,8 +63,9 @@ export function SignInPage() {
             Welcome to Hydra! 👋🏻
           </Text>
 
-          {signInProcess === SignInProcess.WELCOME || SignInProcess.REQUEST ? <WelcomeForm /> : null}
-          {signInProcess === SignInProcess.OTP_WAIT ? <OtpForm /> : null}
+          {signInProcess === SignInProcess.WELCOME && <WelcomeForm />}
+          {signInProcess === SignInProcess.REQUEST && <WelcomeForm />}
+          {signInProcess === SignInProcess.OTP_WAIT && <OtpForm />}
         </Box>
       </Center>
     </Box>

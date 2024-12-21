@@ -1,3 +1,5 @@
+'use client'
+
 import { useNavigate } from 'react-router-dom'
 import { Link, Table, Text } from '@chakra-ui/react'
 import { SquareX, CircleHelp, Lightbulb, SquareArrowOutUpRight } from 'lucide-react'
