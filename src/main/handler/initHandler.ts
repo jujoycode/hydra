@@ -9,7 +9,6 @@ import { VerifyOtpTokenHandler } from './auth/VerifyOtpTokenHandler'
 import { GetSessionHandler } from './auth/GetSessionHandler'
 import { UpdateUserHandler } from './auth/UpdateUserHandler'
 
-
 export function initHandler() {
   const handler: CoreBaseHandler[] = [
     new DeleteUserHandler(),
@@ -19,5 +18,6 @@ export function initHandler() {
     new GetSessionHandler(),
     new UpdateUserHandler()
   ]
-  handler.forEach(({ ipcChannel, handler }) => ipcMain.on(ipcChannel, handler))
+
+  handler.forEach(({ ipcChannel, handler }) => ipcMain.on(ipcChannel, (_, params: unknown) => handler(params)))
 }
