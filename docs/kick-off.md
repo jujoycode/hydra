@@ -72,7 +72,7 @@
 3. Development Flow
 
    1. Issue 생성 및 할당
-   2. Branch 생성 (`bugfix/issue-number-description`)
+   2. Branch 생성 (`feature/issue-number-description`)
    3. 작업 완료 후 PR 생성
    4. Code Review
    5. Merge to main
