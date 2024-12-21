@@ -17,6 +17,7 @@ export class GetSessionHandler extends CoreBaseHandler {
   constructor() {
     super('authGetSession')
     this.supaAuthClient = new SupabaseLib().getSupabaseAuth()
+    this.handler = this.handler.bind(this)
   }
 
   /**

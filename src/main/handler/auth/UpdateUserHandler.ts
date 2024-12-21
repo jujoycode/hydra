@@ -17,6 +17,7 @@ export class UpdateUserHandler extends CoreBaseHandler {
   constructor() {
     super('authUpdateUser')
     this.supaAuthClient = new SupabaseLib().getSupabaseAuth()
+    this.handler = this.handler.bind(this)
   }
 
   /**
