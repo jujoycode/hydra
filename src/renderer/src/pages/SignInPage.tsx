@@ -54,7 +54,7 @@ export function SignInPage() {
             Welcome to Hydra! 👋🏻
           </Text>
 
-          {signInProcess === SignInProcess.WELCOME ? <WelcomeForm /> : null}
+          {signInProcess === SignInProcess.WELCOME || SignInProcess.REQUEST ? <WelcomeForm /> : null}
           {signInProcess === SignInProcess.OTP_WAIT ? <OtpForm /> : null}
         </Box>
       </Center>

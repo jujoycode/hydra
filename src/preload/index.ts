@@ -13,8 +13,14 @@ async function callOnce<T extends IpcChannel>(channel: T, data?: IpcRequest<T>):
   checkSupportedIpcChannel(channel)
   ipcRenderer.send(channel, data)
 
-  return new Promise((resolve) => {
-    ipcRenderer.once(channel, (_event, response) => resolve(response))
+  return new Promise((resolve, reject) => {
+    ipcRenderer.once(channel, (_event, response) => {
+      try {
+        resolve(response)
+      } catch (error) {
+        reject(error)
+      }
+    })
   })
 }
 

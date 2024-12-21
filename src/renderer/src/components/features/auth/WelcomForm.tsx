@@ -26,6 +26,8 @@ export function WelcomeForm() {
     if (error) {
       setSignInProcess(SignInProcess.FAILED)
       setProcessError(error)
+
+      return
     }
 
     // 3. 요청 완료 처리 및 OTP 입력 대기
@@ -50,7 +52,7 @@ export function WelcomeForm() {
         w='full'
         disabled={isEmpty(mail)}
         loading={signInProcess === SignInProcess.REQUEST}
-        onClick={async () => await signInRequest()}
+        onClick={() => signInRequest()}
       >
         SIGN IN
       </Button>
