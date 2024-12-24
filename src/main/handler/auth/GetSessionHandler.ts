@@ -25,10 +25,10 @@ export class GetSessionHandler extends CoreBaseHandler {
    * @returns {Promise<{data: Session | null, error: Error | null}>} 세션 데이터와 에러 정보를 포함한 객체
    * @throws {Error} 세션 조회 실패시 에러를 던집니다
    */
-  async handler(): Promise<{ data: Session | null, error: Error | null }> {
+  async handler(): Promise<{ data: Session | null; error: Error | null }> {
     const { data, error } = await this.supaAuthClient.getSession()
 
-    if(error === null) {
+    if (error !== null) {
       throw new Error('Failed to get session')
     }
 

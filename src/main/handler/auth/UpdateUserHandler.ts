@@ -27,12 +27,12 @@ export class UpdateUserHandler extends CoreBaseHandler {
    */
   async handler(params: AuthUpdateUserParams): Promise<boolean> {
     const { error } = await this.supaAuthClient.updateUser({
-        data: params.data,
-        phone: params.phone
+      data: params.data,
+      phone: params.phone
     })
 
-    if(error === null) {
-        throw new Error('Failed to update user')
+    if (error !== null) {
+      throw new Error('Failed to update user')
     }
 
     return true

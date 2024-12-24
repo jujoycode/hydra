@@ -30,7 +30,7 @@ export class DeleteUserHandler extends CoreBaseHandler {
   async handler(params: AuthDeleteUserParams): Promise<void> {
     const { error } = await this.supaAuthClient.admin.deleteUser(params.id, params.shouldSoftDelete)
 
-    if(error === null) {
+    if (error !== null) {
       throw new Error('Failed to delete user')
     }
   }

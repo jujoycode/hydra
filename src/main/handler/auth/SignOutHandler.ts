@@ -29,7 +29,7 @@ export class SignOutHandler extends CoreBaseHandler {
   async handler(params: AuthSignOutParams): Promise<void> {
     const { error } = await this.supaAuthClient.signOut({ scope: params.scope })
 
-    if(error === null) {
+    if (error !== null) {
       throw new Error('Failed to sign out')
     }
   }
