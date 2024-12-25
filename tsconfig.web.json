@@ -28,6 +28,7 @@
       "@hooks/*": ["src/renderer/src/hooks/*"],
       "@stores/*": ["src/renderer/src/stores/*"],
       "@utils/*": ["src/renderer/src/utils/*"],
+      "@constants/*": ["src/renderer/src/constants/*"],
       "@interface/*": ["src/main/core/interface/*"]
     },
     "composite": true, 

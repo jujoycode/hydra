@@ -40,7 +40,12 @@ export const useAuthStore = create<AuthStore>((set) => ({
   // Actions
   setMail: (mail) => set({ mail }),
   setOtpToken: (otpToken) => set({ otpToken }),
-  setSessions: (session) => set({ session }),
+
+  setSessions: (session) => {
+    set({ session })
+    set({ user: session?.user })
+  },
+
   setUser: (user) => set({ user }),
   setSignInProcess: (signInProcess) => set({ signInProcess }),
   setProcessError: (processError) => set({ processError })

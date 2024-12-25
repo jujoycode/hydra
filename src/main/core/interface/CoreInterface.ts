@@ -57,7 +57,8 @@ export interface AuthUpdateUserParams {
  */
 export enum IpcChannel {
   AUTH_SIGN_IN_WITH_OTP = 'authSignInWithOtp',
-  AUTH_VERIFY_OTP_TOKEN = 'authVerifyOtpToken'
+  AUTH_VERIFY_OTP_TOKEN = 'authVerifyOtpToken',
+  AUTH_GET_SESSION = 'authGetSession'
 }
 
 interface BaseIpcPayloads<SendType = unknown, ReceiveType = unknown> {
@@ -79,6 +80,10 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.AUTH_VERIFY_OTP_TOKEN]: {
     send: AuthVerifyOtpTokenParams
     receive: AuthResponse
+  }
+  [IpcChannel.AUTH_GET_SESSION]: {
+    send: undefined
+    receive: Session
   }
 }
 
