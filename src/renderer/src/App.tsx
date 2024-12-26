@@ -1,6 +1,6 @@
 import { RouterProvider } from 'react-router-dom'
 import { Toaster } from '@components/ui/toaster'
-import { router as HydraRouter } from 'src/renderer/src/routers'
+import { router as HydraRouter } from '@routers'
 
 function App(): JSX.Element {
   return (
