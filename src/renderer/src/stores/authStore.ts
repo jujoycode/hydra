@@ -17,7 +17,12 @@ interface AuthAction {
 
 const useAuthStoreBase = create<AuthStore>((set) => ({
   session: null,
-  user: null,
+  user: {
+    email: 'jh.b.ryu@gmail.com',
+    user_metadata: {
+      name: '유주형'
+    }
+  } as unknown as User,
 
   actions: {
     setSessions: (session) => {

@@ -1,18 +1,20 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useAuthStore } from '@stores/AuthStore'
-import { toaster } from '@components/ui/toaster'
+import { memo } from 'react'
+// import { useAuthStore } from '@stores/AuthStore'
+// import { toaster } from '@components/ui/toaster'
 
-export function HomePage(): JSX.Element {
-  const { user } = useAuthStore()
+function Home(): JSX.Element {
+  // const { user } = useAuthStore()
 
-  useEffect(() => {
-    toaster.create({
-      type: 'info',
-      title: `Welcome, ${user?.id}`
-    })
-  }, [])
+  // useEffect(() => {
+  //   toaster.create({
+  //     type: 'info',
+  //     title: `Welcome, ${user?.user_metadata?.name ?? user?.id}`
+  //   })
+  // }, [])
 
   return <p>Home Page</p>
 }
+
+export const HomePage = memo(Home)

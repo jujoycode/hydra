@@ -6,15 +6,16 @@ import { ProjectLayout } from '@layouts/ProjectLayout'
 import { HomePage } from '@pages/HomePage'
 import { ProjectPage } from '@pages/ProjectPage'
 import { SignInPage } from '@pages/SignInPage'
+import { SettingPage } from '@pages/SettingPage'
 
 export const router = createHashRouter([
   {
     path: '/',
-    loader: authLoader,
+    // loader: authLoader,
     element: (
-      <AuthGuard>
-        <AppLayout />
-      </AuthGuard>
+      // <AuthGuard>
+      <AppLayout />
+      // </AuthGuard>
     ),
     children: [
       {
@@ -30,6 +31,10 @@ export const router = createHashRouter([
             element: <ProjectPage />
           }
         ]
+      },
+      {
+        path: 'setting',
+        element: <SettingPage />
       }
     ]
   },

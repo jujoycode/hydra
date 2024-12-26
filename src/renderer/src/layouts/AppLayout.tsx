@@ -1,11 +1,11 @@
 import { Outlet } from 'react-router-dom'
 import { Container } from '@chakra-ui/react'
-import { Navbar } from '@components/features/Navbar'
+import { TopNavigation } from '@components/features/nav/TobNavigation'
 
 export function AppLayout(): JSX.Element {
   return (
     <Container p={0} minH='screen'>
-      <Navbar />
+      <TopNavigation />
       <Container mx='auto' px={4} pt={4}>
         <Outlet />
       </Container>
