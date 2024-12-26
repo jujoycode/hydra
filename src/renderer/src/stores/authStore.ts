@@ -1,52 +1,59 @@
 import { create } from 'zustand'
-import { Session, User } from '@interface/CoreInterface'
-
-export enum SignInProcess {
-  WELCOME = 'welcome',
-  REQUEST = 'request',
-  RESEND = 'resend',
-  OTP_WAIT = 'otpWait',
-  FAILED = 'failed'
-}
+import { useShallow } from 'zustand/shallow'
+import { createSelectors } from '@utils/zustand'
+import type { Session, User } from '@interface/CoreInterface'
 
 interface AuthStore {
-  // State
-  mail: string
-  otpToken: string[]
-  session?: Session
-  user?: User
-  signInProcess: SignInProcess
-
-  processError?: Error
-
-  // Actions
-  setMail: (mail: string) => void
-  setOtpToken: (otpToken: string[]) => void
-  setSessions: (session?: Session) => void
-  setUser: (user?: User) => void
-  setSignInProcess: (signInProcess: SignInProcess) => void
-  setProcessError: (processError?: Error) => void
+  session: Session | null
+  user: User | null
+  actions: AuthAction
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
-  // State
-  mail: '',
-  otpToken: ['', '', '', '', '', ''],
-  session: undefined,
-  user: undefined,
-  signInProcess: SignInProcess.WELCOME,
-  processError: undefined,
+interface AuthAction {
+  setSessions: (session: Session | null) => void
+  setUser: (user: User | null) => void
+  clearAuth: () => void
+}
 
-  // Actions
-  setMail: (mail) => set({ mail }),
-  setOtpToken: (otpToken) => set({ otpToken }),
+const useAuthStoreBase = create<AuthStore>((set) => ({
+  session: null,
+  user: null,
 
-  setSessions: (session) => {
-    set({ session })
-    set({ user: session?.user })
-  },
+  actions: {
+    setSessions: (session) => {
+      set({ session })
+      if (session) {
+        localStorage.setItem('session', JSON.stringify(session))
+        set({ user: session.user })
+      } else {
+        localStorage.removeItem('session')
+        set({ user: null })
+      }
+    },
 
-  setUser: (user) => set({ user }),
-  setSignInProcess: (signInProcess) => set({ signInProcess }),
-  setProcessError: (processError) => set({ processError })
+    setUser: (user) => set({ user }),
+
+    clearAuth: () => {
+      set({ session: null, user: null })
+      localStorage.removeItem('session')
+    }
+  }
 }))
+
+export const useAuthStore = createSelectors(useAuthStoreBase)
+export const useAuthState = () => useAuthStore(useShallow((state) => [state.session, state.user]))
+
+/**
+ * initializeSession
+ * @desc 세션 초기화
+ */
+export const initializeSession = () => {
+  const storageSession = localStorage.getItem('session')
+
+  if (storageSession) {
+    useAuthStore().actions.setSessions(JSON.parse(storageSession))
+    return true
+  }
+
+  return false
+}

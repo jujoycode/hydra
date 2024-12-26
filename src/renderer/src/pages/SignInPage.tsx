@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useAuthStore, SignInProcess } from '@stores/AuthStore'
+import { useSignInStore, SignInProcess } from '@stores/SignInStore'
 import { Center, Box, Text } from '@chakra-ui/react'
 import { toaster } from '@components/ui/toaster'
 import { WelcomeForm } from '@components/features/auth/WelcomForm'
@@ -9,13 +9,13 @@ import { OtpForm } from '@components/features/auth/OtpForm'
 import { AuthError, IpcChannel } from '@interface/CoreInterface'
 
 export function SignInPage() {
-  const { mail, signInProcess, processError, setSignInProcess, setProcessError } = useAuthStore()
+  const { mail, signInProcess, processError, actions } = useSignInStore()
 
   useEffect(() => {
     if (signInProcess === SignInProcess.REQUEST) signInRequest()
     if (signInProcess === SignInProcess.RESEND) signInRequest()
 
-    if (processError !== undefined) verifyFailed()
+    if (processError !== null) verifyFailed()
   }, [signInProcess, processError])
 
   /**
@@ -28,7 +28,7 @@ export function SignInPage() {
       description: (processError as AuthError).message
     })
 
-    setProcessError(undefined)
+    actions.setProcessError(null)
   }
 
   /**
@@ -37,22 +37,22 @@ export function SignInPage() {
    */
   const signInRequest = async () => {
     // 1. login 요청 상태
-    setSignInProcess(SignInProcess.REQUEST)
+    actions.setSignInProcess(SignInProcess.REQUEST)
 
     // 2. main 프로세스로 로그인 요청
     const { error } = await window.callApi(IpcChannel.AUTH_SIGN_IN_WITH_OTP, {
-      email: mail!
+      email: mail as string
     })
 
     // *. 에러 발생 시, 실패 처리
     if (error) {
-      setProcessError(error)
+      actions.setProcessError(error)
 
       return
     }
 
     // 3. 요청 완료 처리 및 OTP 입력 대기
-    setSignInProcess(SignInProcess.OTP_WAIT)
+    actions.setSignInProcess(SignInProcess.OTP_WAIT)
   }
 
   return (
