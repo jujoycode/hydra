@@ -9,7 +9,7 @@ export function HomePage(): JSX.Element {
 
   useEffect(() => {
     toaster.create({
-      type: 'success',
+      type: 'info',
       title: `Welcome, ${user?.id}`
     })
   }, [])
