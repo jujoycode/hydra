@@ -35,6 +35,7 @@ export default defineConfig({
         '@stores': resolve('src/renderer/src/stores'),
         '@utils': resolve('src/renderer/src/utils'),
         '@constants': resolve('src/renderer/src/constants'),
+        '@routes': resolve('src/renderer/src/routes'),
         '@interface': resolve('src/main/core/interface')
       }
     },

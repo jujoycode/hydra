@@ -29,6 +29,7 @@
       "@stores/*": ["src/renderer/src/stores/*"],
       "@utils/*": ["src/renderer/src/utils/*"],
       "@constants/*": ["src/renderer/src/constants/*"],
+      "@routes": ["src/renderer/src/routes"],
       "@interface/*": ["src/main/core/interface/*"]
     },
     "composite": true, 
