@@ -51,14 +51,22 @@ export interface AuthUpdateUserParams {
   phone?: string
 }
 
+export interface OpenExternalUrlParams {
+  url: string
+}
+
 /**
  * IpcChannel
  * @desc Ipc 채널 정의
  */
 export enum IpcChannel {
+  // AUTH-
   AUTH_SIGN_IN_WITH_OTP = 'authSignInWithOtp',
   AUTH_VERIFY_OTP_TOKEN = 'authVerifyOtpToken',
-  AUTH_GET_SESSION = 'authGetSession'
+  AUTH_GET_SESSION = 'authGetSession',
+
+  // SYSTEM-
+  SYSTEM_OPEN_EXTERNAL_URL = 'systemOpenExternalUrl'
 }
 
 interface BaseIpcPayloads<SendType = unknown, ReceiveType = unknown> {
@@ -73,6 +81,7 @@ interface BaseIpcPayloads<SendType = unknown, ReceiveType = unknown> {
  * @desc Ipc 페이로드 정의
  */
 export interface IpcPayloads extends BaseIpcPayloads {
+  // AUTH-
   [IpcChannel.AUTH_SIGN_IN_WITH_OTP]: {
     send: AuthSignInWithOtpParams
     receive: AuthOtpResponse
@@ -84,6 +93,12 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.AUTH_GET_SESSION]: {
     send: undefined
     receive: Session
+  }
+
+  // SYSTEM-
+  [IpcChannel.SYSTEM_OPEN_EXTERNAL_URL]: {
+    send: OpenExternalUrlParams
+    receive: void
   }
 }
 

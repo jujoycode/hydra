@@ -10,7 +10,7 @@ export class CommonConstant {
    * @desc URL 관련 상수
    */
   static URL = {
-    MAIL_PREFIX: 'https://mail.'
+    MAIL_PREFIX: 'mail.'
   }
 
   /**

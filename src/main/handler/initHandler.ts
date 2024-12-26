@@ -9,6 +9,9 @@ import { VerifyOtpTokenHandler } from './auth/VerifyOtpTokenHandler'
 import { GetSessionHandler } from './auth/GetSessionHandler'
 import { UpdateUserHandler } from './auth/UpdateUserHandler'
 
+/* System Handler */
+import { OpenExternalUrlHandler } from './system/OpenExternalUrlHandler'
+
 export function initHandler() {
   const handler: CoreBaseHandler[] = [
     new DeleteUserHandler(),
@@ -16,7 +19,8 @@ export function initHandler() {
     new SignInWithOtpHandler(),
     new VerifyOtpTokenHandler(),
     new GetSessionHandler(),
-    new UpdateUserHandler()
+    new UpdateUserHandler(),
+    new OpenExternalUrlHandler()
   ]
 
   handler.forEach(({ ipcChannel, handler }) =>
