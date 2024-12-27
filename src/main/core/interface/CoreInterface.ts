@@ -11,6 +11,12 @@ export interface CoreInterface {
   getPrismaClient(): PrismaClient
 }
 
+export enum SUPABASE_CLIENT_TYPE {
+  CLIENT = 'client',
+  AUTH = 'auth',
+  STORAGE = 'storage'
+}
+
 export type SupaAuthClient = SupabaseClient['auth']
 export type SupaStorageClient = SupabaseClient['storage']
 export interface AuthVerifyOtpTokenParams extends VerifyEmailOtpParams {

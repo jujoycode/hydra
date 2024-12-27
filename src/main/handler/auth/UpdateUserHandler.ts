@@ -1,6 +1,6 @@
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { SupabaseLib } from '@lib/SupabaseLib'
-import type { SupaAuthClient, AuthUpdateUserParams } from '@interface/CoreInterface'
+import { SUPABASE_CLIENT_TYPE, type SupaAuthClient, type AuthUpdateUserParams } from '@interface/CoreInterface'
 
 /**
  * 세션을 조회하는 기능을 처리하는 핸들러 클래스입니다
@@ -16,7 +16,7 @@ export class UpdateUserHandler extends CoreBaseHandler {
    */
   constructor() {
     super('authUpdateUser')
-    this.supaAuthClient = new SupabaseLib().getSupabaseAuth()
+    this.supaAuthClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.AUTH)
   }
 
   /**
@@ -27,12 +27,12 @@ export class UpdateUserHandler extends CoreBaseHandler {
    */
   async handler(params: AuthUpdateUserParams): Promise<boolean> {
     const { error } = await this.supaAuthClient.updateUser({
-        data: params.data,
-        phone: params.phone
+      data: params.data,
+      phone: params.phone
     })
 
-    if(error === null) {
-        throw new Error('Failed to update user')
+    if (error === null) {
+      throw new Error('Failed to update user')
     }
 
     return true

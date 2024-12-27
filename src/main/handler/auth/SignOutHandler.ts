@@ -1,6 +1,6 @@
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { SupabaseLib } from '@lib/SupabaseLib'
-import type { AuthSignOutParams, SupaAuthClient } from '@interface/CoreInterface'
+import { SUPABASE_CLIENT_TYPE, type AuthSignOutParams, type SupaAuthClient } from '@interface/CoreInterface'
 
 /**
  * 로그아웃 기능을 처리하는 핸들러 클래스입니다.
@@ -16,7 +16,7 @@ export class SignOutHandler extends CoreBaseHandler {
    */
   constructor() {
     super('authSignOut')
-    this.supaAuthClient = new SupabaseLib().getSupabaseAuth()
+    this.supaAuthClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.AUTH)
   }
 
   /**
@@ -29,7 +29,7 @@ export class SignOutHandler extends CoreBaseHandler {
   async handler(params: AuthSignOutParams): Promise<void> {
     const { error } = await this.supaAuthClient.signOut({ scope: params.scope })
 
-    if(error === null) {
+    if (error === null) {
       throw new Error('Failed to sign out')
     }
   }
