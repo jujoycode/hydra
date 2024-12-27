@@ -3,26 +3,35 @@ import { For } from '@chakra-ui/react'
 import { Button, ButtonProps } from '@components/ui/button'
 
 interface ContentListProps extends ButtonProps {
+  changeRoute?: boolean
+  baseRoute?: string
   itemList: {
-    id: string
+    id?: string
+    icon?: React.ReactNode
     name: string
   }[]
-  changeRoute: boolean
 }
 
-export function ContentList({ itemList, changeRoute, ...ButtonProps }: ContentListProps): JSX.Element {
+export function ContentList({
+  itemList,
+  baseRoute = '',
+  changeRoute = false,
+  ...ButtonProps
+}: ContentListProps): JSX.Element {
   const navigate = useNavigate()
 
-  const navigateItem = (id: string) => {
-    if (changeRoute) {
-      navigate(`/projects/${id}`)
+  const navigateItem = (baseRoute: string, id?: string) => {
+    if (changeRoute && baseRoute) {
+      const route = id ? `${baseRoute}/${id}` : baseRoute
+      navigate(route)
     }
   }
 
   return (
     <For each={itemList}>
       {(item, index) => (
-        <Button key={index} variant='plain' onClick={() => navigateItem(item.id)} {...ButtonProps}>
+        <Button key={index} variant='ghost' onClick={() => navigateItem(baseRoute, item.id)} {...ButtonProps}>
+          {item.icon}
           {item.name}
         </Button>
       )}

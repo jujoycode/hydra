@@ -33,8 +33,14 @@ export const router = createHashRouter([
         ]
       },
       {
-        path: 'setting',
-        element: <SettingPage />
+        path: 'settings',
+        element: <SettingPage />,
+        children: [
+          {
+            path: 'account/:accountId',
+            element: <></>
+          }
+        ]
       }
     ]
   },

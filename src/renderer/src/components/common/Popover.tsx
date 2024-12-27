@@ -12,6 +12,7 @@ interface PopoverProps extends PopoverRootProps {
 
 interface PopoverButtonProps extends ButtonProps {
   label: string
+  sameWidth?: boolean
 }
 
 interface PopoverAvatarProps extends AvatarProps {
@@ -37,7 +38,7 @@ function Popover({ trigger, content, ...PopoverRootProps }: PopoverProps) {
   )
 }
 
-Popover.Button = memo(({ label, children, ...ButtonProps }: PopoverButtonProps) => {
+Popover.Button = memo(({ label, sameWidth = false, children, ...ButtonProps }: PopoverButtonProps) => {
   const [open, setOpen] = useState(false)
 
   const handleOnClickButton = () => {
@@ -45,7 +46,7 @@ Popover.Button = memo(({ label, children, ...ButtonProps }: PopoverButtonProps) 
   }
 
   return (
-    <PopoverRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
+    <PopoverRoot open={open} onOpenChange={(e) => setOpen(e.open)} positioning={{ sameWidth }}>
       <PopoverTrigger asChild>
         <Button variant='plain' {...ButtonProps}>
           {label} <ChevronDown />
@@ -53,7 +54,9 @@ Popover.Button = memo(({ label, children, ...ButtonProps }: PopoverButtonProps) 
       </PopoverTrigger>
       <PopoverContent w='auto'>
         <PopoverArrow />
-        <PopoverBody onClick={handleOnClickButton}>{children}</PopoverBody>
+        <PopoverBody onClick={handleOnClickButton} p={2} display='flex' flexDir='column'>
+          {children}
+        </PopoverBody>
       </PopoverContent>
     </PopoverRoot>
   )
@@ -68,8 +71,14 @@ Popover.Avatar = memo(
     children,
     ...AvatarProps
   }: PopoverAvatarProps & PopoverAvatarAdditionalProps) => {
+    const [open, setOpen] = useState(false)
+
+    const handleOnClickButton = () => {
+      setOpen(false)
+    }
+
     return (
-      <PopoverRoot positioning={{ sameWidth: true }}>
+      <PopoverRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
         <PopoverTrigger>
           <Box
             display='flex'
@@ -94,7 +103,9 @@ Popover.Avatar = memo(
         </PopoverTrigger>
         <PopoverContent w='auto'>
           <PopoverArrow />
-          <PopoverBody>{children}</PopoverBody>
+          <PopoverBody onClick={handleOnClickButton} p={2} display='flex' flexDir='column'>
+            {children}
+          </PopoverBody>
         </PopoverContent>
       </PopoverRoot>
     )
