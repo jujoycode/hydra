@@ -11,11 +11,11 @@ import { SettingPage } from '@pages/SettingPage'
 export const router = createHashRouter([
   {
     path: '/',
-    // loader: authLoader,
+    loader: authLoader,
     element: (
-      // <AuthGuard>
-      <AppLayout />
-      // </AuthGuard>
+      <AuthGuard>
+        <AppLayout />
+      </AuthGuard>
     ),
     children: [
       {

@@ -30,7 +30,7 @@ export function Profile(): JSX.Element {
       <Divider />
 
       <Button variant='ghost' size='sm' mt={2} fontWeight='light'>
-        <LogOut strokeWidth={1.5} />
+        <LogOut />
         Logout
       </Button>
     </Popover.Avatar>
