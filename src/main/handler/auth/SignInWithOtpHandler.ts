@@ -1,6 +1,11 @@
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { SupabaseLib } from '@lib/SupabaseLib'
-import type { AuthOtpResponse, AuthSignInWithOtpParams, SupaAuthClient } from '@interface/CoreInterface'
+import {
+  SUPABASE_CLIENT_TYPE,
+  type AuthOtpResponse,
+  type AuthSignInWithOtpParams,
+  type SupaAuthClient
+} from '@interface/CoreInterface'
 
 /**
  * OTP(일회용 비밀번호)를 사용한 로그인 기능을 처리합니다
@@ -15,7 +20,7 @@ export class SignInWithOtpHandler extends CoreBaseHandler {
    */
   constructor() {
     super('authSignInWithOtp')
-    this.supaAuthClient = new SupabaseLib().getSupabaseAuth()
+    this.supaAuthClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.AUTH)
   }
 
   /**
@@ -25,11 +30,12 @@ export class SignInWithOtpHandler extends CoreBaseHandler {
    * @throws {Error} 이메일이 비어있거나 null인 경우 에러 발생
    */
   private validateEmailFormat(email: string): boolean {
-    if(!email) {
-        throw new Error('Email is required')
+    if (!email) {
+      throw new Error('Email is required')
     }
 
-    const emailRegex: RegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+    const emailRegex: RegExp =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
     return emailRegex.test(email)
   }
 
@@ -40,23 +46,23 @@ export class SignInWithOtpHandler extends CoreBaseHandler {
    */
   async handler(params: AuthSignInWithOtpParams): Promise<AuthOtpResponse> {
     // 1. Email Format Check
-    if(this.validateEmailFormat(params.email)) {
-        // 2. Sign In With OTP
-        const { data, error } = await this.supaAuthClient.signInWithOtp({
-            email: params.email,
-            options: { shouldCreateUser: true }
-        })
-    
-        if(error !== null) {
-            throw error
-        }
+    if (this.validateEmailFormat(params.email)) {
+      // 2. Sign In With OTP
+      const { data, error } = await this.supaAuthClient.signInWithOtp({
+        email: params.email,
+        options: { shouldCreateUser: true }
+      })
 
-        return {
-          data,
-          error
-        }
+      if (error !== null) {
+        throw error
+      }
+
+      return {
+        data,
+        error
+      }
     } else {
-        throw new Error('Invalid email format')
+      throw new Error('Invalid email format')
     }
   }
 }

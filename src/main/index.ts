@@ -4,6 +4,10 @@ import { CoreConstant } from '@constant/CoreConstant'
 import { CoreUtil } from '@util/CoreUtil'
 import { initHandler } from '@handler/initHandler'
 
+function simpleLog(message: string) {
+  console.log(`[\x1b[38;2;128;0;32mSYSTEM\x1b[0m] [${new Date().toISOString()}] ${message}`)
+}
+
 function createWindow() {
   const coreUtil = new CoreUtil()
 
@@ -38,6 +42,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
+  const startTime = performance.now()
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -47,13 +52,19 @@ app.whenReady().then(() => {
   })
 
   initHandler()
+
+  const windowCreationStart = performance.now()
   createWindow()
+  simpleLog(`Window Creation: ${performance.now() - windowCreationStart}ms`)
 
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
+  simpleLog(`Total Initialization: ${performance.now() - startTime}ms`)
+  simpleLog(`App Ready`)
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

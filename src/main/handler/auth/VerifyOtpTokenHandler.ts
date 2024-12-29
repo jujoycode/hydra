@@ -1,6 +1,11 @@
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { SupabaseLib } from '@lib/SupabaseLib'
-import type { AuthResponse, AuthVerifyOtpTokenParams, SupaAuthClient } from '@interface/CoreInterface'
+import {
+  SUPABASE_CLIENT_TYPE,
+  type AuthResponse,
+  type AuthVerifyOtpTokenParams,
+  type SupaAuthClient
+} from '@interface/CoreInterface'
 
 /**
  * OTP(일회용 비밀번호)를 사용한 로그인 기능을 처리하는 핸들러 클래스
@@ -16,7 +21,7 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
    */
   constructor() {
     super('authVerifyOtpToken')
-    this.supaAuthClient = new SupabaseLib().getSupabaseAuth()
+    this.supaAuthClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.AUTH)
   }
 
   /**
