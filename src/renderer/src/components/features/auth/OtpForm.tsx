@@ -6,7 +6,7 @@ import { useSignInStore, SignInProcess } from '@stores/SignInStore'
 import { Box, Text, Link } from '@chakra-ui/react'
 import { PinInput } from '@components/ui/pin-input'
 import { IpcChannel, AuthError } from '@interface/CoreInterface'
-import { getEmptyArray } from '@utils/CommonUtil'
+import { getEmptyArray } from '@utils/commonUtil'
 import { CommonConstant } from '@constants/CommonConstant'
 
 export function OtpForm() {

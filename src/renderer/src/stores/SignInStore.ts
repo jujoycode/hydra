@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { createSelectors } from '@utils/zustand'
-import { getEmptyArray } from '@utils/CommonUtil'
+import { getEmptyArray } from '@utils/commonUtil'
 
 export enum SignInProcess {
   WELCOME = 'welcome',

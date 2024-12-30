@@ -1,7 +1,7 @@
 'use client'
 
 import { SignInProcess, useSignInStore } from '@stores/SignInStore'
-import { isEmpty } from '@utils/CommonUtil'
+import { isEmpty } from '@utils/commonUtil'
 import { Input, Text } from '@chakra-ui/react'
 import { InputGroup } from '@components/ui/input-group'
 import { Button } from '@components/ui/button'
