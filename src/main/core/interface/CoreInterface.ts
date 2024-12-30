@@ -24,6 +24,7 @@ export type User = {
   email: string | null
   created_at: Date | null
   updated_at: Date | null
+  avatar_key: string | null
 }
 
 export interface CoreInterface {
