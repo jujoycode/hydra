@@ -7,7 +7,8 @@ export enum SignInProcess {
   REQUEST = 'request',
   RESEND = 'resend',
   OTP_WAIT = 'otpWait',
-  FAILED = 'failed'
+  FAILED = 'failed',
+  SUCCESS = 'success'
 }
 
 interface SignInStore {

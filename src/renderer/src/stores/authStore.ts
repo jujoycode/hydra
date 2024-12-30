@@ -55,7 +55,10 @@ export const initializeSession = () => {
   const storageSession = localStorage.getItem('session')
 
   if (storageSession) {
-    useAuthStore().actions.setSessions(JSON.parse(storageSession))
+    // * [2024.12.30] useAuthStore().actions.setSessions 같은 접근은 react hooks 사용으로 취급되어 수정
+    const { actions } = useAuthStoreBase.getState()
+    actions.setSessions(JSON.parse(storageSession))
+
     return true
   }
 

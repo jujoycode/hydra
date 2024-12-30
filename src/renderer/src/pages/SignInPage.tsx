@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useSignInStore, SignInProcess } from '@stores/SignInStore'
+import { useNavigate } from 'react-router-dom'
+import { useSignInStore, SignInProcess } from '@stores/signInStore'
 import { Center, Box, Text } from '@chakra-ui/react'
 import { toaster } from '@components/ui/toaster'
 import { WelcomeForm } from '@components/features/auth/WelcomForm'
@@ -10,10 +11,13 @@ import { AuthError, IpcChannel } from '@interface/CoreInterface'
 
 export function SignInPage() {
   const { mail, signInProcess, processError, actions } = useSignInStore()
+  const navigation = useNavigate()
 
   useEffect(() => {
     if (signInProcess === SignInProcess.REQUEST) signInRequest()
     if (signInProcess === SignInProcess.RESEND) signInRequest()
+
+    if (signInProcess === SignInProcess.SUCCESS) navigation('/', { replace: true })
 
     if (processError !== null) verifyFailed()
   }, [signInProcess, processError])

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useAuthStore } from '@stores/authStore'
-import { useSignInStore, SignInProcess } from '@stores/SignInStore'
+import { useSignInStore, SignInProcess } from '@stores/signInStore'
 import { Box, Text, Link } from '@chakra-ui/react'
 import { PinInput } from '@components/ui/pin-input'
 import { IpcChannel, AuthError } from '@interface/CoreInterface'
@@ -21,7 +21,7 @@ export function OtpForm() {
 
   /**
    * verifyOtpToken
-   * @desc main 프로세스로 OTP 인증 요청, 확인 대기
+   * @desc main 프로세스로 OTP 인증 요청, 확인 후 성공 응답
    */
   const verifyOtpToken = async () => {
     try {
@@ -35,8 +35,8 @@ export function OtpForm() {
       // 2. 유저 정보 및 세션을 전역 객체로 세팅
       setSessions(data.session!)
 
-      // 3. Storage 저장
-      localStorage.setItem('session', JSON.stringify(data.session))
+      // 3. 상태를 성공으로 변경
+      actions.setSignInProcess(SignInProcess.SUCCESS)
 
       return
     } catch (error) {
