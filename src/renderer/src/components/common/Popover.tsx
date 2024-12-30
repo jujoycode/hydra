@@ -56,7 +56,10 @@ function Popover({ direction = 'start', arrow = false, trigger, content }: Popov
         _hover={{ bg: 'gray.100' }}
         onClick={() => {
           // onClick 함수가 존재하고, 함수가 성공하면 onToggle 함수 실행
-          onClick && onClick() && onToggle()
+          if (onClick) {
+            onClick()
+            onToggle()
+          }
         }}
       >
         <Flex alignItems='center' justifyContent='space-between'>

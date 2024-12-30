@@ -10,7 +10,7 @@ import { getEmptyArray } from '@utils/commonUtil'
 import { CommonConstant } from '@constants/CommonConstant'
 
 export function OtpForm() {
-  const { setSessions } = useAuthStore().actions
+  const { setSessions, setUser } = useAuthStore().actions
   const { mail, otpToken, actions } = useSignInStore()
 
   useEffect(() => {
@@ -32,8 +32,11 @@ export function OtpForm() {
         type: CommonConstant.TYPE.MAIL
       })
 
-      // 2. 유저 정보 및 세션을 전역 객체로 세팅
-      setSessions(data.session!)
+      console.log(data)
+
+      // 2. 세션 및 유저 정보를 전역 객체로 세팅
+      setSessions(data.session)
+      setUser(data.user)
 
       // 3. 상태를 성공으로 변경
       actions.setSignInProcess(SignInProcess.SUCCESS)

@@ -19,7 +19,7 @@ export function Profile(): JSX.Element {
     <Box display='flex' flexDir='row' alignItems='center' gap={2} p={2} borderRadius='md' _hover={{ bg: 'gray.100' }}>
       <Avatar variant='outline' size='xs' cursor='pointer' shape='rounded' />
       <Flex direction='column' align='flex-start'>
-        <Text fontSize='sm'>{user?.user_metadata?.name}</Text>
+        <Text fontSize='sm'>{user?.name}</Text>
         <Text fontSize='xs' color='gray.500'>
           {user?.email}
         </Text>

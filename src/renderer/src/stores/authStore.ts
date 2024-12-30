@@ -16,31 +16,34 @@ interface AuthAction {
 
 const useAuthStoreBase = create<AuthStore>((set) => ({
   session: null,
-  user: {
-    id: 'ccf48b1e-a5f9-4ad0-b97b-d6390d4fe307',
-    email: 'jh.b.ryu@gmail.com',
-    user_metadata: {
-      name: '유주형'
-    }
-  } as unknown as User,
+  user: null,
 
   actions: {
     setSessions: (session) => {
       set({ session })
+
       if (session) {
         localStorage.setItem('session', JSON.stringify(session))
-        set({ user: session.user })
       } else {
         localStorage.removeItem('session')
-        set({ user: null })
       }
     },
 
-    setUser: (user) => set({ user }),
+    setUser: (user) => {
+      set({ user })
+
+      if (user) {
+        localStorage.setItem('user', JSON.stringify(user))
+      } else {
+        localStorage.removeItem('user')
+      }
+    },
 
     clearAuth: () => {
       set({ session: null, user: null })
+
       localStorage.removeItem('session')
+      localStorage.removeItem('user')
     }
   }
 }))
@@ -53,11 +56,14 @@ export const useAuthStore = createSelectors(useAuthStoreBase)
  */
 export const initializeSession = () => {
   const storageSession = localStorage.getItem('session')
+  const storageUser = localStorage.getItem('user')
 
-  if (storageSession) {
+  if (storageSession && storageUser) {
     // * [2024.12.30] useAuthStore().actions.setSessions 같은 접근은 react hooks 사용으로 취급되어 수정
     const { actions } = useAuthStoreBase.getState()
+
     actions.setSessions(JSON.parse(storageSession))
+    actions.setUser(JSON.parse(storageUser))
 
     return true
   }
