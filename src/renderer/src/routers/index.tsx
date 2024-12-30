@@ -3,10 +3,11 @@ import { authLoader } from './loaders/authLoader'
 import { AuthGuard } from './guards/AuthGuard'
 import { AppLayout } from '@layouts/AppLayout'
 import { ProjectLayout } from '@layouts/ProjectLayout'
+import { SettingLayout } from '@layouts/SettingLayout'
 import { HomePage } from '@pages/HomePage'
 import { ProjectPage } from '@pages/ProjectPage'
 import { SignInPage } from '@pages/SignInPage'
-import { SettingPage } from '@pages/SettingPage'
+import { AccountSettingPage } from '@pages/AccountSettingPage'
 
 export const router = createHashRouter([
   {
@@ -34,11 +35,11 @@ export const router = createHashRouter([
       },
       {
         path: 'settings',
-        element: <SettingPage />,
+        element: <SettingLayout />,
         children: [
           {
             path: 'account/:accountId',
-            element: <></>
+            element: <AccountSettingPage />
           }
         ]
       }

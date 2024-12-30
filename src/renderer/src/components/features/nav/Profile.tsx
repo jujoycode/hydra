@@ -19,7 +19,9 @@ export function Profile(): JSX.Element {
     <Box display='flex' flexDir='row' alignItems='center' gap={2} p={2} borderRadius='md' _hover={{ bg: 'gray.100' }}>
       <Avatar variant='outline' size='xs' cursor='pointer' shape='rounded' />
       <Flex direction='column' align='flex-start'>
-        <Text fontSize='sm'>{user?.name}</Text>
+        <Text fontSize='sm' truncate>
+          {user?.name ? user?.name : user?.id}
+        </Text>
         <Text fontSize='xs' color='gray.500'>
           {user?.email}
         </Text>
@@ -43,7 +45,7 @@ export function Profile(): JSX.Element {
   const footer = [
     {
       label: 'Log Out',
-      component: <LogOut size={18} strokeWidth={1.5} />
+      component: <LogOut size={16} strokeWidth={1.5} />
     }
   ]
 

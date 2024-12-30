@@ -58,7 +58,8 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
           name: user.user_name,
           email: user.user_email,
           created_at: user.user_created_at,
-          updated_at: user.user_updated_at
+          updated_at: user.user_updated_at,
+          avatar_key: user.user_avatar_key
         }
       },
       error

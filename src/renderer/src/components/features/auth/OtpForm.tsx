@@ -32,8 +32,6 @@ export function OtpForm() {
         type: CommonConstant.TYPE.MAIL
       })
 
-      console.log(data)
-
       // 2. 세션 및 유저 정보를 전역 객체로 세팅
       setSessions(data.session)
       setUser(data.user)
