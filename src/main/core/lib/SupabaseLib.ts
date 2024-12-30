@@ -15,7 +15,7 @@ export class SupabaseLib extends CoreBase {
   }
 
   /**
-   * getInstance
+   * getClient
    * @pattern Singleton
    * @desc Supabase Instance 생성 후 요청한 클라이언트를 반환합니다
    */
@@ -32,10 +32,10 @@ export class SupabaseLib extends CoreBase {
         return SupabaseLib.instance.supa
       }
       case 'auth': {
-        return SupabaseLib.instance.getSupabaseAuth()
+        return SupabaseLib.instance.supa.auth
       }
       case 'storage': {
-        return SupabaseLib.instance.getSupabaseStorage()
+        return SupabaseLib.instance.supa.storage
       }
     }
   }
@@ -51,21 +51,5 @@ export class SupabaseLib extends CoreBase {
       this.logError('Failed to create Supabase client')
       throw error
     }
-  }
-
-  /**
-   * getSupabaseAuth
-   * @desc
-   */
-  public getSupabaseAuth(): SupaAuthClient {
-    return this.supa.auth
-  }
-
-  /**
-   * getSupabaseStorage
-   * @desc
-   */
-  public getSupabaseStorage(): SupaStorageClient {
-    return this.supa.storage
   }
 }

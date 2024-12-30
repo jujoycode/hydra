@@ -9,28 +9,24 @@ interface MenuContentProps extends ChakraMenu.ContentProps {
   portalRef?: React.RefObject<HTMLElement>
 }
 
-export const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(
-  function MenuContent(props, ref) {
-    const { portalled = true, portalRef, ...rest } = props
-    return (
-      <Portal disabled={!portalled} container={portalRef}>
-        <ChakraMenu.Positioner>
-          <ChakraMenu.Content ref={ref} {...rest} />
-        </ChakraMenu.Positioner>
-      </Portal>
-    )
-  }
-)
+export const MenuContent = React.forwardRef<HTMLDivElement, MenuContentProps>(function MenuContent(props, ref) {
+  const { portalled = true, portalRef, ...rest } = props
+  return (
+    <Portal disabled={!portalled} container={portalRef}>
+      <ChakraMenu.Positioner>
+        <ChakraMenu.Content ref={ref} {...rest} />
+      </ChakraMenu.Positioner>
+    </Portal>
+  )
+})
 
-export const MenuArrow = React.forwardRef<HTMLDivElement, ChakraMenu.ArrowProps>(
-  function MenuArrow(props, ref) {
-    return (
-      <ChakraMenu.Arrow ref={ref} {...props}>
-        <ChakraMenu.ArrowTip />
-      </ChakraMenu.Arrow>
-    )
-  }
-)
+export const MenuArrow = React.forwardRef<HTMLDivElement, ChakraMenu.ArrowProps>(function MenuArrow(props, ref) {
+  return (
+    <ChakraMenu.Arrow ref={ref} {...props}>
+      <ChakraMenu.ArrowTip />
+    </ChakraMenu.Arrow>
+  )
+})
 
 export const MenuCheckboxItem = React.forwardRef<HTMLDivElement, ChakraMenu.CheckboxItemProps>(
   function MenuCheckboxItem(props, ref) {

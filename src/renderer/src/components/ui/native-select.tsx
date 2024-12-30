@@ -34,8 +34,7 @@ export const NativeSelectField = React.forwardRef<HTMLSelectElement, NativeSelec
     const { items: itemsProp, children, ...rest } = props
 
     const items = React.useMemo(
-      () =>
-        itemsProp?.map((item) => (typeof item === 'string' ? { label: item, value: item } : item)),
+      () => itemsProp?.map((item) => (typeof item === 'string' ? { label: item, value: item } : item)),
       [itemsProp]
     )
 

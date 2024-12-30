@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { useAuthStore } from '@stores/AuthStore'
+import { useAuthStore } from '@stores/authStore'
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { session } = useAuthStore()

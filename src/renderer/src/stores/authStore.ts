@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { useShallow } from 'zustand/shallow'
 import { createSelectors } from '@utils/zustand'
 import type { Session, User } from '@interface/CoreInterface'
 
@@ -46,7 +45,6 @@ const useAuthStoreBase = create<AuthStore>((set) => ({
 }))
 
 export const useAuthStore = createSelectors(useAuthStoreBase)
-export const useAuthState = () => useAuthStore(useShallow((state) => [state.session, state.user]))
 
 /**
  * initializeSession
