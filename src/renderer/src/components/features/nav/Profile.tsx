@@ -1,38 +1,51 @@
-import { Stack } from '@chakra-ui/react'
-import { useAuthStore } from '@stores/AuthStore'
-import { Divider } from '@components/ui/divider'
-import { Button } from '@components/ui/button'
+import { useNavigate } from 'react-router-dom'
+import { useAuthStore } from '@stores/authStore'
+import { Flex, Box, Text } from '@chakra-ui/react'
+import { Avatar } from '@components/ui/avatar'
 import { Popover } from '@components/common/Popover'
-import { ContentList } from '@components/features/nav/ContentList'
-import { LogOut, Settings, UserRound } from 'lucide-react'
+import { ColorModeButton } from '@components/ui/color-mode'
+import { ChevronsUpDown, LogOut, UserRoundCog } from 'lucide-react'
 
 export function Profile(): JSX.Element {
   const { user } = useAuthStore()
+  const navigate = useNavigate()
 
-  const settingItem = [
+  const handleAccountSettings = () => {
+    if (!user?.id) return
+    navigate(`/settings/account/${user?.id}`)
+  }
+
+  const ProfileBox = (
+    <Box display='flex' flexDir='row' alignItems='center' gap={2} p={2} borderRadius='md' _hover={{ bg: 'gray.100' }}>
+      <Avatar variant='outline' size='xs' cursor='pointer' shape='rounded' />
+      <Flex direction='column' align='flex-start'>
+        <Text fontSize='sm'>{user?.user_metadata?.name}</Text>
+        <Text fontSize='xs' color='gray.500'>
+          {user?.email}
+        </Text>
+      </Flex>
+      <ChevronsUpDown size={12} />
+    </Box>
+  )
+
+  const main = [
     {
-      name: 'Settings',
-      icon: <Settings strokeWidth={1.5} />
+      label: 'Account Settings',
+      component: <UserRoundCog size={18} strokeWidth={1.5} />,
+      onClick: handleAccountSettings
     },
     {
-      id: 'account',
-      name: 'Account',
-      icon: <UserRound strokeWidth={1.5} />
+      label: 'Theme',
+      component: <ColorModeButton />
     }
   ]
 
-  return (
-    <Popover.Avatar shape='rounded' mode='extends' title={user?.user_metadata?.name} description={user?.email}>
-      <Stack gap={2} mb={2}>
-        <ContentList itemList={settingItem} baseRoute='/settings' changeRoute />
-      </Stack>
+  const footer = [
+    {
+      label: 'Log Out',
+      component: <LogOut size={18} strokeWidth={1.5} />
+    }
+  ]
 
-      <Divider />
-
-      <Button variant='ghost' size='sm' mt={2} fontWeight='light'>
-        <LogOut />
-        Logout
-      </Button>
-    </Popover.Avatar>
-  )
+  return <Popover trigger={ProfileBox} content={{ main, footer }} />
 }

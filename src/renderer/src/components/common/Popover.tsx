@@ -1,115 +1,99 @@
-import { memo, useState } from 'react'
-import { Box, Flex, Text, type PopoverRootProps } from '@chakra-ui/react'
-import { PopoverRoot, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody } from '@components/ui/popover'
-import { Avatar, AvatarProps } from '@components/ui/avatar'
-import { Button, ButtonProps } from '@components/ui/button'
-import { ChevronDown, ChevronsUpDown } from 'lucide-react'
+import { memo } from 'react'
+import { Flex, Container, For, Stack, Text, Box, useDisclosure } from '@chakra-ui/react'
+import { PopoverRoot, PopoverTrigger, PopoverArrow, PopoverBody, PopoverContent } from '@components/ui/popover'
+import { Divider } from '@components/ui/divider'
 
-interface PopoverProps extends PopoverRootProps {
+interface PopoverProps {
+  /**
+   * direction
+   * @desc Popover 표출 방향
+   * @default 'right-end'
+   */
+  direction?: 'start' | 'end'
+
+  /**
+   * arrow
+   * @desc Popover 화살표 표출 여부
+   * @default false
+   */
+  arrow?: boolean
+
+  /**
+   * trigger
+   * @type React.ReactNode
+   */
   trigger: React.ReactNode
-  content: React.ReactNode
-}
 
-interface PopoverButtonProps extends ButtonProps {
-  label: string
-  sameWidth?: boolean
-}
+  /**
+   * items
+   * @desc Popover 메뉴 목록
+   */
+  content: {
+    main: {
+      label?: string
+      component?: React.ReactNode
+      onClick?: () => void
+    }[]
 
-interface PopoverAvatarProps extends AvatarProps {
-  children: React.ReactNode
-}
-
-interface PopoverAvatarAdditionalProps {
-  mode?: 'plain' | 'extends'
-  title?: string
-  description?: string
-  showIcon?: boolean
-}
-
-function Popover({ trigger, content, ...PopoverRootProps }: PopoverProps) {
-  return (
-    <PopoverRoot {...PopoverRootProps}>
-      <PopoverTrigger>{trigger}</PopoverTrigger>
-      <PopoverContent w='auto'>
-        <PopoverArrow />
-        <PopoverBody>{content}</PopoverBody>
-      </PopoverContent>
-    </PopoverRoot>
-  )
-}
-
-Popover.Button = memo(({ label, sameWidth = false, children, ...ButtonProps }: PopoverButtonProps) => {
-  const [open, setOpen] = useState(false)
-
-  const handleOnClickButton = () => {
-    setOpen(false)
+    footer?: {
+      label?: string
+      component?: React.ReactNode
+      onClick?: () => void
+    }[]
   }
+}
+
+function Popover({ direction = 'start', arrow = false, trigger, content }: PopoverProps) {
+  const { open, onToggle } = useDisclosure()
+
+  const ContentItem = memo(
+    ({ label, component, onClick }: { label?: string; component?: React.ReactNode; onClick?: () => void }) => (
+      <Container
+        m={0}
+        p={2}
+        borderRadius={6}
+        cursor='pointer'
+        _hover={{ bg: 'gray.100' }}
+        onClick={() => {
+          // onClick 함수가 존재하고, 함수가 성공하면 onToggle 함수 실행
+          onClick && onClick() && onToggle()
+        }}
+      >
+        <Flex alignItems='center' justifyContent='space-between'>
+          <Text fontSize='xs' fontWeight='light'>
+            {label}
+          </Text>
+          <Box w={6} display='flex' alignItems='center' justifyContent='center'>
+            {component}
+          </Box>
+        </Flex>
+      </Container>
+    )
+  )
 
   return (
-    <PopoverRoot open={open} onOpenChange={(e) => setOpen(e.open)} positioning={{ sameWidth }}>
-      <PopoverTrigger asChild>
-        <Button variant='plain' {...ButtonProps}>
-          {label} <ChevronDown />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent w='auto'>
-        <PopoverArrow />
-        <PopoverBody onClick={handleOnClickButton} p={2} display='flex' flexDir='column'>
-          {children}
+    <PopoverRoot open={open} onOpenChange={onToggle} positioning={{ placement: `bottom-${direction}` }}>
+      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+      <PopoverContent w='60'>
+        {arrow && <PopoverArrow />}
+
+        <PopoverBody asChild>
+          {/* Main */}
+          <Stack p={2}>
+            <For each={content.main}>{(item, index) => <ContentItem key={index} {...item} />}</For>
+
+            {/* Footer */}
+            {content.footer && (
+              <>
+                <Divider />
+                <For each={content.footer}>{(item, index) => <ContentItem key={index} {...item} />}</For>
+              </>
+            )}
+          </Stack>
         </PopoverBody>
       </PopoverContent>
     </PopoverRoot>
   )
-})
-
-Popover.Avatar = memo(
-  ({
-    mode = 'plain',
-    showIcon = false,
-    title,
-    description,
-    children,
-    ...AvatarProps
-  }: PopoverAvatarProps & PopoverAvatarAdditionalProps) => {
-    const [open, setOpen] = useState(false)
-
-    const handleOnClickButton = () => {
-      setOpen(false)
-    }
-
-    return (
-      <PopoverRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
-        <PopoverTrigger>
-          <Box
-            display='flex'
-            flexDir='row'
-            alignItems='center'
-            gap={2}
-            p={2}
-            borderRadius='md'
-            _hover={{ bg: 'gray.100' }}
-          >
-            <Avatar variant='outline' size='xs' cursor='pointer' {...AvatarProps} />
-            {mode === 'extends' && (
-              <Flex direction='column' align='flex-start'>
-                <Text fontSize='sm'>{title}</Text>
-                <Text fontSize='xs' color='gray.500'>
-                  {description}
-                </Text>
-              </Flex>
-            )}
-            <ChevronsUpDown size={12} />
-          </Box>
-        </PopoverTrigger>
-        <PopoverContent w='auto'>
-          <PopoverArrow />
-          <PopoverBody onClick={handleOnClickButton} p={2} display='flex' flexDir='column'>
-            {children}
-          </PopoverBody>
-        </PopoverContent>
-      </PopoverRoot>
-    )
-  }
-)
+}
 
 export { Popover }

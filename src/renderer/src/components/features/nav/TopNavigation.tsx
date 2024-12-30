@@ -1,12 +1,11 @@
 'use client'
 
 import { useNavigate } from 'react-router-dom'
-import { Box, Flex, HStack, Stack, Button, Text } from '@chakra-ui/react'
+import { Box, Flex, HStack, Text } from '@chakra-ui/react'
+import { Button } from '@components/ui/button'
 import { Popover } from '@components/common/Popover'
-import { ContentList } from '@components/features/nav/ContentList'
-import { ColorModeButton } from '@components/ui/color-mode'
-import { Divider } from '@components/ui/divider'
 import { Profile } from '@components/features/nav/Profile'
+import { ChevronDown, UserRoundPlus } from 'lucide-react'
 
 export function TopNavigation(): JSX.Element {
   const navigate = useNavigate()
@@ -14,41 +13,36 @@ export function TopNavigation(): JSX.Element {
   // TEST: 추후 DB 조회로 변경
   const projectList = [
     {
-      id: '1',
-      name: 'Project 1'
+      label: 'Project 1'
     },
     {
-      id: '2',
-      name: 'Project 2'
+      label: 'Project 2'
     }
   ]
 
   const ProjectPopoverButton = () => {
     return (
-      <Popover.Button label='Projects'>
-        <Stack gap={2} mb={2}>
-          <ContentList itemList={projectList} baseRoute='/projects' changeRoute />
-        </Stack>
-
-        <Divider />
-
-        <Button variant='ghost' size='xs' mt={2}>
-          view all projects
-        </Button>
-        <Button variant='ghost' size='xs' mt={2}>
-          create new project
-        </Button>
-      </Popover.Button>
+      <Popover
+        trigger={
+          <Button variant='plain'>
+            Projects <ChevronDown />
+          </Button>
+        }
+        content={{ main: projectList, footer: [{ label: 'view all projects' }] }}
+      />
     )
   }
 
   const MemberPopoverButton = () => {
     return (
-      <Popover.Button label='Members'>
-        <Button variant='ghost' size='xs' mt={2}>
-          invite
-        </Button>
-      </Popover.Button>
+      <Popover
+        trigger={
+          <Button variant='plain'>
+            Members <ChevronDown />
+          </Button>
+        }
+        content={{ main: [{ label: 'invite', component: <UserRoundPlus size={18} strokeWidth={1.5} /> }] }}
+      />
     )
   }
 
@@ -72,7 +66,6 @@ export function TopNavigation(): JSX.Element {
 
         <HStack>
           <Profile />
-          <ColorModeButton />
         </HStack>
       </Flex>
     </Box>

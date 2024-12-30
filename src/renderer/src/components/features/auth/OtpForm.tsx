@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useAuthStore } from '@stores/AuthStore'
+import { useAuthStore } from '@stores/authStore'
 import { useSignInStore, SignInProcess } from '@stores/SignInStore'
 import { Box, Text, Link } from '@chakra-ui/react'
 import { PinInput } from '@components/ui/pin-input'
