@@ -9,6 +9,8 @@ export class CoreDataBase extends CoreBase implements CoreInterface {
   private constructor() {
     super()
     this.prismaClient = new PrismaLib().getPrismaClient()
+
+    this.logInfo('init instance')
   }
 
   public static getInstance(): CoreDataBase {

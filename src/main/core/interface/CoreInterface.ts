@@ -1,13 +1,30 @@
-import type {
-  SupabaseClient,
-  VerifyEmailOtpParams,
-  AuthResponse,
-  AuthOtpResponse,
-  User,
-  Session,
-  AuthError
-} from '@supabase/supabase-js'
+import type { SupabaseClient, VerifyEmailOtpParams, AuthOtpResponse, Session, AuthError } from '@supabase/supabase-js'
 import type { PrismaClient, issues, projects, users, users_projects_link } from '@prisma/client'
+
+export type {
+  // Client
+  SupabaseClient as SupaClient,
+  PrismaClient,
+  // Session
+  Session,
+  // API Response
+  AuthOtpResponse,
+  // Error
+  AuthError,
+  // DB Table
+  users,
+  issues,
+  projects,
+  users_projects_link
+}
+
+export type User = {
+  id: string
+  name: string | null
+  email: string | null
+  created_at: Date | null
+  updated_at: Date | null
+}
 
 export interface CoreInterface {
   getPrismaClient(): PrismaClient
@@ -25,19 +42,21 @@ export interface AuthVerifyOtpTokenParams extends VerifyEmailOtpParams {
   type: 'email'
 }
 
-export type {
-  SupabaseClient as SupaClient,
-  PrismaClient,
-  issues,
-  projects,
-  User,
-  users,
-  users_projects_link,
-  AuthOtpResponse,
-  AuthResponse,
-  AuthError,
-  Session
-}
+export type AuthVerifyOtpTokenResponse =
+  | {
+      data: {
+        user: User | null
+        session: Session | null
+      }
+      error: null
+    }
+  | {
+      data: {
+        user: null
+        session: null
+      }
+      error: AuthError
+    }
 
 export interface AuthSignInWithOtpParams {
   email: string
@@ -94,7 +113,7 @@ export interface IpcPayloads extends BaseIpcPayloads {
   }
   [IpcChannel.AUTH_VERIFY_OTP_TOKEN]: {
     send: AuthVerifyOtpTokenParams
-    receive: AuthResponse
+    receive: AuthVerifyOtpTokenResponse
   }
   [IpcChannel.AUTH_GET_SESSION]: {
     send: undefined
