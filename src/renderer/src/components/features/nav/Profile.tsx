@@ -7,7 +7,7 @@ import { ColorModeButton } from '@components/ui/color-mode'
 import { ChevronsUpDown, LogOut, UserRoundCog } from 'lucide-react'
 
 export function Profile(): JSX.Element {
-  const { user } = useAuthStore()
+  const { user, actions } = useAuthStore()
   const navigate = useNavigate()
 
   const handleAccountSettings = () => {
@@ -45,7 +45,8 @@ export function Profile(): JSX.Element {
   const footer = [
     {
       label: 'Log Out',
-      component: <LogOut size={16} strokeWidth={1.5} />
+      component: <LogOut size={16} strokeWidth={1.5} />,
+      onClick: () => actions.clearAuth()
     }
   ]
 

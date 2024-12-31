@@ -89,8 +89,8 @@ export enum IpcChannel {
   // AUTH-
   AUTH_SIGN_IN_WITH_OTP = 'authSignInWithOtp',
   AUTH_VERIFY_OTP_TOKEN = 'authVerifyOtpToken',
+  AUTH_SIGN_OUT = 'authSignOut',
   AUTH_GET_SESSION = 'authGetSession',
-
   // SYSTEM-
   SYSTEM_OPEN_EXTERNAL_URL = 'systemOpenExternalUrl'
 }
@@ -115,6 +115,10 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.AUTH_VERIFY_OTP_TOKEN]: {
     send: AuthVerifyOtpTokenParams
     receive: AuthVerifyOtpTokenResponse
+  }
+  [IpcChannel.AUTH_SIGN_OUT]: {
+    send: AuthSignOutParams
+    receive: void
   }
   [IpcChannel.AUTH_GET_SESSION]: {
     send: undefined

@@ -40,7 +40,7 @@ export const useSignInStoreBase = create<SignInStore>((set) => ({
     setSignInProcess: (process) => set({ signInProcess: process }),
     setProcessError: (error) => set({ processError: error }),
     resetSignIn: () =>
-      set({ mail: '', otpToken: ['', '', '', '', '', ''], signInProcess: SignInProcess.WELCOME, processError: null })
+      set({ mail: '', otpToken: getEmptyArray(6), signInProcess: SignInProcess.WELCOME, processError: null })
   }
 }))
 
