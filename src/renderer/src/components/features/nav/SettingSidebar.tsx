@@ -5,7 +5,7 @@ import { For, Stack, Text } from '@chakra-ui/react'
 export function SettingSidebar() {
   const selectedStyle = { bg: 'gray.100' }
 
-  const items = ['General']
+  const items = ['Profile']
 
   return (
     <Stack w='full'>

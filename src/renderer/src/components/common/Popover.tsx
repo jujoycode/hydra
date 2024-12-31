@@ -63,7 +63,7 @@ function Popover({ direction = 'start', arrow = false, trigger, content }: Popov
         }}
       >
         <Flex alignItems='center' justifyContent='space-between'>
-          <Text fontSize='xs' fontWeight='light'>
+          <Text fontSize='xs' fontWeight='medium'>
             {label}
           </Text>
           <Box w={6} display='flex' alignItems='center' justifyContent='center'>
