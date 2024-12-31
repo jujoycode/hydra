@@ -55,7 +55,7 @@ app.whenReady().then(() => {
 
   const windowCreationStart = performance.now()
   createWindow()
-  simpleLog(`Window Creation: ${performance.now() - windowCreationStart}ms`)
+  simpleLog(`Window Creation: ${Math.round(performance.now() - windowCreationStart)}ms`)
 
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
@@ -63,7 +63,7 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
-  simpleLog(`Total Initialization: ${performance.now() - startTime}ms`)
+  simpleLog(`Total Initialization: ${Math.round(performance.now() - startTime)}ms`)
   simpleLog(`App Ready`)
 })
 
