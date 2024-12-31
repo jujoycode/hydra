@@ -1,5 +1,5 @@
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { shell } from 'electron'
+import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import type { OpenExternalUrlParams } from '@interface/CoreInterface'
 
 /**

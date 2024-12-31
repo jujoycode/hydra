@@ -17,7 +17,7 @@ export function Profile(): JSX.Element {
 
   const ProfileBox = (
     <Box display='flex' flexDir='row' alignItems='center' gap={2} p={2} borderRadius='md' _hover={{ bg: 'gray.100' }}>
-      <Avatar variant='outline' size='xs' cursor='pointer' shape='rounded' />
+      <Avatar variant='outline' size='xs' cursor='pointer' shape='rounded' name={user?.name ? user?.name : user?.id} />
       <Flex direction='column' align='flex-start'>
         <Text fontSize='sm' truncate>
           {user?.name ? user?.name : user?.id}

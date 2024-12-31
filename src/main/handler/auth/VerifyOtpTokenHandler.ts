@@ -42,7 +42,7 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
 
     if (error !== null) throw new Error('OTP verification failed')
 
-    const user = await this.hydraDB.users.findUnique({
+    const user = await this.getHydraDb().users.findUnique({
       where: {
         user_id: data.user?.id
       }

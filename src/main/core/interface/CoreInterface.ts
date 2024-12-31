@@ -1,10 +1,14 @@
 import type { SupabaseClient, VerifyEmailOtpParams, AuthOtpResponse, Session, AuthError } from '@supabase/supabase-js'
 import type { PrismaClient, issues, projects, users, users_projects_link } from '@prisma/client'
+import type { OpenDialogOptions, OpenDialogReturnValue } from 'electron'
 
 export type {
   // Client
   SupabaseClient as SupaClient,
   PrismaClient,
+  // Electron
+  OpenDialogOptions,
+  OpenDialogReturnValue,
   // Session
   Session,
   // API Response
@@ -92,7 +96,8 @@ export enum IpcChannel {
   AUTH_SIGN_OUT = 'authSignOut',
   AUTH_GET_SESSION = 'authGetSession',
   // SYSTEM-
-  SYSTEM_OPEN_EXTERNAL_URL = 'systemOpenExternalUrl'
+  SYSTEM_OPEN_EXTERNAL_URL = 'systemOpenExternalUrl',
+  SYSTEM_OPEN_DIALOG = 'systemOpenDialog'
 }
 
 interface BaseIpcPayloads<SendType = unknown, ReceiveType = unknown> {
@@ -129,6 +134,10 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.SYSTEM_OPEN_EXTERNAL_URL]: {
     send: OpenExternalUrlParams
     receive: void
+  }
+  [IpcChannel.SYSTEM_OPEN_DIALOG]: {
+    send: OpenDialogOptions
+    receive: OpenDialogReturnValue
   }
 }
 

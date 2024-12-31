@@ -1,16 +1,14 @@
-import { Outlet, useParams } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { Stack, Grid, GridItem } from '@chakra-ui/react'
-import { SettingSidebar } from '@components/features/nav/SettingSidebar'
 import { PageTitle } from '@components/common/PageTitle'
+import { SettingSidebar } from '@components/features/nav/SettingSidebar'
 
 export function SettingLayout() {
-  const { accountId } = useParams()
-
   return (
     <Stack p={4}>
-      <PageTitle title='Settings' subTitle={`Account Id / ${accountId}`} />
+      <PageTitle title='Settings' subTitle='Account' />
 
-      <Grid mt={4} templateColumns='repeat(5, 1fr)' gap='6'>
+      <Grid mt={2} templateColumns='repeat(5, 1fr)' gap='6'>
         <GridItem colSpan={1}>
           <SettingSidebar />
         </GridItem>

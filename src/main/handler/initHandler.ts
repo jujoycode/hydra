@@ -11,6 +11,7 @@ import { UpdateUserHandler } from './auth/UpdateUserHandler'
 
 /* System Handler */
 import { OpenExternalUrlHandler } from './system/OpenExternalUrlHandler'
+import { OepnDialogHandler } from './system/OpenDialogHandler'
 
 export function initHandler() {
   const handler: CoreBaseHandler[] = [
@@ -20,7 +21,8 @@ export function initHandler() {
     new VerifyOtpTokenHandler(),
     new GetSessionHandler(),
     new UpdateUserHandler(),
-    new OpenExternalUrlHandler()
+    new OpenExternalUrlHandler(),
+    new OepnDialogHandler()
   ]
 
   handler.forEach(({ ipcChannel, handler }) =>
