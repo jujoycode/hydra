@@ -8,9 +8,8 @@ export class CoreDataBase extends CoreBase implements CoreInterface {
 
   private constructor() {
     super()
+    this.logInfo('Initializing database instance')
     this.prismaClient = new PrismaLib().getPrismaClient()
-
-    this.logInfo('init instance')
   }
 
   public static getInstance(): CoreDataBase {

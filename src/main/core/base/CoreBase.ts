@@ -9,7 +9,7 @@ export class CoreBase {
 
   protected logDebug(message: string): void {
     const timestamp = new Date().toISOString()
-    console.debug(`[${Chalk.yellow('DEBUG')}] [${timestamp}] ${this.className}: ${message}`)
+    console.debug(`[${Chalk.magenta('DEBUG')}] [${timestamp}] ${this.className}: ${message}`)
   }
 
   protected logInfo(message: string): void {
@@ -20,6 +20,11 @@ export class CoreBase {
   protected logSuccess(message: string): void {
     const timestamp = new Date().toISOString()
     console.log(`[${Chalk.green('SUCCESS')}] [${timestamp}] ${this.className}: ${message}`)
+  }
+
+  protected logWarn(message: string): void {
+    const timestamp = new Date().toISOString()
+    console.warn(`[${Chalk.yellow('WARN')}] [${timestamp}] ${this.className}: ${message}`)
   }
 
   protected logError(message: string): void {

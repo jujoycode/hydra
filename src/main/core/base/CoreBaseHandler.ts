@@ -3,16 +3,16 @@ import { CoreDataBase } from '../database/CoreDataBase'
 import type { PrismaClient } from '@interface/CoreInterface'
 
 export abstract class CoreBaseHandler extends CoreBase {
-  protected hydraDB: PrismaClient
-  public ipcChannel: string
+  protected readonly hydraDB: PrismaClient
+  public readonly ipcChannel: string
 
   protected constructor(channel: string) {
     super()
-    this.hydraDB = CoreDataBase.getInstance().getPrismaClient()
     this.ipcChannel = channel
+    this.hydraDB = CoreDataBase.getInstance().getPrismaClient()
 
     this.handler = this.handler.bind(this)
   }
 
-  abstract handler(params: unknown): Promise<unknown>
+  public abstract handler(params: unknown): Promise<unknown>
 }

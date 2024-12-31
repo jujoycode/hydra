@@ -6,19 +6,13 @@ export class PrismaLib extends CoreBase {
 
   constructor() {
     super()
-    this.prisma = this.createPrismaClient()
+    this.prisma = new PrismaClient({
+      log: ['error', 'warn', 'query', 'info'],
+      errorFormat: 'pretty'
+    })
+
     this.logInfo('Prisma client created')
   }
-
-  private createPrismaClient() {
-    try {
-      return new PrismaClient()
-    } catch (error) {
-      this.logError('Failed to create Prisma client')
-      throw error
-    }
-  }
-
   public getPrismaClient() {
     return this.prisma
   }
