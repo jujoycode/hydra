@@ -34,6 +34,7 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
    * @throws {Error} OTP 검증 실패시 에러 발생
    */
   async handler(params: AuthVerifyOtpTokenParams): Promise<AuthVerifyOtpTokenResponse> {
+    console.debug(`VerifyOtpTokenHandler Params: ${JSON.stringify(params)}`)
     const { data, error } = await this.supaAuthClient.verifyOtp({
       email: params.email,
       token: params.token,
@@ -41,12 +42,14 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
     })
 
     if (error !== null) throw new Error('OTP verification failed')
+    console.debug(`VerifyOtpTokenHandler Data: ${JSON.stringify(data)}`)
 
     const user = await this.getHydraDb().users.findUnique({
       where: {
         user_id: data.user?.id
       }
     })
+    console.debug(`User findUnique: ${JSON.stringify(user)}`)
 
     if (!data.session || !user) throw new Error('Invalid user')
 
