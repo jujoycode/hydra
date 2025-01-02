@@ -2,7 +2,6 @@ import { IpcChannel, type UpdateIssueParams, type issues } from '@interface/Core
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 
 export class UpdateIssueHandler extends CoreBaseHandler {
-
   constructor() {
     super(IpcChannel.ISSUE_UPDATE)
   }
@@ -23,4 +22,3 @@ export class UpdateIssueHandler extends CoreBaseHandler {
     })
   }
 }
-

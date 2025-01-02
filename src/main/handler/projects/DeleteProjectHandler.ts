@@ -2,7 +2,6 @@ import { IpcChannel, type DeleteProjectParams } from '@interface/CoreInterface'
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 
 export class DeleteProjectHandler extends CoreBaseHandler {
-
   constructor() {
     super(IpcChannel.PROJECT_DELETE)
   }
@@ -19,7 +18,7 @@ export class DeleteProjectHandler extends CoreBaseHandler {
             user_project_link_id: params.projectId
           }
         }),
-        
+
         // 2. 프로젝트 삭제 (public.projects)
         this.getHydraDb().projects.delete({
           where: {
@@ -35,4 +34,3 @@ export class DeleteProjectHandler extends CoreBaseHandler {
     }
   }
 }
-

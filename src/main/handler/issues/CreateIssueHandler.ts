@@ -4,7 +4,6 @@ import { randomUUID } from 'crypto'
 import { CoreDataBase } from '@database/CoreDataBase'
 
 export class CreateIssueHandler extends CoreBaseHandler {
-
   constructor() {
     super(IpcChannel.ISSUE_CREATE)
   }
@@ -31,4 +30,3 @@ export class CreateIssueHandler extends CoreBaseHandler {
     })
   }
 }
-

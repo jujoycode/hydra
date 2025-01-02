@@ -2,7 +2,6 @@ import { IpcChannel, type UpdateProjectParams, type projects } from '@interface/
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { CoreDataBase } from '@database/CoreDataBase'
 export class UpdateProjectHandler extends CoreBaseHandler {
-
   constructor() {
     super(IpcChannel.PROJECT_UPDATE)
   }
@@ -25,11 +24,9 @@ export class UpdateProjectHandler extends CoreBaseHandler {
       }
     })
 
-
     /**
      * TODO: 프로젝트 생성 결과 반환 시, start_date, end_date timezone 보정
      */
     return project
   }
 }
-

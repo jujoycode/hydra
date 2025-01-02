@@ -52,8 +52,8 @@ export class CoreDataBase extends CoreBase implements CoreInterface {
       }
     })
 
-    if(project) {
-        throw new Error('Project name already exists')
+    if (project) {
+      throw new Error('Project name already exists')
     }
   }
 
@@ -72,22 +72,22 @@ export class CoreDataBase extends CoreBase implements CoreInterface {
       }
     })
 
-    if(project.length > 3) {
-        throw new Error('Project limit exceeded')
+    if (project.length > 3) {
+      throw new Error('Project limit exceeded')
     }
   }
 
   private static async checkIssueLimit(projectId: string) {
     const prismaClient = CoreDataBase.getInstance().getPrismaClient()
-    
+
     const issue = await prismaClient.issues.findMany({
       where: {
         project_id: projectId
       }
     })
 
-    if(issue.length > 100) {
-        throw new Error('Issue limit exceeded')
+    if (issue.length > 100) {
+      throw new Error('Issue limit exceeded')
     }
   }
 }
