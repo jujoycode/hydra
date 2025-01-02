@@ -1,22 +1,17 @@
-import type { PrismaClient } from '@prisma/client'
-import type { UpdateIssueParams, issues } from '@interface/CoreInterface'
+import { IpcChannel, type UpdateIssueParams, type issues } from '@interface/CoreInterface'
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import { PrismaLib } from '@lib/PrismaLib'
 
 export class UpdateIssueHandler extends CoreBaseHandler {
-  private prismaClient: PrismaClient
 
   constructor() {
-    super('updateIssueHandler')
-    this.prismaClient = new PrismaLib().getPrismaClient()
+    super(IpcChannel.ISSUE_UPDATE)
   }
 
   async handler(params: UpdateIssueParams): Promise<issues> {
-    console.debug(`UpdateIssueHandler Params: ${JSON.stringify(params)}`)
-
+    this.logDebug(`UpdateIssueHandler Params: ${JSON.stringify(params)}`)
 
     // 1. 이슈 업데이트 (public.issues)
-    return await this.prismaClient.issues.update({
+    return await this.getHydraDb().issues.update({
       where: {
         issue_id: params.issueId
       },

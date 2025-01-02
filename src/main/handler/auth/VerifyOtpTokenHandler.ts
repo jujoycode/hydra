@@ -4,7 +4,8 @@ import {
   SUPABASE_CLIENT_TYPE,
   type AuthVerifyOtpTokenParams,
   type SupaAuthClient,
-  type AuthVerifyOtpTokenResponse
+  type AuthVerifyOtpTokenResponse,
+  IpcChannel
 } from '@interface/CoreInterface'
 
 /**
@@ -20,7 +21,7 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
    * Supabase 인증 클라이언트를 초기화합니다
    */
   constructor() {
-    super('authVerifyOtpToken')
+    super(IpcChannel.AUTH_VERIFY_OTP_TOKEN)
     this.supaAuthClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.AUTH)
   }
 
@@ -34,7 +35,7 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
    * @throws {Error} OTP 검증 실패시 에러 발생
    */
   async handler(params: AuthVerifyOtpTokenParams): Promise<AuthVerifyOtpTokenResponse> {
-    console.debug(`VerifyOtpTokenHandler Params: ${JSON.stringify(params)}`)
+    this.logDebug(`VerifyOtpTokenHandler Params: ${JSON.stringify(params)}`)
     const { data, error } = await this.supaAuthClient.verifyOtp({
       email: params.email,
       token: params.token,
@@ -42,14 +43,14 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
     })
 
     if (error !== null) throw new Error('OTP verification failed')
-    console.debug(`VerifyOtpTokenHandler Data: ${JSON.stringify(data)}`)
+    this.logDebug(`VerifyOtpTokenHandler Data: ${JSON.stringify(data)}`)
 
     const user = await this.getHydraDb().users.findUnique({
       where: {
         user_id: data.user?.id
       }
     })
-    console.debug(`User findUnique: ${JSON.stringify(user)}`)
+    this.logDebug(`User findUnique: ${JSON.stringify(user)}`)
 
     if (!data.session || !user) throw new Error('Invalid user')
 

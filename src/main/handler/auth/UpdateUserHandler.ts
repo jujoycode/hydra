@@ -1,6 +1,6 @@
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { SupabaseLib } from '@lib/SupabaseLib'
-import { SUPABASE_CLIENT_TYPE, type AuthUpdateUserParams, users, type SupaStorageClient, type SupaAuthClient } from '@interface/CoreInterface'
+import { SUPABASE_CLIENT_TYPE, type AuthUpdateUserParams, users, type SupaStorageClient, IpcChannel } from '@interface/CoreInterface'
 import { CoreConstant } from '@constant/CoreConstant'
 /**
  * 세션을 조회하는 기능을 처리하는 핸들러 클래스입니다
@@ -8,7 +8,6 @@ import { CoreConstant } from '@constant/CoreConstant'
  */
 export class UpdateUserHandler extends CoreBaseHandler {
   /** Supabase 스토리지 클라이언트 인스턴스 */
-  private supaAuthClient: SupaAuthClient
   private supaStorageClient: SupaStorageClient
 
   
@@ -18,8 +17,7 @@ export class UpdateUserHandler extends CoreBaseHandler {
    * @constructor
    */
   constructor() {
-    super('authUpdateUser')
-    this.supaAuthClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.AUTH)
+    super(IpcChannel.AUTH_UPDATE_USER)
     this.supaStorageClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.STORAGE)
   }
 
@@ -51,6 +49,7 @@ export class UpdateUserHandler extends CoreBaseHandler {
       }
     }).catch(err => {
       const error = err as Error
+      this.logError(`Failed to update user: ${error.message}`)
       throw new Error(`Failed to update user: ${error.message}`)
     })
 

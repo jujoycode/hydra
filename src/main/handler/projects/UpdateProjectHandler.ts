@@ -1,25 +1,20 @@
-import type { PrismaClient } from '@prisma/client'
-import type { UpdateProjectParams, projects } from '@interface/CoreInterface'
+import { IpcChannel, type UpdateProjectParams, type projects } from '@interface/CoreInterface'
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import { PrismaLib } from '@lib/PrismaLib'
-import { ProjectBaseHandler } from './ProjectBaseHandler'
-
+import { CoreDataBase } from '@database/CoreDataBase'
 export class UpdateProjectHandler extends CoreBaseHandler {
-  private prismaClient: PrismaClient
 
   constructor() {
-    super('updateProjectHandler')
-    this.prismaClient = new PrismaLib().getPrismaClient()
+    super(IpcChannel.PROJECT_UPDATE)
   }
 
   async handler(params: UpdateProjectParams): Promise<projects> {
-    console.debug(`UpdateProjectHandler Params: ${JSON.stringify(params)}`)
+    this.logDebug(`UpdateProjectHandler Params: ${JSON.stringify(params)}`)
 
     // 1. 프로젝트 업데이트 전 체크 (중복명 체크)
-    await ProjectBaseHandler.checkUpdateProjects(params.projectName)
+    await CoreDataBase.checkUpdateProjects(params.projectName)
 
     // 2. 프로젝트 업데이트 (public.projects)
-    const project = await this.prismaClient.projects.update({
+    const project = await this.getHydraDb().projects.update({
       where: {
         project_id: params.projectId
       },

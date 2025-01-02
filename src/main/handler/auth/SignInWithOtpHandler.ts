@@ -1,6 +1,7 @@
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { SupabaseLib } from '@lib/SupabaseLib'
 import {
+  IpcChannel,
   SUPABASE_CLIENT_TYPE,
   type AuthOtpResponse,
   type AuthSignInWithOtpParams,
@@ -19,7 +20,7 @@ export class SignInWithOtpHandler extends CoreBaseHandler {
    * Supabase 인증 클라이언트를 초기화합니다
    */
   constructor() {
-    super('authSignInWithOtp')
+    super(IpcChannel.AUTH_SIGN_IN_WITH_OTP)
     this.supaAuthClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.AUTH)
   }
 

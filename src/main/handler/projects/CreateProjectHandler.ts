@@ -1,26 +1,22 @@
-import type { PrismaClient } from '@prisma/client'
-import type { NewProjectParams, projects } from '@interface/CoreInterface'
+import { IpcChannel, type CreateProjectParams, type projects } from '@interface/CoreInterface'
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import { PrismaLib } from '@lib/PrismaLib'
 import { randomUUID } from 'crypto'
-import { ProjectBaseHandler } from './ProjectBaseHandler'
+import { CoreDataBase } from '@database/CoreDataBase'
 
-export class NewProjectHandler extends CoreBaseHandler {
-  private prismaClient: PrismaClient
+export class CreateProjectHandler extends CoreBaseHandler {
 
   constructor() {
-    super('newProjectHandler')
-    this.prismaClient = new PrismaLib().getPrismaClient()
+    super(IpcChannel.PROJECT_CREATE)
   }
 
-  async handler(params: NewProjectParams): Promise<projects> {
-    console.debug(`NewProjectHandler Params: ${JSON.stringify(params)}`)
+  async handler(params: CreateProjectParams): Promise<projects> {
+    this.logDebug(`CreateProjectHandler Params: ${JSON.stringify(params)}`)
 
     // 1. 프로젝트 생성 전 체크 (중복명 체크, 프로젝트 수 체크)
-    await ProjectBaseHandler.checkCreateProjects(params.userId, params.projectName)
+    await CoreDataBase.checkCreateProjects(params.userId, params.projectName)
 
     // 2. 프로젝트 생성 (public.projects)
-    return await this.prismaClient.$transaction(async (tx) => {
+    return await this.getHydraDb().$transaction(async (tx) => {
       const project = await tx.projects.create({
         data: {
           project_id: randomUUID(),
