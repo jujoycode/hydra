@@ -1,18 +1,18 @@
 import { randomUUID } from 'crypto'
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import { IssueValidation } from '@util/validation'
+import { IssueValidator } from '@util/validator'
 import { IpcChannel, type CreateIssueParams, type issues } from '@interface/CoreInterface'
 
-export class CreateIssueHandler extends CoreBaseHandler<IssueValidation> {
+export class CreateIssueHandler extends CoreBaseHandler<IssueValidator> {
   constructor() {
-    super(IpcChannel.ISSUE_CREATE, IssueValidation)
+    super(IpcChannel.ISSUE_CREATE, IssueValidator)
   }
 
   async handler(params: CreateIssueParams): Promise<issues> {
     this.logDebug(`CreateIssueHandler Params: ${JSON.stringify(params)}`)
 
     // 1. 이슈 생성 전 체크 (이슈 갯수 체크)
-    await this.validator?.checkLimit(params.projectId)
+    await this.validator?.checkCreateIssue(params.projectId)
 
     // 2. 이슈 생성 (public.issues)
     return await this.getHydraDb().issues.create({

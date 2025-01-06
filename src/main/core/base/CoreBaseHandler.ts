@@ -1,9 +1,9 @@
 import { CoreBase } from './CoreBase'
 import { CoreDataBase } from '../database/CoreDataBase'
-import { BaseValidation } from '@util/validation/BaseValidation'
+import { BaseValidator } from '@util/validator/BaseValidator'
 import type { PrismaClient } from '@interface/CoreInterface'
 
-export abstract class CoreBaseHandler<T extends BaseValidation | null = null> extends CoreBase {
+export abstract class CoreBaseHandler<T extends BaseValidator | null = null> extends CoreBase {
   public readonly ipcChannel: string
   protected readonly database: CoreDataBase
   protected readonly validator?: T

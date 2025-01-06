@@ -1,10 +1,10 @@
 import { IpcChannel, type UpdateProjectParams, type projects } from '@interface/CoreInterface'
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import { ProjectValidation } from '@util/validation'
+import { ProjectValidator } from '@util/validator'
 
-export class UpdateProjectHandler extends CoreBaseHandler<ProjectValidation> {
+export class UpdateProjectHandler extends CoreBaseHandler<ProjectValidator> {
   constructor() {
-    super(IpcChannel.PROJECT_UPDATE, ProjectValidation)
+    super(IpcChannel.PROJECT_UPDATE, ProjectValidator)
   }
 
   async handler(params: UpdateProjectParams): Promise<projects> {

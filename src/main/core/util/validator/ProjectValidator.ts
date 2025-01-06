@@ -1,7 +1,7 @@
-import { BaseValidation } from './BaseValidation'
+import { BaseValidator } from './BaseValidator'
 import type { CoreDataBase } from '@database/CoreDataBase'
 
-export class ProjectValidation extends BaseValidation {
+export class ProjectValidator extends BaseValidator {
   constructor(hydraDB: CoreDataBase) {
     super(hydraDB)
   }

@@ -1,11 +1,11 @@
 import { randomUUID } from 'crypto'
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import { ProjectValidation } from '@util/validation'
+import { ProjectValidator } from '@util/validator'
 import { IpcChannel, type CreateProjectParams, type projects } from '@interface/CoreInterface'
 
-export class CreateProjectHandler extends CoreBaseHandler<ProjectValidation> {
+export class CreateProjectHandler extends CoreBaseHandler<ProjectValidator> {
   constructor() {
-    super(IpcChannel.PROJECT_CREATE, ProjectValidation)
+    super(IpcChannel.PROJECT_CREATE, ProjectValidator)
   }
 
   async handler(params: CreateProjectParams): Promise<projects> {

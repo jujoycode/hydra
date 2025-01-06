@@ -7,6 +7,7 @@ import {
   type ValidationRule,
   VALIDATION_TYPE
 } from '@interface/CoreInterface'
+
 export class CoreDataBase extends CoreBase implements CoreInterface {
   private static instance: CoreDataBase
   private prismaClient: PrismaClient
