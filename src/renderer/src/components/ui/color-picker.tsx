@@ -1,14 +1,5 @@
 import type { IconButtonProps, StackProps } from '@chakra-ui/react'
-import {
-  ColorPicker as ChakraColorPicker,
-  For,
-  IconButton,
-  Portal,
-  Span,
-  Stack,
-  Text,
-  VStack
-} from '@chakra-ui/react'
+import { ColorPicker as ChakraColorPicker, For, IconButton, Portal, Span, Stack, Text, VStack } from '@chakra-ui/react'
 import { forwardRef } from 'react'
 import { Check, Pipette } from 'lucide-react'
 
@@ -24,12 +15,11 @@ export const ColorPickerTrigger = forwardRef<
   )
 })
 
-export const ColorPickerInput = forwardRef<
-  HTMLInputElement,
-  Omit<ChakraColorPicker.ChannelInputProps, 'channel'>
->(function ColorHexInput(props, ref) {
-  return <ChakraColorPicker.ChannelInput channel='hex' ref={ref} {...props} />
-})
+export const ColorPickerInput = forwardRef<HTMLInputElement, Omit<ChakraColorPicker.ChannelInputProps, 'channel'>>(
+  function ColorHexInput(props, ref) {
+    return <ChakraColorPicker.ChannelInput channel='hex' ref={ref} {...props} />
+  }
+)
 
 interface ColorPickerContentProps extends ChakraColorPicker.ContentProps {
   portalled?: boolean
@@ -51,22 +41,18 @@ export const ColorPickerContent = forwardRef<HTMLDivElement, ColorPickerContentP
 
 export const ColorPickerInlineContent = forwardRef<HTMLDivElement, ChakraColorPicker.ContentProps>(
   function ColorPickerInlineContent(props, ref) {
-    return (
-      <ChakraColorPicker.Content animation='none' shadow='none' padding='0' ref={ref} {...props} />
-    )
+    return <ChakraColorPicker.Content animation='none' shadow='none' padding='0' ref={ref} {...props} />
   }
 )
 
-export const ColorPickerSliders = forwardRef<HTMLDivElement, StackProps>(
-  function ColorPickerSliders(props, ref) {
-    return (
-      <Stack gap='1' flex='1' px='1' ref={ref} {...props}>
-        <ColorPickerChannelSlider channel='hue' />
-        <ColorPickerChannelSlider channel='alpha' />
-      </Stack>
-    )
-  }
-)
+export const ColorPickerSliders = forwardRef<HTMLDivElement, StackProps>(function ColorPickerSliders(props, ref) {
+  return (
+    <Stack gap='1' flex='1' px='1' ref={ref} {...props}>
+      <ColorPickerChannelSlider channel='hue' />
+      <ColorPickerChannelSlider channel='alpha' />
+    </Stack>
+  )
+})
 
 export const ColorPickerArea = forwardRef<HTMLDivElement, ChakraColorPicker.AreaProps>(
   function ColorPickerArea(props, ref) {
@@ -91,18 +77,17 @@ export const ColorPickerEyeDropper = forwardRef<HTMLButtonElement, IconButtonPro
   }
 )
 
-export const ColorPickerChannelSlider = forwardRef<
-  HTMLDivElement,
-  ChakraColorPicker.ChannelSliderProps
->(function ColorPickerSlider(props, ref) {
-  return (
-    <ChakraColorPicker.ChannelSlider ref={ref} {...props}>
-      <ChakraColorPicker.TransparencyGrid size='0.6rem' />
-      <ChakraColorPicker.ChannelSliderTrack />
-      <ChakraColorPicker.ChannelSliderThumb />
-    </ChakraColorPicker.ChannelSlider>
-  )
-})
+export const ColorPickerChannelSlider = forwardRef<HTMLDivElement, ChakraColorPicker.ChannelSliderProps>(
+  function ColorPickerSlider(props, ref) {
+    return (
+      <ChakraColorPicker.ChannelSlider ref={ref} {...props}>
+        <ChakraColorPicker.TransparencyGrid size='0.6rem' />
+        <ChakraColorPicker.ChannelSliderTrack />
+        <ChakraColorPicker.ChannelSliderThumb />
+      </ChakraColorPicker.ChannelSlider>
+    )
+  }
+)
 
 export const ColorPickerSwatchTrigger = forwardRef<
   HTMLButtonElement,
@@ -112,11 +97,7 @@ export const ColorPickerSwatchTrigger = forwardRef<
 >(function ColorPickerSwatchTrigger(props, ref) {
   const { swatchSize, children, ...rest } = props
   return (
-    <ChakraColorPicker.SwatchTrigger
-      ref={ref}
-      style={{ ['--color' as string]: props.value }}
-      {...rest}
-    >
+    <ChakraColorPicker.SwatchTrigger ref={ref} style={{ ['--color' as string]: props.value }} {...rest}>
       {children || (
         <ChakraColorPicker.Swatch boxSize={swatchSize} value={props.value}>
           <ChakraColorPicker.SwatchIndicator>
@@ -153,13 +134,7 @@ export const ColorPickerChannelInputs = forwardRef<HTMLDivElement, ChakraColorPi
       <ChakraColorPicker.View flexDirection='row' ref={ref} {...props}>
         {channels.map((channel) => (
           <VStack gap='1' key={channel} flex='1'>
-            <ColorPickerChannelInput
-              channel={channel}
-              px='0'
-              height='7'
-              textStyle='xs'
-              textAlign='center'
-            />
+            <ColorPickerChannelInput channel={channel} px='0' height='7' textStyle='xs' textAlign='center' />
             <Text textStyle='xs' color='fg.muted' fontWeight='medium'>
               {channel.charAt(0).toUpperCase()}
             </Text>

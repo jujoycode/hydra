@@ -93,61 +93,55 @@ export const PaginationItem = React.forwardRef<HTMLButtonElement, ChakraPaginati
   }
 )
 
-export const PaginationPrevTrigger = React.forwardRef<
-  HTMLButtonElement,
-  ChakraPagination.PrevTriggerProps
->(function PaginationPrevTrigger(props, ref) {
-  const { size, variantMap, getHref } = useRootProps()
-  const { previousPage } = usePaginationContext()
+export const PaginationPrevTrigger = React.forwardRef<HTMLButtonElement, ChakraPagination.PrevTriggerProps>(
+  function PaginationPrevTrigger(props, ref) {
+    const { size, variantMap, getHref } = useRootProps()
+    const { previousPage } = usePaginationContext()
 
-  if (getHref) {
+    if (getHref) {
+      return (
+        <LinkButton
+          href={previousPage != null ? getHref(previousPage) : undefined}
+          variant={variantMap.default}
+          size={size}
+        >
+          <ChevronLeft />
+        </LinkButton>
+      )
+    }
+
     return (
-      <LinkButton
-        href={previousPage != null ? getHref(previousPage) : undefined}
-        variant={variantMap.default}
-        size={size}
-      >
-        <ChevronLeft />
-      </LinkButton>
+      <ChakraPagination.PrevTrigger ref={ref} asChild {...props}>
+        <IconButton variant={variantMap.default} size={size}>
+          <ChevronLeft />
+        </IconButton>
+      </ChakraPagination.PrevTrigger>
     )
   }
+)
 
-  return (
-    <ChakraPagination.PrevTrigger ref={ref} asChild {...props}>
-      <IconButton variant={variantMap.default} size={size}>
-        <ChevronLeft />
-      </IconButton>
-    </ChakraPagination.PrevTrigger>
-  )
-})
+export const PaginationNextTrigger = React.forwardRef<HTMLButtonElement, ChakraPagination.NextTriggerProps>(
+  function PaginationNextTrigger(props, ref) {
+    const { size, variantMap, getHref } = useRootProps()
+    const { nextPage } = usePaginationContext()
 
-export const PaginationNextTrigger = React.forwardRef<
-  HTMLButtonElement,
-  ChakraPagination.NextTriggerProps
->(function PaginationNextTrigger(props, ref) {
-  const { size, variantMap, getHref } = useRootProps()
-  const { nextPage } = usePaginationContext()
+    if (getHref) {
+      return (
+        <LinkButton href={nextPage != null ? getHref(nextPage) : undefined} variant={variantMap.default} size={size}>
+          <ChevronRight />
+        </LinkButton>
+      )
+    }
 
-  if (getHref) {
     return (
-      <LinkButton
-        href={nextPage != null ? getHref(nextPage) : undefined}
-        variant={variantMap.default}
-        size={size}
-      >
-        <ChevronRight />
-      </LinkButton>
+      <ChakraPagination.NextTrigger ref={ref} asChild {...props}>
+        <IconButton variant={variantMap.default} size={size}>
+          <ChevronRight />
+        </IconButton>
+      </ChakraPagination.NextTrigger>
     )
   }
-
-  return (
-    <ChakraPagination.NextTrigger ref={ref} asChild {...props}>
-      <IconButton variant={variantMap.default} size={size}>
-        <ChevronRight />
-      </IconButton>
-    </ChakraPagination.NextTrigger>
-  )
-})
+)
 
 export const PaginationItems = (props: React.HTMLAttributes<HTMLElement>) => {
   return (

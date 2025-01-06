@@ -2,9 +2,10 @@ import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { SupabaseLib } from '@lib/SupabaseLib'
 import {
   SUPABASE_CLIENT_TYPE,
-  type AuthResponse,
   type AuthVerifyOtpTokenParams,
-  type SupaAuthClient
+  type SupaAuthClient,
+  type AuthVerifyOtpTokenResponse,
+  IpcChannel
 } from '@interface/CoreInterface'
 
 /**
@@ -20,7 +21,7 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
    * Supabase 인증 클라이언트를 초기화합니다
    */
   constructor() {
-    super('authVerifyOtpToken')
+    super(IpcChannel.AUTH_VERIFY_OTP_TOKEN)
     this.supaAuthClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.AUTH)
   }
 
@@ -30,22 +31,41 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler {
    * @param {string} params.email - 사용자 이메일
    * @param {string} params.token - 검증할 OTP 토큰
    * @param {string} params.type - OTP 타입
-   * @returns {Promise<AuthResponse>} 인증 응답 객체
+   * @returns {Promise<AuthVerifyOtpTokenResponse>} 인증 응답 객체
    * @throws {Error} OTP 검증 실패시 에러 발생
    */
-  async handler(params: AuthVerifyOtpTokenParams): Promise<AuthResponse> {
+  async handler(params: AuthVerifyOtpTokenParams): Promise<AuthVerifyOtpTokenResponse> {
+    this.logDebug(`VerifyOtpTokenHandler Params: ${JSON.stringify(params)}`)
     const { data, error } = await this.supaAuthClient.verifyOtp({
       email: params.email,
       token: params.token,
       type: params.type
     })
 
-    if (error === null) {
-      throw new Error('OTP verification failed')
-    }
+    if (error !== null) throw new Error('OTP verification failed')
+    this.logDebug(`VerifyOtpTokenHandler Data: ${JSON.stringify(data)}`)
+
+    const user = await this.getHydraDb().users.findUnique({
+      where: {
+        user_id: data.user?.id
+      }
+    })
+    this.logDebug(`User findUnique: ${JSON.stringify(user)}`)
+
+    if (!data.session || !user) throw new Error('Invalid user')
 
     return {
-      data,
+      data: {
+        session: data.session,
+        user: {
+          id: user.user_id,
+          name: user.user_name,
+          email: user.user_email,
+          created_at: user.user_created_at,
+          updated_at: user.user_updated_at,
+          avatar_key: user.user_avatar_key
+        }
+      },
       error
     }
   }

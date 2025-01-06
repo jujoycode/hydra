@@ -19,15 +19,14 @@ export const ProgressCircleRing = React.forwardRef<SVGSVGElement, ProgressCircle
   }
 )
 
-export const ProgressCircleValueText = React.forwardRef<
-  HTMLDivElement,
-  ChakraProgressCircle.ValueTextProps
->(function ProgressCircleValueText(props, ref) {
-  return (
-    <AbsoluteCenter>
-      <ChakraProgressCircle.ValueText {...props} ref={ref} />
-    </AbsoluteCenter>
-  )
-})
+export const ProgressCircleValueText = React.forwardRef<HTMLDivElement, ChakraProgressCircle.ValueTextProps>(
+  function ProgressCircleValueText(props, ref) {
+    return (
+      <AbsoluteCenter>
+        <ChakraProgressCircle.ValueText {...props} ref={ref} />
+      </AbsoluteCenter>
+    )
+  }
+)
 
 export const ProgressCircleRoot = ChakraProgressCircle.Root

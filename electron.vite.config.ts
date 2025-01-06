@@ -29,8 +29,13 @@ export default defineConfig({
     resolve: {
       alias: {
         '@components': resolve('src/renderer/src/components'),
+        '@layouts': resolve('src/renderer/src/layouts'),
         '@pages': resolve('src/renderer/src/pages'),
         '@hooks': resolve('src/renderer/src/hooks'),
+        '@stores': resolve('src/renderer/src/stores'),
+        '@utils': resolve('src/renderer/src/utils'),
+        '@constants': resolve('src/renderer/src/constants'),
+        '@routers': resolve('src/renderer/src/routers'),
         '@interface': resolve('src/main/core/interface')
       }
     },

@@ -8,7 +8,7 @@ type KeyCombo = {
 }
 
 export function useHotKey(combo: KeyCombo, handler: () => void) {
-  const { isMac } = window.api.getOS()
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

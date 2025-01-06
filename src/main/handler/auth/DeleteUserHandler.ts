@@ -1,6 +1,11 @@
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { SupabaseLib } from '@lib/SupabaseLib'
-import { SUPABASE_CLIENT_TYPE, type AuthDeleteUserParams, type SupaAuthClient } from '@interface/CoreInterface'
+import {
+  IpcChannel,
+  SUPABASE_CLIENT_TYPE,
+  type AuthDeleteUserParams,
+  type SupaAuthClient
+} from '@interface/CoreInterface'
 
 /**
  * 사용자 삭제 기능을 처리하는 핸들러 클래스입니다.
@@ -15,7 +20,7 @@ export class DeleteUserHandler extends CoreBaseHandler {
    * @constructor
    */
   constructor() {
-    super('authDeleteUser')
+    super(IpcChannel.AUTH_DELETE_USER)
     this.supaAuthClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.AUTH)
   }
 
@@ -30,7 +35,7 @@ export class DeleteUserHandler extends CoreBaseHandler {
   async handler(params: AuthDeleteUserParams): Promise<void> {
     const { error } = await this.supaAuthClient.admin.deleteUser(params.id, params.shouldSoftDelete)
 
-    if (error === null) {
+    if (error !== null) {
       throw new Error('Failed to delete user')
     }
   }

@@ -26,52 +26,32 @@ const ClipboardCopyText = React.forwardRef<HTMLDivElement, ChakraClipboard.Indic
 export const ClipboardLabel = React.forwardRef<HTMLLabelElement, ChakraClipboard.LabelProps>(
   function ClipboardLabel(props, ref) {
     return (
-      <ChakraClipboard.Label
-        textStyle='sm'
-        fontWeight='medium'
-        display='inline-block'
-        mb='1'
-        {...props}
-        ref={ref}
-      />
+      <ChakraClipboard.Label textStyle='sm' fontWeight='medium' display='inline-block' mb='1' {...props} ref={ref} />
     )
   }
 )
 
-export const ClipboardButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  function ClipboardButton(props, ref) {
-    return (
-      <ChakraClipboard.Trigger asChild>
-        <Button ref={ref} size='sm' variant='surface' {...props}>
-          <ClipboardIcon />
-          <ClipboardCopyText />
-        </Button>
-      </ChakraClipboard.Trigger>
-    )
-  }
-)
+export const ClipboardButton = React.forwardRef<HTMLButtonElement, ButtonProps>(function ClipboardButton(props, ref) {
+  return (
+    <ChakraClipboard.Trigger asChild>
+      <Button ref={ref} size='sm' variant='surface' {...props}>
+        <ClipboardIcon />
+        <ClipboardCopyText />
+      </Button>
+    </ChakraClipboard.Trigger>
+  )
+})
 
-export const ClipboardLink = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  function ClipboardLink(props, ref) {
-    return (
-      <ChakraClipboard.Trigger asChild>
-        <Button
-          unstyled
-          variant='plain'
-          size='xs'
-          display='inline-flex'
-          alignItems='center'
-          gap='2'
-          ref={ref}
-          {...props}
-        >
-          <Link />
-          <ClipboardCopyText />
-        </Button>
-      </ChakraClipboard.Trigger>
-    )
-  }
-)
+export const ClipboardLink = React.forwardRef<HTMLButtonElement, ButtonProps>(function ClipboardLink(props, ref) {
+  return (
+    <ChakraClipboard.Trigger asChild>
+      <Button unstyled variant='plain' size='xs' display='inline-flex' alignItems='center' gap='2' ref={ref} {...props}>
+        <Link />
+        <ClipboardCopyText />
+      </Button>
+    </ChakraClipboard.Trigger>
+  )
+})
 
 export const ClipboardIconButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   function ClipboardIconButton(props, ref) {

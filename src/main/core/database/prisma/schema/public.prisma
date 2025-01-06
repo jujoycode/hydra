@@ -4,6 +4,7 @@ model users {
   user_email          String?               @db.VarChar
   user_created_at     DateTime?             @db.Timestamp(6)
   user_updated_at     DateTime?             @db.Timestamp(6)
+  user_avatar_key     String?               @db.VarChar
   users               auth_users            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   users_projects_link users_projects_link[]
 
@@ -37,14 +38,41 @@ model users_projects_link {
 }
 
 model issues {
-  issue_id          String    @id @db.Uuid
-  project_id        String    @db.Uuid
+  issue_id          String              @id @db.Uuid
+  project_id        String              @db.Uuid
   issue_title       String
   issue_key         String
   issue_desc        String?
   issue_created_by  String?
   issue_modified_by String?
-  issue_created_at  DateTime? @default(now())
-  issue_updated_at  DateTime? @updatedAt
+  issue_created_at  DateTime?           @default(now())
+  issue_updated_at  DateTime?           @updatedAt
+  issues_files_link issues_files_link[]
+
+  @@schema("public")
+}
+
+model files {
+  file_id           String              @id @db.Uuid
+  file_name         String
+  file_path         String
+  file_type         String
+  file_size         Int
+  file_created_at   DateTime?           @default(now())
+  file_updated_at   DateTime?           @updatedAt
+  issues_files_link issues_files_link[]
+
+  @@schema("public")
+}
+
+model issues_files_link {
+  id       Int    @id @default(autoincrement())
+  issue_id String @db.Uuid
+  file_id  String @db.Uuid
+  issue    issues @relation(fields: [issue_id], references: [issue_id])
+  file     files  @relation(fields: [file_id], references: [file_id])
+
+  @@index([issue_id], map: "idx_issue_id")
+  @@index([file_id], map: "idx_file_id")
   @@schema("public")
 }

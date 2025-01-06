@@ -4,4 +4,6 @@ export class CoreConstant {
     MAC: 'darwin',
     LINUX: 'linux'
   }
+
+  static readonly BUCKET_NAME = 'hydra-public-repo'
 }

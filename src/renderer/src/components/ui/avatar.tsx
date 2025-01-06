@@ -33,20 +33,16 @@ interface AvatarFallbackProps extends ChakraAvatar.FallbackProps {
   icon?: React.ReactElement
 }
 
-const AvatarFallback = React.forwardRef<HTMLDivElement, AvatarFallbackProps>(
-  function AvatarFallback(props, ref) {
-    const { name, icon, children, ...rest } = props
-    return (
-      <ChakraAvatar.Fallback ref={ref} {...rest}>
-        {children}
-        {name != null && children == null && <>{getInitials(name)}</>}
-        {name == null && children == null && (
-          <ChakraAvatar.Icon asChild={!!icon}>{icon}</ChakraAvatar.Icon>
-        )}
-      </ChakraAvatar.Fallback>
-    )
-  }
-)
+const AvatarFallback = React.forwardRef<HTMLDivElement, AvatarFallbackProps>(function AvatarFallback(props, ref) {
+  const { name, icon, children, ...rest } = props
+  return (
+    <ChakraAvatar.Fallback ref={ref} {...rest}>
+      {children}
+      {name != null && children == null && <>{getInitials(name)}</>}
+      {name == null && children == null && <ChakraAvatar.Icon asChild={!!icon}>{icon}</ChakraAvatar.Icon>}
+    </ChakraAvatar.Fallback>
+  )
+})
 
 function getInitials(name: string) {
   const names = name.trim().split(' ')
@@ -57,13 +53,11 @@ function getInitials(name: string) {
 
 interface AvatarGroupProps extends GroupProps, SlotRecipeProps<'avatar'> {}
 
-export const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
-  function AvatarGroup(props, ref) {
-    const { size, variant, borderless, ...rest } = props
-    return (
-      <ChakraAvatar.PropsProvider value={{ size, variant, borderless }}>
-        <Group gap='0' spaceX='-3' ref={ref} {...rest} />
-      </ChakraAvatar.PropsProvider>
-    )
-  }
-)
+export const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(function AvatarGroup(props, ref) {
+  const { size, variant, borderless, ...rest } = props
+  return (
+    <ChakraAvatar.PropsProvider value={{ size, variant, borderless }}>
+      <Group gap='0' spaceX='-3' ref={ref} {...rest} />
+    </ChakraAvatar.PropsProvider>
+  )
+})

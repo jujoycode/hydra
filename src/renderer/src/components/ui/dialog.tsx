@@ -1,6 +1,6 @@
-import { Dialog as ChakraDialog, Portal } from "@chakra-ui/react"
-import { CloseButton } from "./close-button"
-import * as React from "react"
+import { Dialog as ChakraDialog, Portal } from '@chakra-ui/react'
+import { CloseButton } from './close-button'
+import * as React from 'react'
 
 interface DialogContentProps extends ChakraDialog.ContentProps {
   portalled?: boolean
@@ -8,17 +8,8 @@ interface DialogContentProps extends ChakraDialog.ContentProps {
   backdrop?: boolean
 }
 
-export const DialogContent = React.forwardRef<
-  HTMLDivElement,
-  DialogContentProps
->(function DialogContent(props, ref) {
-  const {
-    children,
-    portalled = true,
-    portalRef,
-    backdrop = true,
-    ...rest
-  } = props
+export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(function DialogContent(props, ref) {
+  const { children, portalled = true, portalRef, backdrop = true, ...rest } = props
 
   return (
     <Portal disabled={!portalled} container={portalRef}>
@@ -32,24 +23,17 @@ export const DialogContent = React.forwardRef<
   )
 })
 
-export const DialogCloseTrigger = React.forwardRef<
-  HTMLButtonElement,
-  ChakraDialog.CloseTriggerProps
->(function DialogCloseTrigger(props, ref) {
-  return (
-    <ChakraDialog.CloseTrigger
-      position="absolute"
-      top="2"
-      insetEnd="2"
-      {...props}
-      asChild
-    >
-      <CloseButton size="sm" ref={ref}>
-        {props.children}
-      </CloseButton>
-    </ChakraDialog.CloseTrigger>
-  )
-})
+export const DialogCloseTrigger = React.forwardRef<HTMLButtonElement, ChakraDialog.CloseTriggerProps>(
+  function DialogCloseTrigger(props, ref) {
+    return (
+      <ChakraDialog.CloseTrigger position='absolute' top='2' insetEnd='2' {...props} asChild>
+        <CloseButton size='sm' ref={ref}>
+          {props.children}
+        </CloseButton>
+      </ChakraDialog.CloseTrigger>
+    )
+  }
+)
 
 export const DialogRoot = ChakraDialog.Root
 export const DialogFooter = ChakraDialog.Footer

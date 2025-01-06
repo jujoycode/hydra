@@ -17,14 +17,10 @@ export const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(function S
       <ChakraSwitch.Control>
         <ChakraSwitch.Thumb>
           {thumbLabel && (
-            <ChakraSwitch.ThumbIndicator fallback={thumbLabel?.off}>
-              {thumbLabel?.on}
-            </ChakraSwitch.ThumbIndicator>
+            <ChakraSwitch.ThumbIndicator fallback={thumbLabel?.off}>{thumbLabel?.on}</ChakraSwitch.ThumbIndicator>
           )}
         </ChakraSwitch.Thumb>
-        {trackLabel && (
-          <ChakraSwitch.Indicator fallback={trackLabel.off}>{trackLabel.on}</ChakraSwitch.Indicator>
-        )}
+        {trackLabel && <ChakraSwitch.Indicator fallback={trackLabel.off}>{trackLabel.on}</ChakraSwitch.Indicator>}
       </ChakraSwitch.Control>
       {children != null && <ChakraSwitch.Label>{children}</ChakraSwitch.Label>}
     </ChakraSwitch.Root>

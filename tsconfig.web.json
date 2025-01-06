@@ -23,8 +23,13 @@
     "baseUrl": ".",
     "paths": {
       "@components/*": ["src/renderer/src/components/*"],
+      "@layouts/*": ["src/renderer/src/layouts/*"],
       "@pages/*": ["src/renderer/src/pages/*"],
       "@hooks/*": ["src/renderer/src/hooks/*"],
+      "@stores/*": ["src/renderer/src/stores/*"],
+      "@utils/*": ["src/renderer/src/utils/*"],
+      "@constants/*": ["src/renderer/src/constants/*"],
+      "@routers": ["src/renderer/src/routers"],
       "@interface/*": ["src/main/core/interface/*"]
     },
     "composite": true, 
