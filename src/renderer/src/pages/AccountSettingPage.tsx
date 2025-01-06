@@ -19,11 +19,6 @@ export function AccountSettingPage(): JSX.Element {
     })
 
     if (canceled) {
-      toaster.error({
-        title: 'Operation Cancelled',
-        description: 'You have cancelled the operation. Please try again.'
-      })
-
       return
     }
 
@@ -42,20 +37,20 @@ export function AccountSettingPage(): JSX.Element {
       return
     }
 
-    // const updatedInfo = await window.callApi(IpcChannel.AUTH_UPDATE_USER, {
-    //   userId: user.id,
-    //   userName: name
-    //   // userAvatarKey: filePath
-    // })
+    const updatedInfo = await window.callApi(IpcChannel.AUTH_UPDATE_USER, {
+      userId: user.id,
+      userName: name
+      // userAvatarKey: filePath
+    })
 
-    // actions.setUser({
-    //   id: updatedInfo.user_id,
-    //   name: updatedInfo.user_name,
-    //   email: updatedInfo.user_email,
-    //   created_at: updatedInfo.user_created_at,
-    //   updated_at: updatedInfo.user_updated_at,
-    //   avatar_key: updatedInfo.user_avatar_key
-    // })
+    actions.setUser({
+      id: updatedInfo.user_id,
+      name: updatedInfo.user_name,
+      email: updatedInfo.user_email,
+      created_at: updatedInfo.user_created_at,
+      updated_at: updatedInfo.user_updated_at,
+      avatar_key: updatedInfo.user_avatar_key
+    })
 
     setUpdateState(false)
   }

@@ -1,5 +1,5 @@
 import { createHashRouter } from 'react-router-dom'
-// import { authLoader } from './loaders/authLoader'
+import { authLoader } from './loaders/authLoader'
 import { AuthGuard } from './guards/AuthGuard'
 import { AppLayout } from '@layouts/AppLayout'
 import { ProjectLayout } from '@layouts/ProjectLayout'
@@ -12,7 +12,7 @@ import { AccountSettingPage } from '@pages/AccountSettingPage'
 export const router = createHashRouter([
   {
     path: '/',
-    // loader: authLoader,
+    loader: authLoader,
     element: (
       <AuthGuard>
         <AppLayout />
