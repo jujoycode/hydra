@@ -40,6 +40,7 @@ export class PrismaLib extends CoreBase {
 
     this.logInfo('Prisma client created')
   }
+
   public getPrismaClient() {
     return this.prisma
   }

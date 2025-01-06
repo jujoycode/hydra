@@ -41,8 +41,30 @@ export enum SUPABASE_CLIENT_TYPE {
   STORAGE = 'storage'
 }
 
+export enum VALIDATION_TYPE {
+  LIMIT = 'limit',
+  DUPLICATE = 'duplicate'
+}
+
 export type SupaAuthClient = SupabaseClient['auth']
 export type SupaStorageClient = SupabaseClient['storage']
+
+export type ModelName = 'users' | 'issues' | 'projects' | 'users_projects_link'
+
+type ModelFields = {
+  users: keyof users
+  projects: keyof projects
+  issues: keyof issues
+  users_projects_link: keyof users_projects_link
+}
+
+export interface ValidationRule<T extends ModelName> {
+  type: VALIDATION_TYPE
+  model: T
+  where?: Partial<Record<ModelFields[T], string | number>>
+  limit?: number
+}
+
 export interface AuthVerifyOtpTokenParams extends VerifyEmailOtpParams {
   type: 'email'
 }

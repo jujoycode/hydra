@@ -1,19 +1,27 @@
 import { CoreBase } from './CoreBase'
 import { CoreDataBase } from '../database/CoreDataBase'
+import { BaseValidation } from '@util/validation/BaseValidation'
 import type { PrismaClient } from '@interface/CoreInterface'
 
-export abstract class CoreBaseHandler extends CoreBase {
+export abstract class CoreBaseHandler<T extends BaseValidation | null = null> extends CoreBase {
   public readonly ipcChannel: string
+  protected readonly database: CoreDataBase
+  protected readonly validator?: T
 
-  protected constructor(channel: string) {
+  protected constructor(channel: string, ValidationClass?: new (db: CoreDataBase) => T) {
     super()
     this.ipcChannel = channel
+    this.database = CoreDataBase.getInstance()
+
+    if (ValidationClass) {
+      this.validator = new ValidationClass(this.database)
+    }
 
     this.handler = this.handler.bind(this)
   }
 
   protected getHydraDb(): PrismaClient {
-    return CoreDataBase.getInstance().getPrismaClient()
+    return this.database.getPrismaClient()
   }
 
   public abstract handler(params: unknown): Promise<unknown>

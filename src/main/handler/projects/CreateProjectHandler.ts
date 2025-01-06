@@ -1,18 +1,18 @@
-import { IpcChannel, type CreateProjectParams, type projects } from '@interface/CoreInterface'
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { randomUUID } from 'crypto'
-import { CoreDataBase } from '@database/CoreDataBase'
+import { CoreBaseHandler } from '@base/CoreBaseHandler'
+import { ProjectValidation } from '@util/validation'
+import { IpcChannel, type CreateProjectParams, type projects } from '@interface/CoreInterface'
 
-export class CreateProjectHandler extends CoreBaseHandler {
+export class CreateProjectHandler extends CoreBaseHandler<ProjectValidation> {
   constructor() {
-    super(IpcChannel.PROJECT_CREATE)
+    super(IpcChannel.PROJECT_CREATE, ProjectValidation)
   }
 
   async handler(params: CreateProjectParams): Promise<projects> {
     this.logDebug(`CreateProjectHandler Params: ${JSON.stringify(params)}`)
 
     // 1. 프로젝트 생성 전 체크 (중복명 체크, 프로젝트 수 체크)
-    await CoreDataBase.checkCreateProjects(params.userId, params.projectName)
+    await this.validator?.checkCreateProject(params.userId, params.projectName)
 
     // 2. 프로젝트 생성 (public.projects)
     return await this.getHydraDb()
