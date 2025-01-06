@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { useAuthStore } from '@stores/authStore'
-import { Box, Flex, Text, Input, Button, Stack } from '@chakra-ui/react'
+import { Box, Flex, Text, Input, Stack } from '@chakra-ui/react'
+import { Button } from '@components/ui/button'
 import { Avatar } from '@components/ui/avatar'
 import { toaster } from '@components/ui/toaster'
 import { IpcChannel } from '@interface/CoreInterface'
 
 export function AccountSettingPage(): JSX.Element {
-  const { user } = useAuthStore()
+  const { user, actions } = useAuthStore()
   const [name, setName] = useState<string>(user?.name ? user.name : '')
+  const [filePath, setFilePath] = useState<string>()
+  const [updateState, setUpdateState] = useState(false)
 
   const callOpenDialog = async () => {
     const { canceled, filePaths } = await window.callApi(IpcChannel.SYSTEM_OPEN_DIALOG, {
@@ -24,11 +27,37 @@ export function AccountSettingPage(): JSX.Element {
       return
     }
 
-    toaster.create({
-      type: 'info',
-      title: 'File Select Success',
-      description: filePaths[0]
-    })
+    setFilePath(filePaths[0])
+  }
+
+  const callUpdateUserData = async () => {
+    setUpdateState(true)
+
+    if (!user || !user.id) {
+      toaster.error({
+        title: 'Invalid Parameter',
+        description: 'Auth info invalid, Please try again after re-logging.'
+      })
+
+      return
+    }
+
+    // const updatedInfo = await window.callApi(IpcChannel.AUTH_UPDATE_USER, {
+    //   userId: user.id,
+    //   userName: name
+    //   // userAvatarKey: filePath
+    // })
+
+    // actions.setUser({
+    //   id: updatedInfo.user_id,
+    //   name: updatedInfo.user_name,
+    //   email: updatedInfo.user_email,
+    //   created_at: updatedInfo.user_created_at,
+    //   updated_at: updatedInfo.user_updated_at,
+    //   avatar_key: updatedInfo.user_avatar_key
+    // })
+
+    setUpdateState(false)
   }
 
   return (
@@ -60,7 +89,15 @@ export function AccountSettingPage(): JSX.Element {
           </Box>
 
           <Box>
-            <Button colorScheme='blue' float='right' size='md' px={6}>
+            <Button
+              colorScheme='blue'
+              float='right'
+              size='md'
+              px={6}
+              loading={updateState}
+              disabled={!name}
+              onClick={callUpdateUserData}
+            >
               Save
             </Button>
           </Box>
