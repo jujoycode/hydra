@@ -1,10 +1,18 @@
+import { Input } from '@chakra-ui/react'
+import { Field } from '@components/ui/field'
 import { Dialog } from '@components/common/Dialog'
 import { useDialogStore } from '@stores/dialogStore'
 
 export function CreateProjectDialog() {
   const { createProjectModal, closeDialog } = useDialogStore()
 
-  const content = <></>
+  const content = (
+    <>
+      <Field label='Name' required helperText='Project name must be unique.'>
+        <Input placeholder='Enter your own name' />
+      </Field>
+    </>
+  )
 
   return (
     <Dialog

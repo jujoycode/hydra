@@ -18,7 +18,7 @@ interface DialogProps {
    * setOpen
    * @desc state setter
    */
-  setOpen: () => void
+  setOpen: (open: { open: boolean }) => void
 
   /**
    * content
@@ -48,7 +48,9 @@ export function Dialog({ title, open, setOpen, content, actionButton }: DialogPr
         <DialogBody>{content}</DialogBody>
 
         <DialogFooter>
-          <Button variant='outline'>Cancel</Button>
+          <Button variant='outline' onClick={() => setOpen({ open: false })}>
+            Cancel
+          </Button>
           {actionButton && <Button onClick={actionButton.onClick}>{actionButton.title}</Button>}
         </DialogFooter>
       </DialogContent>
