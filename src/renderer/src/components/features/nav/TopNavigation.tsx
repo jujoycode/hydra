@@ -1,14 +1,17 @@
 'use client'
 
 import { useNavigate } from 'react-router-dom'
+import { useDialogStore } from '@stores/dialogStore'
 import { Box, Flex, HStack, Text } from '@chakra-ui/react'
 import { Button } from '@components/ui/button'
 import { Popover } from '@components/common/Popover'
 import { Profile } from '@components/features/nav/Profile'
 import { ChevronDown, UserRoundPlus } from 'lucide-react'
+import { CreateProjectDialog } from '@pages/dialogs/CreateProjectDialog'
 
 export function TopNavigation(): JSX.Element {
   const navigate = useNavigate()
+  const { openDialog } = useDialogStore()
 
   // TEST: 추후 DB 조회로 변경
   const projectList = [
@@ -22,14 +25,26 @@ export function TopNavigation(): JSX.Element {
 
   const ProjectPopoverButton = () => {
     return (
-      <Popover
-        trigger={
-          <Button variant='plain'>
-            Projects <ChevronDown />
-          </Button>
-        }
-        content={{ main: projectList, footer: [{ label: 'view all projects' }] }}
-      />
+      <>
+        <Popover
+          trigger={
+            <Button variant='plain'>
+              Projects <ChevronDown />
+            </Button>
+          }
+          content={{
+            main: projectList,
+            footer: [
+              { label: 'view all projects' },
+              {
+                label: 'create new project',
+                onClick: () => openDialog('createProject')
+              }
+            ]
+          }}
+        />
+        <CreateProjectDialog />
+      </>
     )
   }
 

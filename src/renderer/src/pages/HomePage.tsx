@@ -14,7 +14,11 @@ function Home(): JSX.Element {
   //   })
   // }, [])
 
-  return <p>Home Page</p>
+  return (
+    <>
+      <p>Home Page</p>
+    </>
+  )
 }
 
 export const HomePage = memo(Home)
