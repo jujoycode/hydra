@@ -1,5 +1,7 @@
 # Hydra ERD
 
+## Overview Diagram
+
 ```mermaid
 erDiagram
 "users" {
