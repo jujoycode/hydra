@@ -1,3 +1,4 @@
+/// @hidden
 model audit_log_entries {
   instance_id String?   @db.Uuid
   id          String    @id @db.Uuid
@@ -9,6 +10,7 @@ model audit_log_entries {
   @@schema("auth")
 }
 
+/// @hidden
 model flow_state {
   id                     String                @id @db.Uuid
   user_id                String?               @db.Uuid
@@ -30,6 +32,7 @@ model flow_state {
   @@schema("auth")
 }
 
+/// @hidden
 model identities {
   provider_id     String
   user_id         String     @db.Uuid
@@ -48,6 +51,7 @@ model identities {
   @@schema("auth")
 }
 
+/// @hidden
 model instances {
   id              String    @id @db.Uuid
   uuid            String?   @db.Uuid
@@ -58,6 +62,7 @@ model instances {
   @@schema("auth")
 }
 
+/// @hidden
 model mfa_amr_claims {
   session_id            String   @db.Uuid
   created_at            DateTime @db.Timestamptz(6)
@@ -70,6 +75,7 @@ model mfa_amr_claims {
   @@schema("auth")
 }
 
+/// @hidden
 model mfa_challenges {
   id                     String      @id @db.Uuid
   factor_id              String      @db.Uuid
@@ -84,6 +90,7 @@ model mfa_challenges {
   @@schema("auth")
 }
 
+/// @hidden
 model mfa_factors {
   id                   String           @id @db.Uuid
   user_id              String           @db.Uuid
@@ -106,6 +113,7 @@ model mfa_factors {
   @@schema("auth")
 }
 
+/// @hidden
 model one_time_tokens {
   id         String              @id @db.Uuid
   user_id    String              @db.Uuid
@@ -122,6 +130,7 @@ model one_time_tokens {
   @@schema("auth")
 }
 
+/// @hidden
 model refresh_tokens {
   instance_id String?   @db.Uuid
   id          BigInt    @id @default(autoincrement())
@@ -142,6 +151,7 @@ model refresh_tokens {
   @@schema("auth")
 }
 
+/// @hidden
 model saml_providers {
   id                String        @id @db.Uuid
   sso_provider_id   String        @db.Uuid
@@ -158,6 +168,7 @@ model saml_providers {
   @@schema("auth")
 }
 
+/// @hidden
 model saml_relay_states {
   id              String        @id @db.Uuid
   sso_provider_id String        @db.Uuid
@@ -176,12 +187,14 @@ model saml_relay_states {
   @@schema("auth")
 }
 
+/// @hidden
 model schema_migrations {
   version String @id @db.VarChar(255)
 
   @@schema("auth")
 }
 
+/// @hidden
 model sessions {
   id             String           @id @db.Uuid
   user_id        String           @db.Uuid
@@ -204,6 +217,7 @@ model sessions {
   @@schema("auth")
 }
 
+/// @hidden
 model sso_domains {
   id              String        @id @db.Uuid
   sso_provider_id String        @db.Uuid
@@ -216,6 +230,7 @@ model sso_domains {
   @@schema("auth")
 }
 
+/// @hidden
 model sso_providers {
   id                String              @id @db.Uuid
   resource_id       String?
@@ -228,6 +243,11 @@ model sso_providers {
   @@schema("auth")
 }
 
+/// Supabase에서 제공하는 사용자 정보입니다.
+/// 사용자 인증 관련 정보를 저장하며 {@link identities 소셜 로그인}, 
+/// {@link sessions 세션 관리}, {@link mfa_factors 다중 인증},
+/// {@link one_time_tokens 일회용 토큰} 등과 연결됩니다.
+/// @erd Auth
 model auth_users {
   instance_id                 String?           @db.Uuid
   id                          String            @id @db.Uuid
@@ -276,6 +296,7 @@ model auth_users {
   @@schema("auth")
 }
 
+/// @hidden
 enum aal_level {
   aal1
   aal2
@@ -284,6 +305,7 @@ enum aal_level {
   @@schema("auth")
 }
 
+/// @hidden
 enum code_challenge_method {
   s256
   plain
@@ -291,6 +313,7 @@ enum code_challenge_method {
   @@schema("auth")
 }
 
+/// @hidden
 enum factor_status {
   unverified
   verified
@@ -298,6 +321,7 @@ enum factor_status {
   @@schema("auth")
 }
 
+/// @hidden
 enum factor_type {
   totp
   webauthn
@@ -306,6 +330,7 @@ enum factor_type {
   @@schema("auth")
 }
 
+/// @hidden
 enum one_time_token_type {
   confirmation_token
   reauthentication_token

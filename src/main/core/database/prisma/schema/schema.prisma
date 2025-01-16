@@ -8,3 +8,9 @@ datasource db {
   url      = env("DATABASE_URL")
   schemas  = ["auth", "public"]
 }
+
+generator markdown {
+  provider = "prisma-markdown"
+  output   = "../../../../../../docs/table-erd.md"
+  title    = "Hydra ERD"
+}
