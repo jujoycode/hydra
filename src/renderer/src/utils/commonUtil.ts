@@ -45,3 +45,21 @@ export function isNotEmpty(param: Param): boolean {
 export function getEmptyArray(length: number) {
   return Array(length).fill(CommonConstant.EMPTY_STRING) as string[]
 }
+
+/**
+ * getFileExtension
+ * @param filePath 파일 경로
+ * @returns 파일 확장자
+ */
+export function getFileExtension(filePath: string) {
+  return filePath.split('.').pop()
+}
+
+/**
+ * getPublicAccessUrl
+ * @param Supabase Storage 중 공개된 파일 경로
+ * @returns 파일 공개 접근 URL
+ */
+export function getPublicAccessUrl(filePath: string) {
+  return `${import.meta.env.VITE_SUPABASE_PROJECT_URL}/storage/v1/object/public/${CommonConstant.BUCKET_NAME}/${filePath}`
+}

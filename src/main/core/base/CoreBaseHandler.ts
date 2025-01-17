@@ -5,7 +5,7 @@ import type { PrismaClient } from '@interface/CoreInterface'
 
 export abstract class CoreBaseHandler<T extends BaseValidator | null = null> extends CoreBase {
   public readonly ipcChannel: string
-  protected readonly database: CoreDataBase
+  private readonly database: CoreDataBase
   protected readonly validator?: T
 
   protected constructor(channel: string, ValidationClass?: new (db: CoreDataBase) => T) {
