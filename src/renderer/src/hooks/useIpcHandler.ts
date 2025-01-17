@@ -9,7 +9,7 @@ export async function useIpcHandler(
 
   if (result.error) {
     toaster.error({
-      title: result.error?.code ?? 'Error',
+      title: result.error.name ?? 'Error',
       description: result.error instanceof Error ? result.error.message : 'An unexpected error occurred'
     })
   }

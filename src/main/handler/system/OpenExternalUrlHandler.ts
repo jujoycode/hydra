@@ -6,7 +6,7 @@ import { IpcChannel, type OpenExternalUrlParams, type IpcPayloads } from '@inter
  * 시스템 기본 브라우저로 URL을 여는 핸들러
  * @extends CoreBaseHandler
  */
-export class OpenExternalUrlHandler extends CoreBaseHandler {
+export class OpenExternalUrlHandler extends CoreBaseHandler<IpcChannel.SYSTEM_OPEN_EXTERNAL_URL> {
   constructor() {
     super(IpcChannel.SYSTEM_OPEN_EXTERNAL_URL)
   }
@@ -21,7 +21,7 @@ export class OpenExternalUrlHandler extends CoreBaseHandler {
    * URL을 시스템 기본 브라우저에서 엽니다
    * @param {OpenExternalUrlParams} params - { url: string }
    */
-  async handler(params: OpenExternalUrlParams): Promise<IpcPayloads[IpcChannel.SYSTEM_OPEN_EXTERNAL_URL]['receive']> {
+  async handler(params: OpenExternalUrlParams) {
     let error: (Error & { code: number }) | null = Object.assign(new Error('test'), { code: 10 })
 
     try {

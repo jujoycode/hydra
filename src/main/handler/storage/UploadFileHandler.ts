@@ -8,7 +8,7 @@ import {
   type UploadFileParams
 } from '@interface/CoreInterface'
 
-export class UploadFileHandler extends CoreBaseHandler {
+export class UploadFileHandler extends CoreBaseHandler<IpcChannel.STORAGE_UPLOAD_FILE> {
   private supaStorageClient: SupaStorageClient
 
   constructor() {
@@ -16,20 +16,19 @@ export class UploadFileHandler extends CoreBaseHandler {
     this.supaStorageClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.STORAGE)
   }
 
-  public async handler({ savePath, file, fileOptions }: UploadFileParams) {
-    this.logInfo(`${savePath} ${file}`)
+  public async handler(params: UploadFileParams) {
+    this.logInfo(`${params.savePath} ${params.file}`)
 
     const { data, error } = await this.supaStorageClient
       .from(CoreConstant.BUCKET_NAME)
-      .upload(savePath, file, fileOptions)
+      .upload(params.savePath, params.file, params.fileOptions)
 
     if (error !== null) {
       this.logError(`${JSON.stringify(error)}`)
-      throw new Error('Failed to upload file')
     }
 
-    this.logInfo(`${JSON.stringify(data)}`)
+    this.logSuccess(`upload file success (${data?.id})`)
 
-    return data
+    return { data: data, error: error }
   }
 }

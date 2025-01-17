@@ -1,4 +1,5 @@
 import type { SupabaseClient, VerifyEmailOtpParams, AuthOtpResponse, Session, AuthError } from '@supabase/supabase-js'
+import type { StorageError } from '@supabase/storage-js'
 import type { PrismaClient, issues, projects, users, users_projects_link } from '@prisma/client'
 import type { OpenDialogOptions, OpenDialogReturnValue } from 'electron'
 
@@ -15,6 +16,7 @@ export type {
   AuthOtpResponse,
   // Error
   AuthError,
+  StorageError,
   // DB Table
   users,
   issues,
@@ -71,18 +73,12 @@ export interface AuthVerifyOtpTokenParams extends VerifyEmailOtpParams {
 
 export type AuthVerifyOtpTokenResponse =
   | {
-      data: {
-        user: User | null
-        session: Session | null
-      }
-      error: null
+      user: User | null
+      session: Session | null
     }
   | {
-      data: {
-        user: null
-        session: null
-      }
-      error: AuthError
+      user: null
+      session: null
     }
 
 export interface AuthSignInWithOtpParams {
@@ -184,7 +180,7 @@ export enum IpcChannel {
   SYSTEM_OPEN_DIALOG = 'systemOpenDialog'
 }
 
-interface BaseIpcResponse<T, E extends Error = Error> {
+export interface BaseIpcResponse<T, E extends Error = Error> {
   data: T
   error: E | null
 }
@@ -204,53 +200,53 @@ export interface IpcPayloads extends BaseIpcPayloads {
   // AUTH-
   [IpcChannel.AUTH_SIGN_IN_WITH_OTP]: {
     send: AuthSignInWithOtpParams
-    receive: AuthOtpResponse
+    receive: BaseIpcResponse<{ user: null; session: null; messageId?: string | null }, AuthError>
   }
   [IpcChannel.AUTH_VERIFY_OTP_TOKEN]: {
     send: AuthVerifyOtpTokenParams
-    receive: AuthVerifyOtpTokenResponse
+    receive: BaseIpcResponse<AuthVerifyOtpTokenResponse, AuthError>
   }
   [IpcChannel.AUTH_DELETE_USER]: {
     send: AuthDeleteUserParams
-    receive: void
+    receive: BaseIpcResponse<null, AuthError>
   }
   [IpcChannel.AUTH_UPDATE_USER]: {
     send: AuthUpdateUserParams
-    receive: users
+    receive: BaseIpcResponse<users> //FIXME: @abruption Query 관련 공통 에러 타입 정의 필요
   }
 
   // PROJECT-
   [IpcChannel.PROJECT_CREATE]: {
     send: CreateProjectParams
-    receive: projects
+    receive: BaseIpcResponse<projects>
   }
   [IpcChannel.PROJECT_UPDATE]: {
     send: UpdateProjectParams
-    receive: projects
+    receive: BaseIpcResponse<projects>
   }
   [IpcChannel.PROJECT_DELETE]: {
     send: DeleteProjectParams
-    receive: boolean
+    receive: BaseIpcResponse<boolean>
   }
 
   // ISSUE-
   [IpcChannel.ISSUE_CREATE]: {
     send: CreateIssueParams
-    receive: issues
+    receive: BaseIpcResponse<issues>
   }
   [IpcChannel.ISSUE_UPDATE]: {
     send: UpdateIssueParams
-    receive: issues
+    receive: BaseIpcResponse<issues>
   }
   [IpcChannel.ISSUE_DELETE]: {
     send: DeleteIssueParams
-    receive: boolean
+    receive: BaseIpcResponse<boolean>
   }
 
   // STORAGE-
   [IpcChannel.STORAGE_UPLOAD_FILE]: {
     send: UploadFileParams
-    receive: { id: string; path: string; fullPath: string }
+    receive: BaseIpcResponse<{ id: string; path: string; fullPath: string } | null, StorageError>
   }
 
   // SYSTEM-
@@ -260,7 +256,7 @@ export interface IpcPayloads extends BaseIpcPayloads {
   }
   [IpcChannel.SYSTEM_OPEN_DIALOG]: {
     send: OpenDialogOptions
-    receive: OpenDialogReturnValue
+    receive: BaseIpcResponse<OpenDialogReturnValue>
   }
 }
 
