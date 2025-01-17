@@ -101,7 +101,7 @@ export interface AuthDeleteUserParams {
 export interface AuthUpdateUserParams {
   userId: string
   userName?: string
-  userAvatarKey?: string
+  userAvatarKey?: string | null
 }
 
 export interface OpenExternalUrlParams {
@@ -136,6 +136,25 @@ export type UpdateIssueParams = DeleteIssueParams & {
 
 export type UpdateProjectParams = CreateProjectParams & DeleteProjectParams
 
+export interface UploadFileParams {
+  savePath: string
+  file: ArrayBuffer
+  fileOptions?: {
+    /**
+     * The number of seconds the asset is cached in the browser and in the Supabase CDN. This is set in the `Cache-Control: max-age=<seconds>` header. Defaults to 3600 seconds.
+     */
+    cacheControl?: string
+    /**
+     * the `Content-Type` header value. Should be specified if using a `fileBody` that is neither `Blob` nor `File` nor `FormData`, otherwise will default to `text/plain;charset=UTF-8`.
+     */
+    contentType?: string
+    /**
+     * When upsert is set to true, the file is overwritten if it exists. When set to false, an error is thrown if the object already exists. Defaults to false.
+     */
+    upsert?: boolean
+  }
+}
+
 /**
  * IpcChannel
  * @desc Ipc 채널 정의
@@ -156,6 +175,9 @@ export enum IpcChannel {
   ISSUE_CREATE = 'issueCreate',
   ISSUE_UPDATE = 'issueUpdate',
   ISSUE_DELETE = 'issueDelete',
+
+  // STORAGE-
+  STORAGE_UPLOAD_FILE = 'storageUploadFile',
 
   // SYSTEM-
   SYSTEM_OPEN_EXTERNAL_URL = 'systemOpenExternalUrl',
@@ -223,6 +245,12 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.ISSUE_DELETE]: {
     send: DeleteIssueParams
     receive: boolean
+  }
+
+  // STORAGE-
+  [IpcChannel.STORAGE_UPLOAD_FILE]: {
+    send: UploadFileParams
+    receive: { id: string; path: string; fullPath: string }
   }
 
   // SYSTEM-

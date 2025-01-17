@@ -1,34 +1,81 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useAuthStore } from '@stores/authStore'
-import { Box, Flex, Text, Input, Stack } from '@chakra-ui/react'
+import { Box, Flex, Text, Input, Stack, type FileUploadFileChangeDetails } from '@chakra-ui/react'
 import { Button } from '@components/ui/button'
 import { Avatar } from '@components/ui/avatar'
 import { toaster } from '@components/ui/toaster'
+import { FileUploadRoot, FileUploadTrigger } from '@components/ui/file-upload'
+import { getFileExtension, getPublicAccessUrl } from '@utils/commonUtil'
 import { IpcChannel } from '@interface/CoreInterface'
+
+interface UserFormState {
+  name: string
+  avatarFile: File | null
+  avatarPath?: string
+}
 
 export function AccountSettingPage(): JSX.Element {
   const { user, actions } = useAuthStore()
-  const [name, setName] = useState<string>(user?.name ? user.name : '')
-  const [filePath, setFilePath] = useState<string>()
-  const [updateState, setUpdateState] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [formState, setFormState] = useState<UserFormState>({
+    name: user?.name ?? '',
+    avatarFile: null,
+    avatarPath: user?.avatar_key ? getPublicAccessUrl(user.avatar_key) : undefined
+  })
 
-  const callOpenDialog = async () => {
-    const { canceled, filePaths } = await window.callApi(IpcChannel.SYSTEM_OPEN_DIALOG, {
-      filters: [{ name: 'Images', extensions: ['jpg', 'png'] }],
-      properties: ['openFile']
-    })
+  // 사용자 정보 변경 여부 확인
+  const isUserInfoChanged = useMemo(() => {
+    return formState.name !== user?.name || formState.avatarFile !== null
+  }, [formState.name, formState.avatarFile, user?.name])
 
-    if (canceled) {
+  /**
+   * handleImageUpload
+   * @desc 이미지 업로드 처리
+   */
+  const handleImageUpload = ({ rejectedFiles, acceptedFiles }: FileUploadFileChangeDetails) => {
+    if (rejectedFiles.length > 0) {
+      toaster.error({
+        title: 'Invalid File',
+        description: 'Image must be less than 5MB and in PNG, JPEG, or JPG format'
+      })
+
       return
     }
 
-    setFilePath(filePaths[0])
+    if (acceptedFiles.length > 0) {
+      const reader = new FileReader()
+
+      reader.onload = () => {
+        setFormState((prev) => ({
+          ...prev,
+          avatarFile: acceptedFiles[0],
+          avatarPath: reader.result as string
+        }))
+      }
+
+      reader.readAsDataURL(acceptedFiles[0])
+    }
   }
 
-  const callUpdateUserData = async () => {
-    setUpdateState(true)
+  /**
+   * handleReset
+   * @desc 사용자 정보 초기화
+   */
+  const handleReset = () => {
+    setFormState({
+      name: user?.name ?? '',
+      avatarFile: null,
+      avatarPath: user?.avatar_key ?? undefined
+    })
+  }
 
-    if (!user || !user.id) {
+  /**
+   * callUpdateUserData
+   * @desc 사용자 정보 업데이트 요청
+   */
+  const callUpdateUserData = async () => {
+    // *. 사용자 정보 유효성 검사
+    if (!user?.id) {
       toaster.error({
         title: 'Invalid Parameter',
         description: 'Auth info invalid, Please try again after re-logging.'
@@ -37,43 +84,84 @@ export function AccountSettingPage(): JSX.Element {
       return
     }
 
-    const updatedInfo = await window.callApi(IpcChannel.AUTH_UPDATE_USER, {
-      userId: user.id,
-      userName: name
-      // userAvatarKey: filePath
-    })
+    try {
+      // 1. 사용자 정보 업데이트 시작
+      setIsLoading(true)
 
-    actions.setUser({
-      id: updatedInfo.user_id,
-      name: updatedInfo.user_name,
-      email: updatedInfo.user_email,
-      created_at: updatedInfo.user_created_at,
-      updated_at: updatedInfo.user_updated_at,
-      avatar_key: updatedInfo.user_avatar_key
-    })
+      // 2. 사용자 아바타 파일 업로드
+      let avatarPath = formState.avatarPath
+      if (formState.avatarFile) {
+        const fileBuffer = await formState.avatarFile.arrayBuffer()
+        const uploadFileResult = await window.callApi(IpcChannel.STORAGE_UPLOAD_FILE, {
+          savePath: `user/${user.id}.${getFileExtension(formState.avatarFile.name)}`,
+          file: fileBuffer,
+          fileOptions: { upsert: true, cacheControl: '0' }
+        })
 
-    setUpdateState(false)
+        avatarPath = uploadFileResult.path
+      }
+
+      // 3. 사용자 정보 업데이트 (public.users)
+      const updatedInfo = await window.callApi(IpcChannel.AUTH_UPDATE_USER, {
+        userId: user.id,
+        userName: formState.name,
+        userAvatarKey: avatarPath
+      })
+
+      // 4. 사용자 정보 업데이트 (AuthStore)
+      actions.setUser({
+        id: updatedInfo.user_id,
+        name: updatedInfo.user_name,
+        email: updatedInfo.user_email,
+        created_at: updatedInfo.user_created_at,
+        updated_at: updatedInfo.user_updated_at,
+        avatar_key: updatedInfo.user_avatar_key
+      })
+    } catch (error) {
+      // 5. 사용자 정보 업데이트 실패 처리
+      toaster.error({
+        title: 'Update Failed',
+        description: 'Failed to update user information'
+      })
+
+      handleReset()
+    } finally {
+      // 6. 로딩 상태 초기화
+      setIsLoading(false)
+    }
   }
 
   return (
     <Box bg='white' boxShadow='md' borderRadius='lg' p={6}>
       <Flex direction={{ base: 'column', md: 'row' }} gap={8}>
         <Stack gap={6} flex={1}>
-          <Avatar
-            variant='outline'
-            shape='rounded'
-            size='xl'
-            name={user?.name ? user?.name : user?.id}
-            cursor='pointer'
-            _hover={{ bg: 'gray.200' }}
-            onClick={() => callOpenDialog()}
-          />
+          <FileUploadRoot
+            maxFileSize={1024 * 1024 * 5}
+            accept={['image/png', 'image/jpeg', 'image/jpg']}
+            onFileChange={(files) => handleImageUpload(files)}
+          >
+            <FileUploadTrigger asChild>
+              <Avatar
+                _hover={{ bg: 'gray.200' }}
+                variant='outline'
+                shape='rounded'
+                size='xl'
+                name={formState.name ? formState.name : user?.id}
+                src={formState.avatarPath}
+                cursor='pointer'
+              />
+            </FileUploadTrigger>
+          </FileUploadRoot>
 
           <Box>
             <Text fontSize='sm' fontWeight='medium' mb={2}>
               Name
             </Text>
-            <Input placeholder='Enter your full name' value={name} onChange={(e) => setName(e.target.value)} />
+            <Input
+              placeholder='Enter your full name'
+              value={formState.name}
+              onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+            />
           </Box>
 
           <Box>
@@ -85,15 +173,17 @@ export function AccountSettingPage(): JSX.Element {
 
           <Box>
             <Button
-              colorScheme='blue'
               float='right'
               size='md'
               px={6}
-              loading={updateState}
-              disabled={!name}
+              disabled={!isUserInfoChanged}
               onClick={callUpdateUserData}
+              loading={isLoading}
             >
               Save
+            </Button>
+            <Button variant='ghost' float='right' size='md' px={6} mr={4} onClick={handleReset}>
+              Clear
             </Button>
           </Box>
         </Stack>
