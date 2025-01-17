@@ -204,6 +204,7 @@ model sessions {
   @@schema("auth")
 }
 
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model sso_domains {
   id              String        @id @db.Uuid
   sso_provider_id String        @db.Uuid
@@ -216,6 +217,7 @@ model sso_domains {
   @@schema("auth")
 }
 
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model sso_providers {
   id                String              @id @db.Uuid
   resource_id       String?
@@ -228,6 +230,7 @@ model sso_providers {
   @@schema("auth")
 }
 
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model auth_users {
   instance_id                 String?           @db.Uuid
   id                          String            @id @db.Uuid

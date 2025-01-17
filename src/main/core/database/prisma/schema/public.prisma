@@ -22,6 +22,7 @@ model projects {
   project_end_date    DateTime?
   users_projects_link users_projects_link[]
 
+  @@index([project_name], map: "idx_project_name")
   @@schema("public")
 }
 
@@ -49,6 +50,8 @@ model issues {
   issue_updated_at  DateTime?           @updatedAt
   issues_files_link issues_files_link[]
 
+  @@index([issue_key], map: "idx_issue_key")
+  @@index([issue_title], map: "idx_issue_title")
   @@schema("public")
 }
 
@@ -69,8 +72,8 @@ model issues_files_link {
   id       Int    @id @default(autoincrement())
   issue_id String @db.Uuid
   file_id  String @db.Uuid
-  issue    issues @relation(fields: [issue_id], references: [issue_id])
   file     files  @relation(fields: [file_id], references: [file_id])
+  issue    issues @relation(fields: [issue_id], references: [issue_id])
 
   @@index([issue_id], map: "idx_issue_id")
   @@index([file_id], map: "idx_file_id")
