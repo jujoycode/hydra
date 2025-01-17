@@ -1,20 +1,23 @@
 'use client'
 
+import { Button } from '@components/ui/button'
+import { useIpcHandler } from '@hooks/useIpcHandler'
+import { IpcChannel } from '@interface/CoreInterface'
 import { memo } from 'react'
-// import { useAuthStore } from '@stores/AuthStore'
-// import { toaster } from '@components/ui/toaster'
 
 function Home(): JSX.Element {
-  // const { user } = useAuthStore()
+  const openGoogle = async () => {
+    const result = await useIpcHandler(IpcChannel.SYSTEM_OPEN_EXTERNAL_URL, { url: 'https://www.google.com' })
 
-  // useEffect(() => {
-  //   toaster.create({
-  //     type: 'info',
-  //     title: `Welcome, ${user?.user_metadata?.name ?? user?.id}`
-  //   })
-  // }, [])
+    console.log(result)
+  }
 
-  return <p>Home Page</p>
+  return (
+    <>
+      <p>Home Page</p>
+      <Button onClick={openGoogle}>Open Google</Button>
+    </>
+  )
 }
 
 export const HomePage = memo(Home)

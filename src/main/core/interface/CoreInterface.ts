@@ -162,6 +162,11 @@ export enum IpcChannel {
   SYSTEM_OPEN_DIALOG = 'systemOpenDialog'
 }
 
+interface BaseIpcResponse<T, E extends Error = Error> {
+  data: T
+  error: E | null
+}
+
 interface BaseIpcPayloads<SendType = unknown, ReceiveType = unknown> {
   [key: string]: {
     send: SendType
@@ -223,7 +228,7 @@ export interface IpcPayloads extends BaseIpcPayloads {
   // SYSTEM-
   [IpcChannel.SYSTEM_OPEN_EXTERNAL_URL]: {
     send: OpenExternalUrlParams
-    receive: void
+    receive: BaseIpcResponse<null>
   }
   [IpcChannel.SYSTEM_OPEN_DIALOG]: {
     send: OpenDialogOptions

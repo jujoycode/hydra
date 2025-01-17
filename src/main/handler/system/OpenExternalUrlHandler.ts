@@ -1,6 +1,6 @@
 import { shell } from 'electron'
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import type { OpenExternalUrlParams } from '@interface/CoreInterface'
+import { IpcChannel, type OpenExternalUrlParams, type IpcPayloads } from '@interface/CoreInterface'
 
 /**
  * 시스템 기본 브라우저로 URL을 여는 핸들러
@@ -8,7 +8,7 @@ import type { OpenExternalUrlParams } from '@interface/CoreInterface'
  */
 export class OpenExternalUrlHandler extends CoreBaseHandler {
   constructor() {
-    super('systemOpenExternalUrl')
+    super(IpcChannel.SYSTEM_OPEN_EXTERNAL_URL)
   }
 
   private readonly urlMapper = {
@@ -21,11 +21,15 @@ export class OpenExternalUrlHandler extends CoreBaseHandler {
    * URL을 시스템 기본 브라우저에서 엽니다
    * @param {OpenExternalUrlParams} params - { url: string }
    */
-  async handler(params: OpenExternalUrlParams): Promise<void> {
+  async handler(params: OpenExternalUrlParams): Promise<IpcPayloads[IpcChannel.SYSTEM_OPEN_EXTERNAL_URL]['receive']> {
+    let error: (Error & { code: number }) | null = Object.assign(new Error('test'), { code: 10 })
+
     try {
       await shell.openExternal(this.urlMapper[params.url] ?? params.url)
     } catch (error) {
-      throw new Error('Failed to open URL in external browser')
+      error = error as Error
     }
+
+    return { data: null, error }
   }
 }
