@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Button } from '@components/ui/button'
 import { DialogRoot, DialogHeader, DialogTitle, DialogBody, DialogContent, DialogFooter } from '@components/ui/dialog'
 
@@ -33,11 +34,33 @@ interface DialogProps {
    */
   actionButton?: {
     title: string
-    onClick: () => void
+    onClick: () => void | Promise<void>
+    disabled?: boolean
   }
 }
 
 export function Dialog({ title, open, setOpen, content, actionButton }: DialogProps) {
+  const [loading, setLoading] = useState(false)
+
+  const ActionButton = () => {
+    const handleClick = async () => {
+      setLoading(true)
+
+      await actionButton?.onClick()
+
+      setLoading(false)
+    }
+
+    if (!actionButton) return null
+    return (
+      <>
+        <Button onClick={handleClick} loading={loading} disabled={actionButton.disabled}>
+          {actionButton.title}
+        </Button>
+      </>
+    )
+  }
+
   return (
     <DialogRoot modal scrollBehavior='inside' open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -51,7 +74,7 @@ export function Dialog({ title, open, setOpen, content, actionButton }: DialogPr
           <Button variant='outline' onClick={() => setOpen({ open: false })}>
             Cancel
           </Button>
-          {actionButton && <Button onClick={actionButton.onClick}>{actionButton.title}</Button>}
+          <ActionButton />
         </DialogFooter>
       </DialogContent>
     </DialogRoot>
