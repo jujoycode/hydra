@@ -6,7 +6,7 @@ import { IpcChannel, type OpenDialogOptions, OpenDialogReturnValue } from '@inte
  * Dialog 호출 후 경로를 반환받는 핸들러
  * @extends CoreBaseHandler
  */
-export class OepnDialogHandler extends CoreBaseHandler {
+export class OpenDialogHandler extends CoreBaseHandler {
   constructor() {
     super(IpcChannel.SYSTEM_OPEN_DIALOG)
   }
