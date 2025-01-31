@@ -1,13 +1,13 @@
-import { IpcChannel, type UpdateProjectParams, type projects } from '@interface/CoreInterface'
+import { IpcChannel, type UpdateProjectParams } from '@interface/CoreInterface'
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { ProjectValidator } from '@util/validator'
 
-export class UpdateProjectHandler extends CoreBaseHandler<ProjectValidator> {
+export class UpdateProjectHandler extends CoreBaseHandler<IpcChannel.PROJECT_UPDATE, ProjectValidator> {
   constructor() {
     super(IpcChannel.PROJECT_UPDATE, ProjectValidator)
   }
 
-  async handler(params: UpdateProjectParams): Promise<projects> {
+  async handler(params: UpdateProjectParams) {
     this.logDebug(`UpdateProjectHandler Params: ${JSON.stringify(params)}`)
 
     // 1. 프로젝트 업데이트 전 체크 (중복명 체크)
@@ -28,6 +28,6 @@ export class UpdateProjectHandler extends CoreBaseHandler<ProjectValidator> {
     /**
      * TODO: 프로젝트 생성 결과 반환 시, start_date, end_date timezone 보정
      */
-    return project
+    return { data: project, error: null }
   }
 }

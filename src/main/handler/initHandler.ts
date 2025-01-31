@@ -1,5 +1,7 @@
 import { ipcMain } from 'electron/main'
+import type { IpcChannel, IpcPayloads } from '@interface/CoreInterface'
 import type { CoreBaseHandler } from '@base/CoreBaseHandler'
+import type { BaseValidator } from '@util/validator/BaseValidator'
 
 /* Auth Handler */
 import { DeleteUserHandler } from './auth/DeleteUserHandler'
@@ -33,18 +35,14 @@ const handlers = {
 }
 
 export function initHandler() {
-  const handler: CoreBaseHandler<any>[] = Object.values(handlers)
+  const handler: CoreBaseHandler<IpcChannel, BaseValidator | null>[] = Object.values(handlers)
     .flat()
     .map((Handler) => new Handler())
 
   handler.forEach(({ ipcChannel, handler }) =>
-    ipcMain.on(ipcChannel, async (_, params: unknown) => {
-      try {
-        const ipcReturn = await handler(params)
-        _.reply(ipcChannel, ipcReturn)
-      } catch (error) {
-        _.reply(ipcChannel, error)
-      }
+    ipcMain.on(ipcChannel, async (_, params: IpcPayloads[IpcChannel]['send']) => {
+      const ipcReturn = await handler(params)
+      _.reply(ipcChannel, ipcReturn)
     })
   )
 }

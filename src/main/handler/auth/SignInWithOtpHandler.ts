@@ -3,7 +3,6 @@ import { SupabaseLib } from '@lib/SupabaseLib'
 import {
   IpcChannel,
   SUPABASE_CLIENT_TYPE,
-  type AuthOtpResponse,
   type AuthSignInWithOtpParams,
   type SupaAuthClient
 } from '@interface/CoreInterface'
@@ -12,7 +11,7 @@ import {
  * OTP(일회용 비밀번호)를 사용한 로그인 기능을 처리합니다
  * @extends CoreBaseHandler
  */
-export class SignInWithOtpHandler extends CoreBaseHandler {
+export class SignInWithOtpHandler extends CoreBaseHandler<IpcChannel.AUTH_SIGN_IN_WITH_OTP> {
   private supaAuthClient: SupaAuthClient
 
   /**
@@ -45,25 +44,22 @@ export class SignInWithOtpHandler extends CoreBaseHandler {
    * @param {AuthSignInWithOtpParams} params - OTP 로그인에 사용될 이메일을 포함
    * @throws {Error} 이메일 형식이 잘못되었거나 OTP 로그인이 실패한 경우 에러 발생
    */
-  async handler(params: AuthSignInWithOtpParams): Promise<AuthOtpResponse> {
+  async handler(params: AuthSignInWithOtpParams) {
     // 1. Email Format Check
-    if (this.validateEmailFormat(params.email)) {
-      // 2. Sign In With OTP
-      const { data, error } = await this.supaAuthClient.signInWithOtp({
-        email: params.email,
-        options: { shouldCreateUser: true }
-      })
-
-      if (error !== null) {
-        throw error
-      }
-
-      return {
-        data,
-        error
-      }
-    } else {
+    if (!this.validateEmailFormat(params.email)) {
       throw new Error('Invalid email format')
     }
+
+    // 2. Sign In With OTP
+    const { data, error } = await this.supaAuthClient.signInWithOtp({
+      email: params.email,
+      options: { shouldCreateUser: true }
+    })
+
+    if (error !== null) {
+      throw error
+    }
+
+    return { data, error }
   }
 }

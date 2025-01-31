@@ -1,14 +1,14 @@
 import { CoreBase } from './CoreBase'
 import { CoreDataBase } from '../database/CoreDataBase'
-import { BaseValidator } from '@util/validator/BaseValidator'
-import type { PrismaClient } from '@interface/CoreInterface'
+import type { BaseValidator } from '@util/validator/BaseValidator'
+import type { IpcChannel, IpcPayloads, PrismaClient } from '@interface/CoreInterface'
 
-export abstract class CoreBaseHandler<T extends BaseValidator | null = null> extends CoreBase {
-  public readonly ipcChannel: string
+export abstract class CoreBaseHandler<C extends IpcChannel, T extends BaseValidator | null = null> extends CoreBase {
+  public readonly ipcChannel: C
   private readonly database: CoreDataBase
   protected readonly validator?: T
 
-  protected constructor(channel: string, ValidationClass?: new (db: CoreDataBase) => T) {
+  protected constructor(channel: C, ValidationClass?: new (db: CoreDataBase) => T) {
     super()
     this.ipcChannel = channel
     this.database = CoreDataBase.getInstance()
@@ -24,5 +24,5 @@ export abstract class CoreBaseHandler<T extends BaseValidator | null = null> ext
     return this.database.getPrismaClient()
   }
 
-  public abstract handler(params: unknown): Promise<unknown>
+  public abstract handler(params: IpcPayloads[C]['send']): Promise<IpcPayloads[C]['receive']>
 }
