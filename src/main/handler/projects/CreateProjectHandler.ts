@@ -1,21 +1,21 @@
 import { randomUUID } from 'crypto'
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
 import { ProjectValidator } from '@util/validator'
-import { IpcChannel, type CreateProjectParams, type projects } from '@interface/CoreInterface'
+import { IpcChannel, type CreateProjectParams } from '@interface/CoreInterface'
 
-export class CreateProjectHandler extends CoreBaseHandler<ProjectValidator> {
+export class CreateProjectHandler extends CoreBaseHandler<IpcChannel.PROJECT_CREATE, ProjectValidator> {
   constructor() {
     super(IpcChannel.PROJECT_CREATE, ProjectValidator)
   }
 
-  async handler(params: CreateProjectParams): Promise<projects> {
+  async handler(params: CreateProjectParams) {
     this.logDebug(`CreateProjectHandler Params: ${JSON.stringify(params)}`)
 
     // 1. 프로젝트 생성 전 체크 (중복명 체크, 프로젝트 수 체크)
     await this.validator?.checkCreateProject(params.userId, params.projectName)
 
     // 2. 프로젝트 생성 (public.projects)
-    return await this.getHydraDb()
+    const project = await this.getHydraDb()
       .$transaction(async (tx) => {
         const project = await tx.projects.create({
           data: {
@@ -44,5 +44,7 @@ export class CreateProjectHandler extends CoreBaseHandler<ProjectValidator> {
         const error = err as Error
         throw new Error(`Failed to create project with user link: ${error.message}`)
       })
+
+    return { data: project, error: null }
   }
 }
