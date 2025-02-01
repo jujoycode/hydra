@@ -5,8 +5,9 @@ import { AppLayout } from '@layouts/AppLayout'
 import { ProjectLayout } from '@layouts/ProjectLayout'
 import { SettingLayout } from '@layouts/SettingLayout'
 import { HomePage } from '@pages/HomePage'
-import { ProjectPage } from '@pages/ProjectPage'
 import { SignInPage } from '@pages/SignInPage'
+import { ProjectPage } from '@pages/ProjectPage'
+import { ProjectList } from '@pages/projects/ProjectList'
 import { AccountSettingPage } from '@pages/AccountSettingPage'
 
 export const router = createHashRouter([
@@ -27,6 +28,10 @@ export const router = createHashRouter([
         path: 'projects',
         element: <ProjectLayout />,
         children: [
+          {
+            path: 'list',
+            element: <ProjectList />
+          },
           {
             path: ':projectId',
             element: <ProjectPage />

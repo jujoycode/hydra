@@ -16,10 +16,12 @@ export function TopNavigation(): JSX.Element {
   // TEST: 추후 DB 조회로 변경
   const projectList = [
     {
-      label: 'Project 1'
+      label: 'Project 1',
+      onClick: () => navigate('/projects/1')
     },
     {
-      label: 'Project 2'
+      label: 'Project 2',
+      onClick: () => navigate('/projects/2')
     }
   ]
 
@@ -35,7 +37,7 @@ export function TopNavigation(): JSX.Element {
           content={{
             main: projectList,
             footer: [
-              { label: 'view all projects' },
+              { label: 'view all projects', onClick: () => navigate('/projects/list') },
               {
                 label: 'create new project',
                 onClick: () => openDialog('createProject')

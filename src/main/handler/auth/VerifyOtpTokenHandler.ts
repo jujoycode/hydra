@@ -3,6 +3,7 @@ import { SupabaseLib } from '@lib/SupabaseLib'
 import {
   IpcChannel,
   SUPABASE_CLIENT_TYPE,
+  type PrismaClient,
   type AuthVerifyOtpTokenParams,
   type SupaAuthClient
 } from '@interface/CoreInterface'
@@ -14,6 +15,7 @@ import {
 export class VerifyOtpTokenHandler extends CoreBaseHandler<IpcChannel.AUTH_VERIFY_OTP_TOKEN> {
   /** Supabase 인증 클라이언트 인스턴스 */
   private supaAuthClient: SupaAuthClient
+  private hydraDb: PrismaClient
 
   /**
    * VerifyOtpTokenHandler 클래스의 생성자
@@ -22,6 +24,7 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler<IpcChannel.AUTH_VERIF
   constructor() {
     super(IpcChannel.AUTH_VERIFY_OTP_TOKEN)
     this.supaAuthClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.AUTH)
+    this.hydraDb = this.getHydraDb()
   }
 
   /**
@@ -41,25 +44,37 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler<IpcChannel.AUTH_VERIF
     })
     if (error !== null) throw new Error('OTP verification failed')
 
-    const user = await this.getHydraDb().users.findUnique({
+    const user = await this.hydraDb.users.findUnique({
       where: {
         user_id: data.user?.id
       }
     })
+
     if (!data.session || !user) throw new Error('Invalid user')
 
-    const returnData = {
-      session: data.session,
-      user: {
-        id: user.user_id,
-        name: user.user_name,
-        email: user.user_email,
-        created_at: user.user_created_at,
-        updated_at: user.user_updated_at,
-        avatar_key: user.user_avatar_key
+    const projects = await this.hydraDb.projects.findMany({
+      select: {
+        users_projects_link: {
+          where: {
+            user_id: data.user?.id
+          }
+        }
       }
-    }
+    })
 
-    return { data: returnData, error }
+    return {
+      data: {
+        session: data.session,
+        user: {
+          id: user.user_id,
+          name: user.user_name,
+          email: user.user_email,
+          created_at: user.user_created_at,
+          updated_at: user.user_updated_at,
+          avatar_key: user.user_avatar_key
+        }
+      },
+      error
+    }
   }
 }

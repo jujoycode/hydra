@@ -246,7 +246,7 @@ export interface IpcPayloads extends BaseIpcPayloads {
   // STORAGE-
   [IpcChannel.STORAGE_UPLOAD_FILE]: {
     send: UploadFileParams
-    receive: BaseIpcResponse<{ id: string; path: string; fullPath: string }, StorageError>
+    receive: BaseIpcResponse<{ id: string; path: string; fullPath: string } | null, StorageError>
   }
 
   // SYSTEM-

@@ -24,10 +24,8 @@ export class UploadFileHandler extends CoreBaseHandler<IpcChannel.STORAGE_UPLOAD
       .upload(params.savePath, params.file, params.fileOptions)
 
     if (error !== null) {
-      this.logError(`${JSON.stringify(error)}`)
+      this.logError(JSON.stringify(error, null, 2))
     }
-
-    this.logSuccess(`upload file success (${data?.id})`)
 
     return { data, error }
   }
