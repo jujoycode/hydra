@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useIpcHandler } from '@hooks/useIpcHandler'
 import { Input } from '@chakra-ui/react'
 import { Field } from '@components/ui/field'
 import { Dialog } from '@components/common/Dialog'
@@ -9,8 +10,9 @@ import { IpcChannel } from '@interface/CoreInterface'
 export function CreateProjectDialog() {
   const { user } = useAuthStore()
   const { createProjectModal, closeDialog } = useDialogStore()
-  const [projectName, setProjectName] = useState('')
-  const [description, setDescription] = useState('')
+  const [projectName, setProjectName] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
+  const createProjectHandler = useIpcHandler(IpcChannel.PROJECT_CREATE)
 
   const content = (
     <>
@@ -36,14 +38,8 @@ export function CreateProjectDialog() {
     </>
   )
 
-  const callRequestCreateProject = async () => {
-    await window.callApi(IpcChannel.PROJECT_CREATE, {
-      userId: user?.id || '',
-      projectName: projectName,
-      projectDescription: description
-    })
-
-    closeDialog('createProject')
+  const callRequestCreateProject = () => {
+    createProjectHandler({ userId: user?.id || '', projectName: projectName, projectDescription: description })
   }
 
   return (

@@ -3,15 +3,20 @@
 import { useEffect } from 'react'
 import { useAuthStore } from '@stores/authStore'
 import { useSignInStore, SignInProcess } from '@stores/signInStore'
+import { useProjectStore } from '@stores/projectStore'
 import { Box, Text, Link } from '@chakra-ui/react'
 import { PinInput } from '@components/ui/pin-input'
 import { IpcChannel, AuthError } from '@interface/CoreInterface'
 import { getEmptyArray } from '@utils/commonUtil'
 import { CommonConstant } from '@constants/CommonConstant'
+import { useIpcHandler } from '@hooks/useIpcHandler'
 
 export function OtpForm() {
   const { setSessions, setUser } = useAuthStore().actions
   const { mail, otpToken, actions } = useSignInStore()
+  const { addProject } = useProjectStore().actions
+  const verifyOtpHandler = useIpcHandler(IpcChannel.AUTH_VERIFY_OTP_TOKEN)
+  const openExternalUrlHandler = useIpcHandler(IpcChannel.SYSTEM_OPEN_EXTERNAL_URL)
 
   useEffect(() => {
     if (otpToken && otpToken[5] !== CommonConstant.EMPTY_STRING) {
@@ -26,15 +31,20 @@ export function OtpForm() {
   const verifyOtpToken = async () => {
     try {
       // 1. main 프로세스로 OTP 인증 요청
-      const { data } = await window.callApi(IpcChannel.AUTH_VERIFY_OTP_TOKEN, {
+      const { data, error } = await verifyOtpHandler({
         email: mail as string,
         token: otpToken!.join(CommonConstant.EMPTY_STRING),
         type: CommonConstant.TYPE.MAIL
       })
 
+      if (error) {
+        throw error
+      }
+
       // 2. 세션 및 유저 정보를 전역 객체로 세팅
       setSessions(data.session)
       setUser(data.user)
+      data.projects?.forEach((project) => addProject(project))
 
       // 3. 상태를 성공으로 변경
       actions.setSignInProcess(SignInProcess.SUCCESS)
@@ -45,8 +55,8 @@ export function OtpForm() {
     }
   }
 
-  const callOpenExternalUrl = (url: string) => {
-    window.callApi(IpcChannel.SYSTEM_OPEN_EXTERNAL_URL, { url })
+  const callOpenExternalUrl = async (url: string) => {
+    await openExternalUrlHandler({ url })
   }
 
   /**
@@ -67,7 +77,7 @@ export function OtpForm() {
           <Link
             variant='underline'
             ml={2}
-            onClick={() => callOpenExternalUrl(CommonConstant.URL.MAIL_PREFIX + mail.split('@')[1])}
+            onClick={async () => await callOpenExternalUrl(CommonConstant.URL.MAIL_PREFIX + mail.split('@')[1])}
           >
             {mail}
           </Link>

@@ -1,4 +1,5 @@
 import { ipcMain } from 'electron/main'
+import type { IpcChannel, IpcPayloads } from '@interface/CoreInterface'
 import type { CoreBaseHandler } from '@base/CoreBaseHandler'
 import type { BaseValidator } from '@util/validator/BaseValidator'
 
@@ -18,34 +19,30 @@ import { CreateIssueHandler } from './issues/CreateIssueHandler'
 import { DeleteIssueHandler } from './issues/DeleteIssueHandler'
 import { UpdateIssueHandler } from './issues/UpdateIssueHandler'
 
+/* Storage Handler */
+import { UploadFileHandler } from './storage/UploadFileHandler'
+
 /* System Handler */
 import { OpenExternalUrlHandler } from './system/OpenExternalUrlHandler'
-import { OepnDialogHandler } from './system/OpenDialogHandler'
+import { OpenDialogHandler } from './system/OpenDialogHandler'
+
+const handlers = {
+  auth: [DeleteUserHandler, SignInWithOtpHandler, VerifyOtpTokenHandler, UpdateUserHandler],
+  projects: [CreateProjectHandler, DeleteProjectHandler, UpdateProjectHandler],
+  issues: [CreateIssueHandler, DeleteIssueHandler, UpdateIssueHandler],
+  storage: [UploadFileHandler],
+  system: [OpenExternalUrlHandler, OpenDialogHandler]
+}
 
 export function initHandler() {
-  const handler: CoreBaseHandler<null | BaseValidator>[] = [
-    new DeleteUserHandler(),
-    new SignInWithOtpHandler(),
-    new VerifyOtpTokenHandler(),
-    new UpdateUserHandler(),
-    new OpenExternalUrlHandler(),
-    new OepnDialogHandler(),
-    new CreateProjectHandler(),
-    new UpdateProjectHandler(),
-    new DeleteProjectHandler(),
-    new CreateIssueHandler(),
-    new UpdateIssueHandler(),
-    new DeleteIssueHandler()
-  ]
+  const handler: CoreBaseHandler<IpcChannel, BaseValidator | null>[] = Object.values(handlers)
+    .flat()
+    .map((Handler) => new Handler())
 
   handler.forEach(({ ipcChannel, handler }) =>
-    ipcMain.on(ipcChannel, async (_, params: unknown) => {
-      try {
-        const ipcReturn = await handler(params)
-        _.reply(ipcChannel, ipcReturn)
-      } catch (error) {
-        _.reply(ipcChannel, error)
-      }
+    ipcMain.on(ipcChannel, async (_, params: IpcPayloads[IpcChannel]['send']) => {
+      const ipcReturn = await handler(params)
+      _.reply(ipcChannel, ipcReturn)
     })
   )
 }

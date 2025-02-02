@@ -11,7 +11,7 @@ import {
  * 사용자 삭제 기능을 처리하는 핸들러 클래스입니다.
  * @extends CoreBaseHandler
  */
-export class DeleteUserHandler extends CoreBaseHandler {
+export class DeleteUserHandler extends CoreBaseHandler<IpcChannel.AUTH_DELETE_USER> {
   /** Supabase 인증 클라이언트 인스턴스 */
   private supaAuthClient: SupaAuthClient
 
@@ -30,13 +30,14 @@ export class DeleteUserHandler extends CoreBaseHandler {
    * @param {string} params.id - 삭제할 사용자의 ID
    * @param {boolean} params.shouldSoftDelete - 소프트 삭제 여부
    * @throws {Error} 사용자 삭제 실패 시 에러를 던집니다
-   * @returns {Promise<void>}
    */
-  async handler(params: AuthDeleteUserParams): Promise<void> {
-    const { error } = await this.supaAuthClient.admin.deleteUser(params.id, params.shouldSoftDelete)
+  async handler(params: AuthDeleteUserParams) {
+    const { data: _, error } = await this.supaAuthClient.admin.deleteUser(params.id, params.shouldSoftDelete)
 
     if (error !== null) {
       throw new Error('Failed to delete user')
     }
+
+    return { data: null, error }
   }
 }

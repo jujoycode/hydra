@@ -40,10 +40,9 @@ const useAuthStoreBase = create<AuthStore>((set) => ({
     },
 
     clearAuth: () => {
-      set({ session: null, user: null })
-
-      localStorage.removeItem('session')
-      localStorage.removeItem('user')
+      Promise.all([localStorage.removeItem('session'), localStorage.removeItem('user')]).finally(() => {
+        set({ session: null, user: null })
+      })
     }
   }
 }))

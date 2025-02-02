@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSignInStore, SignInProcess } from '@stores/signInStore'
+import { useIpcHandler } from '@hooks/useIpcHandler'
 import { Center, Box, Text } from '@chakra-ui/react'
 import { toaster } from '@components/ui/toaster'
 import { WelcomeForm } from '@components/features/auth/WelcomForm'
@@ -11,6 +12,7 @@ import { AuthError, IpcChannel } from '@interface/CoreInterface'
 
 export function SignInPage() {
   const { mail, signInProcess, processError, actions } = useSignInStore()
+  const signInHandler = useIpcHandler(IpcChannel.AUTH_SIGN_IN_WITH_OTP)
   const navigation = useNavigate()
 
   useEffect(() => {
@@ -44,14 +46,11 @@ export function SignInPage() {
     actions.setSignInProcess(SignInProcess.REQUEST)
 
     // 2. main 프로세스로 로그인 요청
-    const { error } = await window.callApi(IpcChannel.AUTH_SIGN_IN_WITH_OTP, {
-      email: mail as string
-    })
+    const { error } = await signInHandler({ email: mail })
 
     // *. 에러 발생 시, 실패 처리
     if (error) {
       actions.setProcessError(error)
-
       return
     }
 

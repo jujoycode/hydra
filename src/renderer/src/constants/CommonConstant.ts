@@ -20,4 +20,10 @@ export class CommonConstant {
   static TYPE = {
     MAIL: 'email' as const
   }
+
+  /**
+   * BUCKET_NAME
+   * @desc 버킷 이름
+   */
+  static BUCKET_NAME = 'hydra-public-repo'
 }

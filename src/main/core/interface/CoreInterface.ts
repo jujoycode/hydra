@@ -1,4 +1,5 @@
 import type { SupabaseClient, VerifyEmailOtpParams, AuthOtpResponse, Session, AuthError } from '@supabase/supabase-js'
+import type { StorageError } from '@supabase/storage-js'
 import type { PrismaClient, issues, projects, users, users_projects_link } from '@prisma/client'
 import type { OpenDialogOptions, OpenDialogReturnValue } from 'electron'
 
@@ -15,6 +16,7 @@ export type {
   AuthOtpResponse,
   // Error
   AuthError,
+  StorageError,
   // DB Table
   users,
   issues,
@@ -30,6 +32,8 @@ export type User = {
   updated_at: Date | null
   avatar_key: string | null
 }
+
+export type Project = projects
 
 export interface CoreInterface {
   getPrismaClient(): PrismaClient
@@ -71,18 +75,14 @@ export interface AuthVerifyOtpTokenParams extends VerifyEmailOtpParams {
 
 export type AuthVerifyOtpTokenResponse =
   | {
-      data: {
-        user: User | null
-        session: Session | null
-      }
-      error: null
+      user: User | null
+      session: Session | null
+      projects: Project[] | null
     }
   | {
-      data: {
-        user: null
-        session: null
-      }
-      error: AuthError
+      user: null
+      session: null
+      projects: null
     }
 
 export interface AuthSignInWithOtpParams {
@@ -101,7 +101,7 @@ export interface AuthDeleteUserParams {
 export interface AuthUpdateUserParams {
   userId: string
   userName?: string
-  userAvatarKey?: string
+  userAvatarKey?: string | null
 }
 
 export interface OpenExternalUrlParams {
@@ -136,6 +136,25 @@ export type UpdateIssueParams = DeleteIssueParams & {
 
 export type UpdateProjectParams = CreateProjectParams & DeleteProjectParams
 
+export interface UploadFileParams {
+  savePath: string
+  file: ArrayBuffer
+  fileOptions?: {
+    /**
+     * The number of seconds the asset is cached in the browser and in the Supabase CDN. This is set in the `Cache-Control: max-age=<seconds>` header. Defaults to 3600 seconds.
+     */
+    cacheControl?: string
+    /**
+     * the `Content-Type` header value. Should be specified if using a `fileBody` that is neither `Blob` nor `File` nor `FormData`, otherwise will default to `text/plain;charset=UTF-8`.
+     */
+    contentType?: string
+    /**
+     * When upsert is set to true, the file is overwritten if it exists. When set to false, an error is thrown if the object already exists. Defaults to false.
+     */
+    upsert?: boolean
+  }
+}
+
 /**
  * IpcChannel
  * @desc Ipc 채널 정의
@@ -157,9 +176,17 @@ export enum IpcChannel {
   ISSUE_UPDATE = 'issueUpdate',
   ISSUE_DELETE = 'issueDelete',
 
+  // STORAGE-
+  STORAGE_UPLOAD_FILE = 'storageUploadFile',
+
   // SYSTEM-
   SYSTEM_OPEN_EXTERNAL_URL = 'systemOpenExternalUrl',
   SYSTEM_OPEN_DIALOG = 'systemOpenDialog'
+}
+
+export interface BaseIpcResponse<T, E extends Error = Error> {
+  data: T
+  error: E | null
 }
 
 interface BaseIpcPayloads<SendType = unknown, ReceiveType = unknown> {
@@ -177,57 +204,63 @@ export interface IpcPayloads extends BaseIpcPayloads {
   // AUTH-
   [IpcChannel.AUTH_SIGN_IN_WITH_OTP]: {
     send: AuthSignInWithOtpParams
-    receive: AuthOtpResponse
+    receive: BaseIpcResponse<{ user: null; session: null; messageId?: string | null }, AuthError>
   }
   [IpcChannel.AUTH_VERIFY_OTP_TOKEN]: {
     send: AuthVerifyOtpTokenParams
-    receive: AuthVerifyOtpTokenResponse
+    receive: BaseIpcResponse<AuthVerifyOtpTokenResponse, AuthError>
   }
   [IpcChannel.AUTH_DELETE_USER]: {
     send: AuthDeleteUserParams
-    receive: void
+    receive: BaseIpcResponse<null, AuthError>
   }
   [IpcChannel.AUTH_UPDATE_USER]: {
     send: AuthUpdateUserParams
-    receive: users
+    receive: BaseIpcResponse<users> //FIXME: @abruption Query 관련 공통 에러 타입 정의 필요
   }
 
   // PROJECT-
   [IpcChannel.PROJECT_CREATE]: {
     send: CreateProjectParams
-    receive: projects
+    receive: BaseIpcResponse<projects>
   }
   [IpcChannel.PROJECT_UPDATE]: {
     send: UpdateProjectParams
-    receive: projects
+    receive: BaseIpcResponse<projects>
   }
   [IpcChannel.PROJECT_DELETE]: {
     send: DeleteProjectParams
-    receive: boolean
+    receive: BaseIpcResponse<boolean>
   }
 
   // ISSUE-
   [IpcChannel.ISSUE_CREATE]: {
     send: CreateIssueParams
-    receive: issues
+    receive: BaseIpcResponse<issues>
   }
   [IpcChannel.ISSUE_UPDATE]: {
     send: UpdateIssueParams
-    receive: issues
+    receive: BaseIpcResponse<issues>
   }
   [IpcChannel.ISSUE_DELETE]: {
     send: DeleteIssueParams
-    receive: boolean
+    receive: BaseIpcResponse<boolean>
+  }
+
+  // STORAGE-
+  [IpcChannel.STORAGE_UPLOAD_FILE]: {
+    send: UploadFileParams
+    receive: BaseIpcResponse<{ id: string; path: string; fullPath: string } | null, StorageError>
   }
 
   // SYSTEM-
   [IpcChannel.SYSTEM_OPEN_EXTERNAL_URL]: {
     send: OpenExternalUrlParams
-    receive: void
+    receive: BaseIpcResponse<null>
   }
   [IpcChannel.SYSTEM_OPEN_DIALOG]: {
     send: OpenDialogOptions
-    receive: OpenDialogReturnValue
+    receive: BaseIpcResponse<OpenDialogReturnValue>
   }
 }
 
