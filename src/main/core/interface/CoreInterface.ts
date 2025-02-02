@@ -33,6 +33,8 @@ export type User = {
   avatar_key: string | null
 }
 
+export type Project = projects
+
 export interface CoreInterface {
   getPrismaClient(): PrismaClient
 }
@@ -75,10 +77,12 @@ export type AuthVerifyOtpTokenResponse =
   | {
       user: User | null
       session: Session | null
+      projects: Project[] | null
     }
   | {
       user: null
       session: null
+      projects: null
     }
 
 export interface AuthSignInWithOtpParams {

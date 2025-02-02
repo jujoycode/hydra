@@ -53,9 +53,12 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler<IpcChannel.AUTH_VERIF
     if (!data.session || !user) throw new Error('Invalid user')
 
     const projects = await this.hydraDb.projects.findMany({
-      select: {
+      include: {
+        users_projects_link: true
+      },
+      where: {
         users_projects_link: {
-          where: {
+          every: {
             user_id: data.user?.id
           }
         }
@@ -72,7 +75,8 @@ export class VerifyOtpTokenHandler extends CoreBaseHandler<IpcChannel.AUTH_VERIF
           created_at: user.user_created_at,
           updated_at: user.user_updated_at,
           avatar_key: user.user_avatar_key
-        }
+        },
+        projects
       },
       error
     }

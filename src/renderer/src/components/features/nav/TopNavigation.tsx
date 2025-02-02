@@ -1,6 +1,7 @@
 'use client'
 
 import { useNavigate } from 'react-router-dom'
+import { useProjectStore } from '@stores/projectStore'
 import { useDialogStore } from '@stores/dialogStore'
 import { Box, Flex, HStack, Text } from '@chakra-ui/react'
 import { Button } from '@components/ui/button'
@@ -11,19 +12,13 @@ import { CreateProjectDialog } from '@pages/dialogs/CreateProjectDialog'
 
 export function TopNavigation(): JSX.Element {
   const navigate = useNavigate()
+  const { projectsMap } = useProjectStore()
   const { openDialog } = useDialogStore()
 
-  // TEST: 추후 DB 조회로 변경
-  const projectList = [
-    {
-      label: 'Project 1',
-      onClick: () => navigate('/projects/1')
-    },
-    {
-      label: 'Project 2',
-      onClick: () => navigate('/projects/2')
-    }
-  ]
+  const projectList = Array.from(projectsMap).map(([id, project]) => ({
+    label: project.project_name,
+    onClick: () => navigate(`projects/${id}`)
+  }))
 
   const ProjectPopoverButton = () => {
     return (

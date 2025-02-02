@@ -5,11 +5,13 @@ import { Dialog } from '@components/common/Dialog'
 import { useAuthStore } from '@stores/authStore'
 import { useDialogStore } from '@stores/dialogStore'
 import { IpcChannel } from '@interface/CoreInterface'
+import { useIpcHandler } from '@hooks/useIpcHandler'
 
 export function CreateProjectDialog() {
   const { user } = useAuthStore()
   const { createProjectModal, closeDialog } = useDialogStore()
   const [projectName, setProjectName] = useState('')
+  const createProjectHandler = useIpcHandler(IpcChannel.PROJECT_CREATE)
 
   const content = (
     <>
@@ -20,11 +22,7 @@ export function CreateProjectDialog() {
   )
 
   const callRequestCreateProject = () => {
-    window.callApi(IpcChannel.PROJECT_CREATE, {
-      userId: user?.id || '',
-      projectName: projectName,
-      projectDescription: ''
-    })
+    createProjectHandler({ userId: user?.id || '', projectName: projectName, projectDescription: '' })
   }
 
   return (

@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react'
 import { useAuthStore } from '@stores/authStore'
+import { useIpcHandler } from '@hooks/useIpcHandler'
 import { Box, Flex, Text, Input, Stack, type FileUploadFileChangeDetails } from '@chakra-ui/react'
+import { FileUploadRoot, FileUploadTrigger } from '@components/ui/file-upload'
 import { Button } from '@components/ui/button'
 import { Avatar } from '@components/ui/avatar'
 import { toaster } from '@components/ui/toaster'
-import { FileUploadRoot, FileUploadTrigger } from '@components/ui/file-upload'
 import { getFileExtension, getPublicAccessUrl } from '@utils/commonUtil'
 import { IpcChannel } from '@interface/CoreInterface'
 
@@ -16,6 +17,8 @@ interface UserFormState {
 
 export function AccountSettingPage(): JSX.Element {
   const { user, actions } = useAuthStore()
+  const updateHandler = useIpcHandler(IpcChannel.AUTH_UPDATE_USER)
+  const uploadHandler = useIpcHandler(IpcChannel.STORAGE_UPLOAD_FILE)
   const [isLoading, setIsLoading] = useState(false)
   const [formState, setFormState] = useState<UserFormState>({
     name: user?.name ?? '',
@@ -92,21 +95,29 @@ export function AccountSettingPage(): JSX.Element {
       let avatarPath = formState.avatarPath
       if (formState.avatarFile) {
         const fileBuffer = await formState.avatarFile.arrayBuffer()
-        const uploadFileResult = await window.callApi(IpcChannel.STORAGE_UPLOAD_FILE, {
+        const { data: uploadFileResult, error } = await uploadHandler({
           savePath: `user/${user.id}.${getFileExtension(formState.avatarFile.name)}`,
           file: fileBuffer,
           fileOptions: { upsert: true, cacheControl: '0' }
         })
 
-        avatarPath = uploadFileResult.path
+        if (error) {
+          return
+        }
+
+        avatarPath = uploadFileResult!.path
       }
 
       // 3. 사용자 정보 업데이트 (public.users)
-      const updatedInfo = await window.callApi(IpcChannel.AUTH_UPDATE_USER, {
+      const { data: updatedInfo, error } = await updateHandler({
         userId: user.id,
         userName: formState.name,
         userAvatarKey: avatarPath
       })
+
+      if (error) {
+        return
+      }
 
       // 4. 사용자 정보 업데이트 (AuthStore)
       actions.setUser({
