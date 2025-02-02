@@ -3,9 +3,10 @@ import { IpcChannel, type IpcRequest, type IpcResponse } from '@interface/CoreIn
 import { useCallback } from 'react'
 
 export function useIpcHandler<T extends IpcChannel>(channel: T) {
-  return useCallback(async (request?: IpcRequest<T>): Promise<IpcResponse<T>> => {
+  return useCallback(
+    async (request?: IpcRequest<T>): Promise<IpcResponse<T>> => {
       const result = await window.callApi(channel, request)
-      
+
       if (result.error) {
         toaster.error({
           title: result.error.name ?? 'Error',
@@ -14,5 +15,7 @@ export function useIpcHandler<T extends IpcChannel>(channel: T) {
       }
 
       return result
-  }, [channel])
+    },
+    [channel]
+  )
 }

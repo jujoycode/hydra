@@ -15,7 +15,6 @@ model users {
 model projects {
   project_id          String                @id @db.Uuid
   project_name        String
-  project_desc        String?
   project_created_by  String?
   project_modified_by String?
   project_start_date  DateTime?

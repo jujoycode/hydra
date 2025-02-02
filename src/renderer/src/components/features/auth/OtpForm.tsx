@@ -1,20 +1,20 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useIpcHandler } from '@hooks/useIpcHandler'
 import { useAuthStore } from '@stores/authStore'
 import { useSignInStore, SignInProcess } from '@stores/signInStore'
 import { useProjectStore } from '@stores/projectStore'
 import { Box, Text, Link } from '@chakra-ui/react'
 import { PinInput } from '@components/ui/pin-input'
-import { IpcChannel, AuthError } from '@interface/CoreInterface'
 import { getEmptyArray } from '@utils/commonUtil'
 import { CommonConstant } from '@constants/CommonConstant'
-import { useIpcHandler } from '@hooks/useIpcHandler'
+import { IpcChannel, AuthError } from '@interface/CoreInterface'
 
 export function OtpForm() {
   const { setSessions, setUser } = useAuthStore().actions
   const { mail, otpToken, actions } = useSignInStore()
-  const { addProject } = useProjectStore().actions
+  const { setProject } = useProjectStore().actions
   const verifyOtpHandler = useIpcHandler(IpcChannel.AUTH_VERIFY_OTP_TOKEN)
   const openExternalUrlHandler = useIpcHandler(IpcChannel.SYSTEM_OPEN_EXTERNAL_URL)
 
@@ -44,7 +44,7 @@ export function OtpForm() {
       // 2. 세션 및 유저 정보를 전역 객체로 세팅
       setSessions(data.session)
       setUser(data.user)
-      data.projects?.forEach((project) => addProject(project))
+      data.projects?.forEach((project) => setProject(project))
 
       // 3. 상태를 성공으로 변경
       actions.setSignInProcess(SignInProcess.SUCCESS)

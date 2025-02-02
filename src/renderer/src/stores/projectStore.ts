@@ -8,7 +8,7 @@ interface ProjectStore {
 }
 
 interface ProjectAction {
-  addProject: (project: Project) => void
+  setProject: (project: Project) => void
   updateProject: (project: Project) => void
   removeProject: (projectId: string) => void
 }
@@ -17,7 +17,7 @@ export const useProjectStoreBase = create<ProjectStore>((set) => ({
   projectsMap: new Map(),
 
   actions: {
-    addProject: (project) =>
+    setProject: (project) =>
       set((state) => {
         const newMap = new Map(state.projectsMap)
         newMap.set(project.project_id, project)

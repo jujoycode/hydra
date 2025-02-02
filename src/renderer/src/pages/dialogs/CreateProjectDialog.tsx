@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import { useIpcHandler } from '@hooks/useIpcHandler'
+import { useAuthStore } from '@stores/authStore'
+import { useDialogStore } from '@stores/dialogStore'
+import { useProjectStore } from '@stores/projectStore'
 import { Input } from '@chakra-ui/react'
 import { Field } from '@components/ui/field'
 import { Dialog } from '@components/common/Dialog'
-import { useAuthStore } from '@stores/authStore'
-import { useDialogStore } from '@stores/dialogStore'
 import { IpcChannel } from '@interface/CoreInterface'
 
 export function CreateProjectDialog() {
   const { user } = useAuthStore()
   const { createProjectModal, closeDialog } = useDialogStore()
+  const { setProject } = useProjectStore().actions
   const [projectName, setProjectName] = useState<string>('')
-  const [description, setDescription] = useState<string>('')
   const createProjectHandler = useIpcHandler(IpcChannel.PROJECT_CREATE)
 
   const content = (
@@ -25,21 +26,17 @@ export function CreateProjectDialog() {
           size='md'
         />
       </Field>
-
-      <Field label='Description' helperText='Brief description of your project' mb={4}>
-        <Input
-          placeholder='Enter project description'
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          size='md'
-          variant='outline'
-        />
-      </Field>
     </>
   )
 
-  const callRequestCreateProject = () => {
-    createProjectHandler({ userId: user?.id || '', projectName: projectName, projectDescription: description })
+  const callRequestCreateProject = async () => {
+    const { data, error } = await createProjectHandler({ userId: user?.id || '', projectName: projectName })
+
+    if (error) {
+      return
+    }
+
+    setProject(data)
   }
 
   return (

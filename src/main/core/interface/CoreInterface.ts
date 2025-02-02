@@ -115,7 +115,6 @@ export interface DeleteProjectParams {
 
 export interface CreateProjectParams {
   projectName: string
-  projectDescription: string
   userId: string
 }
 
