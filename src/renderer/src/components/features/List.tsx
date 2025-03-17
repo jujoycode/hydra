@@ -1,8 +1,9 @@
 'use client'
 
 import { useNavigate } from 'react-router-dom'
-import { Link, Table, Text } from '@chakra-ui/react'
-import { SquareX, CircleHelp, Lightbulb, SquareArrowOutUpRight } from 'lucide-react'
+import { Flex, Link, Table, Text } from '@chakra-ui/react'
+import { EmptyState } from '@components/ui/empty-state'
+import { SquareX, CircleHelp, Lightbulb, SquareArrowOutUpRight, Frown } from 'lucide-react'
 
 interface ListProps {
   headers: string[]
@@ -60,16 +61,22 @@ export function List({ headers, datas }: ListProps) {
             ))}
           </Table.Row>
         </Table.Header>
-        <Table.Body>
-          {datas.map((data, rowIndex) => (
-            <Table.Row key={rowIndex}>
-              {headers.map((header, colIndex) => {
-                const value = data[header]
-                return <Table.Cell key={colIndex}>{getTableCell(header, value)}</Table.Cell>
-              })}
-            </Table.Row>
-          ))}
-        </Table.Body>
+        {datas.length ? (
+          <Table.Body>
+            {datas.map((data, rowIndex) => (
+              <Table.Row key={rowIndex}>
+                {headers.map((header, colIndex) => {
+                  const value = data[header]
+                  return <Table.Cell key={colIndex}>{getTableCell(header, value)}</Table.Cell>
+                })}
+              </Table.Row>
+            ))}
+          </Table.Body>
+        ) : (
+          <Flex alignItems='center' justifyContent='space-between' w='320%'>
+            <EmptyState title='' description="You don't have issues.." icon={<Frown />} size='lg' />
+          </Flex>
+        )}
       </Table.Root>
     </Table.ScrollArea>
   )

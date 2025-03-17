@@ -2,6 +2,8 @@ import { memo } from 'react'
 import { Flex, Container, For, Stack, Text, Box, useDisclosure } from '@chakra-ui/react'
 import { PopoverRoot, PopoverTrigger, PopoverArrow, PopoverBody, PopoverContent } from '@components/ui/popover'
 import { Divider } from '@components/ui/divider'
+import { EmptyState } from '@components/ui/empty-state'
+import { Frown } from 'lucide-react'
 
 interface PopoverProps {
   /**
@@ -83,7 +85,11 @@ function Popover({ direction = 'start', arrow = false, trigger, content }: Popov
         <PopoverBody asChild>
           {/* Main */}
           <Stack p={2}>
-            <For each={content.main}>{(item, index) => <ContentItem key={index} {...item} />}</For>
+            {content.main.length ? (
+              <For each={content.main}>{(item, index) => <ContentItem key={index} {...item} />}</For>
+            ) : (
+              <EmptyState size='sm' icon={<Frown />} title='' description="You don't have projects.." />
+            )}
 
             {/* Footer */}
             {content.footer && (
