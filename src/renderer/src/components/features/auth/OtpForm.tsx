@@ -14,7 +14,7 @@ import { IpcChannel, AuthError } from '@interface/CoreInterface'
 export function OtpForm() {
   const { setSessions, setUser } = useAuthStore().actions
   const { mail, otpToken, actions } = useSignInStore()
-  const { setProject } = useProjectStore().actions
+  const { addProject } = useProjectStore().actions
   const verifyOtpHandler = useIpcHandler(IpcChannel.AUTH_VERIFY_OTP_TOKEN)
   const openExternalUrlHandler = useIpcHandler(IpcChannel.SYSTEM_OPEN_EXTERNAL_URL)
 
@@ -44,7 +44,10 @@ export function OtpForm() {
       // 2. 세션 및 유저 정보를 전역 객체로 세팅
       setSessions(data.session)
       setUser(data.user)
-      data.projects?.forEach((project) => setProject(project))
+
+      if (data?.projects) {
+        addProject(data.projects)
+      }
 
       // 3. 상태를 성공으로 변경
       actions.setSignInProcess(SignInProcess.SUCCESS)

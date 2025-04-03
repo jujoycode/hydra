@@ -1,5 +1,6 @@
 import { createHashRouter } from 'react-router-dom'
 import { authLoader } from './loaders/authLoader'
+import { projectLoader } from './loaders/projectLoader'
 import { AuthGuard } from './guards/AuthGuard'
 import { AppLayout } from '@layouts/AppLayout'
 import { ProjectLayout } from '@layouts/ProjectLayout'
@@ -22,6 +23,7 @@ export const router = createHashRouter([
     children: [
       {
         index: true,
+        loader: projectLoader,
         element: <HomePage />
       },
       {

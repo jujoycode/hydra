@@ -61,22 +61,25 @@ export function List({ headers, datas }: ListProps) {
             ))}
           </Table.Row>
         </Table.Header>
-        {datas.length ? (
-          <Table.Body>
-            {datas.map((data, rowIndex) => (
+        <Table.Body>
+          {datas.length ? (
+            datas.map((data, rowIndex) => (
               <Table.Row key={rowIndex}>
-                {headers.map((header, colIndex) => {
-                  const value = data[header]
-                  return <Table.Cell key={colIndex}>{getTableCell(header, value)}</Table.Cell>
-                })}
+                {headers.map((header, colIndex) => (
+                  <Table.Cell key={colIndex}>{getTableCell(header, data[header])}</Table.Cell>
+                ))}
               </Table.Row>
-            ))}
-          </Table.Body>
-        ) : (
-          <Flex alignItems='center' justifyContent='space-between' w='320%'>
-            <EmptyState title='' description="You don't have issues.." icon={<Frown />} size='lg' />
-          </Flex>
-        )}
+            ))
+          ) : (
+            <Table.Row>
+              <Table.Cell colSpan={headers.length}>
+                <Flex justify='center' align='center' height='200px'>
+                  <EmptyState title='' description="You don't have issues.." icon={<Frown size={24} />} size='lg' />
+                </Flex>
+              </Table.Cell>
+            </Table.Row>
+          )}
+        </Table.Body>
       </Table.Root>
     </Table.ScrollArea>
   )

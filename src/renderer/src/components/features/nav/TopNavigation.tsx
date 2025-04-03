@@ -9,13 +9,14 @@ import { Popover } from '@components/common/Popover'
 import { Profile } from '@components/features/nav/Profile'
 import { ChevronDown, UserRoundPlus } from 'lucide-react'
 import { CreateProjectDialog } from '@pages/dialogs/CreateProjectDialog'
+import { CreateIssueDialog } from '@pages/dialogs/CreateIssueDialog'
 
 export function TopNavigation(): JSX.Element {
   const navigate = useNavigate()
-  const { projectsMap } = useProjectStore()
+  const { projects } = useProjectStore()
   const { openDialog } = useDialogStore()
 
-  const projectList = Array.from(projectsMap).map(([id, project]) => ({
+  const projectList = Object.entries(projects).map(([id, project]) => ({
     label: project.project_name,
     onClick: () => navigate(`projects/${id}`)
   }))
@@ -72,7 +73,10 @@ export function TopNavigation(): JSX.Element {
             <ProjectPopoverButton />
             <MemberPopoverButton />
 
-            <Button size='sm'>Create</Button>
+            <Button size='sm' onClick={() => openDialog('createIssue')}>
+              Create
+            </Button>
+            <CreateIssueDialog />
           </HStack>
         </HStack>
 

@@ -11,7 +11,7 @@ import { IpcChannel } from '@interface/CoreInterface'
 export function CreateProjectDialog() {
   const { user } = useAuthStore()
   const { createProjectModal, closeDialog } = useDialogStore()
-  const { setProject } = useProjectStore().actions
+  const { addProject } = useProjectStore().actions
   const [projectName, setProjectName] = useState<string>('')
   const createProjectHandler = useIpcHandler(IpcChannel.PROJECT_CREATE)
 
@@ -36,7 +36,7 @@ export function CreateProjectDialog() {
       return
     }
 
-    setProject(data)
+    addProject(data)
   }
 
   return (

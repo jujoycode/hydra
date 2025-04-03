@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@stores/authStore'
+import { useProjectStore } from '@stores/projectStore'
 import { Flex, Box, Text } from '@chakra-ui/react'
 import { Avatar } from '@components/ui/avatar'
 import { Popover } from '@components/common/Popover'
@@ -8,7 +9,8 @@ import { getPublicAccessUrl } from '@utils/commonUtil'
 import { ChevronsUpDown, LogOut, UserRoundCog } from 'lucide-react'
 
 export function Profile(): JSX.Element {
-  const { user, actions } = useAuthStore()
+  const { user, actions: authActions } = useAuthStore()
+  const { actions: projectActions } = useProjectStore()
   const navigate = useNavigate()
 
   const handleAccountSettings = () => {
@@ -54,7 +56,10 @@ export function Profile(): JSX.Element {
     {
       label: 'Log Out',
       component: <LogOut size={16} strokeWidth={1.5} />,
-      onClick: () => actions.clearAuth()
+      onClick: () => {
+        authActions.clearAuth()
+        projectActions.clearProject()
+      }
     }
   ]
 
