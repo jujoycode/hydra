@@ -1,3 +1,7 @@
+/// 사용자 테이블
+
+/// {@link auth_users}의 확장 정보를 저장합니다.
+/// @namespace Auth
 model users {
   user_id             String                @id @db.Uuid
   user_name           String?               @db.VarChar
@@ -12,6 +16,10 @@ model users {
   @@schema("public")
 }
 
+/// 프로젝트 테이블
+
+/// {@link users}들이 참여하여 {@link issues}들을 관리합니다.
+/// @namespace Project
 model projects {
   project_id          String                @id @db.Uuid
   project_name        String
@@ -19,12 +27,16 @@ model projects {
   project_modified_by String?
   project_start_date  DateTime?
   project_end_date    DateTime?
+  issues              issues[]
   users_projects_link users_projects_link[]
 
   @@index([project_name], map: "idx_project_name")
   @@schema("public")
 }
 
+/// 사용자-프로젝트 관계 테이블
+
+/// @namespace Project
 model users_projects_link {
   user_project_link_id String   @id @db.Uuid
   user_id              String   @db.Uuid
@@ -37,6 +49,10 @@ model users_projects_link {
   @@schema("public")
 }
 
+/// 이슈 테이블
+
+/// {@link projects}에 속한 이슈들을 관리합니다.
+/// @namespace Project
 model issues {
   issue_id          String              @id @db.Uuid
   project_id        String              @db.Uuid
@@ -47,6 +63,7 @@ model issues {
   issue_modified_by String?
   issue_created_at  DateTime?           @default(now())
   issue_updated_at  DateTime?           @updatedAt
+  project           projects            @relation(fields: [project_id], references: [project_id])
   issues_files_link issues_files_link[]
 
   @@index([issue_key], map: "idx_issue_key")
@@ -54,6 +71,9 @@ model issues {
   @@schema("public")
 }
 
+/// 파일 정보 테이블
+
+/// @namespace File
 model files {
   file_id           String              @id @db.Uuid
   file_name         String
@@ -67,6 +87,9 @@ model files {
   @@schema("public")
 }
 
+/// 이슈-파일 관계 테이블
+
+/// @namespace File
 model issues_files_link {
   id       Int    @id @default(autoincrement())
   issue_id String @db.Uuid
