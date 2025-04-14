@@ -12,8 +12,8 @@ function createWindow() {
   const coreUtil = new CoreUtil()
 
   const main = new BrowserWindow({
-    width: 1100,
-    height: 650,
+    width: 1400,
+    height: 800,
     show: false,
     autoHideMenuBar: true,
     webPreferences: {

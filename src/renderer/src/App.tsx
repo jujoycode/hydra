@@ -1,14 +1,10 @@
-import { RouterProvider } from 'react-router-dom'
-import { Toaster } from '@components/ui/toaster'
-import { router as HydraRouter } from '@routers'
+import { RouterProvider } from 'react-router'
+import { router } from '@routers'
 
-function App(): JSX.Element {
+export default function App() {
   return (
     <>
-      <RouterProvider router={HydraRouter} />
-      <Toaster />
+      <RouterProvider router={router} />
     </>
   )
 }
-
-export default App
