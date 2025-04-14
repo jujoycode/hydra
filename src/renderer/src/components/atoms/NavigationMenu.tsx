@@ -3,7 +3,7 @@ import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu'
 import { cva, VariantProps } from 'class-variance-authority'
 import { ChevronDownIcon } from 'lucide-react'
 
-import { cn } from '@lib/utils'
+import { cn } from '@/lib/utils'
 
 export function NavigationMenu({
   className,
@@ -17,10 +17,7 @@ export function NavigationMenu({
     <NavigationMenuPrimitive.Root
       data-slot='navigation-menu'
       data-viewport={viewport}
-      className={cn(
-        'group/navigation-menu relative flex max-w-max flex-1 items-center justify-center',
-        className
-      )}
+      className={cn('group/navigation-menu relative flex max-w-max flex-1 items-center justify-center', className)}
       {...props}
     >
       {children}
@@ -29,10 +26,7 @@ export function NavigationMenu({
   )
 }
 
-export function NavigationMenuList({
-  className,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {
+export function NavigationMenuList({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {
   return (
     <NavigationMenuPrimitive.List
       data-slot='navigation-menu-list'
@@ -42,16 +36,9 @@ export function NavigationMenuList({
   )
 }
 
-export function NavigationMenuItem({
-  className,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Item>) {
+export function NavigationMenuItem({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Item>) {
   return (
-    <NavigationMenuPrimitive.Item
-      data-slot='navigation-menu-item'
-      className={cn('relative', className)}
-      {...props}
-    />
+    <NavigationMenuPrimitive.Item data-slot='navigation-menu-item' className={cn('relative', className)} {...props} />
   )
 }
 
@@ -110,15 +97,12 @@ export function NavigationMenuViewport({
   )
 }
 
-export function NavigationMenuLink({
-  className,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Link>) {
+export function NavigationMenuLink({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Link>) {
   return (
     <NavigationMenuPrimitive.Link
       data-slot='navigation-menu-link'
       className={cn(
-        'data-[active=true]:focus:bg-accent data-[active=true]:hover:bg-accent data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-ring/50 [&_svg:not([class*=\'text-\'])]:text-muted-foreground flex flex-col gap-1 rounded-sm p-2 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*=\'size-\'])]:size-4',
+        "data-[active=true]:focus:bg-accent data-[active=true]:hover:bg-accent data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-ring/50 [&_svg:not([class*='text-'])]:text-muted-foreground flex flex-col gap-1 rounded-sm p-2 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}

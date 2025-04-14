@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from 'react'
-import { 
+import {
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -9,18 +9,17 @@ import {
   getSortedRowModel,
   SortingState,
   getFilteredRowModel,
-  ColumnFiltersState,
-} from "@tanstack/react-table"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@atoms/Table'
-import { TableSearchBar } from '@molecules/TableSearchBar'
-import { TablePagination } from '@molecules/TablePagination'
-import { IssueColumns } from '@molecules/IssueColumns'
+  ColumnFiltersState
+} from '@tanstack/react-table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/atoms/Table'
+import { TableSearchBar } from '@/molecules/TableSearchBar'
+import { TablePagination } from '@/molecules/TablePagination'
+import { IssueColumns } from '@/molecules/IssueColumns'
 import type { Issue, IssueTableMeta } from '@/types/issue'
 
-// 확장된 컬럼 메타 타입
 interface ExtendedColumnMeta {
-  initSorting?: (table: any) => void;
-  [key: string]: any;
+  initSorting?: (table: any) => void
+  [key: string]: any
 }
 
 interface IssueTableProps {
@@ -41,42 +40,43 @@ export function IssueTable({ issues, onSelectIssue }: IssueTableProps) {
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    initialState: {
+      pagination: {
+        pageSize: 7
+      }
+    },
     state: {
       sorting,
-      columnFilters,
+      columnFilters
     },
     meta: {
-      onSelectIssue,
+      onSelectIssue
     } as IssueTableMeta,
-    // Array filtering for multiple checkbox selections
     filterFns: {
       arrIncludesSome: (row, id, filterValue: string[]) => {
-        const value = row.getValue(id);
-        return filterValue.includes(value as string);
-      },
-    },
+        const value = row.getValue(id)
+        return filterValue.includes(value as string)
+      }
+    }
   })
-  
-  // 컬럼의 초기 정렬 적용
+
   useEffect(() => {
-    // 컬럼 메타데이터에서 초기 정렬 설정이 있는지 확인
-    IssueColumns.forEach(column => {
-      // 타입 단언을 사용하여 meta 속성에 initSorting이 있는지 확인
-      const meta = column.meta as ExtendedColumnMeta | undefined;
+    IssueColumns.forEach((column) => {
+      const meta = column.meta as ExtendedColumnMeta | undefined
       if (meta && typeof meta.initSorting === 'function') {
-        meta.initSorting(table);
+        meta.initSorting(table)
       }
     })
-  }, [table]) // table이 초기화되었을 때 실행
-  
+  }, [table])
+
   return (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       {/* Search and Filters */}
-      <TableSearchBar 
+      <TableSearchBar
         table={table}
-        searchColumn="title"
-        placeholder="Search issue by title..."
-        searchWidth="w-64 md:w-80"
+        searchColumn='title'
+        placeholder='Search issue by title...'
+        searchWidth='w-64 md:w-80'
         filters={[
           {
             column: 'state',
@@ -108,24 +108,19 @@ export function IssueTable({ issues, onSelectIssue }: IssueTableProps) {
       />
 
       {/* Table */}
-      <div className="rounded-md border w-full overflow-hidden">
-        <div className="h-full overflow-y-auto">
+      <div className='rounded-md border w-full overflow-hidden'>
+        <div className='h-auto overflow-y-auto'>
           <Table>
-            <TableHeader className="bg-muted sticky top-0 z-10">
+            <TableHeader className='bg-muted sticky top-0 z-10'>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead 
+                    <TableHead
                       key={header.id}
-                      className={header.column.getCanSort() ? "cursor-pointer select-none" : ""}
+                      className={header.column.getCanSort() ? 'cursor-pointer select-none' : ''}
                       onClick={header.column.getToggleSortingHandler()}
                     >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -136,19 +131,17 @@ export function IssueTable({ issues, onSelectIssue }: IssueTableProps) {
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    className="group/row hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-colors duration-200"
-                    data-state={row.getIsSelected() && "selected"}
+                    className='group/row hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-colors duration-200'
+                    data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={IssueColumns.length} className="h-24 text-center">
+                  <TableCell colSpan={IssueColumns.length} className='h-24 text-center'>
                     No results found.
                   </TableCell>
                 </TableRow>
@@ -156,10 +149,10 @@ export function IssueTable({ issues, onSelectIssue }: IssueTableProps) {
             </TableBody>
           </Table>
         </div>
-        
+
         {/* Pagination */}
         <TablePagination table={table} />
       </div>
     </div>
   )
-} 
+}

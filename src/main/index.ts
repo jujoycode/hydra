@@ -17,7 +17,7 @@ function createWindow() {
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: coreUtil.pathJoin(__dirname, '..', 'preload', 'index.js'),
+      preload: coreUtil.pathJoin(__dirname, '..', 'preload', 'index.mjs'),
       sandbox: false
     }
   })

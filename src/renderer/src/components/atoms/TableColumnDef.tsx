@@ -1,4 +1,4 @@
-import { TableColumnHeader } from '@atoms/TableColumn'
+import { TableColumnHeader } from '@/atoms/TableColumn'
 import { ColumnDef, SortDirection } from '@tanstack/react-table'
 
 // Helper function to create a basic column definition
@@ -11,7 +11,7 @@ export function createColumn<TData, TValue = unknown>({
   meta,
   enableSorting = true,
   enableFiltering = true,
-  sortDirection,
+  sortDirection
 }: {
   id?: string
   header?: string | ((props: any) => React.ReactNode)
@@ -38,7 +38,7 @@ export function createColumn<TData, TValue = unknown>({
     enableFiltering,
     meta,
     // 기본 정렬 방향이 설정된 경우 sortDescFirst를 설정
-    sortDescFirst: sortDirection === 'desc',
+    sortDescFirst: sortDirection === 'desc'
   } as ColumnDef<TData, TValue>
 
   // 기본 정렬 방향이 설정된 경우, 초기 정렬 상태를 추가
@@ -62,7 +62,7 @@ export function createColumn<TData, TValue = unknown>({
 export function createGroupColumn<TData>({
   id,
   header,
-  columns,
+  columns
 }: {
   id: string
   header: string | ((props: any) => React.ReactNode)
@@ -71,7 +71,7 @@ export function createGroupColumn<TData>({
   return {
     id,
     header: typeof header === 'string' ? header : header,
-    columns,
+    columns
   }
 }
 
@@ -80,27 +80,27 @@ export function createSelectColumn<TData>(): ColumnDef<TData> {
   return {
     id: 'select',
     header: ({ table }) => (
-      <div className="flex items-center justify-center">
+      <div className='flex items-center justify-center'>
         <input
-          type="checkbox"
-          className="h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary"
+          type='checkbox'
+          className='h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary'
           checked={table.getIsAllRowsSelected()}
           onChange={(e) => table.toggleAllRowsSelected(e.target.checked)}
-          aria-label="Select all"
+          aria-label='Select all'
         />
       </div>
     ),
     cell: ({ row }) => (
-      <div className="flex items-center justify-center">
+      <div className='flex items-center justify-center'>
         <input
-          type="checkbox"
-          className="h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary"
+          type='checkbox'
+          className='h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary'
           checked={row.getIsSelected()}
           onChange={(e) => row.toggleSelected(e.target.checked)}
-          aria-label="Select row"
+          aria-label='Select row'
         />
       </div>
     ),
-    enableSorting: false,
+    enableSorting: false
   }
-} 
+}

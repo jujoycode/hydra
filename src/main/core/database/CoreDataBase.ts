@@ -1,5 +1,5 @@
 import { CoreBase } from '@base/CoreBase'
-import { PrismaLib } from '@lib/PrismaLib'
+import { PrismaLib } from '@/lib/PrismaLib'
 import {
   type CoreInterface,
   type PrismaClient,

@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { cn } from '@lib/utils'
-import { Button } from '@atoms/Button'
-import { Separator } from '@atoms/Separator'
-import { Popover, PopoverContent, PopoverTrigger } from '@atoms/Popover'
-import { UserAvatar } from '@molecules/UserAvatar'
+import { cn } from '@/lib/utils'
+import { Button } from '@/atoms/Button'
+import { Separator } from '@/atoms/Separator'
+import { Popover, PopoverContent, PopoverTrigger } from '@/atoms/Popover'
+import { UserAvatar } from '@/molecules/UserAvatar'
 import { Settings, SunMoon, LogOut } from 'lucide-react'
 
 type UserMenuProps = {
@@ -27,7 +27,7 @@ export function HeaderUserMenu({ user, className }: UserMenuProps) {
   }
 
   const onLogout = () => {
-    console.log('로그아웃')
+    navigate('/signin')
     setIsOpen(false)
   }
 

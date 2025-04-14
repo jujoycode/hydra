@@ -1,4 +1,4 @@
-import { Badge } from '@atoms/Badge'
+import { Badge } from '@/atoms/Badge'
 import { CheckIcon, ClockIcon, LockIcon } from 'lucide-react'
 
 export type IssueState = 'in_progress' | 'done' | 'blocked' | 'review'
@@ -16,33 +16,33 @@ export function IssueBadge({ state, className, size = 'sm', variant = 'subtle' }
       case 'done':
         return {
           label: 'Done',
-          icon: <CheckIcon size={12} strokeWidth={1.5} className="mr-0.5" />,
-          colorScheme: 'green' as const,
+          icon: <CheckIcon size={12} strokeWidth={1.5} className='mr-0.5' />,
+          colorScheme: 'green' as const
         }
       case 'in_progress':
         return {
           label: 'In Progress',
-          icon: <ClockIcon size={12} strokeWidth={1.5} className="mr-0.5" />,
-          colorScheme: 'yellow' as const,
+          icon: <ClockIcon size={12} strokeWidth={1.5} className='mr-0.5' />,
+          colorScheme: 'yellow' as const
         }
       case 'blocked':
         return {
           label: 'Blocked',
-          icon: <LockIcon size={12} strokeWidth={1.5} className="mr-0.5" />,
-          colorScheme: 'red' as const,
+          icon: <LockIcon size={12} strokeWidth={1.5} className='mr-0.5' />,
+          colorScheme: 'red' as const
         }
       case 'review':
         return {
           label: 'Review',
-          icon: <CheckIcon size={12} strokeWidth={1.5} className="mr-0.5" />,
-          colorScheme: 'blue' as const,
+          icon: <CheckIcon size={12} strokeWidth={1.5} className='mr-0.5' />,
+          colorScheme: 'blue' as const
         }
 
       default:
         return {
           label: state,
-          icon: <CheckIcon size={12} strokeWidth={1.5} className="mr-0.5" />,
-          colorScheme: 'gray' as const,
+          icon: <CheckIcon size={12} strokeWidth={1.5} className='mr-0.5' />,
+          colorScheme: 'gray' as const
         }
     }
   }

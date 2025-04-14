@@ -2,7 +2,7 @@ import * as React from 'react'
 import { OTPInput, OTPInputContext, REGEXP_ONLY_DIGITS } from 'input-otp'
 import { MinusIcon } from 'lucide-react'
 
-import { cn } from '@lib/utils'
+import { cn } from '@/lib/utils'
 
 type OTPInputProps = React.ComponentProps<typeof OTPInput> & { containerClassName?: string }
 

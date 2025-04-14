@@ -5,11 +5,11 @@ import {
   NavigationMenuItem,
   NavigationMenuTrigger,
   NavigationMenuContent
-} from '@atoms/NavigationMenu'
-import { Button } from '@atoms/Button'
-import { Separator } from '@atoms/Separator'
-import { ListItem } from '@molecules/ListItem'
-import { HeaderUserMenu } from '@organisms/HeaderUserMenu'
+} from '@/atoms/NavigationMenu'
+import { Button } from '@/atoms/Button'
+import { Separator } from '@/atoms/Separator'
+import { ListItem } from '@/molecules/ListItem'
+import { HeaderUserMenu } from '@/organisms/HeaderUserMenu'
 import { TextSearch, Plus } from 'lucide-react'
 
 interface HeaderProps {

@@ -1,5 +1,5 @@
 import Chalk from 'chalk'
-import { formatQuery } from '@lib/SqlFormatterLib'
+import { formatQuery } from '@/lib/SqlFormatterLib'
 
 export class CoreBase {
   protected readonly className: string

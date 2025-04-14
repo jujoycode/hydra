@@ -34,7 +34,7 @@
       "@constant/*": ["src/main/core/constant/*"],
       "@database/*": ["src/main/core/database/*"],
       "@interface/*": ["src/main/core/interface/*"],
-      "@lib/*": ["src/main/core/lib/*"],
+      "@/lib/*": ["src/main/core/lib/*"],
       "@util/*": ["src/main/core/util/*"],
       "@handler/*": ["src/main/handler/*"]
     }

@@ -1,4 +1,4 @@
-import { IssueState } from '@molecules/IssueBadge'
+import { IssueState } from '@/molecules/IssueBadge'
 
 /**
  * 이슈 아이템을 나타내는 인터페이스
@@ -49,4 +49,4 @@ export type IssuePriority = NonNullable<Issue['priority']>
 export interface IssueTableMeta {
   /** 이슈 선택 시 호출되는 함수 */
   onSelectIssue: (issue: Issue) => void
-} 
+}

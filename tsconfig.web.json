@@ -42,16 +42,18 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@components/*": ["src/renderer/src/components/*"],
-      "@atoms/*": ["src/renderer/src/components/atoms/*"],
-      "@molecules/*": ["src/renderer/src/components/molecules/*"],
-      "@organisms/*": ["src/renderer/src/components/organisms/*"],
-      "@pages/*": ["src/renderer/src/components/pages/*"],
-      "@layouts/*": ["src/renderer/src/components/layouts/*"],
-      "@lib/*": ["src/renderer/src/lib/*"],
-      "@hooks/*": ["src/renderer/src/hooks/*"],
-      "@types/*": ["src/renderer/src/types/*"],
-      "@routers": ["src/renderer/src/routers"]
+      "@/components/*": ["src/renderer/src/components/*"],
+      "@/atoms/*": ["src/renderer/src/components/atoms/*"],
+      "@/molecules/*": ["src/renderer/src/components/molecules/*"],
+      "@/organisms/*": ["src/renderer/src/components/organisms/*"],
+      "@/pages/*": ["src/renderer/src/components/pages/*"],
+      "@/layouts/*": ["src/renderer/src/components/layouts/*"],
+      "@/templates/*": ["src/renderer/src/components/templates/*"],
+      "@/lib/*": ["src/renderer/src/lib/*"],
+      "@/hooks/*": ["src/renderer/src/hooks/*"],
+      "@/types/*": ["src/renderer/src/types/*"],
+      "@/routers": ["src/renderer/src/routers"],
+      "@/interface/*": ["src/main/core/interface/*"]
     },
 
   }

@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
-import { cn } from '@lib/utils'
-import { NavigationMenuLink } from '@atoms/NavigationMenu'
+import { cn } from '@/lib/utils'
+import { NavigationMenuLink } from '@/atoms/NavigationMenu'
 
 // NavigationMenu 아이템을 위한 ListItem 컴포넌트
 interface ListItemProps extends React.ComponentPropsWithoutRef<'a'> {

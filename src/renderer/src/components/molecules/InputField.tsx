@@ -1,8 +1,8 @@
 import React, { createContext, useContext } from 'react'
-import { cn } from '@lib/utils'
-import { Input } from '@atoms/Input'
-import { Label } from '@atoms/Label'
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@atoms/InputOtp'
+import { cn } from '@/lib/utils'
+import { Input } from '@/atoms/Input'
+import { Label } from '@/atoms/Label'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/atoms/InputOtp'
 
 const InputFieldContext = createContext<{ id: string; error?: string } | undefined>(undefined)
 
@@ -37,18 +37,18 @@ interface InputFieldEmailProps extends InputFieldProps {
   placeholder?: string
 }
 
-function InputFieldEmail({ className, label, placeholder, required = true, ...props }: InputFieldEmailProps) {
+function InputFieldEmail({ className, label, placeholder, ...props }: InputFieldEmailProps) {
   const context = useContext(InputFieldContext)
+
   return (
     <div className='grid gap-2'>
       {label && <Label htmlFor={context?.id}>{label}</Label>}
       <Input
         id={context?.id}
         type='email'
-        placeholder={placeholder}
-        required={required}
-        aria-invalid={!!context?.error}
         className={className}
+        placeholder={placeholder}
+        aria-invalid={!!context?.error}
         {...props}
       />
     </div>
@@ -60,12 +60,7 @@ interface InputFieldPasswordProps extends InputFieldProps {
   showForgotPassword?: boolean
 }
 
-function InputFieldPassword({
-  showForgotPassword,
-  required = true,
-  className,
-  ...props
-}: InputFieldPasswordProps) {
+function InputFieldPassword({ showForgotPassword, required = true, className, ...props }: InputFieldPasswordProps) {
   const context = useContext(InputFieldContext)
 
   return (

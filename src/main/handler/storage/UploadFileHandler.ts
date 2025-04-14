@@ -1,5 +1,5 @@
 import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import { SupabaseLib } from '@lib/SupabaseLib'
+import { SupabaseLib } from '@/lib/SupabaseLib'
 import { CoreConstant } from '@constant/CoreConstant'
 import {
   IpcChannel,
