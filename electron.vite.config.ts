@@ -1,6 +1,7 @@
-import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react-swc'
+import tailwindcss from '@tailwindcss/vite'
+import {resolve} from 'path'
 
 export default defineConfig({
   main: {
@@ -28,17 +29,23 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        '@components': resolve('src/renderer/src/components'),
-        '@layouts': resolve('src/renderer/src/layouts'),
-        '@pages': resolve('src/renderer/src/pages'),
-        '@hooks': resolve('src/renderer/src/hooks'),
+        '@': resolve(__dirname, './renderer/src'),
+        '@components': resolve(__dirname, './src/renderer/src/components'),
+        '@atoms': resolve(__dirname, './src/renderer/src/components/atoms'),
+        '@molecules': resolve(__dirname, './src/renderer/src/components/molecules'),
+        '@organisms': resolve(__dirname, './src/renderer/src/components/organisms'),
+        '@pages': resolve(__dirname, './src/renderer/src/components/pages'),
+        '@layouts': resolve(__dirname, './src/renderer/src/components/layouts'),
+        '@routers': resolve(__dirname, './src/renderer/src/routers'),
+        '@lib': resolve(__dirname, './src/renderer/src/lib'),
+        '@hooks': resolve(__dirname, './src/renderer/src/hooks'),
+        '@types': resolve(__dirname, './src/renderer/src/types'),
         '@stores': resolve('src/renderer/src/stores'),
         '@utils': resolve('src/renderer/src/utils'),
         '@constants': resolve('src/renderer/src/constants'),
-        '@routers': resolve('src/renderer/src/routers'),
         '@interface': resolve('src/main/core/interface')
       }
     },
-    plugins: [react()]
+    plugins: [react(), tailwindcss()]
   }
 })
