@@ -4,6 +4,7 @@
 
 - 경량화된 설치형 `프로젝트/이슈 관리 도구` 개발
 - 무료이면서, 사용성을 갖춘 `프로젝트/이슈 관리 도구` 제공
+- 사용자가 간단한 설정을 통해 `supabase`가 아닌 자체 DB와 Storage를 사용할 수 있도록 기능 제공
 
 ## 2. Member
 
@@ -28,11 +29,12 @@
 
 ### Frontend
 
-- Framework: [`React`](https://react.dev/), [`Electron`](https://www.electronjs.org/)
+- Framework: [`React 19`](https://react.dev/), [`Electron`](https://www.electronjs.org/)
 - State Management: [`zustand`](https://zustand.docs.pmnd.rs/)
-- UI Library: [`chakra-ui`](https://chakra-ui.com/)
+- UI Library: [`shadcn/ui`]()
 - Router: [`react-router-dom`](https://reactrouter.com/)
 - Icon: [`lucide-react`](https://lucide.dev/)
+
 
 ### Backend
 
@@ -42,10 +44,15 @@
 - ORM: [`Prisma`](https://www.prisma.io/) (w. [supabase](https://supabase.com/docs/guides/database/prisma))
 - MQTT: [`Supabase-realtime`](https://supabase.com/docs/guides/realtime)
 
+
+### Build
+- Tool: [`Vite`](), [`electron-vite`]()
+
+
 ## 4. Project Schedule
 
 - Start Date: 2024-12-16
-- End Date: 2025-02-01
+- End Date: ~
 
 ### Main Milestones
 

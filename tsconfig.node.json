@@ -30,13 +30,13 @@
     "types": ["electron-vite/node"],
     "baseUrl": ".",
     "paths": {
-      "@base/*": ["src/main/core/base/*"],
-      "@constant/*": ["src/main/core/constant/*"],
-      "@database/*": ["src/main/core/database/*"],
-      "@interface/*": ["src/main/core/interface/*"],
+      "@/base/*": ["src/main/core/base/*"],
+      "@/constant/*": ["src/main/core/constant/*"],
+      "@/database/*": ["src/main/core/database/*"],
+      "@/interface/*": ["src/main/core/interface/*"],
       "@/lib/*": ["src/main/core/lib/*"],
-      "@util/*": ["src/main/core/util/*"],
-      "@handler/*": ["src/main/handler/*"]
+      "@/util/*": ["src/main/core/util/*"],
+      "@/handler/*": ["src/main/handler/*"]
     }
   }
 }

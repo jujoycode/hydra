@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 컴포넌트 구조 및 스타일링
+
+## Atomic Design 패턴
+
+Hydra는 Atomic Design 패턴을 사용하여 컴포넌트를 구성합니다:
+
+- `atoms/`: 버튼, 입력 필드, 아이콘 등 기본 UI 요소
+- `molecules/`: atoms를 조합한 복잡한 UI 컴포넌트 
+- `organisms/`: 폼, 카드 목록 등 완전한 UI 섹션
+- `templates/`: 페이지 레이아웃을 정의하는 컴포넌트
+- `pages/`: 최종 페이지를 구성하는 컴포넌트
+- `layouts/`: 공통 레이아웃 컴포넌트
+
+## 스타일링 가이드
+
+- TailwindCSS를 사용하여 스타일링 (인라인 클래스)
+- UI 컴포넌트는 Radix UI와 shadcn/ui 패턴을 따름
+- 조건부 클래스는 `clsx` 또는 `class-variance-authority` 사용
+
+## 컴포넌트 구현 패턴
+
+- 타입스크립트 인터페이스로 Props 정의
+- 함수형 컴포넌트와 React 훅 사용
+- 상태 관리는 Zustand 사용
+- 이벤트 핸들러는 `handle` 접두사 사용 (예: `handleClick`)

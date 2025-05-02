@@ -8,13 +8,13 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     resolve: {
       alias: {
-        '@base': resolve('src/main/core/base'),
-        '@constant': resolve('src/main/core/constant'),
-        '@database': resolve('src/main/core/database'),
-        '@interface': resolve('src/main/core/interface'),
+        '@/base': resolve('src/main/core/base'),
+        '@/constant': resolve('src/main/core/constant'),
+        '@/database': resolve('src/main/core/database'),
+        '@/interface': resolve('src/main/core/interface'),
         '@/lib': resolve('src/main/core/lib'),
-        '@util': resolve('src/main/core/util'),
-        '@handler': resolve('src/main/handler')
+        '@/util': resolve('src/main/core/util'),
+        '@/handler': resolve('src/main/handler')
       }
     }
   },
@@ -22,25 +22,25 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     resolve: {
       alias: {
-        '@interface': resolve('src/main/core/interface')
+        '@/interface': resolve('src/main/core/interface')
       }
     }
   },
   renderer: {
     resolve: {
       alias: {
-        '@/': resolve(__dirname, './renderer/src'),
-        '@/components': resolve(__dirname, './src/renderer/src/components'),
-        '@/atoms': resolve(__dirname, './src/renderer/src/components/atoms'),
-        '@/molecules': resolve(__dirname, './src/renderer/src/components/molecules'),
-        '@/organisms': resolve(__dirname, './src/renderer/src/components/organisms'),
-        '@/pages': resolve(__dirname, './src/renderer/src/components/pages'),
-        '@/layouts': resolve(__dirname, './src/renderer/src/components/layouts'),
-        '@/templates': resolve(__dirname, './src/renderer/src/components/templates'),
-        '@/routers': resolve(__dirname, './src/renderer/src/routers'),
-        '@/lib': resolve(__dirname, './src/renderer/src/lib'),
-        '@/hooks': resolve(__dirname, './src/renderer/src/hooks'),
-        '@/types': resolve(__dirname, './src/renderer/src/types'),
+        '@/': resolve('renderer/src'),
+        '@/components': resolve('src/renderer/src/components'),
+        '@/atoms': resolve('src/renderer/src/components/atoms'),
+        '@/molecules': resolve('src/renderer/src/components/molecules'),
+        '@/organisms': resolve('src/renderer/src/components/organisms'),
+        '@/pages': resolve('src/renderer/src/components/pages'),
+        '@/layouts': resolve('src/renderer/src/components/layouts'),
+        '@/templates': resolve('src/renderer/src/components/templates'),
+        '@/routers': resolve('src/renderer/src/routers'),
+        '@/lib': resolve('src/renderer/src/lib'),
+        '@/hooks': resolve('src/renderer/src/hooks'),
+        '@/types': resolve('src/renderer/src/types'),
         '@/stores': resolve('src/renderer/src/stores'),
         '@/utils': resolve('src/renderer/src/utils'),
         '@/constants': resolve('src/renderer/src/constants'),

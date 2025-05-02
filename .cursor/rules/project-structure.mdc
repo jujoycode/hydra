@@ -1,0 +1,34 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Hydra 프로젝트 구조
+
+Hydra는 Electron 기반의 프로젝트/이슈 관리 애플리케이션입니다. 프로젝트는 다음과 같은 구조로 구성되어 있습니다:
+
+## 주요 디렉토리
+
+- `src/main/`: Electron의 메인 프로세스 코드
+  - `index.ts`: 애플리케이션 진입점
+  - `core/`: 핵심 기능 및 유틸리티
+  - `handler/`: 이벤트 핸들러
+
+- `src/renderer/`: 프론트엔드 코드 (React)
+  - `src/`: React 애플리케이션 소스 코드
+    - `components/`: UI 컴포넌트 (Atomic Design 패턴 사용)
+    - `routers/`: 라우팅 관련 코드
+    - `hooks/`: 커스텀 React 훅
+    - `lib/`: 유틸리티 라이브러리
+
+- `src/preload/`: Electron 프리로드 스크립트
+
+## 기술 스택
+
+- TypeScript
+- React 19
+- Electron
+- TailwindCSS
+- Prisma (데이터베이스 ORM)
+- Radix UI (컴포넌트 라이브러리)
+- Zustand (상태 관리)

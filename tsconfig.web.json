@@ -52,8 +52,9 @@
       "@/lib/*": ["src/renderer/src/lib/*"],
       "@/hooks/*": ["src/renderer/src/hooks/*"],
       "@/types/*": ["src/renderer/src/types/*"],
+      "@/stores/*": ["src/renderer/src/stores/*"],
+      "@/interface/*": ["src/main/core/interface/*"],
       "@/routers": ["src/renderer/src/routers"],
-      "@/interface/*": ["src/main/core/interface/*"]
     },
 
   }
