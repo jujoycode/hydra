@@ -18,10 +18,11 @@
     "hot": "electron-vite dev -w",
     "dev": "rm -rf out && electron-vite dev",
     "build": "npm run typecheck && electron-vite build",
-    "postinstall": "electron-builder install-app-deps && npx prisma generate",
+    "postinstall": "electron-builder install-app-deps && pnpm approve-builds && npx prisma generate",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
-    "build:mac": "electron-vite build && electron-builder --mac"
+    "build:mac": "electron-vite build && electron-builder --mac",
+    "approve-dependencies": "pnpm approve-builds"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
