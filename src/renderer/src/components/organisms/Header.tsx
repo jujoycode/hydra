@@ -31,7 +31,7 @@ export function Header({ user, projects }: HeaderProps) {
     <header className='w-full border-b bg-background flex'>
       <div className='w-full flex justify-between h-14 items-center px-4'>
         <Link to='/' className='flex items-center gap-2 ml-8 mr-8 font-bold'>
-          Hydra UI
+          Hydra
         </Link>
 
         <NavigationMenu className='mx-4'>
