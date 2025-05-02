@@ -1,6 +1,6 @@
-import { IpcChannel, type UpdateProjectParams } from '@interface/CoreInterface'
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import { ProjectValidator } from '@util/validator'
+import { IpcChannel, type UpdateProjectParams } from '@/interface/CoreInterface'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
+import { ProjectValidator } from '@/util/validator'
 
 export class UpdateProjectHandler extends CoreBaseHandler<IpcChannel.PROJECT_UPDATE, ProjectValidator> {
   constructor() {
@@ -20,7 +20,6 @@ export class UpdateProjectHandler extends CoreBaseHandler<IpcChannel.PROJECT_UPD
       },
       data: {
         project_name: params.projectName,
-        project_desc: params.projectDescription,
         project_modified_by: params.userId
       }
     })

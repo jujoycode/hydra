@@ -1,15 +1,35 @@
 import React from 'react'
+import { Button } from '@/components/atoms/Button'
 import { EmptyPage } from '@/pages/EmptyPage'
 import { MainLayout } from '@/layouts/MainLayout'
 import { ProjectLayout } from '@/layouts/ProjectLayout'
-import { createHashRouter, type RouteObject } from 'react-router'
+import { createHashRouter, Link, type RouteObject } from 'react-router'
+import { AuthGuard, withProtected, withPublic } from './guard/AuthGuard'
 
-const lazyImport = (importFn: () => Promise<{ default: React.ComponentType }>) => {
+/**
+ * 보호된 lazy 임포트 (인증 필요)
+ */
+const protectedLazyImport = (importFn: () => Promise<{ default: React.ComponentType }>) => {
   const Component = React.lazy(importFn)
+  const ProtectedComponent = withProtected(() => <Component />)
 
   return (
     <React.Suspense fallback={<EmptyPage />}>
-      <Component />
+      <ProtectedComponent />
+    </React.Suspense>
+  )
+}
+
+/**
+ * 공개 lazy 임포트 (인증 불필요)
+ */
+const publicLazyImport = (importFn: () => Promise<{ default: React.ComponentType }>) => {
+  const Component = React.lazy(importFn)
+  const PublicComponent = withPublic(() => <Component />)
+
+  return (
+    <React.Suspense fallback={<EmptyPage />}>
+      <PublicComponent />
     </React.Suspense>
   )
 }
@@ -19,44 +39,61 @@ const TempComponent = ({ name }: { name: string }) => (
   <div className='container p-8'>
     <h1 className='text-2xl font-bold mb-4'>{name} 페이지</h1>
     <p>이 페이지는 아직 구현되지 않았습니다.</p>
+
+    <br />
+
+    <Button variant='outline' asChild>
+      <Link to='/signin'>로그인 화면으로 돌아가기</Link>
+    </Button>
   </div>
 )
+
+// 보호된 임시 컴포넌트
+const ProtectedTempComponent = withProtected(TempComponent)
 
 // Main Routes
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: <MainLayout />,
+    element: (
+      <AuthGuard requireAuth={true}>
+        <MainLayout />
+      </AuthGuard>
+    ),
     children: [
       {
         index: true,
-        element: <TempComponent name='홈' />
+        element: <ProtectedTempComponent name='홈' />
       },
       {
         path: 'projects',
         children: [
           {
             index: true,
-            element: <TempComponent name='프로젝트 목록' />
+            element: <ProtectedTempComponent name='프로젝트 목록' />
           },
           {
             path: ':projectId',
-            element: <ProjectLayout />,
+            element: (
+              <AuthGuard requireAuth={true}>
+                <ProjectLayout />
+              </AuthGuard>
+            ),
             children: [
               {
                 index: true,
-                element: <TempComponent name='프로젝트 상세' />
+                element: <ProtectedTempComponent name='프로젝트 상세' />
               },
               {
                 path: 'issues',
                 children: [
                   {
                     index: true,
-                    element: lazyImport(() => import('@/pages/IssuePage'))
+                    element: protectedLazyImport(() => import('@/pages/IssuePage'))
                   },
                   {
                     path: ':issueId',
-                    element: <TempComponent name='이슈 상세' />
+                    element: <ProtectedTempComponent name='이슈 상세' />
                   }
                 ]
               },
@@ -65,25 +102,24 @@ const routes: RouteObject[] = [
                 children: [
                   {
                     index: true,
-                    element: <TempComponent name='태스크 목록' />
+                    element: <ProtectedTempComponent name='태스크 목록' />
                   },
                   {
                     path: ':taskId',
-                    element: <TempComponent name='태스크 상세' />
+                    element: <ProtectedTempComponent name='태스크 상세' />
                   }
                 ]
               },
-
               {
                 path: 'settings',
                 children: [
                   {
                     index: true,
-                    element: <TempComponent name='설정' />
+                    element: <ProtectedTempComponent name='설정' />
                   },
                   {
                     path: ':taskId',
-                    element: <TempComponent name='설정 상세' />
+                    element: <ProtectedTempComponent name='설정 상세' />
                   }
                 ]
               }
@@ -96,7 +132,7 @@ const routes: RouteObject[] = [
         children: [
           {
             index: true,
-            element: <TempComponent name='설정' />
+            element: <ProtectedTempComponent name='설정' />
           }
         ]
       }
@@ -104,7 +140,7 @@ const routes: RouteObject[] = [
   },
   {
     path: 'signin',
-    element: lazyImport(() => import('@/pages/SignInPage'))
+    element: publicLazyImport(() => import('@/pages/SignInPage'))
   }
 ]
 

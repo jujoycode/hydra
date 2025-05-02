@@ -1,12 +1,12 @@
-import { CoreBase } from '@base/CoreBase'
-import { CoreUtil } from '@util/CoreUtil'
+import { CoreBase } from '@/base/CoreBase'
+import { CoreUtil } from '@/util/CoreUtil'
 import { createClient } from '@supabase/supabase-js'
 import {
   SUPABASE_CLIENT_TYPE,
   type SupaClient,
   type SupaAuthClient,
   type SupaStorageClient
-} from '@interface/CoreInterface'
+} from '@/interface/CoreInterface'
 
 export class SupabaseLib extends CoreBase {
   private static instance: SupabaseLib

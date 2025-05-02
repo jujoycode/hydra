@@ -1,5 +1,5 @@
-import { IpcChannel, type UpdateIssueParams } from '@interface/CoreInterface'
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
+import { IpcChannel, type UpdateIssueParams } from '@/interface/CoreInterface'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 
 export class UpdateIssueHandler extends CoreBaseHandler<IpcChannel.ISSUE_UPDATE> {
   constructor() {

@@ -1,11 +1,11 @@
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 import { SupabaseLib } from '@/lib/SupabaseLib'
 import {
   IpcChannel,
   SUPABASE_CLIENT_TYPE,
   type AuthSignInWithOtpParams,
   type SupaAuthClient
-} from '@interface/CoreInterface'
+} from '@/interface/CoreInterface'
 
 /**
  * OTP(일회용 비밀번호)를 사용한 로그인 기능을 처리합니다

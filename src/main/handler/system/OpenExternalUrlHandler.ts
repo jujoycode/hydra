@@ -1,6 +1,6 @@
 import { shell } from 'electron'
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import { IpcChannel, type OpenExternalUrlParams } from '@interface/CoreInterface'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
+import { IpcChannel, type OpenExternalUrlParams } from '@/interface/CoreInterface'
 
 /**
  * 시스템 기본 브라우저로 URL을 여는 핸들러

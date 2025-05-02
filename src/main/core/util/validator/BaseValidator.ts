@@ -1,5 +1,5 @@
-import { CoreDataBase } from '@database/CoreDataBase'
-import { VALIDATION_TYPE, type ValidationRule, type ModelName } from '@interface/CoreInterface'
+import { CoreDataBase } from '@/database/CoreDataBase'
+import { VALIDATION_TYPE, type ValidationRule, type ModelName } from '@/interface/CoreInterface'
 
 export abstract class BaseValidator {
   protected readonly hydraDB: CoreDataBase

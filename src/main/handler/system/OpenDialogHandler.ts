@@ -1,6 +1,6 @@
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 import { dialog } from 'electron'
-import { IpcChannel, type OpenDialogOptions } from '@interface/CoreInterface'
+import { IpcChannel, type OpenDialogOptions } from '@/interface/CoreInterface'
 
 /**
  * Dialog 호출 후 경로를 반환받는 핸들러

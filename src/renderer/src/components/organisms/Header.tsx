@@ -11,22 +11,9 @@ import { Separator } from '@/atoms/Separator'
 import { ListItem } from '@/molecules/ListItem'
 import { HeaderUserMenu } from '@/organisms/HeaderUserMenu'
 import { TextSearch, Plus } from 'lucide-react'
+import type { Project, User } from '@/interface/CoreInterface'
 
-interface HeaderProps {
-  user: {
-    name: string
-    email: string
-    avatarUrl?: string
-  }
-  projects: {
-    id: string
-    name: string
-    description: string
-    avatarUrl?: string
-  }[]
-}
-
-export function Header({ user, projects }: HeaderProps) {
+export function Header({ user, projects }: { user: User; projects: Project[] }) {
   return (
     <header className='w-full border-b bg-background flex'>
       <div className='w-full flex justify-between h-14 items-center px-4'>
@@ -44,13 +31,10 @@ export function Header({ user, projects }: HeaderProps) {
                 <ul className='grid w-[320px] gap-2 p-2 md:w-[320px] md:grid-cols-1 lg:w-[320px]'>
                   {projects.map((project) => (
                     <ListItem
-                      key={project.id}
-                      title={project.name}
-                      href={`/projects/${project.id}`}
-                      imageUrl={project.avatarUrl}
-                    >
-                      {project.description}
-                    </ListItem>
+                      key={project.project_id}
+                      title={project.project_name}
+                      href={`/projects/${project.project_id}`}
+                    />
                   ))}
                 </ul>
 

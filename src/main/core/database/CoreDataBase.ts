@@ -1,4 +1,4 @@
-import { CoreBase } from '@base/CoreBase'
+import { CoreBase } from '@/base/CoreBase'
 import { PrismaLib } from '@/lib/PrismaLib'
 import {
   type CoreInterface,
@@ -6,7 +6,7 @@ import {
   type ModelName,
   type ValidationRule,
   VALIDATION_TYPE
-} from '@interface/CoreInterface'
+} from '@/interface/CoreInterface'
 
 export class CoreDataBase extends CoreBase implements CoreInterface {
   private static instance: CoreDataBase

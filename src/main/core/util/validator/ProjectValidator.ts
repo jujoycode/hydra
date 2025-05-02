@@ -1,5 +1,5 @@
 import { BaseValidator } from './BaseValidator'
-import type { CoreDataBase } from '@database/CoreDataBase'
+import type { CoreDataBase } from '@/database/CoreDataBase'
 
 export class ProjectValidator extends BaseValidator {
   constructor(hydraDB: CoreDataBase) {

@@ -1,5 +1,4 @@
 import type { SupabaseClient, VerifyEmailOtpParams, AuthOtpResponse, Session, AuthError } from '@supabase/supabase-js'
-import type { StorageError } from '@supabase/storage-js'
 import type { PrismaClient, issues, projects, users, users_projects_link } from '@prisma/client'
 import type { OpenDialogOptions, OpenDialogReturnValue } from 'electron'
 
@@ -16,7 +15,6 @@ export type {
   AuthOtpResponse,
   // Error
   AuthError,
-  StorageError,
   // DB Table
   users,
   issues,
@@ -249,7 +247,7 @@ export interface IpcPayloads extends BaseIpcPayloads {
   // STORAGE-
   [IpcChannel.STORAGE_UPLOAD_FILE]: {
     send: UploadFileParams
-    receive: BaseIpcResponse<{ id: string; path: string; fullPath: string } | null, StorageError>
+    receive: BaseIpcResponse<{ id: string; path: string; fullPath: string } | null, Error>
   }
 
   // SYSTEM-

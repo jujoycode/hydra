@@ -1,11 +1,11 @@
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 import { SupabaseLib } from '@/lib/SupabaseLib'
 import {
   IpcChannel,
   SUPABASE_CLIENT_TYPE,
   type AuthDeleteUserParams,
   type SupaAuthClient
-} from '@interface/CoreInterface'
+} from '@/interface/CoreInterface'
 
 /**
  * 사용자 삭제 기능을 처리하는 핸들러 클래스입니다.

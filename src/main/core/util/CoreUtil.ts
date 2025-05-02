@@ -1,4 +1,4 @@
-import { CoreBase } from '@base/CoreBase'
+import { CoreBase } from '@/base/CoreBase'
 import { join, resolve, dirname, basename, extname } from 'path'
 import { readFile, writeFile, mkdir } from 'fs/promises'
 

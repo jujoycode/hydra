@@ -1,13 +1,12 @@
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 import { SupabaseLib } from '@/lib/SupabaseLib'
 import {
   SUPABASE_CLIENT_TYPE,
   IpcChannel,
   type AuthUpdateUserParams,
   type SupaStorageClient,
-  type AuthError
-} from '@interface/CoreInterface'
-import { CoreConstant } from '@constant/CoreConstant'
+} from '@/interface/CoreInterface'
+import { CoreConstant } from '@/constant/CoreConstant'
 /**
  * 세션을 조회하는 기능을 처리하는 핸들러 클래스입니다
  * @extends CoreBaseHandler

@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import { ProjectValidator } from '@util/validator'
-import { IpcChannel, type CreateProjectParams } from '@interface/CoreInterface'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
+import { ProjectValidator } from '@/util/validator'
+import { IpcChannel, type CreateProjectParams } from '@/interface/CoreInterface'
 
 export class CreateProjectHandler extends CoreBaseHandler<IpcChannel.PROJECT_CREATE, ProjectValidator> {
   constructor() {
@@ -21,7 +21,6 @@ export class CreateProjectHandler extends CoreBaseHandler<IpcChannel.PROJECT_CRE
           data: {
             project_id: randomUUID(),
             project_name: params.projectName,
-            project_desc: params.projectDescription,
             project_created_by: params.userId,
             project_modified_by: params.userId,
             project_start_date: new Date(),

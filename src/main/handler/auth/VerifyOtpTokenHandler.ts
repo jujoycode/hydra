@@ -1,4 +1,4 @@
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 import { SupabaseLib } from '@/lib/SupabaseLib'
 import {
   IpcChannel,
@@ -6,7 +6,7 @@ import {
   type PrismaClient,
   type AuthVerifyOtpTokenParams,
   type SupaAuthClient
-} from '@interface/CoreInterface'
+} from '@/interface/CoreInterface'
 
 /**
  * OTP(일회용 비밀번호)를 사용한 로그인 기능을 처리하는 핸들러 클래스

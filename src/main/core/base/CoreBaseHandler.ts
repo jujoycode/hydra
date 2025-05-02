@@ -1,7 +1,7 @@
 import { CoreBase } from './CoreBase'
 import { CoreDataBase } from '../database/CoreDataBase'
-import type { BaseValidator } from '@util/validator/BaseValidator'
-import type { IpcChannel, IpcPayloads, PrismaClient } from '@interface/CoreInterface'
+import type { BaseValidator } from '@/util/validator/BaseValidator'
+import type { IpcChannel, IpcPayloads, PrismaClient } from '@/interface/CoreInterface'
 
 export abstract class CoreBaseHandler<C extends IpcChannel, T extends BaseValidator | null = null> extends CoreBase {
   public readonly ipcChannel: C

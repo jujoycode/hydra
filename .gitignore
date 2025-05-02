@@ -6,3 +6,4 @@ out
 .env
 .env.*
 *.crt
+pnpm-lock.yaml

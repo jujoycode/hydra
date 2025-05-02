@@ -1,12 +1,13 @@
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 import { SupabaseLib } from '@/lib/SupabaseLib'
-import { CoreConstant } from '@constant/CoreConstant'
+import { CoreConstant } from '@/constant/CoreConstant'
 import {
   IpcChannel,
   SUPABASE_CLIENT_TYPE,
   type SupaStorageClient,
-  type UploadFileParams
-} from '@interface/CoreInterface'
+  type IpcResponse,
+  type UploadFileParams,
+} from '@/interface/CoreInterface'
 
 export class UploadFileHandler extends CoreBaseHandler<IpcChannel.STORAGE_UPLOAD_FILE> {
   private supaStorageClient: SupaStorageClient
@@ -16,7 +17,7 @@ export class UploadFileHandler extends CoreBaseHandler<IpcChannel.STORAGE_UPLOAD
     this.supaStorageClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.STORAGE)
   }
 
-  public async handler(params: UploadFileParams) {
+  public async handler(params: UploadFileParams): Promise<IpcResponse<IpcChannel.STORAGE_UPLOAD_FILE>> {
     this.logInfo(`${params.savePath} ${params.file}`)
 
     const { data, error } = await this.supaStorageClient

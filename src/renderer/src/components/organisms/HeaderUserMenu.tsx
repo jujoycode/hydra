@@ -6,18 +6,9 @@ import { Separator } from '@/atoms/Separator'
 import { Popover, PopoverContent, PopoverTrigger } from '@/atoms/Popover'
 import { UserAvatar } from '@/molecules/UserAvatar'
 import { Settings, SunMoon, LogOut } from 'lucide-react'
+import type { User } from '@/interface/CoreInterface'
 
-type UserMenuProps = {
-  user: {
-    name: string
-    email: string
-    avatarUrl?: string
-    role?: string
-  }
-  className?: string
-}
-
-export function HeaderUserMenu({ user, className }: UserMenuProps) {
+export function HeaderUserMenu({ user, className }: { user: User; className?: string }) {
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
 
@@ -46,7 +37,13 @@ export function HeaderUserMenu({ user, className }: UserMenuProps) {
               className
             )}
           >
-            <UserAvatar name={user.name} avatar={user.avatarUrl} email={user.email} size='sm' showInfo={true} />
+            <UserAvatar
+              name={user.name || ''}
+              avatar={user.avatar_key || ''}
+              email={user.email || ''}
+              size='sm'
+              showInfo={true}
+            />
           </button>
         </PopoverTrigger>
 

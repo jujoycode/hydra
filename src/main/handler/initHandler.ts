@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron/main'
-import type { IpcChannel, IpcPayloads } from '@interface/CoreInterface'
-import type { CoreBaseHandler } from '@base/CoreBaseHandler'
-import type { BaseValidator } from '@util/validator/BaseValidator'
+import type { IpcChannel, IpcPayloads } from '@/interface/CoreInterface'
+import type { CoreBaseHandler } from '@/base/CoreBaseHandler'
+import type { BaseValidator } from '@/util/validator/BaseValidator'
 
 /* Auth Handler */
 import { DeleteUserHandler } from './auth/DeleteUserHandler'

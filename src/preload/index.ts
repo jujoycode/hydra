@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { IpcChannel, IpcRequest, IpcResponse } from '@interface/CoreInterface'
+import { IpcChannel, IpcRequest, IpcResponse } from '@/interface/CoreInterface'
 
 // Custom APIs for renderer
 function checkSupportedIpcChannel(channel: IpcChannel) {

@@ -1,8 +1,8 @@
 import { app, shell, BrowserWindow } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import { CoreConstant } from '@constant/CoreConstant'
-import { CoreUtil } from '@util/CoreUtil'
-import { initHandler } from '@handler/initHandler'
+import { CoreConstant } from '@/constant/CoreConstant'
+import { CoreUtil } from '@/util/CoreUtil'
+import { initHandler } from '@/handler/initHandler'
 
 function simpleLog(message: string) {
   console.log(`\x1b[38;2;128;0;32m[SYSTEM]\x1b[0m [${new Date().toISOString()}] ${message}`)

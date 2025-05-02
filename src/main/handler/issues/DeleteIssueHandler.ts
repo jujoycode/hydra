@@ -1,5 +1,5 @@
-import { IpcChannel, type DeleteIssueParams } from '@interface/CoreInterface'
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
+import { IpcChannel, type DeleteIssueParams } from '@/interface/CoreInterface'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 
 export class DeleteIssueHandler extends CoreBaseHandler<IpcChannel.ISSUE_DELETE> {
   constructor() {

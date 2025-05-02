@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
-import { IssueValidator } from '@util/validator'
-import { IpcChannel, type CreateIssueParams } from '@interface/CoreInterface'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
+import { IssueValidator } from '@/util/validator'
+import { IpcChannel, type CreateIssueParams } from '@/interface/CoreInterface'
 
 export class CreateIssueHandler extends CoreBaseHandler<IpcChannel.ISSUE_CREATE, IssueValidator> {
   constructor() {

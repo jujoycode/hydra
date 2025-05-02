@@ -1,4 +1,4 @@
-import { CoreBase } from '@base/CoreBase'
+import { CoreBase } from '@/base/CoreBase'
 import { Prisma, PrismaClient } from '@prisma/client'
 
 export class PrismaLib extends CoreBase {

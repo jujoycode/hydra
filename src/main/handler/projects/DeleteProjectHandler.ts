@@ -1,5 +1,5 @@
-import { IpcChannel, type DeleteProjectParams } from '@interface/CoreInterface'
-import { CoreBaseHandler } from '@base/CoreBaseHandler'
+import { IpcChannel, type DeleteProjectParams } from '@/interface/CoreInterface'
+import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 
 export class DeleteProjectHandler extends CoreBaseHandler<IpcChannel.PROJECT_DELETE> {
   constructor() {
