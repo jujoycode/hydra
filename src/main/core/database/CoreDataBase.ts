@@ -7,6 +7,7 @@ import {
   type ValidationRule,
   VALIDATION_TYPE
 } from '@/interface/CoreInterface'
+import { ValidationError } from '@/error/ValidationError'
 
 export class CoreDataBase extends CoreBase implements CoreInterface {
   private static instance: CoreDataBase
@@ -43,11 +44,18 @@ export class CoreDataBase extends CoreBase implements CoreInterface {
     })
 
     if (rule.type === VALIDATION_TYPE.LIMIT && count >= (rule.limit ?? 0)) {
-      throw new Error(`${rule.model} limit exceeded`)
+      throw new ValidationError(`${rule.model} limit exceeded`, {
+        model: rule.model,
+        where: rule.where,
+        limit: rule.limit
+      })
     }
 
     if (rule.type === VALIDATION_TYPE.DUPLICATE && count > 0) {
-      throw new Error(`Duplicate entry found in ${rule.model}`)
+      throw new ValidationError(`Duplicate entry found in ${rule.model}`, {
+        model: rule.model,
+        where: rule.where
+      })
     }
   }
 }

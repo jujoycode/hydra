@@ -78,6 +78,8 @@ erDiagram
   String project_modified_by "nullable"
   DateTime project_start_date "nullable"
   DateTime project_end_date "nullable"
+  String project_desc "nullable"
+  String project_key UK "nullable"
 }
 "users_projects_link" {
   String user_project_link_id PK
@@ -86,7 +88,7 @@ erDiagram
 }
 "issues" {
   String issue_id PK
-  String project_id FK
+  String project_id
   String issue_title
   String issue_key
   String issue_desc "nullable"
@@ -96,7 +98,6 @@ erDiagram
   DateTime issue_updated_at "nullable"
 }
 "users_projects_link" }o--|| "projects" : project
-"issues" }o--|| "projects" : project
 ```
 
 ### `projects`
@@ -109,6 +110,8 @@ erDiagram
   - `project_modified_by`: 
   - `project_start_date`: 
   - `project_end_date`: 
+  - `project_desc`: 
+  - `project_key`: 
 
 ### `users_projects_link`
 

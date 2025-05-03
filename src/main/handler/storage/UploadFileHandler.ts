@@ -5,9 +5,9 @@ import {
   IpcChannel,
   SUPABASE_CLIENT_TYPE,
   type SupaStorageClient,
-  type IpcResponse,
-  type UploadFileParams,
+  type UploadFileParams
 } from '@/interface/CoreInterface'
+import { StorageError } from '@/error/StorageError'
 
 export class UploadFileHandler extends CoreBaseHandler<IpcChannel.STORAGE_UPLOAD_FILE> {
   private supaStorageClient: SupaStorageClient
@@ -17,7 +17,7 @@ export class UploadFileHandler extends CoreBaseHandler<IpcChannel.STORAGE_UPLOAD
     this.supaStorageClient = SupabaseLib.getClient(SUPABASE_CLIENT_TYPE.STORAGE)
   }
 
-  public async handler(params: UploadFileParams): Promise<IpcResponse<IpcChannel.STORAGE_UPLOAD_FILE>> {
+  public async handler(params: UploadFileParams) {
     this.logInfo(`${params.savePath} ${params.file}`)
 
     const { data, error } = await this.supaStorageClient
@@ -28,6 +28,6 @@ export class UploadFileHandler extends CoreBaseHandler<IpcChannel.STORAGE_UPLOAD
       this.logError(JSON.stringify(error, null, 2))
     }
 
-    return { data, error }
+    return { data, error: error ? new StorageError(error.message) : null }
   }
 }

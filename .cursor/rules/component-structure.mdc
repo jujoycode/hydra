@@ -19,7 +19,7 @@ Hydra는 Atomic Design 패턴을 사용하여 컴포넌트를 구성합니다:
 ## 스타일링 가이드
 
 - TailwindCSS를 사용하여 스타일링 (인라인 클래스)
-- UI 컴포넌트는 Radix UI와 shadcn/ui 패턴을 따름
+- UI 컴포넌트는 Radix UI와 shadcn/ui 패턴을 따름 (설치 시, pnpm 사용)
 - 조건부 클래스는 `clsx` 또는 `class-variance-authority` 사용
 
 ## 컴포넌트 구현 패턴
@@ -28,3 +28,8 @@ Hydra는 Atomic Design 패턴을 사용하여 컴포넌트를 구성합니다:
 - 함수형 컴포넌트와 React 훅 사용
 - 상태 관리는 Zustand 사용
 - 이벤트 핸들러는 `handle` 접두사 사용 (예: `handleClick`)
+
+## 내부 문구
+
+- 사용자에게 노출되는 문구는 영문으로 작성해야함
+- 실제 시스템에서 사용하는 문체로 작성할 것

@@ -218,6 +218,7 @@ model sessions {
 }
 
 /// @hidden
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model sso_domains {
   id              String        @id @db.Uuid
   sso_provider_id String        @db.Uuid
@@ -231,6 +232,7 @@ model sso_domains {
 }
 
 /// @hidden
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model sso_providers {
   id                String              @id @db.Uuid
   resource_id       String?
@@ -248,6 +250,7 @@ model sso_providers {
 /// {@link sessions 세션 관리}, {@link mfa_factors 다중 인증},
 /// {@link one_time_tokens 일회용 토큰} 등과 연결됩니다.
 /// @erd Auth
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model auth_users {
   instance_id                 String?           @db.Uuid
   id                          String            @id @db.Uuid

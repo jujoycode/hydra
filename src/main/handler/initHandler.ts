@@ -1,7 +1,6 @@
 import { ipcMain } from 'electron/main'
-import type { IpcChannel, IpcPayloads } from '@/interface/CoreInterface'
-import type { CoreBaseHandler } from '@/base/CoreBaseHandler'
-import type { BaseValidator } from '@/util/validator/BaseValidator'
+import { BaseError } from '@/error/BaseError'
+import { ErrorCode, type BaseErrorType } from '@/interface/CoreInterface'
 
 /* Auth Handler */
 import { DeleteUserHandler } from './auth/DeleteUserHandler'
@@ -35,14 +34,35 @@ const handlers = {
 }
 
 export function initHandler() {
-  const handler: CoreBaseHandler<IpcChannel, BaseValidator | null>[] = Object.values(handlers)
+  const handler = Object.values(handlers)
     .flat()
     .map((Handler) => new Handler())
 
   handler.forEach(({ ipcChannel, handler }) =>
-    ipcMain.on(ipcChannel, async (_, params: IpcPayloads[IpcChannel]['send']) => {
-      const ipcReturn = await handler(params)
-      _.reply(ipcChannel, ipcReturn)
+    ipcMain.on(ipcChannel, async (_, params) => {
+      try {
+        const ipcReturn = await handler(params)
+        _.reply(ipcChannel, ipcReturn)
+      } catch (error: unknown) {
+        console.error(`Error in handler for channel ${ipcChannel}:`, error)
+
+        if (error instanceof BaseError) {
+          _.reply(ipcChannel, {
+            data: null,
+            error: error.toJSON()
+          })
+        } else {
+          // 정의되지 않은 에러 타입인 경우
+          _.reply(ipcChannel, {
+            data: null,
+            error: {
+              code: ErrorCode.UNKNOWN_ERROR,
+              message: error instanceof Error ? error.message : 'An unknown error occurred',
+              data: null
+            } as BaseErrorType
+          })
+        }
+      }
     })
   )
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '@/lib/utils'
+import { cn, getPublicImageUrl } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/atoms/Avatar'
 import { User } from 'lucide-react'
 
@@ -50,7 +50,7 @@ export function UserAvatar({
   return (
     <div className={cn('flex items-center gap-2', justifyClasses[align], className)}>
       <Avatar className={avatarSizeClasses[size]}>
-        <AvatarImage src={avatar} alt={name} />
+        <AvatarImage src={avatar ? getPublicImageUrl(avatar) : undefined} alt={name} />
         <AvatarFallback>{defaultFallback}</AvatarFallback>
       </Avatar>
 

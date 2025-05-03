@@ -18,3 +18,11 @@ export type FormatDateOptions = 'yyyy년 MM월 dd일'
 export function formatDate(date: Date, formatStr: FormatDateOptions = 'yyyy년 MM월 dd일') {
   return format(date, formatStr)
 }
+
+/**
+ * getImageUrl
+ * @returns image url
+ */
+export function getPublicImageUrl(key: string) {
+  return `${import.meta.env.VITE_SUPABASE_PROJECT_URL}/storage/v1/object/public/${import.meta.env.VITE_SUPABASE_PUBLIC_REPO}/${key}`
+}

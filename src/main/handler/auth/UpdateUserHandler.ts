@@ -4,7 +4,7 @@ import {
   SUPABASE_CLIENT_TYPE,
   IpcChannel,
   type AuthUpdateUserParams,
-  type SupaStorageClient,
+  type SupaStorageClient
 } from '@/interface/CoreInterface'
 import { CoreConstant } from '@/constant/CoreConstant'
 /**
@@ -40,20 +40,15 @@ export class UpdateUserHandler extends CoreBaseHandler<IpcChannel.AUTH_UPDATE_US
     }
 
     // 2. 사용자 정보 업데이트 (public.users)
-    const user = await this.getHydraDb()
-      .users.update({
-        where: {
-          user_id: params.userId
-        },
-        data: {
-          user_name: params.userName,
-          user_avatar_key: existAvatarFile ? params.userAvatarKey : null
-        }
-      })
-      .catch((error: any) => {
-        this.logError(`Failed to update user: ${error.message}`)
-        throw error
-      })
+    const user = await this.getHydraDb().users.update({
+      where: {
+        user_id: params.userId
+      },
+      data: {
+        user_name: params.userName,
+        user_avatar_key: existAvatarFile ? params.userAvatarKey : null
+      }
+    })
 
     return { data: user, error: null }
   }

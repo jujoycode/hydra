@@ -112,8 +112,10 @@ export interface DeleteProjectParams {
 }
 
 export interface CreateProjectParams {
-  projectName: string
   userId: string
+  projectName: string
+  projectKey: string
+  projectDesc?: string
 }
 
 export interface DeleteIssueParams {
@@ -181,9 +183,9 @@ export enum IpcChannel {
   SYSTEM_OPEN_DIALOG = 'systemOpenDialog'
 }
 
-export interface BaseIpcResponse<T, E extends Error = Error> {
-  data: T
-  error: E | null
+export interface BaseIpcResponse<T> {
+  data: T | null
+  error: BaseErrorType | null
 }
 
 interface BaseIpcPayloads<SendType = unknown, ReceiveType = unknown> {
@@ -201,19 +203,19 @@ export interface IpcPayloads extends BaseIpcPayloads {
   // AUTH-
   [IpcChannel.AUTH_SIGN_IN_WITH_OTP]: {
     send: AuthSignInWithOtpParams
-    receive: BaseIpcResponse<{ user: null; session: null; messageId?: string | null }, AuthError>
+    receive: BaseIpcResponse<{ user: null; session: null; messageId?: string | null }>
   }
   [IpcChannel.AUTH_VERIFY_OTP_TOKEN]: {
     send: AuthVerifyOtpTokenParams
-    receive: BaseIpcResponse<AuthVerifyOtpTokenResponse, AuthError>
+    receive: BaseIpcResponse<AuthVerifyOtpTokenResponse>
   }
   [IpcChannel.AUTH_DELETE_USER]: {
     send: AuthDeleteUserParams
-    receive: BaseIpcResponse<null, AuthError>
+    receive: BaseIpcResponse<null>
   }
   [IpcChannel.AUTH_UPDATE_USER]: {
     send: AuthUpdateUserParams
-    receive: BaseIpcResponse<users> //FIXME: @abruption Query 관련 공통 에러 타입 정의 필요
+    receive: BaseIpcResponse<users>
   }
 
   // PROJECT-
@@ -247,7 +249,7 @@ export interface IpcPayloads extends BaseIpcPayloads {
   // STORAGE-
   [IpcChannel.STORAGE_UPLOAD_FILE]: {
     send: UploadFileParams
-    receive: BaseIpcResponse<{ id: string; path: string; fullPath: string } | null, Error>
+    receive: BaseIpcResponse<{ id: string; path: string; fullPath: string } | null>
   }
 
   // SYSTEM-
@@ -267,3 +269,22 @@ export interface IpcPayloads extends BaseIpcPayloads {
  */
 export type IpcRequest<T extends IpcChannel> = IpcPayloads[T]['send']
 export type IpcResponse<T extends IpcChannel> = IpcPayloads[T]['receive']
+
+export enum ErrorCode {
+  VALIDATION_ERROR = 'VALIDATION_ERROR',
+  DB_ERROR = 'DB_ERROR',
+  AUTH_ERROR = 'AUTH_ERROR',
+  STORAGE_ERROR = 'STORAGE_ERROR',
+  NETWORK_ERROR = 'NETWORK_ERROR',
+  NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',
+  PERMISSION_ERROR = 'PERMISSION_ERROR',
+  INTERNAL_ERROR = 'INTERNAL_ERROR',
+  OPERATION_FAILED_ERROR = 'OPERATION_FAILED_ERROR',
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR'
+}
+
+export interface BaseErrorType {
+  code: ErrorCode
+  message: string
+  data: unknown | null
+}

@@ -14,7 +14,8 @@ export default defineConfig({
         '@/interface': resolve('src/main/core/interface'),
         '@/lib': resolve('src/main/core/lib'),
         '@/util': resolve('src/main/core/util'),
-        '@/handler': resolve('src/main/handler')
+        '@/handler': resolve('src/main/handler'),
+        '@/error': resolve('src/main/core/error')
       }
     }
   },

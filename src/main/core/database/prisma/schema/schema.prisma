@@ -1,16 +1,19 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema", "prismaSchemaFolder"]
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  schemas  = ["auth", "public"]
+  provider        = "prisma-client"
+  output          = "../generated"
+  previewFeatures = ["multiSchema"]
+  moduleFormat    = "esm"
 }
 
 generator markdown {
   provider = "prisma-markdown"
   output   = "../../../../../../docs/table-erd.md"
   title    = "Hydra ERD"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["auth", "public"]
 }

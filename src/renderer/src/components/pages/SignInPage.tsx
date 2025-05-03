@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import { useIpcHandler } from '@/hooks/use-ipc'
 import { useAuthStore } from '@/stores/auth'
 import { useProjectStore } from '@/stores/project'
@@ -7,7 +8,7 @@ import { OtpVerificationForm } from '@/organisms/OtpVerificationForm'
 import { SignInTemplate } from '@/templates/SignInTemplate'
 import { IpcChannel } from '@/interface/CoreInterface'
 
-type SignInState = 'idle' | 'send-email' | 'idle-otp' | 'verify-otp' | 'success'
+type SignInState = 'idle' | 'send-email' | 'idle-otp' | 'verify-otp'
 
 export default function SignInPage() {
   // state
@@ -18,6 +19,7 @@ export default function SignInPage() {
   // hooks
   const { setUser, setSession } = useAuthStore()
   const { setProjects } = useProjectStore()
+  const navigate = useNavigate()
 
   // ipc
   const authSignInWithOtp = useIpcHandler(IpcChannel.AUTH_SIGN_IN_WITH_OTP)
@@ -33,6 +35,7 @@ export default function SignInPage() {
     const { error } = await authSignInWithOtp({ email })
     if (error) {
       console.error(error)
+      throw new Error(error.message)
     }
 
     setState('idle-otp')
@@ -48,6 +51,7 @@ export default function SignInPage() {
     const { data, error } = await authVerifyOtpToken({ type: 'email', email, token: otp })
     if (error) {
       console.error(error)
+      throw new Error(error.message)
     }
 
     if (data) {
@@ -56,7 +60,7 @@ export default function SignInPage() {
       setProjects(data.projects)
     }
 
-    setState('success')
+    navigate('/')
   }
 
   /**
@@ -88,13 +92,6 @@ export default function SignInPage() {
             onResendCode={handleResendCode}
             isLoading={state === 'verify-otp'}
           />
-        )}
-
-        {state === 'success' && (
-          <div className='flex flex-col items-center justify-center py-8 text-center'>
-            <h2 className='text-2xl font-bold'>Login Successful</h2>
-            <p className='text-muted-foreground mt-2'>You are now logged in.</p>
-          </div>
         )}
       </SignInTemplate>
     </div>

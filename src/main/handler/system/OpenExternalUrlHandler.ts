@@ -1,5 +1,6 @@
 import { shell } from 'electron'
 import { CoreBaseHandler } from '@/base/CoreBaseHandler'
+import { OperationFailedError } from '@/error/OperationFailedError'
 import { IpcChannel, type OpenExternalUrlParams } from '@/interface/CoreInterface'
 
 /**
@@ -22,14 +23,12 @@ export class OpenExternalUrlHandler extends CoreBaseHandler<IpcChannel.SYSTEM_OP
    * @param {OpenExternalUrlParams} params - { url: string }
    */
   async handler(params: OpenExternalUrlParams) {
-    let error: (Error & { code: number }) | null = Object.assign(new Error('test'), { code: 10 })
-
     try {
       await shell.openExternal(this.urlMapper[params.url] ?? params.url)
     } catch (error) {
-      error = error as Error
+      throw new OperationFailedError('Failed to open external url')
     }
 
-    return { data: null, error }
+    return { data: null, error: null }
   }
 }

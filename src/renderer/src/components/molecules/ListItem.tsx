@@ -5,12 +5,13 @@ import { NavigationMenuLink } from '@/atoms/NavigationMenu'
 // NavigationMenu 아이템을 위한 ListItem 컴포넌트
 interface ListItemProps extends React.ComponentPropsWithoutRef<'a'> {
   title: string
+  desc?: string
   href: string
   imageUrl?: string
   children?: React.ReactNode
 }
 
-export function ListItem({ title, href, imageUrl, children, className, ...props }: ListItemProps) {
+export function ListItem({ title, desc, href, imageUrl, children, className, ...props }: ListItemProps) {
   return (
     <li>
       <NavigationMenuLink asChild>
@@ -34,7 +35,7 @@ export function ListItem({ title, href, imageUrl, children, className, ...props 
             </div>
             <div className='space-y-1'>
               <div className='text-sm font-medium leading-none'>{title}</div>
-              <p className='line-clamp-2 text-sm leading-snug text-muted-foreground text-ellipsis'>{children}</p>
+              {desc && <p className='line-clamp-2 text-sm leading-snug text-muted-foreground text-ellipsis'>{desc}</p>}
             </div>
           </div>
         </Link>

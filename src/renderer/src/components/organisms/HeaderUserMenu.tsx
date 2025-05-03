@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/stores/auth'
 import { Button } from '@/atoms/Button'
 import { Separator } from '@/atoms/Separator'
 import { Popover, PopoverContent, PopoverTrigger } from '@/atoms/Popover'
@@ -11,6 +12,7 @@ import type { User } from '@/interface/CoreInterface'
 export function HeaderUserMenu({ user, className }: { user: User; className?: string }) {
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
+  const { signOut } = useAuthStore()
 
   const onSettings = () => {
     navigate('/settings')
@@ -18,7 +20,7 @@ export function HeaderUserMenu({ user, className }: { user: User; className?: st
   }
 
   const onLogout = () => {
-    navigate('/signin')
+    signOut()
     setIsOpen(false)
   }
 

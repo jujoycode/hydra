@@ -36,7 +36,8 @@
       "@/interface/*": ["src/main/core/interface/*"],
       "@/lib/*": ["src/main/core/lib/*"],
       "@/util/*": ["src/main/core/util/*"],
-      "@/handler/*": ["src/main/handler/*"]
+      "@/handler/*": ["src/main/handler/*"],
+      "@/error/*": ["src/main/core/error/*"]
     }
   }
 }

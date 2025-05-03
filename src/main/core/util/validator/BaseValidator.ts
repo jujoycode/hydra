@@ -1,4 +1,5 @@
 import { CoreDataBase } from '@/database/CoreDataBase'
+import { ValidationError } from '@/error/ValidationError'
 import { VALIDATION_TYPE, type ValidationRule, type ModelName } from '@/interface/CoreInterface'
 
 export abstract class BaseValidator {
@@ -13,8 +14,11 @@ export abstract class BaseValidator {
     try {
       return await this.hydraDB.validate(options)
     } catch (error: any) {
-      // ENHANCE: 커스텀 에러 처리 추가
-      throw new Error(error.message)
+      throw new ValidationError(error.message, {
+        model: options.model,
+        where: options.where,
+        limit: options.limit
+      })
     }
   }
 }

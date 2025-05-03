@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router'
 import {
   NavigationMenu,
@@ -10,10 +11,13 @@ import { Button } from '@/atoms/Button'
 import { Separator } from '@/atoms/Separator'
 import { ListItem } from '@/molecules/ListItem'
 import { HeaderUserMenu } from '@/organisms/HeaderUserMenu'
+import { CreateProjectDialog } from '@/organisms/CreateProjectDialog'
 import { TextSearch, Plus } from 'lucide-react'
 import type { Project, User } from '@/interface/CoreInterface'
 
 export function Header({ user, projects }: { user: User; projects: Project[] }) {
+  const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false)
+
   return (
     <header className='w-full border-b bg-background flex'>
       <div className='w-full flex justify-between h-14 items-center px-4'>
@@ -21,6 +25,7 @@ export function Header({ user, projects }: { user: User; projects: Project[] }) 
           Hydra
         </Link>
 
+        {/* 프로젝트 메뉴 */}
         <NavigationMenu className='mx-4'>
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -33,6 +38,7 @@ export function Header({ user, projects }: { user: User; projects: Project[] }) 
                     <ListItem
                       key={project.project_id}
                       title={project.project_name}
+                      desc={project.project_desc ?? ''}
                       href={`/projects/${project.project_id}`}
                     />
                   ))}
@@ -40,11 +46,17 @@ export function Header({ user, projects }: { user: User; projects: Project[] }) 
 
                 <Separator />
 
-                <Button variant='ghost' className='w-full mt-2 ml-2 text-sm font-light flex justify-start'>
-                  <TextSearch size={16} strokeWidth={1.5} />
-                  View all projects
-                </Button>
-                <Button variant='ghost' className='w-full mt-2 ml-2 text-sm font-light flex justify-start'>
+                <Link to='/projects'>
+                  <Button variant='ghost' className='w-[95%] mt-2 ml-2 text-sm font-light flex justify-start'>
+                    <TextSearch size={16} strokeWidth={1.5} />
+                    View all projects
+                  </Button>
+                </Link>
+                <Button
+                  variant='ghost'
+                  className='w-[95%] mt-2 ml-2 text-sm font-light flex justify-start'
+                  onClick={() => setIsCreateProjectOpen(true)}
+                >
                   <Plus size={16} strokeWidth={1.5} />
                   Create new project
                 </Button>
@@ -53,12 +65,16 @@ export function Header({ user, projects }: { user: User; projects: Project[] }) 
           </NavigationMenuList>
         </NavigationMenu>
 
+        {/* 이슈 생성 버튼 */}
         <Button className='rounded-md'>Create</Button>
 
         <div className='flex items-end gap-2 ml-auto'>
           <HeaderUserMenu user={user} className='ml-2' />
         </div>
       </div>
+
+      {/* 프로젝트 생성 다이얼로그 */}
+      <CreateProjectDialog open={isCreateProjectOpen} onOpenChange={setIsCreateProjectOpen} userId={user.id} />
     </header>
   )
 }

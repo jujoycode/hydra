@@ -1,9 +1,10 @@
 import React from 'react'
+import { createHashRouter, Link, type RouteObject } from 'react-router'
 import { Button } from '@/components/atoms/Button'
 import { EmptyPage } from '@/pages/EmptyPage'
 import { MainLayout } from '@/layouts/MainLayout'
 import { ProjectLayout } from '@/layouts/ProjectLayout'
-import { createHashRouter, Link, type RouteObject } from 'react-router'
+import { SettingsLayout } from '@/layouts/SettingsLayout'
 import { AuthGuard, withProtected, withPublic } from './guard/AuthGuard'
 
 /**
@@ -129,10 +130,19 @@ const routes: RouteObject[] = [
       },
       {
         path: 'settings',
+        element: (
+          <AuthGuard requireAuth={true}>
+            <SettingsLayout />
+          </AuthGuard>
+        ),
         children: [
           {
             index: true,
-            element: <ProtectedTempComponent name='설정' />
+            element: protectedLazyImport(() => import('@/components/pages/settings/AccountPage'))
+          },
+          {
+            path: 'integration',
+            element: protectedLazyImport(() => import('@/components/pages/settings/IntegrationPage'))
           }
         ]
       }

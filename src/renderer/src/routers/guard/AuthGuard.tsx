@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useState, useRef } from 'react'
 import { Navigate, useLocation } from 'react-router'
+import { toast } from 'sonner'
 
 interface AuthGuardProps {
   children: ReactNode
@@ -50,6 +51,7 @@ function decodeToken(token: string): DecodedToken | null {
 export const AuthGuard = ({ children, requireAuth = true }: AuthGuardProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
   const [_, setTokenExpiration] = useState<number | null>(null)
+
   const location = useLocation()
 
   // 로그 출력 제한을 위한 ref
