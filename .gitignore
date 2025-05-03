@@ -1,4 +1,5 @@
 node_modules
+pnpm-lock.yaml
 dist
 out
 .DS_Store
@@ -6,4 +7,6 @@ out
 .env
 .env.*
 *.crt
-pnpm-lock.yaml
+
+# Prisma
+src/main/core/database/prisma/generated

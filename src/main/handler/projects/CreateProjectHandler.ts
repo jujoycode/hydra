@@ -1,7 +1,6 @@
 import { randomUUID } from 'crypto'
 import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 import { ProjectValidator } from '@/util/validator'
-import { BaseError } from '@/error/BaseError'
 import { OperationFailedError } from '@/error/OperationFailedError'
 import { IpcChannel, type CreateProjectParams } from '@/interface/CoreInterface'
 

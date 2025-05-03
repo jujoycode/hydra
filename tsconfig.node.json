@@ -37,7 +37,8 @@
       "@/lib/*": ["src/main/core/lib/*"],
       "@/util/*": ["src/main/core/util/*"],
       "@/handler/*": ["src/main/handler/*"],
-      "@/error/*": ["src/main/core/error/*"]
+      "@/error/*": ["src/main/core/error/*"],
+      "@prisma/*": ["src/main/core/database/prisma/generated/*"]
     }
   }
 }
