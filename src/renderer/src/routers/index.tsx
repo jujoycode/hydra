@@ -71,7 +71,7 @@ const routes: RouteObject[] = [
         children: [
           {
             index: true,
-            element: <ProtectedTempComponent name='프로젝트 목록' />
+            element: protectedLazyImport(() => import('@/components/pages/ProjectsPage'))
           },
           {
             path: ':projectId',

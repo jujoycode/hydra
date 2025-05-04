@@ -32,7 +32,7 @@ export const AreaTrendChart = ({ data, height = 200, lines }: AreaTrendChartProp
           <CartesianGrid strokeDasharray='3 3' stroke='var(--border)' opacity={0.3} />
           <XAxis dataKey='name' tick={{ fontSize: 10 }} stroke='var(--muted-foreground)' />
           <YAxis tick={{ fontSize: 10 }} stroke='var(--muted-foreground)' />
-          <Tooltip content={<CustomTooltip labelFormatter={(label) => `${label} 통계`} />} />
+          <Tooltip content={<CustomTooltip />} />
           <Legend iconSize={8} wrapperStyle={{ fontSize: 10 }} />
 
           {lines.map((line, index) => (

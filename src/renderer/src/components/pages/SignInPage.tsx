@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { useNavigate } from 'react-router'
 import { useIpcHandler } from '@/hooks/use-ipc'
 import { useAuthStore } from '@/stores/auth'
@@ -60,6 +61,7 @@ export default function SignInPage() {
       setProjects(data.projects)
     }
 
+    toast.success('Sign in successful')
     navigate('/')
   }
 

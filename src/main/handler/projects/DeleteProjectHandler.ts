@@ -6,6 +6,8 @@ export class DeleteProjectHandler extends CoreBaseHandler<IpcChannel.PROJECT_DEL
     super(IpcChannel.PROJECT_DELETE)
   }
 
+  // ? 프로젝트 생성자만 삭제 가능해야함, 유예 기간 14일 존재해야함?
+  // ? 유예 기간 후에 어떻게 삭제할지 고민 필요 (Batch X)
   async handler(params: DeleteProjectParams) {
     this.logDebug(`DeleteProjectHandler Params: ${JSON.stringify(params)}`)
 

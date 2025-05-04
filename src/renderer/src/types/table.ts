@@ -1,4 +1,4 @@
-import { Table } from '@tanstack/react-table'
+import { Table, ColumnDef, Column } from '@tanstack/react-table'
 
 /**
  * 버튼 형태의 필터 옵션을 위한 인터페이스
@@ -56,4 +56,8 @@ export interface TableSearchBarProps<TData, TValue> {
 export interface TablePaginationProps<TData> {
   /** TanStack Table 인스턴스 */
   table: Table<TData>
-} 
+}
+
+export interface ProjectTableMeta {
+  onSelectProject: (project: any) => void
+}

@@ -1,6 +1,5 @@
 import React, { ReactNode, useEffect, useState, useRef } from 'react'
 import { Navigate, useLocation } from 'react-router'
-import { toast } from 'sonner'
 
 interface AuthGuardProps {
   children: ReactNode

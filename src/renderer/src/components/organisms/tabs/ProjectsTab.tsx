@@ -7,14 +7,14 @@ import { ChartCard } from '@/molecules/cards/ChartCard'
 import { Folders, GitBranch, Calendar, Percent, Timer, GitPullRequest } from 'lucide-react'
 
 interface ProjectProgress extends BarDataPoint {
-  완료율: number
-  남은일수: number
+  completed: number
+  remaining: number
 }
 
 interface ProjectIssue extends StackDataPoint {
-  해결됨: number
-  진행중: number
-  차단됨: number
+  resolved: number
+  in_progress: number
+  blocked: number
 }
 
 interface ProjectsTabProps {
@@ -29,21 +29,21 @@ interface ProjectsTabProps {
 }
 
 export const ProjectsTab = ({ projectStats, projectProgressData, projectIssueData }: ProjectsTabProps) => {
-  // 스택 바 차트 설정
+  // Stack bar chart configuration
   const projectIssueBars = useMemo(
     () => [
       {
-        dataKey: '해결됨',
+        dataKey: 'resolved',
         stackId: 'a',
         fill: '#10B981'
       },
       {
-        dataKey: '진행중',
+        dataKey: 'inProgress',
         stackId: 'a',
         fill: '#3B82F6'
       },
       {
-        dataKey: '차단됨',
+        dataKey: 'blocked',
         stackId: 'a',
         fill: '#EF4444',
         radius: [0, 4, 4, 0] as [number, number, number, number]
@@ -52,21 +52,21 @@ export const ProjectsTab = ({ projectStats, projectProgressData, projectIssueDat
     []
   )
 
-  // 마감일 차트용 버블 데이터 변환
+  // Deadline chart bubble data transformation
   const deadlineBubbleData = useMemo<BubbleDataPoint[]>(() => {
     return projectProgressData.map((project) => ({
       name: project.name,
-      value: project.남은일수,
-      count: project.완료율
+      value: project.remaining,
+      count: project.completed
     }))
   }, [projectProgressData])
 
   return (
     <div className='h-full overflow-auto p-4 bg-slate-50/50 dark:bg-slate-900/20'>
-      {/* 상단 통계 카드 */}
+      {/* Top statistics cards */}
       <div className='grid grid-cols-4 gap-3 mb-5'>
         <StatCard
-          title='총 프로젝트'
+          title='Total Projects'
           value={projectStats.total}
           change='+2'
           icon={<Folders className='text-white h-5 w-5' />}
@@ -74,50 +74,50 @@ export const ProjectsTab = ({ projectStats, projectProgressData, projectIssueDat
         />
 
         <StatCard
-          title='진행 중'
+          title='In Progress'
           value={projectStats.active}
           icon={<GitBranch className='text-white h-5 w-5' />}
           colorScheme='cyan'
         />
 
         <StatCard
-          title='마감 임박'
+          title='Due Soon'
           value={projectStats.dueThisMonth}
           icon={<Calendar className='text-white h-5 w-5' />}
           colorScheme='rose'
         />
 
         <StatCard
-          title='평균 진행률'
+          title='Average Progress'
           value={`${projectStats.avgProgress}%`}
           icon={<Percent className='text-white h-5 w-5' />}
           colorScheme='emerald'
         />
       </div>
 
-      {/* 차트 섹션 */}
+      {/* Chart section */}
       <div className='grid grid-cols-3 gap-4'>
-        {/* 프로젝트 진행률 차트 */}
+        {/* Project progress chart */}
         <ChartCard
-          title='프로젝트 진행률'
+          title='Project Progress'
           icon={<Percent />}
           iconBgColor='bg-indigo-100 dark:bg-indigo-900/30'
           iconColor='text-indigo-600 dark:text-indigo-400'
         >
           <HorizontalBarChart
             data={projectProgressData}
-            dataKey='완료율'
+            dataKey='completionRate'
             height={200}
             gradientId='progressGradient'
             gradientColors={{ start: '#8B5CF6', end: '#C084FC' }}
             domain={[0, 100]}
-            formatter={(value) => [`${value}%`, '완료율']}
+            formatter={(value) => [`${value}%`, 'Completion Rate']}
           />
         </ChartCard>
 
-        {/* 프로젝트별 이슈 분포 차트 */}
+        {/* Project issues distribution chart */}
         <ChartCard
-          title='프로젝트별 이슈'
+          title='Project Issues'
           icon={<GitPullRequest />}
           iconBgColor='bg-sky-100 dark:bg-sky-900/30'
           iconColor='text-sky-600 dark:text-sky-400'
@@ -125,9 +125,9 @@ export const ProjectsTab = ({ projectStats, projectProgressData, projectIssueDat
           <StackedBarChart data={projectIssueData} bars={projectIssueBars} height={200} />
         </ChartCard>
 
-        {/* 프로젝트 마감일 현황 차트 */}
+        {/* Project deadline status chart */}
         <ChartCard
-          title='마감일 현황'
+          title='Deadline Status'
           icon={<Timer />}
           iconBgColor='bg-rose-100 dark:bg-rose-900/30'
           iconColor='text-rose-600 dark:text-rose-400'
@@ -137,25 +137,25 @@ export const ProjectsTab = ({ projectStats, projectProgressData, projectIssueDat
             height={200}
             xAxisConfig={{
               dataKey: 'value',
-              name: '남은 일수',
+              name: 'Days Remaining',
               type: 'number'
             }}
             yAxisConfig={{
               dataKey: 'name',
-              name: '프로젝트'
+              name: 'Project'
             }}
             zAxisConfig={{
               dataKey: 'count',
-              name: '진행률',
+              name: 'Progress',
               range: [30, 150]
             }}
             tooltipFormatter={(value, name) => {
-              if (name === 'count') return [`${value}%`, '진행률']
-              if (name === 'value') return [`${value}일`, '남은 기간']
+              if (name === 'count') return [`${value}%`, 'Progress']
+              if (name === 'value') return [`${value} days`, 'Time Remaining']
               return [value, name]
             }}
             colors={deadlineBubbleData.map((entry) => {
-              // 색상은 남은 일수에 따라 결정
+              // Colors determined by remaining days
               const days = entry.value as number
               if (days <= 7) return '#EF4444'
               else if (days <= 14) return '#F59E0B'

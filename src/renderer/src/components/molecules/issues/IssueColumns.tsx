@@ -1,8 +1,8 @@
 import { formatDate } from '@/lib/utils'
 import { Button } from '@/atoms/Button'
 import { createColumn } from '@/atoms/TableColumnDef'
-import { UserAvatar } from '@/molecules/user/UserAvatar'
-import { IssueBadge } from '@/molecules/issue/IssueBadge'
+import { UserAvatar } from '@/molecules/users/UserAvatar'
+import { IssueBadge } from '@/molecules/issues/IssueBadge'
 import { ArrowUpRight, CircleDot, TriangleAlert } from 'lucide-react'
 import type { Issue, IssueTableMeta } from '@/types/issue'
 

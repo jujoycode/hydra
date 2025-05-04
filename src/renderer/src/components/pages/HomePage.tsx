@@ -17,39 +17,39 @@ const STATUS_COLORS = {
 // 버블 차트 데이터 (이슈 유형별 분포)
 const bubbleData = [
   { name: 'UI/UX', value: 35, count: 12 },
-  { name: '버그', value: 28, count: 18 },
-  { name: '기능', value: 42, count: 22 },
-  { name: '성능', value: 15, count: 8 },
-  { name: '보안', value: 20, count: 6 },
-  { name: '문서', value: 8, count: 4 }
+  { name: 'Bug', value: 28, count: 18 },
+  { name: 'Feature', value: 42, count: 22 },
+  { name: 'Performance', value: 15, count: 8 },
+  { name: 'Security', value: 20, count: 6 },
+  { name: 'Documentation', value: 8, count: 4 }
 ]
 
 // 트렌드 데이터
 const trendData = [
-  { name: '1월', 생성: 25, 해결: 20 },
-  { name: '2월', 생성: 30, 해결: 22 },
-  { name: '3월', 생성: 38, 해결: 30 },
-  { name: '4월', 생성: 32, 해결: 28 },
-  { name: '5월', 생성: 40, 해결: 35 },
-  { name: '6월', 생성: 45, 해결: 40 }
+  { name: 'January', created: 25, resolved: 20 },
+  { name: 'February', created: 30, resolved: 22 },
+  { name: 'March', created: 38, resolved: 30 },
+  { name: 'April', created: 32, resolved: 28 },
+  { name: 'May', created: 40, resolved: 35 },
+  { name: 'June', created: 45, resolved: 40 }
 ]
 
 // 프로젝트 진행 현황 데이터
 const projectProgressData = [
-  { name: '웹 앱 개발', 완료율: 75, 남은일수: 14 },
-  { name: '모바일 앱', 완료율: 45, 남은일수: 30 },
-  { name: '백엔드 API', 완료율: 90, 남은일수: 7 },
-  { name: '디자인 시스템', 완료율: 60, 남은일수: 20 },
-  { name: '인프라 구축', 완료율: 30, 남은일수: 45 }
+  { name: 'Web App Development', completed: 75, remaining: 14 },
+  { name: 'Mobile App', completed: 45, remaining: 30 },
+  { name: 'Backend API', completed: 90, remaining: 7 },
+  { name: 'Design System', completed: 60, remaining: 20 },
+  { name: 'Infrastructure', completed: 30, remaining: 45 }
 ]
 
 // 프로젝트별 이슈 분포 데이터
 const projectIssueData = [
-  { name: '웹 앱 개발', 해결됨: 45, 진행중: 15, 차단됨: 5 },
-  { name: '모바일 앱', 해결됨: 20, 진행중: 30, 차단됨: 8 },
-  { name: '백엔드 API', 해결됨: 60, 진행중: 10, 차단됨: 2 },
-  { name: '디자인 시스템', 해결됨: 30, 진행중: 25, 차단됨: 0 },
-  { name: '인프라 구축', 해결됨: 15, 진행중: 20, 차단됨: 10 }
+  { name: 'Web App Development', resolved: 45, in_progress: 15, blocked: 5 },
+  { name: 'Mobile App', resolved: 20, in_progress: 30, blocked: 8 },
+  { name: 'Backend API', resolved: 60, in_progress: 10, blocked: 2 },
+  { name: 'Design System', resolved: 30, in_progress: 25, blocked: 0 },
+  { name: 'Infrastructure', resolved: 15, in_progress: 20, blocked: 10 }
 ]
 
 export default function HomePage() {
@@ -96,20 +96,20 @@ export default function HomePage() {
     })
 
     setStatusData([
-      { name: '진행 중', value: statusCount.in_progress, color: STATUS_COLORS.in_progress },
-      { name: '완료', value: statusCount.done, color: STATUS_COLORS.done },
-      { name: '차단됨', value: statusCount.blocked, color: STATUS_COLORS.blocked },
-      { name: '검토 중', value: statusCount.review, color: STATUS_COLORS.review }
+      { name: 'In Progress', value: statusCount.in_progress, color: STATUS_COLORS.in_progress },
+      { name: 'Done', value: statusCount.done, color: STATUS_COLORS.done },
+      { name: 'Blocked', value: statusCount.blocked, color: STATUS_COLORS.blocked },
+      { name: 'Review', value: statusCount.review, color: STATUS_COLORS.review }
     ])
   }, [user])
 
   // 프로젝트 통계 계산
   const projectStats = {
     total: projectProgressData.length,
-    active: projectProgressData.filter((p) => p.완료율 < 100).length,
-    dueThisMonth: projectProgressData.filter((p) => p.남은일수 <= 14).length,
+    active: projectProgressData.filter((p) => p.completed < 100).length,
+    dueThisMonth: projectProgressData.filter((p) => p.remaining <= 14).length,
     avgProgress: Math.round(
-      projectProgressData.reduce((acc, curr) => acc + curr.완료율, 0) / projectProgressData.length
+      projectProgressData.reduce((acc, curr) => acc + curr.completed, 0) / projectProgressData.length
     )
   }
 

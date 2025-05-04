@@ -13,16 +13,16 @@ import type { User } from '@/interface/CoreInterface'
 // 타입 정의
 interface ProjectProgress extends BarDataPoint {
   name: string
-  완료율: number
-  남은일수: number
+  completed: number
+  remaining: number
   [key: string]: string | number
 }
 
 interface ProjectIssue extends StackDataPoint {
   name: string
-  해결됨: number
-  진행중: number
-  차단됨: number
+  resolved: number
+  in_progress: number
+  blocked: number
   [key: string]: string | number
 }
 
@@ -61,10 +61,10 @@ export const HomePageTemplate = ({
   const [activeTab, setActiveTab] = useState('dashboard')
 
   return (
-    <div className='h-[calc(100vh-4rem)] flex flex-col overflow-hidden'>
+    <div className='h-[calc(100vh-4rem)] flex flex-col overflow-hidden p-8 pt-2'>
       {/* 인사말 */}
       <div className='p-6 pb-0'>
-        <h1 className='text-2xl font-bold mb-2'>안녕하세요, {user.name || '사용자'}님!</h1>
+        <h1 className='text-2xl font-bold mb-2'>Hello, {user.name || 'User'}!</h1>
       </div>
 
       {/* 메인 탭 */}
@@ -75,25 +75,25 @@ export const HomePageTemplate = ({
               value='dashboard'
               className='flex gap-2 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none py-2'
             >
-              <Home size={16} /> 대시보드
+              <Home size={16} /> Dashboard
             </TabsTrigger>
             <TabsTrigger
               value='projects'
               className='flex gap-2 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none py-2'
             >
-              <Folders size={16} /> 프로젝트
+              <Folders size={16} /> Projects
             </TabsTrigger>
             <TabsTrigger
               value='tasks'
               className='flex gap-2 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none py-2'
             >
-              <Clock3 size={16} /> 내 작업
+              <Clock3 size={16} /> My Tasks
             </TabsTrigger>
             <TabsTrigger
               value='activity'
               className='flex gap-2 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none py-2'
             >
-              <ActivitySquare size={16} /> 활동
+              <ActivitySquare size={16} /> Activity
             </TabsTrigger>
           </TabsList>
         </div>
@@ -116,8 +116,8 @@ export const HomePageTemplate = ({
         <TabsContent value='tasks' className='mt-0 flex-1 overflow-auto p-4'>
           <div className='h-full flex items-center justify-center text-center'>
             <div>
-              <h3 className='text-lg font-medium mb-2'>내 작업</h3>
-              <p className='text-muted-foreground'>나에게 할당된 작업이 없습니다.</p>
+              <h3 className='text-lg font-medium mb-2'>My Tasks</h3>
+              <p className='text-muted-foreground'>No tasks assigned to me.</p>
             </div>
           </div>
         </TabsContent>
@@ -126,8 +126,8 @@ export const HomePageTemplate = ({
         <TabsContent value='activity' className='mt-0 flex-1 overflow-auto p-4'>
           <div className='h-full flex items-center justify-center text-center'>
             <div>
-              <h3 className='text-lg font-medium mb-2'>활동</h3>
-              <p className='text-muted-foreground'>최근 활동 기록이 없습니다.</p>
+              <h3 className='text-lg font-medium mb-2'>Activity</h3>
+              <p className='text-muted-foreground'>No activity records.</p>
             </div>
           </div>
         </TabsContent>

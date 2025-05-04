@@ -3,33 +3,51 @@ description:
 globs: 
 alwaysApply: false
 ---
-# 컴포넌트 구조 및 스타일링
+# Component Structure and Styling
 
-## Atomic Design 패턴
+## Atomic Design Pattern
 
-Hydra는 Atomic Design 패턴을 사용하여 컴포넌트를 구성합니다:
+Hydra uses the Atomic Design pattern to organize components:
 
-- `atoms/`: 버튼, 입력 필드, 아이콘 등 기본 UI 요소
-- `molecules/`: atoms를 조합한 복잡한 UI 컴포넌트 
-- `organisms/`: 폼, 카드 목록 등 완전한 UI 섹션
-- `templates/`: 페이지 레이아웃을 정의하는 컴포넌트
-- `pages/`: 최종 페이지를 구성하는 컴포넌트
-- `layouts/`: 공통 레이아웃 컴포넌트
+- `atoms/`: Basic UI elements like buttons, input fields, charts, card structures
+- `molecules/`: Combinations of atoms (e.g., StatCard, ChartCard)
+- `organisms/`: Complete UI sections like tabs (DashboardTab, ProjectsTab)
+- `templates/`: Components that define page layouts
+- `pages/`: Components that compose final pages
+- `layouts/`: Common layout components
 
-## 스타일링 가이드
+## Chart Components
 
-- TailwindCSS를 사용하여 스타일링 (인라인 클래스)
-- UI 컴포넌트는 Radix UI와 shadcn/ui 패턴을 따름 (설치 시, pnpm 사용)
-- 조건부 클래스는 `clsx` 또는 `class-variance-authority` 사용
+The application extensively uses chart components for data visualization:
+- `HorizontalBarChart.tsx`: Horizontal bar charts for progress displays
+- `StackedBarChart.tsx`: Stacked bar charts for issue distributions
+- `BubbleChart.tsx`: Bubble charts for deadline status
+- `AreaTrendChart.tsx`: Area charts for trend visualization
+- `StatusDonutChart.tsx`: Donut charts for status distributions
 
-## 컴포넌트 구현 패턴
+## Card Components
 
-- 타입스크립트 인터페이스로 Props 정의
-- 함수형 컴포넌트와 React 훅 사용
-- 상태 관리는 Zustand 사용
-- 이벤트 핸들러는 `handle` 접두사 사용 (예: `handleClick`)
+Cards are used to display information in consistent containers:
+- `StatCard.tsx`: Displays statistics with title, value, and change indicators
+- `ChartCard.tsx`: Container for chart components with title and icon
 
-## 내부 문구
+## Styling Guide
 
-- 사용자에게 노출되는 문구는 영문으로 작성해야함
-- 실제 시스템에서 사용하는 문체로 작성할 것
+- TailwindCSS for styling (inline classes)
+- Dark mode support with `dark:` prefix classes
+- UI components follow Radix UI and shadcn/ui patterns
+- Conditional classes using `clsx` or `class-variance-authority`
+
+## Component Implementation Patterns
+
+- TypeScript interfaces for Props definition
+- Functional components and React hooks
+- Zustand for state management
+- Event handlers use the `handle` prefix (e.g., `handleClick`)
+
+## Language Guidelines
+
+- All user-facing text must be in English
+- Variables and component names should follow English naming conventions
+- Comments can be written in Korean or English
+- Use proper system UI language and terminology

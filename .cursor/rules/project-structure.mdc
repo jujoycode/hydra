@@ -3,32 +3,55 @@ description:
 globs: 
 alwaysApply: false
 ---
-# Hydra 프로젝트 구조
+# Hydra Project Structure
 
-Hydra는 Electron 기반의 프로젝트/이슈 관리 애플리케이션입니다. 프로젝트는 다음과 같은 구조로 구성되어 있습니다:
+Hydra is an Electron-based project/issue management application. The project is structured as follows:
 
-## 주요 디렉토리
+## Main Directories
 
-- `src/main/`: Electron의 메인 프로세스 코드
-  - `index.ts`: 애플리케이션 진입점
-  - `core/`: 핵심 기능 및 유틸리티
-  - `handler/`: 이벤트 핸들러
+- `src/main/`: Electron main process code
+  - `index.ts`: Application entry point
+  - `core/`: Core functionality and utilities
+  - `handler/`: Event handlers
 
-- `src/renderer/`: 프론트엔드 코드 (React)
-  - `src/`: React 애플리케이션 소스 코드
-    - `components/`: UI 컴포넌트 (Atomic Design 패턴 사용)
-    - `routers/`: 라우팅 관련 코드
-    - `hooks/`: 커스텀 React 훅
-    - `lib/`: 유틸리티 라이브러리
+- `src/renderer/`: Frontend code (React)
+  - `src/`: React application source code
+    - `components/`: UI components (using Atomic Design pattern)
+      - `atoms/`: Basic UI elements including charts
+      - `molecules/`: Combined components like cards
+      - `organisms/`: Complete UI sections (tabs)
+      - `templates/`: Page layout components
+      - `pages/`: Page components
+      - `layouts/`: Common layout components
+    - `routers/`: Routing related code
+    - `hooks/`: Custom React hooks
+    - `lib/`: Utility libraries
+    - `stores/`: Zustand stores for state management
+    - `types/`: TypeScript type definitions
 
-- `src/preload/`: Electron 프리로드 스크립트
+- `src/preload/`: Electron preload scripts
 
-## 기술 스택
+## Key Features
+
+- Dashboard with various charts and statistics
+- Project management with progress tracking
+- Issue tracking and visualization
+- Data analytics and reporting
+
+## Tech Stack
 
 - TypeScript
 - React 19
 - Electron
 - TailwindCSS
-- Prisma (데이터베이스 ORM)
-- Radix UI (컴포넌트 라이브러리)
-- Zustand (상태 관리)
+- Recharts (for data visualization)
+- Prisma (database ORM)
+- Radix UI (component library)
+- Zustand (state management)
+
+## UI Guidelines
+
+- All user-facing text must be in English
+- Code comments can be written in Korean or English
+- Dark mode support
+- Responsive design

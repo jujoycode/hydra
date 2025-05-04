@@ -1,5 +1,4 @@
 import { TooltipProps } from 'recharts'
-import { Separator } from '@/atoms/Separator'
 
 interface CustomTooltipProps extends TooltipProps<any, any> {
   showLabel?: boolean
@@ -12,29 +11,29 @@ export const CustomTooltip = ({ active, payload, label, showLabel = true, labelF
   }
 
   // 버블차트인 경우 특별한 처리
-  const isBubbleChart = payload.some((item) => item.name === '중요도' || item.name === '이슈 수')
+  const isBubbleChart = payload.some((item) => item.name === 'Importance' || item.name === 'Issue Count')
 
   if (isBubbleChart) {
     const category = payload[0]?.payload?.name || label
-    const importance = payload.find((item) => item.name === '중요도')?.value || ''
-    const count = payload.find((item) => item.name === '이슈 수')?.value || ''
+    const importance = payload.find((item) => item.name === 'Importance')?.value || ''
+    const count = payload.find((item) => item.name === 'Issue Count')?.value || ''
 
     return (
       <div className='bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-3 px-4 min-w-[180px] animate-in fade-in zoom-in-95 duration-200 origin-top'>
         <div className='space-y-2'>
-          <p className='text-sm font-bold text-center border-b border-slate-200 dark:border-slate-700 pb-2 mb-1'>
-            카테고리 : <span className='text-indigo-600 dark:text-indigo-400'>{category}</span>
+          <p className='text-sm text-center border-b border-slate-200 dark:border-slate-700 pb-2 mb-1'>
+            Category : <span className='text-indigo-600 dark:text-indigo-400'>{category}</span>
           </p>
 
           <div className='space-y-1'>
             <div className='flex items-center justify-between'>
-              <span className='text-xs font-medium text-slate-500 dark:text-slate-400'>중요도 :</span>
-              <span className='text-sm font-bold'>{importance}</span>
+              <span className='text-xs font-medium text-slate-500 dark:text-slate-400'>Importance :</span>
+              <span className='text-sm'>{importance}</span>
             </div>
 
             <div className='flex items-center justify-between'>
-              <span className='text-xs font-medium text-slate-500 dark:text-slate-400'>이슈 수 :</span>
-              <span className='text-sm font-bold'>{count}개</span>
+              <span className='text-xs font-medium text-slate-500 dark:text-slate-400'>Issue Count :</span>
+              <span className='text-sm'>{count}</span>
             </div>
           </div>
         </div>
@@ -47,7 +46,7 @@ export const CustomTooltip = ({ active, payload, label, showLabel = true, labelF
     <div className='bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg py-3 px-4 min-w-[160px] animate-in fade-in zoom-in-95 duration-200 origin-top'>
       {showLabel && (
         <>
-          <p className='text-sm font-bold text-center border-b border-slate-200 dark:border-slate-700 pb-2 mb-1'>
+          <p className='text-sm font-medium text-center border-b border-slate-200 dark:border-slate-700 pb-2 mb-1'>
             {labelFormatter ? labelFormatter(label) : label}
           </p>
         </>
@@ -63,7 +62,7 @@ export const CustomTooltip = ({ active, payload, label, showLabel = true, labelF
               />
               <span className='text-xs font-medium'>{entry.name}</span>
             </div>
-            <span className='text-sm font-bold'>{entry.value}</span>
+            <span className='text-sm'>{entry.value}</span>
           </div>
         ))}
       </div>

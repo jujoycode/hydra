@@ -20,16 +20,16 @@ interface DashboardTabProps {
 }
 
 export const DashboardTab = ({ issueStats, statusData, trendData, bubbleData }: DashboardTabProps) => {
-  // 트렌드 차트 라인 설정
+  // Trend chart line configuration
   const trendLines = useMemo(
     () => [
       {
-        dataKey: '생성',
+        dataKey: 'created',
         color: '#3B82F6',
         gradientId: 'colorIssue'
       },
       {
-        dataKey: '해결',
+        dataKey: 'resolved',
         color: '#10B981',
         gradientId: 'colorResolve'
       }
@@ -39,10 +39,10 @@ export const DashboardTab = ({ issueStats, statusData, trendData, bubbleData }: 
 
   return (
     <div className='h-full overflow-auto p-4 bg-slate-50/50 dark:bg-slate-900/20'>
-      {/* 상단 통계 카드 */}
+      {/* Top statistic cards */}
       <div className='grid grid-cols-5 gap-3 mb-5'>
         <StatCard
-          title='총 이슈'
+          title='Total Issues'
           value={issueStats.total}
           change='+12%'
           icon={<ListTodo className='text-white h-5 w-5' />}
@@ -50,7 +50,7 @@ export const DashboardTab = ({ issueStats, statusData, trendData, bubbleData }: 
         />
 
         <StatCard
-          title='진행 중'
+          title='In Progress'
           value={issueStats.inProgress}
           change='+8%'
           icon={<Clock className='text-white h-5 w-5' />}
@@ -58,7 +58,7 @@ export const DashboardTab = ({ issueStats, statusData, trendData, bubbleData }: 
         />
 
         <StatCard
-          title='완료'
+          title='Completed'
           value={issueStats.done}
           change='+15%'
           icon={<CheckCircle2 className='text-white h-5 w-5' />}
@@ -66,7 +66,7 @@ export const DashboardTab = ({ issueStats, statusData, trendData, bubbleData }: 
         />
 
         <StatCard
-          title='검토 중'
+          title='In Review'
           value={issueStats.review}
           change='+5%'
           icon={<PieChartIcon className='text-white h-5 w-5' />}
@@ -74,7 +74,7 @@ export const DashboardTab = ({ issueStats, statusData, trendData, bubbleData }: 
         />
 
         <StatCard
-          title='차단됨'
+          title='Blocked'
           value={issueStats.blocked}
           change='-4%'
           icon={<AlertCircle className='text-white h-5 w-5' />}
@@ -82,11 +82,11 @@ export const DashboardTab = ({ issueStats, statusData, trendData, bubbleData }: 
         />
       </div>
 
-      {/* 차트 섹션 */}
+      {/* Chart section */}
       <div className='grid grid-cols-3 gap-4'>
-        {/* 이슈 상태 도넛 차트 */}
+        {/* Issue status donut chart */}
         <ChartCard
-          title='이슈 상태 분포'
+          title='Issue Status Distribution'
           icon={<PieChartIcon />}
           iconBgColor='bg-indigo-100 dark:bg-indigo-900/30'
           iconColor='text-indigo-600 dark:text-indigo-400'
@@ -102,9 +102,9 @@ export const DashboardTab = ({ issueStats, statusData, trendData, bubbleData }: 
           </div>
         </ChartCard>
 
-        {/* 이슈 트렌드 차트 */}
+        {/* Issue trend chart */}
         <ChartCard
-          title='이슈 트렌드'
+          title='Issue Trend'
           icon={<TrendingUp />}
           iconBgColor='bg-sky-100 dark:bg-sky-900/30'
           iconColor='text-sky-600 dark:text-sky-400'
@@ -112,9 +112,9 @@ export const DashboardTab = ({ issueStats, statusData, trendData, bubbleData }: 
           <AreaTrendChart data={trendData} lines={trendLines} height={200} />
         </ChartCard>
 
-        {/* 이슈 유형 버블 차트 */}
+        {/* Issue type bubble chart */}
         <ChartCard
-          title='이슈 유형 분포'
+          title='Issue Type Distribution'
           icon={<Bug />}
           iconBgColor='bg-purple-100 dark:bg-purple-900/30'
           iconColor='text-purple-600 dark:text-purple-400'
