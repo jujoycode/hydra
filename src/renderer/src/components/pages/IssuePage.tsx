@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams } from 'react-router'
-import { IssueTable } from '@/organisms/IssueTable'
-import { IssueDetailsDialog } from '@/organisms/IssueDetailsDialog'
+import { IssueTable } from '@/organisms/issues/IssueTable'
+import { IssueDetailsDialog } from '@/organisms/dialogs/IssueDetailsDialog'
 import type { Issue } from '@/types/issue'
 
 import DUMMY_ISSUES from '../../../../../dummy/issues.json'

@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router'
-import { SettingsSidebar } from '@/organisms/SettingsSidebar'
+import { SettingsSidebar } from '@/organisms/sidebars/SettingsSidebar'
 
 export function SettingsLayout() {
   return (

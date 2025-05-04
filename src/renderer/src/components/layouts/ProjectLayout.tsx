@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router'
-import { ProjectSidebar } from '@/organisms/ProjectSidebar'
+import { ProjectSidebar } from '@/organisms/sidebars/ProjectSidebar'
 
 export function ProjectLayout() {
   return (

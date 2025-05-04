@@ -5,7 +5,7 @@ import { Label } from '@/atoms/Label'
 import { Input } from '@/atoms/Input'
 import { Button } from '@/atoms/Button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/atoms/Avatar'
-import { SettingsSection } from '@/molecules/SettingsSection'
+import { SettingCard } from '@/molecules/cards/SettingCard'
 import { User } from 'lucide-react'
 
 export default function AccountPage() {
@@ -24,7 +24,7 @@ export default function AccountPage() {
   return (
     <div className='w-full space-y-6'>
       {/* 프로필 섹션 */}
-      <SettingsSection
+      <SettingCard
         title='Profile'
         description='Manage your user profile information.'
         footer={
@@ -74,7 +74,7 @@ export default function AccountPage() {
             </div>
           </div>
         </div>
-      </SettingsSection>
+      </SettingCard>
     </div>
   )
 }

@@ -1,9 +1,9 @@
-import { SettingsSection } from '@/molecules/SettingsSection'
+import { SettingCard } from '@/molecules/cards/SettingCard'
 
 export default function IntegrationPage() {
   return (
     <div className='w-full'>
-      <SettingsSection title='Service Integration'>
+      <SettingCard title='Service Integration'>
         <div className='grid gap-4'>
           <div className='border rounded-lg p-5 bg-muted/30'>
             <div className='flex flex-col items-center justify-center text-center py-6'>
@@ -88,7 +88,7 @@ export default function IntegrationPage() {
             </div>
           </div>
         </div>
-      </SettingsSection>
+      </SettingCard>
     </div>
   )
 }

@@ -15,8 +15,8 @@ export default defineConfig({
         '@/lib': resolve('src/main/core/lib'),
         '@/util': resolve('src/main/core/util'),
         '@/handler': resolve('src/main/handler'),
-        '@/error': resolve('src/main/core/error'),
-        '@prisma': resolve('src/main/core/database/prisma/generated')
+        '@/error': resolve('src/main/core/error')
+        // '@prisma': resolve('src/main/core/database/prisma/generated')
       }
     }
   },

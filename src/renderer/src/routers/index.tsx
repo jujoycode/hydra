@@ -64,7 +64,7 @@ const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <ProtectedTempComponent name='홈' />
+        element: protectedLazyImport(() => import('@/components/pages/HomePage'))
       },
       {
         path: 'projects',
