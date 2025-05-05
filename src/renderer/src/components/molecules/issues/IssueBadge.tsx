@@ -6,11 +6,11 @@ export type IssueState = 'in_progress' | 'done' | 'blocked' | 'review'
 interface IssueBadgeProps {
   state: IssueState
   className?: string
-  size?: 'xs' | 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'lg'
   variant?: 'solid' | 'subtle' | 'outline' | 'surface' | 'plain'
 }
 
-export function IssueBadge({ state, className, size = 'sm', variant = 'subtle' }: IssueBadgeProps) {
+export function IssueBadge({ state, className, size = 'sm', variant = 'solid' }: IssueBadgeProps) {
   const getBadgeProps = () => {
     switch (state) {
       case 'done':

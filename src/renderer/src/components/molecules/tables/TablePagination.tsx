@@ -1,66 +1,105 @@
-'use client'
-
+import { Table } from '@tanstack/react-table'
 import { Button } from '@/atoms/Button'
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
-import type { TablePaginationProps } from '@/types/table'
+import { cn } from '@/lib/utils'
 
-export function TablePagination<TData>({ table }: TablePaginationProps<TData>) {
+export interface TablePaginationProps<TData> {
+  /** TanStack Table 인스턴스 */
+  table: Table<TData>
+  /** 추가 CSS 클래스 */
+  className?: string
+  /** 페이지 변경 시 콜백 */
+  onPageChange?: (pageIndex: number) => void
+}
+
+/**
+ * 테이블 페이지네이션 컴포넌트
+ */
+export function TablePagination<TData>({ table, className, onPageChange }: TablePaginationProps<TData>) {
+  // table이 null인 경우 기본값 처리
+  if (!table) {
+    return null
+  }
+
+  // 페이지 정보
+  const { pageSize, pageIndex } = table.getState().pagination
+  const totalRows = table.getFilteredRowModel().rows.length
+  const totalPages = table.getPageCount()
+
+  // 현재 표시되는 행 범위
+  const start = pageIndex * pageSize + 1
+  const end = Math.min((pageIndex + 1) * pageSize, totalRows)
+
+  // 페이지 변경 핸들러
+  const handlePageChange = (newPageIndex: number) => {
+    table.setPageIndex(newPageIndex)
+    onPageChange?.(newPageIndex)
+  }
+
   return (
-    <div className='flex items-center justify-between px-4 py-2 border-t'>
-      <div className='flex items-center space-x-2'>
-        <p className='text-sm text-gray-500'>
-          {table.getFilteredRowModel().rows.length}개 중{' '}
-          {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} -{' '}
-          {Math.min(
-            (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-            table.getFilteredRowModel().rows.length
-          )}
-        </p>
+    <div className={cn('flex items-center justify-between px-2 py-2', className)}>
+      {/* 현재 표시되는 행 범위 정보 */}
+      <div className='flex items-center gap-1 text-sm text-muted-foreground'>
+        <div>
+          Showing <span className='font-medium'>{start}</span> to <span className='font-medium'>{end}</span> of{' '}
+          <span className='font-medium'>{totalRows}</span> rows
+        </div>
       </div>
-      <div className='flex items-center space-x-2'>
-        <Button
-          variant='ghost'
-          size='icon'
-          onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
-          className='hidden sm:flex h-8 w-8 p-0 lg:flex'
-        >
-          <span className='sr-only'>첫 페이지</span>
-          <ChevronsLeft className='h-4 w-4' />
-        </Button>
-        <Button
-          variant='ghost'
-          size='icon'
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-          className='h-8 w-8 p-0'
-        >
-          <span className='sr-only'>이전 페이지</span>
-          <ChevronLeft className='h-4 w-4' />
-        </Button>
-        <span className='text-sm font-medium mx-2'>
-          {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
-        </span>
-        <Button
-          variant='ghost'
-          size='icon'
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-          className='h-8 w-8 p-0'
-        >
-          <span className='sr-only'>다음 페이지</span>
-          <ChevronRight className='h-4 w-4' />
-        </Button>
-        <Button
-          variant='ghost'
-          size='icon'
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
-          className='hidden sm:flex h-8 w-8 p-0 lg:flex'
-        >
-          <span className='sr-only'>마지막 페이지</span>
-          <ChevronsRight className='h-4 w-4' />
-        </Button>
+
+      {/* 페이지네이션 컨트롤 */}
+      <div className='flex items-center gap-3'>
+        {/* 페이지 네비게이션 버튼 */}
+        <div className='flex items-center gap-1'>
+          <Button
+            variant='outline'
+            size='sm'
+            className='h-7 w-7 p-0'
+            onClick={() => handlePageChange(0)}
+            disabled={!table.getCanPreviousPage()}
+            aria-label='First page'
+          >
+            <ChevronsLeft className='h-3.5 w-3.5' />
+          </Button>
+          <Button
+            variant='outline'
+            size='sm'
+            className='h-7 w-7 p-0'
+            onClick={() => handlePageChange(pageIndex - 1)}
+            disabled={!table.getCanPreviousPage()}
+            aria-label='Previous page'
+          >
+            <ChevronLeft className='h-3.5 w-3.5' />
+          </Button>
+
+          {/* 페이지 번호 */}
+          <div className='flex items-center gap-1 min-w-[70px] justify-center'>
+            <span className='text-xs'>
+              Page <span className='font-medium'>{pageIndex + 1}</span> of{' '}
+              <span className='font-medium'>{totalPages || 1}</span>
+            </span>
+          </div>
+
+          <Button
+            variant='outline'
+            size='sm'
+            className='h-7 w-7 p-0'
+            onClick={() => handlePageChange(pageIndex + 1)}
+            disabled={!table.getCanNextPage()}
+            aria-label='Next page'
+          >
+            <ChevronRight className='h-3.5 w-3.5' />
+          </Button>
+          <Button
+            variant='outline'
+            size='sm'
+            className='h-7 w-7 p-0'
+            onClick={() => handlePageChange(totalPages - 1)}
+            disabled={!table.getCanNextPage()}
+            aria-label='Last page'
+          >
+            <ChevronsRight className='h-3.5 w-3.5' />
+          </Button>
+        </div>
       </div>
     </div>
   )

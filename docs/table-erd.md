@@ -96,6 +96,8 @@ erDiagram
   String issue_modified_by "nullable"
   DateTime issue_created_at "nullable"
   DateTime issue_updated_at "nullable"
+  String issue_priority "nullable"
+  String issue_category "nullable"
 }
 "users_projects_link" }o--|| "projects" : project
 ```
@@ -133,6 +135,8 @@ erDiagram
   - `issue_modified_by`: 
   - `issue_created_at`: 
   - `issue_updated_at`: 
+  - `issue_priority`: 
+  - `issue_category`: 
 
 
 ## File

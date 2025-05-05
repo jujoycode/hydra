@@ -1,4 +1,4 @@
-import { IssueState } from '@/molecules/IssueBadge'
+import { IssueState } from '@/molecules/issues/IssueBadge'
 
 /**
  * 이슈 아이템을 나타내는 인터페이스
@@ -7,7 +7,7 @@ export interface Issue {
   /** 이슈의 고유 식별자 */
   id: string
   /** 이슈 종류 (버그 또는 기능) */
-  category: 'bug' | 'feature'
+  type: 'bug' | 'feature'
   /** 이슈 키 (예: HYDRA-123) */
   key: string
   /** 이슈 제목 */
@@ -37,8 +37,8 @@ export interface Issue {
   tags?: string[]
 }
 
-/** 이슈 카테고리 타입 */
-export type IssueCategory = Issue['category']
+/** 이슈 타입 타입 */
+export type IssueType = Issue['type']
 
 /** 이슈 우선순위 타입 (null/undefined 제외) */
 export type IssuePriority = NonNullable<Issue['priority']>

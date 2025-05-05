@@ -8,24 +8,20 @@ interface TableColumnHeaderProps<TData, TValue> {
   className?: string
 }
 
-export function TableColumnHeader<TData, TValue>({
-  column,
-  title,
-  className,
-}: TableColumnHeaderProps<TData, TValue>) {
+export function TableColumnHeader<TData, TValue>({ column, title, className }: TableColumnHeaderProps<TData, TValue>) {
   return (
-    <div className={cn('flex items-center space-x-2', className)}>
-      <span className="font-medium text-sm">{title}</span>
+    <div className={cn('flex items-center', className)}>
+      <span className='text-xs font-medium'>{title}</span>
       {column.getCanSort() && (
-        <span className="ml-1 flex-shrink-0 opacity-50">
+        <div className='ml-1.5'>
           {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
+            <ArrowUp className='w-4 h-4 text-blue-600' strokeWidth={2.5} />
           ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className="h-3.5 w-3.5" aria-hidden="true" />
+            <ArrowDown className='w-4 h-4 text-blue-600' strokeWidth={2.5} />
           ) : (
-            <ArrowUpDown className="h-3.5 w-3.5" aria-hidden="true" />
+            <ArrowUpDown className='w-4 h-4 text-gray-500' strokeWidth={2} />
           )}
-        </span>
+        </div>
       )}
     </div>
   )
@@ -37,16 +33,8 @@ interface TableCellProps<TValue> {
   format?: (value: TValue) => React.ReactNode
 }
 
-export function TableCell<TValue>({
-  value,
-  className,
-  format,
-}: TableCellProps<TValue>) {
-  return (
-    <div className={cn('py-2 text-sm', className)}>
-      {format ? format(value) : value as React.ReactNode}
-    </div>
-  )
+export function TableCell<TValue>({ value, className, format }: TableCellProps<TValue>) {
+  return <div className={cn('py-2 text-sm', className)}>{format ? format(value) : (value as React.ReactNode)}</div>
 }
 
 interface TableSelectCellProps {
@@ -55,20 +43,16 @@ interface TableSelectCellProps {
   disabled?: boolean
 }
 
-export function TableSelectCell({
-  checked,
-  onCheckedChange,
-  disabled,
-}: TableSelectCellProps) {
+export function TableSelectCell({ checked, onCheckedChange, disabled }: TableSelectCellProps) {
   return (
-    <div className="flex items-center justify-center">
+    <div className='flex items-center justify-center'>
       <input
-        type="checkbox"
-        className="h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary"
+        type='checkbox'
+        className='h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary'
         checked={checked}
         onChange={(e) => onCheckedChange(e.target.checked)}
         disabled={disabled}
       />
     </div>
   )
-} 
+}

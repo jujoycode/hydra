@@ -11,7 +11,7 @@ import { InfoRow } from '@/molecules/InfoRow'
 import { UserAvatar } from '@/molecules/users/UserAvatar'
 import { IssueBadge, IssueState } from '@/molecules/issues/IssueBadge'
 import type { IssueDetailsDialogProps } from '@/types/dialog'
-import type { Issue, IssueCategory, IssuePriority } from '@/types/issue'
+import type { Issue, IssueType, IssuePriority } from '@/types/issue'
 
 export function IssueDetailsDialog({
   issue,
@@ -29,7 +29,7 @@ export function IssueDetailsDialog({
     id: '',
     key: 'HYDRA-' + Math.floor(Math.random() * 1000),
     title: '',
-    category: 'feature',
+    type: 'feature',
     created: new Date(),
     updated: new Date(),
     reporter: {
@@ -114,13 +114,10 @@ export function IssueDetailsDialog({
           {isFormMode ? (
             <>
               <div className='grid gap-2'>
-                <Label htmlFor='category'>카테고리</Label>
-                <Select
-                  value={formData.category}
-                  onValueChange={(value) => handleChange('category', value as IssueCategory)}
-                >
-                  <SelectTrigger id='category'>
-                    <SelectValue placeholder='카테고리 선택' />
+                <Label htmlFor='type'>이슈 타입</Label>
+                <Select value={formData.type} onValueChange={(value) => handleChange('type', value as IssueType)}>
+                  <SelectTrigger id='type'>
+                    <SelectValue placeholder='이슈 타입 선택' />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value='bug'>버그</SelectItem>

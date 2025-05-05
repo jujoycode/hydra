@@ -1,405 +1,44 @@
 [
-    {
-      "category": "feature",
-      "key": "TST-1",
-      "title": "사용자 로그인 페이지의 UI/UX 개선이 필요합니다.",
-      "created": "2025-01-01",
-      "updated": "2025-01-10",
+  {
+    "type": "feature",
+    "key": "TST-1",
+    "title": "사용자 로그인 페이지의 UI/UX 개선이 필요합니다.",
+    "created": "2025-01-01",
+    "updated": "2025-01-10",
     "reporter": {
       "name": "홍길동",
       "avatar": "https://github.com/shadcn.png"
     },
     "assignee": "홍길동",
+    "priority": "high",
     "state": "done"
   },
   {
-    "category": "bug",
+    "type": "bug",
     "key": "TST-2",
-    "title": "로그인 실패 시 적절한 오류 메시지가 표시되지 않습니다.",
-    "created": "2025-01-02",
-    "updated": "2025-01-12",
+    "title": "Backend API 통합 작업 중 문제 발생",
+    "created": "2025-01-01",
+    "updated": "2025-01-10",
     "reporter": {
-      "name": "김철수",
-      "avatar": "https://github.com/kimcs.png"
+      "name": "홍길동",
+      "avatar": "https://github.com/shadcn.png"
     },
-    "assignee": "이영희",
-    "state": "todo"
+    "assignee": "홍길동",
+    "priority": "medium",
+    "state": "in_progress"
   },
   {
-    "category": "feature",
+    "type": "feature",
     "key": "TST-3",
-    "title": "대시보드에 월간 통계 그래프 추가가 필요합니다.",
-    "created": "2025-01-03",
-    "updated": "2025-01-15",
-    "reporter": {
-      "name": "이영희",
-      "avatar": "https://github.com/leeyh.png"
-    },
-    "assignee": "박민준",
-    "state": "in_progress"
-  },
-  {
-    "category": "enhancement",
-    "key": "TST-4",
-    "title": "모바일 화면에서 네비게이션 바 최적화가 필요합니다.",
-    "created": "2025-01-05",
-    "updated": "2025-01-18",
-    "reporter": {
-      "name": "박민준",
-      "avatar": "https://github.com/parkmj.png"
-    },
-    "assignee": "김철수",
-    "state": "review"
-  },
-  {
-    "category": "bug",
-    "key": "TST-5",
-    "title": "프로필 이미지 업로드 시 서버 오류가 발생합니다.",
-    "created": "2025-01-07",
-    "updated": "2025-01-20",
-    "reporter": {
-      "name": "최지아",
-      "avatar": "https://github.com/choija.png"
-    },
-    "assignee": "최지아",
-    "state": "done"
-  },
-  {
-    "category": "documentation",
-    "key": "TST-6",
-    "title": "API 문서화가 필요합니다.",
-    "created": "2025-01-08",
-    "updated": "2025-01-22",
-    "reporter": {
-      "name": "정서연",
-      "avatar": "https://github.com/jungsy.png"
-    },
-    "assignee": "홍길동",
-    "state": "todo"
-  },
-  {
-    "category": "feature",
-    "key": "TST-7",
-    "title": "사용자 설정 페이지 개발이 필요합니다.",
-    "created": "2025-01-10",
-    "updated": "2025-01-25",
+    "title": "사용자 프로필 페이지 개선 작업 중 문제 발생",
+    "created": "2025-01-01",
+    "updated": "2025-01-10",
     "reporter": {
       "name": "홍길동",
       "avatar": "https://github.com/shadcn.png"
     },
-    "assignee": "이영희",
-    "state": "in_progress"
-  },
-  {
-    "category": "bug",
-    "key": "TST-8",
-    "title": "이메일 인증 링크가 만료된 후에도 작동합니다.",
-    "created": "2025-01-12",
-    "updated": "2025-01-28",
-    "reporter": {
-      "name": "김철수",
-      "avatar": "https://github.com/kimcs.png"
-    },
-    "assignee": "박민준",
-    "state": "review"
-  },
-  {
-    "category": "enhancement",
-    "key": "TST-9",
-    "title": "다크 모드 지원을 추가해주세요.",
-    "created": "2025-01-15",
-    "updated": "2025-01-30",
-    "reporter": {
-      "name": "이영희",
-      "avatar": "https://github.com/leeyh.png"
-    },
-    "assignee": "최지아",
-    "state": "todo"
-  },
-  {
-    "category": "bug",
-    "key": "TST-10",
-    "title": "비밀번호 재설정 이메일이 스팸함으로 전송됩니다.",
-    "created": "2025-01-18",
-    "updated": "2025-02-01",
-    "reporter": {
-      "name": "박민준",
-      "avatar": "https://github.com/parkmj.png"
-    },
-    "assignee": "정서연",
-    "state": "done"
-  },
-  {
-    "category": "feature",
-    "key": "TST-11",
-    "title": "소셜 미디어 로그인 기능 추가가 필요합니다.",
-    "created": "2025-01-20",
-    "updated": "2025-02-03",
-    "reporter": {
-      "name": "최지아",
-      "avatar": "https://github.com/choija.png"
-    },
     "assignee": "홍길동",
-    "state": "in_progress"
-  },
-  {
-    "category": "documentation",
-    "key": "TST-12",
-    "title": "사용자 가이드 문서 업데이트가 필요합니다.",
-    "created": "2025-01-22",
-    "updated": "2025-02-05",
-    "reporter": {
-      "name": "정서연",
-      "avatar": "https://github.com/jungsy.png"
-    },
-    "assignee": "김철수",
-    "state": "review"
-  },
-  {
-    "category": "enhancement",
-    "key": "TST-13",
-    "title": "페이지 로딩 속도 최적화가 필요합니다.",
-    "created": "2025-01-25",
-    "updated": "2025-02-08",
-    "reporter": {
-      "name": "홍길동",
-      "avatar": "https://github.com/shadcn.png"
-    },
-    "assignee": "이영희",
-    "state": "todo"
-  },
-  {
-    "category": "bug",
-    "key": "TST-14",
-    "title": "검색 필터링이 올바르게 작동하지 않습니다.",
-    "created": "2025-01-28",
-    "updated": "2025-02-10",
-    "reporter": {
-      "name": "김철수",
-      "avatar": "https://github.com/kimcs.png"
-    },
-    "assignee": "박민준",
-    "state": "done"
-  },
-  {
-    "category": "feature",
-    "key": "TST-15",
-    "title": "실시간 알림 기능 구현이 필요합니다.",
-    "created": "2025-01-30",
-    "updated": "2025-02-12",
-    "reporter": {
-      "name": "이영희",
-      "avatar": "https://github.com/leeyh.png"
-    },
-    "assignee": "최지아",
-    "state": "in_progress"
-  },
-  {
-    "category": "bug",
-    "key": "TST-16",
-    "title": "첨부 파일 다운로드가 간헐적으로 실패합니다.",
-    "created": "2025-02-01",
-    "updated": "2025-02-15",
-    "reporter": {
-      "name": "박민준",
-      "avatar": "https://github.com/parkmj.png"
-    },
-    "assignee": "정서연",
-    "state": "review"
-  },
-  {
-    "category": "enhancement",
-    "key": "TST-17",
-    "title": "접근성 개선이 필요합니다.",
-    "created": "2025-02-03",
-    "updated": "2025-02-18",
-    "reporter": {
-      "name": "최지아",
-      "avatar": "https://github.com/choija.png"
-    },
-    "assignee": "홍길동",
-    "state": "todo"
-  },
-  {
-    "category": "feature",
-    "key": "TST-18",
-    "title": "다국어 지원 추가가 필요합니다.",
-    "created": "2025-02-05",
-    "updated": "2025-02-20",
-    "reporter": {
-      "name": "정서연",
-      "avatar": "https://github.com/jungsy.png"
-    },
-    "assignee": "김철수",
-    "state": "done"
-  },
-  {
-    "category": "bug",
-    "key": "TST-19",
-    "title": "캘린더 뷰에서 이벤트가 중복 표시됩니다.",
-    "created": "2025-02-08",
-    "updated": "2025-02-22",
-    "reporter": {
-      "name": "홍길동",
-      "avatar": "https://github.com/shadcn.png"
-    },
-    "assignee": "이영희",
-    "state": "in_progress"
-  },
-  {
-    "category": "documentation",
-    "key": "TST-20",
-    "title": "개발자 문서에 코드 예제 추가가 필요합니다.",
-    "created": "2025-02-10",
-    "updated": "2025-02-25",
-    "reporter": {
-      "name": "김철수",
-      "avatar": "https://github.com/kimcs.png"
-    },
-    "assignee": "박민준",
-    "state": "review"
-  },
-  {
-    "category": "enhancement",
-    "key": "TST-21",
-    "title": "테이블 데이터 정렬 기능 개선이 필요합니다.",
-    "created": "2025-02-12",
-    "updated": "2025-02-28",
-    "reporter": {
-      "name": "이영희",
-      "avatar": "https://github.com/leeyh.png"
-    },
-    "assignee": "최지아",
-    "state": "todo"
-  },
-  {
-    "category": "bug",
-    "key": "TST-22",
-    "title": "특정 브라우저에서 폼 제출이 실패합니다.",
-    "created": "2025-02-15",
-    "updated": "2025-03-01",
-    "reporter": {
-      "name": "박민준",
-      "avatar": "https://github.com/parkmj.png"
-    },
-    "assignee": "정서연",
-    "state": "done"
-  },
-  {
-    "category": "feature",
-    "key": "TST-23",
-    "title": "사용자 활동 로그 추적 기능이 필요합니다.",
-    "created": "2025-02-18",
-    "updated": "2025-03-05",
-    "reporter": {
-      "name": "최지아",
-      "avatar": "https://github.com/choija.png"
-    },
-    "assignee": "홍길동",
-    "state": "in_progress"
-  },
-  {
-    "category": "enhancement",
-    "key": "TST-24",
-    "title": "차트 시각화 도구 업그레이드가 필요합니다.",
-    "created": "2025-02-20",
-    "updated": "2025-03-08",
-    "reporter": {
-      "name": "정서연",
-      "avatar": "https://github.com/jungsy.png"
-    },
-    "assignee": "김철수",
-    "state": "review"
-  },
-  {
-    "category": "bug",
-    "key": "TST-25",
-    "title": "알림 설정이 저장되지 않는 문제가 있습니다.",
-    "created": "2025-02-22",
-    "updated": "2025-03-10",
-    "reporter": {
-      "name": "홍길동",
-      "avatar": "https://github.com/shadcn.png"
-    },
-    "assignee": "이영희",
-    "state": "todo"
-  },
-  {
-    "category": "feature",
-    "key": "TST-26",
-    "title": "팀 협업 기능 추가가 필요합니다.",
-    "created": "2025-02-25",
-    "updated": "2025-03-12",
-    "reporter": {
-      "name": "김철수",
-      "avatar": "https://github.com/kimcs.png"
-    },
-    "assignee": "박민준",
-    "state": "done"
-  },
-  {
-    "category": "documentation",
-    "key": "TST-27",
-    "title": "배포 프로세스 문서화가 필요합니다.",
-    "created": "2025-02-28",
-    "updated": "2025-03-15",
-    "reporter": {
-      "name": "이영희",
-      "avatar": "https://github.com/leeyh.png"
-    },
-    "assignee": "최지아",
-    "state": "in_progress"
-  },
-  {
-    "category": "bug",
-    "key": "TST-28",
-    "title": "모바일에서 이미지 갤러리가 깨져보입니다.",
-    "created": "2025-03-01",
-    "updated": "2025-03-18",
-    "reporter": {
-      "name": "박민준",
-      "avatar": "https://github.com/parkmj.png"
-    },
-    "assignee": "정서연",
-    "state": "review"
-  },
-  {
-    "category": "enhancement",
-    "key": "TST-29",
-    "title": "검색 결과 필터링 옵션 개선이 필요합니다.",
-    "created": "2025-03-05",
-    "updated": "2025-03-20",
-    "reporter": {
-      "name": "최지아",
-      "avatar": "https://github.com/choija.png"
-    },
-    "assignee": "홍길동",
-    "state": "todo"
-  },
-  {
-    "category": "feature",
-    "key": "TST-30",
-    "title": "사용자 역할 기반 권한 관리 시스템이 필요합니다.",
-    "created": "2025-03-08",
-    "updated": "2025-03-22",
-    "reporter": {
-      "name": "정서연",
-      "avatar": "https://github.com/jungsy.png"
-    },
-    "assignee": "김철수",
-    "state": "in_progress"
-  },
-  {
-    "category": "bug",
-    "key": "TST-31",
-    "title": "데이터 내보내기 기능에서 오류가 발생합니다.",
-    "created": "2025-03-10",
-    "updated": "2025-03-25",
-    "reporter": {
-      "name": "홍길동",
-      "avatar": "https://github.com/shadcn.png"
-    },
-    "assignee": "이영희",
+    "priority": "low",
     "state": "done"
   }
 ]

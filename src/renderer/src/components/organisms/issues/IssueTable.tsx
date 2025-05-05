@@ -1,158 +1,106 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
-  getFilteredRowModel,
-  ColumnFiltersState
-} from '@tanstack/react-table'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/atoms/Table'
+import { useRef } from 'react'
+import { Row, ColumnDef, Table as TableInstance } from '@tanstack/react-table'
+import { Table } from '@/organisms/Table'
 import { IssueColumns } from '@/molecules/issues/IssueColumns'
-import { TableSearchBar } from '@/molecules/tables/TableSearchBar'
-import { TablePagination } from '@/molecules/tables/TablePagination'
-import type { Issue, IssueTableMeta } from '@/types/issue'
-
-interface ExtendedColumnMeta {
-  initSorting?: (table: any) => void
-  [key: string]: any
-}
+import { TableEmpty } from '@/molecules/tables/TableEmpty'
+import { useTable } from '@/hooks/useTable'
+import type { Issue } from '@/types/issue'
 
 interface IssueTableProps {
   issues: Issue[]
   onSelectIssue: (issue: Issue) => void
+  isLoading?: boolean
 }
 
-export function IssueTable({ issues, onSelectIssue }: IssueTableProps) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-
-  const table = useReactTable({
+export function IssueTable({ issues, onSelectIssue, isLoading = false }: IssueTableProps) {
+  // Create table instance directly
+  const { table } = useTable({
     data: issues,
-    columns: IssueColumns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    columns: IssueColumns as ColumnDef<Issue>[],
     initialState: {
       pagination: {
-        pageSize: 7
-      }
+        pageSize: 8
+      },
+      sorting: [{ id: 'key', desc: true }]
     },
-    state: {
-      sorting,
-      columnFilters
+    features: {
+      sorting: true,
+      filtering: true,
+      pagination: true
     },
     meta: {
       onSelectIssue
-    } as IssueTableMeta,
+    },
+    // Custom filter function
     filterFns: {
-      arrIncludesSome: (row, id, filterValue: string[]) => {
+      arrIncludesSome: (row: any, id: string, filterValue: string[]) => {
         const value = row.getValue(id)
         return filterValue.includes(value as string)
       }
     }
   })
 
-  useEffect(() => {
-    IssueColumns.forEach((column) => {
-      const meta = column.meta as ExtendedColumnMeta | undefined
-      if (meta && typeof meta.initSorting === 'function') {
-        meta.initSorting(table)
-      }
-    })
-  }, [table])
+  const tableRef = useRef<TableInstance<Issue> | null>(null)
+  tableRef.current = table
+
+  // Row click handler
+  const handleRowClick = (row: Row<Issue>) => {
+    onSelectIssue(row.original)
+  }
 
   return (
-    <div className='space-y-4'>
-      {/* Search and Filters */}
-      <TableSearchBar
-        table={table}
-        searchColumn='title'
-        placeholder='Search issue by title...'
-        searchWidth='w-64 md:w-80'
-        filters={[
-          {
-            column: 'state',
-            options: ['in_progress', 'done', 'blocked', 'review'],
-            getLabel: (state) => state.replace('_', ' '),
-            title: 'Status'
-          }
-        ]}
-        selectOptions={[
-          {
-            column: 'category',
-            title: 'Category',
-            options: [
-              { value: 'bug', label: 'Bug' },
-              { value: 'feature', label: 'Feature' }
-            ]
+    <div className='h-full flex flex-col space-y-4'>
+      {/* Using integrated Table component */}
+      <Table
+        data={issues}
+        columns={IssueColumns as ColumnDef<Issue>[]}
+        onRowClick={handleRowClick}
+        isLoading={isLoading}
+        loadingMessage='Loading issues...'
+        emptyComponent={<TableEmpty message='No issues' description='Create a new issue to get started' />}
+        initialState={{
+          pagination: {
+            pageSize: 8
           },
-          {
-            column: 'state',
-            title: 'Status',
-            options: [
-              { value: 'in_progress', label: 'In Progress' },
-              { value: 'done', label: 'Done' },
-              { value: 'blocked', label: 'Blocked' },
-              { value: 'review', label: 'Review' }
-            ]
-          }
-        ]}
+          sorting: [{ id: 'key', desc: true }]
+        }}
+        // Search and filtering settings
+        search={{
+          searchColumn: 'title',
+          placeholder: 'Search issue by title...',
+          searchWidth: 'w-64 md:w-80',
+          selectOptions: [
+            {
+              column: 'type',
+              title: 'Type',
+              options: [
+                { value: 'bug', label: 'Bug' },
+                { value: 'feature', label: 'Feature' }
+              ]
+            },
+            {
+              column: 'state',
+              title: 'Status',
+              options: [
+                { value: 'in_progress', label: 'In Progress' },
+                { value: 'done', label: 'Done' },
+                { value: 'blocked', label: 'Blocked' },
+                { value: 'review', label: 'Review' }
+              ]
+            }
+          ]
+        }}
+        // Pagination settings
+        pagination={{
+          rowsPerPageOptions: [8, 16, 24, 32]
+        }}
+        // Table reference
+        tableRef={tableRef}
+        className='flex-1'
+        bodyClassName='flex-1 overflow-y-auto'
       />
-
-      {/* Table */}
-      <div className='rounded-md border w-full overflow-hidden'>
-        <div className='h-auto overflow-y-auto'>
-          <Table>
-            <TableHeader className='bg-muted sticky top-0 z-10'>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={header.column.getCanSort() ? 'cursor-pointer select-none' : ''}
-                      onClick={header.column.getToggleSortingHandler()}
-                    >
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    className='group/row hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-colors duration-200'
-                    data-state={row.getIsSelected() && 'selected'}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={IssueColumns.length} className='h-24 text-center'>
-                    No results found.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-
-        {/* Pagination */}
-        <TablePagination table={table} />
-      </div>
     </div>
   )
 }

@@ -25,6 +25,12 @@
     "approve-dependencies": "pnpm approve-builds"
   },
   "dependencies": {
+    "@editorjs/checklist": "^1.6.0",
+    "@editorjs/code": "^2.8.0",
+    "@editorjs/editorjs": "^2.30.8",
+    "@editorjs/header": "^2.8.1",
+    "@editorjs/list": "^1.9.0",
+    "@editorjs/table": "^2.3.0",
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "@prisma/client": "^6.6.0",

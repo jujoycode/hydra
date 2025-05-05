@@ -12,11 +12,13 @@ import { Separator } from '@/atoms/Separator'
 import { ListItem } from '@/molecules/ListItem'
 import { HeaderUserMenu } from '@/organisms/headers/HeaderUserMenu'
 import { CreateProjectDialog } from '@/organisms/dialogs/CreateProjectDialog'
+import { CreateIssueDialog } from '@/organisms/dialogs/CreateIssueDialog'
 import { TextSearch, Plus } from 'lucide-react'
 import type { Project, User } from '@/interface/CoreInterface'
 
 export function Header({ user, projects }: { user: User; projects: Project[] }) {
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false)
+  const [isCreateIssueOpen, setIsCreateIssueOpen] = useState(false)
 
   return (
     <header className='w-full border-b bg-background flex'>
@@ -66,7 +68,9 @@ export function Header({ user, projects }: { user: User; projects: Project[] }) 
         </NavigationMenu>
 
         {/* 이슈 생성 버튼 */}
-        <Button className='rounded-md'>Create</Button>
+        <Button className='rounded-md' onClick={() => setIsCreateIssueOpen(true)}>
+          Create
+        </Button>
 
         <div className='flex items-end gap-2 ml-auto'>
           <HeaderUserMenu user={user} className='ml-2' />
@@ -75,6 +79,9 @@ export function Header({ user, projects }: { user: User; projects: Project[] }) 
 
       {/* 프로젝트 생성 다이얼로그 */}
       <CreateProjectDialog open={isCreateProjectOpen} onOpenChange={setIsCreateProjectOpen} userId={user.id} />
+
+      {/* 이슈 생성 다이얼로그 */}
+      <CreateIssueDialog open={isCreateIssueOpen} onOpenChange={setIsCreateIssueOpen} userId={user.id} />
     </header>
   )
 }

@@ -1,51 +1,40 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import {
-  flexRender,
+  Row,
+  ColumnDef,
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
   getFilteredRowModel,
-  ColumnFiltersState
+  ColumnFiltersState,
+  SortingState,
+  Table as TableInstance
 } from '@tanstack/react-table'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/atoms/Table'
+import { Table } from '@/organisms/Table'
+import { TableEmpty } from '@/molecules/tables/TableEmpty'
 import { ProjectColumns } from '@/molecules/projects/ProjectColumns'
-import { TablePagination } from '@/molecules/tables/TablePagination'
-import { Folders } from 'lucide-react'
 import type { Project } from '@/interface/CoreInterface'
 
 interface ProjectTableProps {
   projects: Project[]
-  isLoading: boolean
-  searchTerm?: string
+  onSelectProject: (project: Project) => void
+  isLoading?: boolean
 }
 
-export function ProjectTable({ projects, isLoading, searchTerm = '' }: ProjectTableProps) {
-  const [sorting, setSorting] = useState<SortingState>([])
+export function ProjectTable({ projects, onSelectProject, isLoading = false }: ProjectTableProps) {
+  // 상태 초기화
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'project_name', desc: false }])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const navigate = useNavigate()
 
-  // Update filters when search term changes
-  useEffect(() => {
-    if (searchTerm) {
-      setColumnFilters([
-        {
-          id: 'project_name',
-          value: searchTerm
-        }
-      ])
-    } else {
-      setColumnFilters([])
-    }
-  }, [searchTerm])
-
+  // 테이블 인스턴스 생성
   const table = useReactTable({
     data: projects,
-    columns: ProjectColumns,
+    columns: ProjectColumns as ColumnDef<Project>[],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -55,12 +44,17 @@ export function ProjectTable({ projects, isLoading, searchTerm = '' }: ProjectTa
     initialState: {
       pagination: {
         pageSize: 20
-      }
+      },
+      sorting: [{ id: 'project_name', desc: false }]
     },
     state: {
       sorting,
       columnFilters
     },
+    meta: {
+      onSelectProject
+    },
+    // 커스텀 필터 함수
     filterFns: {
       includesString: (row, id, filterValue) => {
         const value = row.getValue(id) as string
@@ -69,131 +63,38 @@ export function ProjectTable({ projects, isLoading, searchTerm = '' }: ProjectTa
     }
   })
 
-  // Project row click handler
-  const handleRowClick = (project: Project) => {
-    navigate(`/projects/${project.project_id}`)
-  }
+  const tableRef = useRef<TableInstance<Project> | null>(null)
+  tableRef.current = table
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className='flex justify-center items-center h-full'>
-        <div className='animate-pulse text-center'>
-          <Folders className='h-10 w-10 text-muted-foreground mb-2 mx-auto' />
-          <p className='text-muted-foreground'>Loading...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Custom styles for columns
-  const getColumnWidth = (columnId: string) => {
-    switch (columnId) {
-      case 'project_name':
-        return 'w-[15%] min-w-[120px]'
-      case 'project_key':
-        return 'w-[8%] min-w-[60px]'
-      case 'project_desc':
-        return 'w-[47%] min-w-[300px]'
-      case 'project_start_date':
-        return 'w-[12%] min-w-[100px]'
-      case 'project_end_date':
-        return 'w-[12%] min-w-[100px]'
-      case 'actions':
-        return 'w-[6%] min-w-[40px]'
-      default:
-        return ''
-    }
-  }
-
-  // Column alignment
-  const getColumnAlignment = (columnId: string) => {
-    switch (columnId) {
-      case 'project_name':
-      case 'project_desc':
-        return 'text-left'
-      case 'project_key':
-      case 'project_start_date':
-      case 'project_end_date':
-        return 'text-center'
-      case 'actions':
-        return 'text-right'
-      default:
-        return ''
-    }
+  // 행 클릭 핸들러
+  const handleRowClick = (row: Row<Project>) => {
+    navigate(`/projects/${row.original.project_id}`)
   }
 
   return (
-    <div className='h-full flex flex-col'>
-      {/* Table */}
-      <div className='rounded-md w-full overflow-hidden flex-1 flex flex-col border'>
-        <div className='flex-1 overflow-y-auto overflow-x-hidden'>
-          <Table>
-            <TableHeader className='bg-muted/70 sticky top-0 z-10 h-8'>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={`${header.column.getCanSort() ? 'cursor-pointer select-none' : ''} py-1 px-2 ${getColumnWidth(header.id)} ${getColumnAlignment(header.id)}`}
-                    >
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    className='group/row hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-colors duration-200 cursor-pointer'
-                    onClick={(e) => {
-                      // 액션 버튼 클릭 시에는 행 클릭 이벤트 방지
-                      if ((e.target as HTMLElement).closest('.action-button')) {
-                        e.stopPropagation()
-                        return
-                      }
-                      handleRowClick(row.original)
-                    }}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={`py-1.5 px-2 ${getColumnWidth(cell.column.id)} ${getColumnAlignment(cell.column.id)}`}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={ProjectColumns.length} className='h-24 text-center'>
-                    {!projects.length ? (
-                      <div className='flex flex-col items-center justify-center py-6'>
-                        <Folders className='h-10 w-10 text-muted-foreground mb-2' />
-                        <p className='text-muted-foreground font-medium'>No Projects</p>
-                        <p className='text-sm text-muted-foreground mt-1'>Create a new project to get started.</p>
-                      </div>
-                    ) : (
-                      'No results found.'
-                    )}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-
-        {/* Pagination */}
-        {projects.length > 0 && (
-          <div className='border-t'>
-            <TablePagination table={table} />
-          </div>
-        )}
-      </div>
+    <div className='h-full flex flex-col space-y-4'>
+      <Table
+        data={projects}
+        columns={ProjectColumns as ColumnDef<Project>[]}
+        onRowClick={handleRowClick}
+        isLoading={isLoading}
+        loadingMessage='Loading projects...'
+        emptyComponent={<TableEmpty message='No projects' description='Create a new project to get started' />}
+        // 검색 및 필터링 설정
+        search={{
+          searchColumn: 'project_name',
+          placeholder: 'Search project by name...',
+          searchWidth: 'w-64 md:w-80'
+        }}
+        // 페이지네이션 설정
+        pagination={{
+          rowsPerPageOptions: [10, 20, 30, 50]
+        }}
+        // 테이블 참조
+        tableRef={tableRef}
+        className='flex-1'
+        bodyClassName='flex-1 overflow-y-auto'
+      />
     </div>
   )
 }

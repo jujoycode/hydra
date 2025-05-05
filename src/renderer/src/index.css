@@ -136,3 +136,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+[data-column-id="actions"] th {
+  display: none;
+}

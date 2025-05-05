@@ -57,6 +57,8 @@ model issues {
   issue_modified_by String?
   issue_created_at  DateTime?           @default(now())
   issue_updated_at  DateTime?           @updatedAt
+  issue_priority    String?
+  issue_category    String?
   issues_files_link issues_files_link[]
 
   @@index([issue_key], map: "idx_issue_key")
