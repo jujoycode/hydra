@@ -139,9 +139,7 @@ export default function TasksPage() {
               <Input
                 placeholder='Add a task...'
                 value={newTaskInputs[issue.issue_id] ?? ''}
-                onChange={(e) =>
-                  setNewTaskInputs((prev) => ({ ...prev, [issue.issue_id]: e.target.value }))
-                }
+                onChange={(e) => setNewTaskInputs((prev) => ({ ...prev, [issue.issue_id]: e.target.value }))}
                 onKeyDown={(e) => handleKeyDown(e, issue.issue_id)}
                 className='h-8 text-sm'
               />

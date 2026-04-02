@@ -26,11 +26,7 @@ export class DrizzleTaskRepository implements TaskRepository {
   }
 
   async findByIssue(issueId: string): Promise<TaskRecord[]> {
-    const rows = await this.db
-      .select()
-      .from(tasks)
-      .where(eq(tasks.issue_id, issueId))
-      .orderBy(asc(tasks.task_order))
+    const rows = await this.db.select().from(tasks).where(eq(tasks.issue_id, issueId)).orderBy(asc(tasks.task_order))
     return rows as TaskRecord[]
   }
 
@@ -45,11 +41,7 @@ export class DrizzleTaskRepository implements TaskRepository {
     if (data.taskCompleted !== undefined) updateData.task_completed = data.taskCompleted
     if (data.taskOrder !== undefined) updateData.task_order = data.taskOrder
 
-    const rows = await this.db
-      .update(tasks)
-      .set(updateData)
-      .where(eq(tasks.task_id, taskId))
-      .returning()
+    const rows = await this.db.update(tasks).set(updateData).where(eq(tasks.task_id, taskId)).returning()
     return rows[0] as TaskRecord
   }
 

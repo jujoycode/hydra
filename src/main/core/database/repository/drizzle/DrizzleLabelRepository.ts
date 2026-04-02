@@ -31,11 +31,7 @@ export class DrizzleLabelRepository implements LabelRepository {
     if (data.labelName !== undefined) updateData.label_name = data.labelName
     if (data.labelColor !== undefined) updateData.label_color = data.labelColor
 
-    const rows = await this.db
-      .update(labels)
-      .set(updateData)
-      .where(eq(labels.label_id, labelId))
-      .returning()
+    const rows = await this.db.update(labels).set(updateData).where(eq(labels.label_id, labelId)).returning()
     return rows[0] as LabelRecord
   }
 

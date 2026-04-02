@@ -78,10 +78,7 @@ export class DrizzleIssueRepository implements IssueRepository {
     return Number(rows[0].count)
   }
 
-  async findByProjectFiltered(
-    projectId: string,
-    options: IssueFilterOptions
-  ): Promise<PaginatedResult<IssueRecord>> {
+  async findByProjectFiltered(projectId: string, options: IssueFilterOptions): Promise<PaginatedResult<IssueRecord>> {
     const conditions = [eq(issues.project_id, projectId)]
 
     if (options.status) conditions.push(eq(issues.issue_status, options.status))
