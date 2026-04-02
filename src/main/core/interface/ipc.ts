@@ -1,0 +1,247 @@
+import type { FileRecord } from '../database/repository/interfaces/FileRepository'
+import type { IssueRecord } from '../database/repository/interfaces/IssueRepository'
+import type { ProjectRecord } from '../database/repository/interfaces/ProjectRepository'
+import type { UserRecord } from '../database/repository/interfaces/UserRepository'
+import type { WorkspaceConfig } from '../workspace/WorkspaceManager'
+import type { AuthDeleteUserParams, AuthUpdateUserParams, CreateMemberParams } from './types/auth'
+import type { InviteApplyParams, InviteCodeInfo, InviteGenerateParams } from './types/invite'
+import type {
+  CreateIssueParams,
+  DeleteIssueParams,
+  GetIssueParams,
+  ListIssueParams,
+  UpdateIssueParams
+} from './types/issue'
+import type {
+  CreateProjectParams,
+  DeleteProjectParams,
+  GetProjectParams,
+  ListProjectParams,
+  UpdateProjectParams
+} from './types/project'
+import type { LinkFileParams, ListIssueFilesParams, UploadFileParams } from './types/storage'
+import type { OpenDialogOptions, OpenDialogReturnValue, OpenExternalUrlParams } from './types/system'
+import type {
+  WorkspaceConnectParams,
+  WorkspaceDeleteParams,
+  WorkspaceSaveParams,
+  WorkspaceStatusResponse
+} from './types/workspace'
+
+/**
+ * IpcChannel
+ * @desc Ipc 채널 정의
+ */
+export enum IpcChannel {
+  // WORKSPACE-
+  WORKSPACE_LIST = 'workspaceList',
+  WORKSPACE_SAVE = 'workspaceSave',
+  WORKSPACE_DELETE = 'workspaceDelete',
+  WORKSPACE_CONNECT = 'workspaceConnect',
+  WORKSPACE_DISCONNECT = 'workspaceDisconnect',
+  WORKSPACE_STATUS = 'workspaceStatus',
+
+  // AUTH-
+  AUTH_UPDATE_USER = 'authUpdateUser',
+  AUTH_DELETE_USER = 'authDeleteUser',
+  AUTH_CREATE_MEMBER = 'authCreateMember',
+  AUTH_LIST_USERS = 'authListUsers',
+
+  // INVITE-
+  INVITE_GENERATE = 'inviteGenerate',
+  INVITE_APPLY = 'inviteApply',
+
+  // PROJECT-
+  PROJECT_CREATE = 'projectCreate',
+  PROJECT_LIST = 'projectList',
+  PROJECT_GET = 'projectGet',
+  PROJECT_UPDATE = 'projectUpdate',
+  PROJECT_DELETE = 'projectDelete',
+
+  // ISSUE-
+  ISSUE_CREATE = 'issueCreate',
+  ISSUE_LIST = 'issueList',
+  ISSUE_GET = 'issueGet',
+  ISSUE_UPDATE = 'issueUpdate',
+  ISSUE_DELETE = 'issueDelete',
+
+  // STORAGE-
+  STORAGE_UPLOAD_FILE = 'storageUploadFile',
+  STORAGE_LINK_FILE = 'storageLinkFile',
+  STORAGE_UNLINK_FILE = 'storageUnlinkFile',
+  STORAGE_LIST_ISSUE_FILES = 'storageListIssueFiles',
+
+  // SYSTEM-
+  SYSTEM_OPEN_EXTERNAL_URL = 'systemOpenExternalUrl',
+  SYSTEM_OPEN_DIALOG = 'systemOpenDialog'
+}
+
+export interface BaseIpcResponse<T> {
+  data: T | null
+  error: BaseErrorType | null
+}
+
+interface BaseIpcPayloads<SendType = unknown, ReceiveType = unknown> {
+  [key: string]: {
+    send: SendType
+    receive: ReceiveType
+  }
+}
+
+/**
+ * IpcPayloads
+ * @desc Ipc 페이로드 정의
+ */
+export interface IpcPayloads extends BaseIpcPayloads {
+  // WORKSPACE-
+  [IpcChannel.WORKSPACE_LIST]: {
+    send: undefined
+    receive: BaseIpcResponse<WorkspaceConfig[]>
+  }
+  [IpcChannel.WORKSPACE_SAVE]: {
+    send: WorkspaceSaveParams
+    receive: BaseIpcResponse<WorkspaceConfig>
+  }
+  [IpcChannel.WORKSPACE_DELETE]: {
+    send: WorkspaceDeleteParams
+    receive: BaseIpcResponse<boolean>
+  }
+  [IpcChannel.WORKSPACE_CONNECT]: {
+    send: WorkspaceConnectParams
+    receive: BaseIpcResponse<WorkspaceStatusResponse>
+  }
+  [IpcChannel.WORKSPACE_DISCONNECT]: {
+    send: undefined
+    receive: BaseIpcResponse<boolean>
+  }
+  [IpcChannel.WORKSPACE_STATUS]: {
+    send: undefined
+    receive: BaseIpcResponse<WorkspaceStatusResponse>
+  }
+
+  // AUTH-
+  [IpcChannel.AUTH_DELETE_USER]: {
+    send: AuthDeleteUserParams
+    receive: BaseIpcResponse<null>
+  }
+  [IpcChannel.AUTH_UPDATE_USER]: {
+    send: AuthUpdateUserParams
+    receive: BaseIpcResponse<UserRecord>
+  }
+  [IpcChannel.AUTH_CREATE_MEMBER]: {
+    send: CreateMemberParams
+    receive: BaseIpcResponse<UserRecord>
+  }
+  [IpcChannel.AUTH_LIST_USERS]: {
+    send: undefined
+    receive: BaseIpcResponse<UserRecord[]>
+  }
+
+  // INVITE-
+  [IpcChannel.INVITE_GENERATE]: {
+    send: InviteGenerateParams
+    receive: BaseIpcResponse<{ code: string }>
+  }
+  [IpcChannel.INVITE_APPLY]: {
+    send: InviteApplyParams
+    receive: BaseIpcResponse<InviteCodeInfo>
+  }
+
+  // PROJECT-
+  [IpcChannel.PROJECT_LIST]: {
+    send: ListProjectParams
+    receive: BaseIpcResponse<ProjectRecord[]>
+  }
+  [IpcChannel.PROJECT_GET]: {
+    send: GetProjectParams
+    receive: BaseIpcResponse<ProjectRecord | null>
+  }
+  [IpcChannel.PROJECT_CREATE]: {
+    send: CreateProjectParams
+    receive: BaseIpcResponse<ProjectRecord>
+  }
+  [IpcChannel.PROJECT_UPDATE]: {
+    send: UpdateProjectParams
+    receive: BaseIpcResponse<ProjectRecord>
+  }
+  [IpcChannel.PROJECT_DELETE]: {
+    send: DeleteProjectParams
+    receive: BaseIpcResponse<boolean>
+  }
+
+  // ISSUE-
+  [IpcChannel.ISSUE_LIST]: {
+    send: ListIssueParams
+    receive: BaseIpcResponse<IssueRecord[]>
+  }
+  [IpcChannel.ISSUE_GET]: {
+    send: GetIssueParams
+    receive: BaseIpcResponse<IssueRecord | null>
+  }
+  [IpcChannel.ISSUE_CREATE]: {
+    send: CreateIssueParams
+    receive: BaseIpcResponse<IssueRecord>
+  }
+  [IpcChannel.ISSUE_UPDATE]: {
+    send: UpdateIssueParams
+    receive: BaseIpcResponse<IssueRecord>
+  }
+  [IpcChannel.ISSUE_DELETE]: {
+    send: DeleteIssueParams
+    receive: BaseIpcResponse<boolean>
+  }
+
+  // STORAGE-
+  [IpcChannel.STORAGE_UPLOAD_FILE]: {
+    send: UploadFileParams
+    receive: BaseIpcResponse<FileRecord>
+  }
+  [IpcChannel.STORAGE_LINK_FILE]: {
+    send: LinkFileParams
+    receive: BaseIpcResponse<boolean>
+  }
+  [IpcChannel.STORAGE_UNLINK_FILE]: {
+    send: LinkFileParams
+    receive: BaseIpcResponse<boolean>
+  }
+  [IpcChannel.STORAGE_LIST_ISSUE_FILES]: {
+    send: ListIssueFilesParams
+    receive: BaseIpcResponse<FileRecord[]>
+  }
+
+  // SYSTEM-
+  [IpcChannel.SYSTEM_OPEN_EXTERNAL_URL]: {
+    send: OpenExternalUrlParams
+    receive: BaseIpcResponse<null>
+  }
+  [IpcChannel.SYSTEM_OPEN_DIALOG]: {
+    send: OpenDialogOptions
+    receive: BaseIpcResponse<OpenDialogReturnValue>
+  }
+}
+
+/**
+ * IpcRequest & IpcResponse
+ * @desc Ipc 요청 및 응답 타입
+ */
+export type IpcRequest<T extends IpcChannel> = IpcPayloads[T]['send']
+export type IpcResponse<T extends IpcChannel> = IpcPayloads[T]['receive']
+
+export enum ErrorCode {
+  VALIDATION_ERROR = 'VALIDATION_ERROR',
+  DB_ERROR = 'DB_ERROR',
+  AUTH_ERROR = 'AUTH_ERROR',
+  STORAGE_ERROR = 'STORAGE_ERROR',
+  NETWORK_ERROR = 'NETWORK_ERROR',
+  NOT_FOUND_ERROR = 'NOT_FOUND_ERROR',
+  PERMISSION_ERROR = 'PERMISSION_ERROR',
+  INTERNAL_ERROR = 'INTERNAL_ERROR',
+  OPERATION_FAILED_ERROR = 'OPERATION_FAILED_ERROR',
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR'
+}
+
+export interface BaseErrorType {
+  code: ErrorCode
+  message: string
+  data: unknown | null
+}

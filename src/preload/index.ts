@@ -1,13 +1,17 @@
-import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer } from 'electron'
+import { IpcChannel, type IpcRequest, type IpcResponse } from '@/interface/CoreInterface'
 
 // Custom APIs for renderer
-const api = {
-  getOS: () => ({
-    isMac: process.platform === 'darwin',
-    isWin: process.platform === 'win32',
-    isLinux: process.platform === 'linux'
-  })
+function checkSupportedIpcChannel(channel: IpcChannel) {
+  if (!Object.values(IpcChannel).includes(channel)) {
+    throw new Error('Not supported IPC channel')
+  }
+}
+
+async function callOnce<T extends IpcChannel>(channel: T, data?: IpcRequest<T>): Promise<IpcResponse<T>> {
+  checkSupportedIpcChannel(channel)
+  return ipcRenderer.invoke(channel, data)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -16,13 +20,13 @@ const api = {
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
+    contextBridge.exposeInMainWorld('callApi', callOnce)
   } catch (error) {
     console.error(error)
   }
 } else {
-  // @ts-ignore (define in dts)
+  // @ts-expect-error (define in d.ts)
   window.electron = electronAPI
-  // @ts-ignore (define in dts)
-  window.api = api
+  // @ts-expect-error (define in d.ts)
+  window.callApi = callOnce
 }
