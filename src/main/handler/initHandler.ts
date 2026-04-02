@@ -6,6 +6,7 @@ import * as authHandlers from './auth'
 import * as commentHandlers from './comments'
 import * as inviteHandlers from './invite'
 import * as issueHandlers from './issues'
+import * as labelHandlers from './labels'
 import * as projectHandlers from './projects'
 import * as storageHandlers from './storage'
 import * as systemHandlers from './system'
@@ -14,6 +15,7 @@ import * as workspaceHandlers from './workspace'
 const handlerModules = [
   authHandlers,
   commentHandlers,
+  labelHandlers,
   projectHandlers,
   issueHandlers,
   storageHandlers,

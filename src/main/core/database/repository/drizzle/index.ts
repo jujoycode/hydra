@@ -1,5 +1,6 @@
 export { DrizzleCommentRepository } from './DrizzleCommentRepository'
 export { DrizzleFileRepository } from './DrizzleFileRepository'
+export { DrizzleLabelRepository } from './DrizzleLabelRepository'
 export { DrizzleIssueRepository } from './DrizzleIssueRepository'
 export { DrizzleProjectRepository } from './DrizzleProjectRepository'
 export { DrizzleUserRepository } from './DrizzleUserRepository'

@@ -6,6 +6,7 @@ import {
   DrizzleCommentRepository,
   DrizzleFileRepository,
   DrizzleIssueRepository,
+  DrizzleLabelRepository,
   DrizzleProjectRepository,
   DrizzleUserRepository
 } from '@/database/repository/drizzle'
@@ -42,8 +43,9 @@ export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPAC
     const issueRepo = new DrizzleIssueRepository(db)
     const fileRepo = new DrizzleFileRepository(db)
     const commentRepo = new DrizzleCommentRepository(db)
+    const labelRepo = new DrizzleLabelRepository(db)
 
-    container.initialize(adapter, userRepo, projectRepo, issueRepo, fileRepo, commentRepo)
+    container.initialize(adapter, userRepo, projectRepo, issueRepo, fileRepo, commentRepo, labelRepo)
 
     let user = await userRepo.findByDbRole(params.username)
     const isFirstLogin = !user

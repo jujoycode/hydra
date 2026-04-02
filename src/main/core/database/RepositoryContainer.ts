@@ -4,6 +4,7 @@ import type { DatabaseAdapter } from './adapter/DatabaseAdapter'
 import type { CommentRepository } from './repository/interfaces/CommentRepository'
 import type { FileRepository } from './repository/interfaces/FileRepository'
 import type { IssueRepository } from './repository/interfaces/IssueRepository'
+import type { LabelRepository } from './repository/interfaces/LabelRepository'
 import type { ProjectRepository } from './repository/interfaces/ProjectRepository'
 import type { UserRepository } from './repository/interfaces/UserRepository'
 
@@ -15,6 +16,7 @@ export class RepositoryContainer {
   private _issues: IssueRepository | null = null
   private _files: FileRepository | null = null
   private _comments: CommentRepository | null = null
+  private _labels: LabelRepository | null = null
 
   private constructor() {}
 
@@ -31,7 +33,8 @@ export class RepositoryContainer {
     projects: ProjectRepository,
     issues: IssueRepository,
     files: FileRepository,
-    comments: CommentRepository
+    comments: CommentRepository,
+    labels: LabelRepository
   ): void {
     this.adapter = adapter
     this._users = users
@@ -39,6 +42,7 @@ export class RepositoryContainer {
     this._issues = issues
     this._files = files
     this._comments = comments
+    this._labels = labels
   }
 
   async teardown(): Promise<void> {
@@ -51,6 +55,7 @@ export class RepositoryContainer {
     this._issues = null
     this._files = null
     this._comments = null
+    this._labels = null
   }
 
   get db(): DatabaseAdapter {
@@ -93,6 +98,13 @@ export class RepositoryContainer {
       throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
     }
     return this._comments
+  }
+
+  get labels(): LabelRepository {
+    if (!this._labels) {
+      throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
+    }
+    return this._labels
   }
 
   get isInitialized(): boolean {

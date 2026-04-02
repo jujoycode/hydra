@@ -1,0 +1,7 @@
+export { CreateLabelHandler } from './CreateLabelHandler'
+export { DeleteLabelHandler } from './DeleteLabelHandler'
+export { LinkLabelHandler } from './LinkLabelHandler'
+export { ListIssueLabelHandler } from './ListIssueLabelHandler'
+export { ListLabelsHandler } from './ListLabelsHandler'
+export { UnlinkLabelHandler } from './UnlinkLabelHandler'
+export { UpdateLabelHandler } from './UpdateLabelHandler'

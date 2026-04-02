@@ -1,11 +1,19 @@
 import type { CommentRecord } from '../database/repository/interfaces/CommentRepository'
 import type { FileRecord } from '../database/repository/interfaces/FileRepository'
 import type { IssueRecord } from '../database/repository/interfaces/IssueRepository'
+import type { LabelRecord } from '../database/repository/interfaces/LabelRepository'
 import type { ProjectRecord } from '../database/repository/interfaces/ProjectRepository'
 import type { UserRecord } from '../database/repository/interfaces/UserRepository'
 import type { WorkspaceConfig } from '../workspace/WorkspaceManager'
 import type { AuthDeleteUserParams, AuthUpdateUserParams, CreateMemberParams } from './types/auth'
 import type { CreateCommentParams, DeleteCommentParams, ListCommentsParams, UpdateCommentParams } from './types/comment'
+import type {
+  CreateLabelParams,
+  DeleteLabelParams,
+  LinkLabelParams,
+  ListIssueLabelParams,
+  UpdateLabelParams
+} from './types/label'
 import type { InviteApplyParams, InviteCodeInfo, InviteGenerateParams } from './types/invite'
 import type {
   CreateIssueParams,
@@ -72,6 +80,15 @@ export enum IpcChannel {
   COMMENT_LIST = 'commentList',
   COMMENT_UPDATE = 'commentUpdate',
   COMMENT_DELETE = 'commentDelete',
+
+  // LABEL-
+  LABEL_CREATE = 'labelCreate',
+  LABEL_LIST = 'labelList',
+  LABEL_UPDATE = 'labelUpdate',
+  LABEL_DELETE = 'labelDelete',
+  LABEL_LINK = 'labelLink',
+  LABEL_UNLINK = 'labelUnlink',
+  LABEL_LIST_BY_ISSUE = 'labelListByIssue',
 
   // STORAGE-
   STORAGE_UPLOAD_FILE = 'storageUploadFile',
@@ -215,6 +232,36 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.COMMENT_DELETE]: {
     send: DeleteCommentParams
     receive: BaseIpcResponse<boolean>
+  }
+
+  // LABEL-
+  [IpcChannel.LABEL_CREATE]: {
+    send: CreateLabelParams
+    receive: BaseIpcResponse<LabelRecord>
+  }
+  [IpcChannel.LABEL_LIST]: {
+    send: undefined
+    receive: BaseIpcResponse<LabelRecord[]>
+  }
+  [IpcChannel.LABEL_UPDATE]: {
+    send: UpdateLabelParams
+    receive: BaseIpcResponse<LabelRecord>
+  }
+  [IpcChannel.LABEL_DELETE]: {
+    send: DeleteLabelParams
+    receive: BaseIpcResponse<boolean>
+  }
+  [IpcChannel.LABEL_LINK]: {
+    send: LinkLabelParams
+    receive: BaseIpcResponse<boolean>
+  }
+  [IpcChannel.LABEL_UNLINK]: {
+    send: LinkLabelParams
+    receive: BaseIpcResponse<boolean>
+  }
+  [IpcChannel.LABEL_LIST_BY_ISSUE]: {
+    send: ListIssueLabelParams
+    receive: BaseIpcResponse<LabelRecord[]>
   }
 
   // STORAGE-

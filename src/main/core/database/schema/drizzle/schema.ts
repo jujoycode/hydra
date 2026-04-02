@@ -83,6 +83,21 @@ export const comments = pgTable('comments', {
   comment_updated_at: timestamp('comment_updated_at').defaultNow()
 })
 
+// 라벨 테이블
+export const labels = pgTable('labels', {
+  label_id: uuid('label_id').primaryKey(),
+  label_name: varchar('label_name', { length: 100 }).notNull(),
+  label_color: varchar('label_color', { length: 7 }).notNull(),
+  label_created_at: timestamp('label_created_at').defaultNow()
+})
+
+// 이슈-라벨 연결 테이블
+export const issuesLabelsLink = pgTable('issues_labels_link', {
+  issue_label_link_id: uuid('issue_label_link_id').primaryKey(),
+  issue_id: uuid('issue_id').references(() => issues.issue_id),
+  label_id: uuid('label_id').references(() => labels.label_id)
+})
+
 // 초대 코드 테이블
 export const inviteCodes = pgTable('invite_codes', {
   invite_code_id: uuid('invite_code_id').primaryKey(),
