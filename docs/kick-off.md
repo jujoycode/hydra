@@ -4,6 +4,7 @@
 
 - 경량화된 설치형 `프로젝트/이슈 관리 도구` 개발
 - 무료이면서, 사용성을 갖춘 `프로젝트/이슈 관리 도구` 제공
+- 사용자가 자체 PostgreSQL DB를 직접 연결하여 사용할 수 있도록 기능 제공
 
 ## 2. Member
 
@@ -28,24 +29,33 @@
 
 ### Frontend
 
-- Framework: [`React`](https://react.dev/), [`Electron`](https://www.electronjs.org/)
-- State Management: [`zustand`](https://zustand.docs.pmnd.rs/)
-- UI Library: [`chakra-ui`](https://chakra-ui.com/)
-- Router: [`react-router-dom`](https://reactrouter.com/)
+- Framework: [`React 19`](https://react.dev/), [`Electron`](https://www.electronjs.org/)
+- State Management: [`Zustand v5`](https://zustand.docs.pmnd.rs/)
+- UI Library: [`shadcn/ui`](https://ui.shadcn.com/) + [`Tailwind CSS v4`](https://tailwindcss.com/)
+- Router: [`TanStack Router`](https://tanstack.com/router)
+- Table / Form: [`TanStack Table`](https://tanstack.com/table) + [`TanStack Form`](https://tanstack.com/form)
+- Charts: [`Recharts`](https://recharts.org/)
 - Icon: [`lucide-react`](https://lucide.dev/)
 
 ### Backend
 
-- Platform: [`Supabase`](https://supabase.com/)
-- Framework: [`Electron`](https://www.electronjs.org/)
-- Database: [`PostgreSQL`](https://www.postgresql.org/)
-- ORM: [`Prisma`](https://www.prisma.io/) (w. [supabase](https://supabase.com/docs/guides/database/prisma))
-- MQTT: [`Supabase-realtime`](https://supabase.com/docs/guides/realtime)
+- Framework: [`Electron`](https://www.electronjs.org/) (Main Process)
+- Database: [`PostgreSQL`](https://www.postgresql.org/) (사용자 직접 연결)
+- ORM: [`Drizzle ORM`](https://orm.drizzle.team/) + [`pg`](https://node-postgres.com/)
+- Container: [`Docker`](https://www.docker.com/) (개발용 PostgreSQL)
+
+### Build & Tooling
+
+- Build: [`Vite`](https://vitejs.dev/) + [`electron-vite`](https://electron-vite.org/)
+- Linter / Formatter: [`Biome`](https://biomejs.dev/)
+- Package Manager: [`pnpm`](https://pnpm.io/)
+- Packaging: [`Electron Forge`](https://www.electronforge.io/)
+
 
 ## 4. Project Schedule
 
 - Start Date: 2024-12-16
-- End Date: 2025-02-01
+- End Date: ~
 
 ### Main Milestones
 
