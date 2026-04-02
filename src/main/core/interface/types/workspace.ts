@@ -1,5 +1,15 @@
 import type { UserRecord } from '../../database/repository/interfaces/UserRepository'
 
+export interface WorkspaceConfig {
+  id: string
+  name: string
+  host: string
+  port: number
+  dbName: string
+  username: string
+  sslCertPath?: string
+}
+
 export interface WorkspaceSaveParams {
   name: string
   host: string

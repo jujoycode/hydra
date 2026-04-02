@@ -9,7 +9,7 @@ import type { NotificationRecord } from '../database/repository/interfaces/Notif
 import type { ProjectRecord } from '../database/repository/interfaces/ProjectRepository'
 import type { TaskRecord } from '../database/repository/interfaces/TaskRepository'
 import type { UserRecord } from '../database/repository/interfaces/UserRepository'
-import type { WorkspaceConfig } from '../workspace/WorkspaceManager'
+import type { WorkspaceConfig } from './types/workspace'
 import type { AuthDeleteUserParams, AuthUpdateUserParams, CreateMemberParams } from './types/auth'
 import type { CreateCommentParams, DeleteCommentParams, ListCommentsParams, UpdateCommentParams } from './types/comment'
 import type { InviteApplyParams, InviteCodeInfo, InviteGenerateParams } from './types/invite'

@@ -1,17 +1,10 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { app, safeStorage } from 'electron'
+import type { WorkspaceConfig } from '@/interface/CoreInterface'
 import { CoreUtil } from '@/util/CoreUtil'
 
-export interface WorkspaceConfig {
-  id: string
-  name: string
-  host: string
-  port: number
-  dbName: string
-  username: string
-  sslCertPath?: string
-}
+export type { WorkspaceConfig }
 
 interface WorkspaceStore {
   workspaces: WorkspaceConfig[]
