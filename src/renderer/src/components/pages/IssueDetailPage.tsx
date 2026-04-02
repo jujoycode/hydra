@@ -12,6 +12,7 @@ import type {
   Comment as CommentRecord,
   File as FileRecord,
   Issue as IssueRecord,
+  Label as LabelRecord,
   User as UserRecord
 } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
@@ -57,6 +58,8 @@ export default function IssueDetailPage() {
   const [newComment, setNewComment] = useState('')
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
   const [editingContent, setEditingContent] = useState('')
+  const [issueLabels, setIssueLabels] = useState<LabelRecord[]>([])
+  const [allLabels, setAllLabels] = useState<LabelRecord[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
 
@@ -72,10 +75,12 @@ export default function IssueDetailPage() {
     if (!issueId) return
     const load = async () => {
       setIsLoading(true)
-      const [issueResult, usersResult, commentsResult] = await Promise.all([
+      const [issueResult, usersResult, commentsResult, issueLabelsResult, allLabelsResult] = await Promise.all([
         window.callApi(IpcChannel.ISSUE_GET, { issueId }),
         window.callApi(IpcChannel.AUTH_LIST_USERS),
-        window.callApi(IpcChannel.COMMENT_LIST, { issueId })
+        window.callApi(IpcChannel.COMMENT_LIST, { issueId }),
+        window.callApi(IpcChannel.LABEL_LIST_BY_ISSUE, { issueId }),
+        window.callApi(IpcChannel.LABEL_LIST)
       ])
       const issueData = issueResult.data as IssueRecord | null
       if (issueData) {
@@ -89,6 +94,8 @@ export default function IssueDetailPage() {
       }
       if (Array.isArray(usersResult.data)) setMembers(usersResult.data as UserRecord[])
       if (Array.isArray(commentsResult.data)) setComments(commentsResult.data as CommentRecord[])
+      if (Array.isArray(issueLabelsResult.data)) setIssueLabels(issueLabelsResult.data as LabelRecord[])
+      if (Array.isArray(allLabelsResult.data)) setAllLabels(allLabelsResult.data as LabelRecord[])
 
       // Fetch attached files
       const filesResult = await window.callApi(IpcChannel.STORAGE_LIST_ISSUE_FILES, { issueId })
@@ -196,6 +203,19 @@ export default function IssueDetailPage() {
   const handleDeleteComment = async (commentId: string) => {
     await window.callApi(IpcChannel.COMMENT_DELETE, { commentId })
     setComments((prev) => prev.filter((c) => c.comment_id !== commentId))
+  }
+
+  const handleAddLabel = async (labelId: string) => {
+    if (!issue) return
+    await window.callApi(IpcChannel.LABEL_LINK, { issueId: issue.issue_id, labelId })
+    const label = allLabels.find((l) => l.label_id === labelId)
+    if (label) setIssueLabels((prev) => [...prev, label])
+  }
+
+  const handleRemoveLabel = async (labelId: string) => {
+    if (!issue) return
+    await window.callApi(IpcChannel.LABEL_UNLINK, { issueId: issue.issue_id, labelId })
+    setIssueLabels((prev) => prev.filter((l) => l.label_id !== labelId))
   }
 
   if (isLoading)
@@ -444,6 +464,50 @@ export default function IssueDetailPage() {
                     {m.user_name || m.user_email || 'Unknown'}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Labels */}
+          <div>
+            <Label className='mb-1 block text-xs text-muted-foreground'>Labels</Label>
+            <div className='flex flex-wrap gap-1 mb-2'>
+              {issueLabels.map((label) => (
+                <span
+                  key={label.label_id}
+                  className='inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full text-white'
+                  style={{ backgroundColor: label.label_color }}
+                >
+                  {label.label_name}
+                  <button type='button' onClick={() => handleRemoveLabel(label.label_id)} className='hover:opacity-70'>
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+            {/* Dropdown to add labels */}
+            <Select
+              value=''
+              onValueChange={(labelId) => {
+                if (labelId && !issueLabels.some((l) => l.label_id === labelId)) {
+                  handleAddLabel(labelId)
+                }
+              }}
+            >
+              <SelectTrigger className='h-8 text-xs'>
+                <SelectValue placeholder='Add label...' />
+              </SelectTrigger>
+              <SelectContent>
+                {allLabels
+                  .filter((l) => !issueLabels.some((il) => il.label_id === l.label_id))
+                  .map((label) => (
+                    <SelectItem key={label.label_id} value={label.label_id}>
+                      <div className='flex items-center gap-2'>
+                        <div className='w-3 h-3 rounded-full' style={{ backgroundColor: label.label_color }} />
+                        {label.label_name}
+                      </div>
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
