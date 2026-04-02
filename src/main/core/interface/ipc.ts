@@ -1,9 +1,10 @@
 import type { CommentRecord } from '../database/repository/interfaces/CommentRepository'
-import type { TaskRecord } from '../database/repository/interfaces/TaskRepository'
 import type { FileRecord } from '../database/repository/interfaces/FileRepository'
 import type { IssueRecord } from '../database/repository/interfaces/IssueRepository'
 import type { LabelRecord } from '../database/repository/interfaces/LabelRepository'
+import type { MilestoneRecord } from '../database/repository/interfaces/MilestoneRepository'
 import type { ProjectRecord } from '../database/repository/interfaces/ProjectRepository'
+import type { TaskRecord } from '../database/repository/interfaces/TaskRepository'
 import type { UserRecord } from '../database/repository/interfaces/UserRepository'
 import type { WorkspaceConfig } from '../workspace/WorkspaceManager'
 import type { AuthDeleteUserParams, AuthUpdateUserParams, CreateMemberParams } from './types/auth'
@@ -23,7 +24,12 @@ import type {
   ListIssueLabelParams,
   UpdateLabelParams
 } from './types/label'
-import type { CreateTaskParams, DeleteTaskParams, ListTasksParams, UpdateTaskParams } from './types/task'
+import type {
+  CreateMilestoneParams,
+  DeleteMilestoneParams,
+  ListMilestonesParams,
+  UpdateMilestoneParams
+} from './types/milestone'
 import type {
   CreateProjectParams,
   DeleteProjectParams,
@@ -33,6 +39,7 @@ import type {
 } from './types/project'
 import type { LinkFileParams, ListIssueFilesParams, UploadFileParams } from './types/storage'
 import type { OpenDialogOptions, OpenDialogReturnValue, OpenExternalUrlParams } from './types/system'
+import type { CreateTaskParams, DeleteTaskParams, ListTasksParams, UpdateTaskParams } from './types/task'
 import type {
   WorkspaceConnectParams,
   WorkspaceDeleteParams,
@@ -91,6 +98,12 @@ export enum IpcChannel {
   LABEL_LINK = 'labelLink',
   LABEL_UNLINK = 'labelUnlink',
   LABEL_LIST_BY_ISSUE = 'labelListByIssue',
+
+  // MILESTONE-
+  MILESTONE_CREATE = 'milestoneCreate',
+  MILESTONE_LIST = 'milestoneList',
+  MILESTONE_UPDATE = 'milestoneUpdate',
+  MILESTONE_DELETE = 'milestoneDelete',
 
   // TASK-
   TASK_CREATE = 'taskCreate',
@@ -270,6 +283,24 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.LABEL_LIST_BY_ISSUE]: {
     send: ListIssueLabelParams
     receive: BaseIpcResponse<LabelRecord[]>
+  }
+
+  // MILESTONE-
+  [IpcChannel.MILESTONE_CREATE]: {
+    send: CreateMilestoneParams
+    receive: BaseIpcResponse<MilestoneRecord>
+  }
+  [IpcChannel.MILESTONE_LIST]: {
+    send: ListMilestonesParams
+    receive: BaseIpcResponse<MilestoneRecord[]>
+  }
+  [IpcChannel.MILESTONE_UPDATE]: {
+    send: UpdateMilestoneParams
+    receive: BaseIpcResponse<MilestoneRecord>
+  }
+  [IpcChannel.MILESTONE_DELETE]: {
+    send: DeleteMilestoneParams
+    receive: BaseIpcResponse<boolean>
   }
 
   // TASK-

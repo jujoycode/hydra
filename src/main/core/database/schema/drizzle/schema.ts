@@ -33,6 +33,20 @@ export const usersProjectsLink = pgTable('users_projects_link', {
   project_id: uuid('project_id').references(() => projects.project_id)
 })
 
+// 마일스톤 테이블
+export const milestones = pgTable('milestones', {
+  milestone_id: uuid('milestone_id').primaryKey(),
+  project_id: uuid('project_id')
+    .notNull()
+    .references(() => projects.project_id),
+  milestone_title: text('milestone_title').notNull(),
+  milestone_desc: text('milestone_desc'),
+  milestone_due_date: timestamp('milestone_due_date'),
+  milestone_status: varchar('milestone_status', { length: 50 }).default('open'),
+  milestone_created_at: timestamp('milestone_created_at').defaultNow(),
+  milestone_updated_at: timestamp('milestone_updated_at').defaultNow()
+})
+
 // 이슈 테이블
 export const issues = pgTable('issues', {
   issue_id: uuid('issue_id').primaryKey(),
@@ -48,6 +62,7 @@ export const issues = pgTable('issues', {
   issue_created_by: uuid('issue_created_by'),
   issue_modified_by: uuid('issue_modified_by'),
   issue_assigned_to: uuid('issue_assigned_to'),
+  issue_milestone_id: uuid('issue_milestone_id').references(() => milestones.milestone_id),
   issue_created_at: timestamp('issue_created_at').defaultNow(),
   issue_updated_at: timestamp('issue_updated_at').defaultNow()
 })

@@ -5,6 +5,7 @@ import type { CommentRepository } from './repository/interfaces/CommentRepositor
 import type { FileRepository } from './repository/interfaces/FileRepository'
 import type { IssueRepository } from './repository/interfaces/IssueRepository'
 import type { LabelRepository } from './repository/interfaces/LabelRepository'
+import type { MilestoneRepository } from './repository/interfaces/MilestoneRepository'
 import type { ProjectRepository } from './repository/interfaces/ProjectRepository'
 import type { TaskRepository } from './repository/interfaces/TaskRepository'
 import type { UserRepository } from './repository/interfaces/UserRepository'
@@ -18,6 +19,7 @@ export class RepositoryContainer {
   private _files: FileRepository | null = null
   private _comments: CommentRepository | null = null
   private _labels: LabelRepository | null = null
+  private _milestones: MilestoneRepository | null = null
   private _tasks: TaskRepository | null = null
 
   private constructor() {}
@@ -37,6 +39,7 @@ export class RepositoryContainer {
     files: FileRepository,
     comments: CommentRepository,
     labels: LabelRepository,
+    milestones: MilestoneRepository,
     tasks: TaskRepository
   ): void {
     this.adapter = adapter
@@ -46,6 +49,7 @@ export class RepositoryContainer {
     this._files = files
     this._comments = comments
     this._labels = labels
+    this._milestones = milestones
     this._tasks = tasks
   }
 
@@ -60,6 +64,7 @@ export class RepositoryContainer {
     this._files = null
     this._comments = null
     this._labels = null
+    this._milestones = null
     this._tasks = null
   }
 
@@ -110,6 +115,13 @@ export class RepositoryContainer {
       throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
     }
     return this._labels
+  }
+
+  get milestones(): MilestoneRepository {
+    if (!this._milestones) {
+      throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
+    }
+    return this._milestones
   }
 
   get tasks(): TaskRepository {

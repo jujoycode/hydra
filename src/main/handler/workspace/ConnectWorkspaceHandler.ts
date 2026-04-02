@@ -7,6 +7,7 @@ import {
   DrizzleFileRepository,
   DrizzleIssueRepository,
   DrizzleLabelRepository,
+  DrizzleMilestoneRepository,
   DrizzleProjectRepository,
   DrizzleTaskRepository,
   DrizzleUserRepository
@@ -45,9 +46,10 @@ export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPAC
     const fileRepo = new DrizzleFileRepository(db)
     const commentRepo = new DrizzleCommentRepository(db)
     const labelRepo = new DrizzleLabelRepository(db)
+    const milestoneRepo = new DrizzleMilestoneRepository(db)
     const taskRepo = new DrizzleTaskRepository(db)
 
-    container.initialize(adapter, userRepo, projectRepo, issueRepo, fileRepo, commentRepo, labelRepo, taskRepo)
+    container.initialize(adapter, userRepo, projectRepo, issueRepo, fileRepo, commentRepo, labelRepo, milestoneRepo, taskRepo)
 
     let user = await userRepo.findByDbRole(params.username)
     const isFirstLogin = !user
