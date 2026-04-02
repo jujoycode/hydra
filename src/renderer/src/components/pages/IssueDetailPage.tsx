@@ -12,6 +12,7 @@ import type {
   Comment as CommentRecord,
   File as FileRecord,
   Issue as IssueRecord,
+  IssueRelation as IssueRelationRecord,
   Label as LabelRecord,
   User as UserRecord
 } from '@/interface/CoreInterface'
@@ -60,6 +61,8 @@ export default function IssueDetailPage() {
   const [editingContent, setEditingContent] = useState('')
   const [issueLabels, setIssueLabels] = useState<LabelRecord[]>([])
   const [allLabels, setAllLabels] = useState<LabelRecord[]>([])
+  const [relations, setRelations] = useState<IssueRelationRecord[]>([])
+  const [projectIssues, setProjectIssues] = useState<IssueRecord[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
 
@@ -75,12 +78,14 @@ export default function IssueDetailPage() {
     if (!issueId) return
     const load = async () => {
       setIsLoading(true)
-      const [issueResult, usersResult, commentsResult, issueLabelsResult, allLabelsResult] = await Promise.all([
+      const [issueResult, usersResult, commentsResult, issueLabelsResult, allLabelsResult, relationsResult, projectIssuesResult] = await Promise.all([
         window.callApi(IpcChannel.ISSUE_GET, { issueId }),
         window.callApi(IpcChannel.AUTH_LIST_USERS),
         window.callApi(IpcChannel.COMMENT_LIST, { issueId }),
         window.callApi(IpcChannel.LABEL_LIST_BY_ISSUE, { issueId }),
-        window.callApi(IpcChannel.LABEL_LIST)
+        window.callApi(IpcChannel.LABEL_LIST),
+        window.callApi(IpcChannel.ISSUE_RELATION_LIST, { issueId }),
+        window.callApi(IpcChannel.ISSUE_LIST, { projectId: projectId! })
       ])
       const issueData = issueResult.data as IssueRecord | null
       if (issueData) {
@@ -96,6 +101,8 @@ export default function IssueDetailPage() {
       if (Array.isArray(commentsResult.data)) setComments(commentsResult.data as CommentRecord[])
       if (Array.isArray(issueLabelsResult.data)) setIssueLabels(issueLabelsResult.data as LabelRecord[])
       if (Array.isArray(allLabelsResult.data)) setAllLabels(allLabelsResult.data as LabelRecord[])
+      if (Array.isArray(relationsResult.data)) setRelations(relationsResult.data as IssueRelationRecord[])
+      if (Array.isArray(projectIssuesResult.data)) setProjectIssues(projectIssuesResult.data as IssueRecord[])
 
       // Fetch attached files
       const filesResult = await window.callApi(IpcChannel.STORAGE_LIST_ISSUE_FILES, { issueId })
@@ -216,6 +223,21 @@ export default function IssueDetailPage() {
     if (!issue) return
     await window.callApi(IpcChannel.LABEL_UNLINK, { issueId: issue.issue_id, labelId })
     setIssueLabels((prev) => prev.filter((l) => l.label_id !== labelId))
+  }
+
+  const handleAddRelation = async (targetIssueId: string, relationType: string) => {
+    if (!issue) return
+    const result = await window.callApi(IpcChannel.ISSUE_RELATION_CREATE, {
+      sourceIssueId: issue.issue_id,
+      targetIssueId,
+      relationType
+    })
+    if (result.data) setRelations((prev) => [...prev, result.data as IssueRelationRecord])
+  }
+
+  const handleRemoveRelation = async (relationId: string) => {
+    await window.callApi(IpcChannel.ISSUE_RELATION_DELETE, { relationId })
+    setRelations((prev) => prev.filter((r) => r.relation_id !== relationId))
   }
 
   if (isLoading)
@@ -510,6 +532,67 @@ export default function IssueDetailPage() {
                   ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Related Issues */}
+          <div>
+            <Label className='mb-1 block text-xs text-muted-foreground'>Related Issues</Label>
+            {relations.length > 0 && (
+              <div className='space-y-1 mb-2'>
+                {relations.map((rel) => {
+                  const otherIssueId =
+                    rel.source_issue_id === issue.issue_id ? rel.target_issue_id : rel.source_issue_id
+                  const otherIssue = projectIssues.find((i) => i.issue_id === otherIssueId)
+                  const relLabel = rel.relation_type.replace(/_/g, ' ')
+                  return (
+                    <div key={rel.relation_id} className='flex items-center justify-between text-xs'>
+                      <div className='flex items-center gap-1 truncate'>
+                        <span className='text-muted-foreground'>{relLabel}:</span>
+                        <span className='font-mono'>{otherIssue?.issue_key || '...'}</span>
+                        <span className='truncate'>{otherIssue?.issue_title || ''}</span>
+                      </div>
+                      <button
+                        type='button'
+                        onClick={() => handleRemoveRelation(rel.relation_id)}
+                        className='text-destructive hover:opacity-70'
+                      >
+                        x
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+            <div className='flex gap-1'>
+              <Select
+                value=''
+                onValueChange={(val) => {
+                  const [type, targetId] = val.split(':')
+                  if (type && targetId) handleAddRelation(targetId, type)
+                }}
+              >
+                <SelectTrigger className='h-7 text-xs'>
+                  <SelectValue placeholder='Add relation...' />
+                </SelectTrigger>
+                <SelectContent>
+                  {['blocks', 'is_blocked_by', 'relates_to'].flatMap((type) =>
+                    projectIssues
+                      .filter(
+                        (i) =>
+                          i.issue_id !== issue.issue_id &&
+                          !relations.some(
+                            (r) => r.source_issue_id === i.issue_id || r.target_issue_id === i.issue_id
+                          )
+                      )
+                      .map((i) => (
+                        <SelectItem key={`${type}:${i.issue_id}`} value={`${type}:${i.issue_id}`}>
+                          {type.replace(/_/g, ' ')} &rarr; {i.issue_key}
+                        </SelectItem>
+                      ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Timestamps */}

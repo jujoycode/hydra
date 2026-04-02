@@ -5,6 +5,7 @@ import { type BaseErrorType, ErrorCode } from '@/interface/CoreInterface'
 import * as authHandlers from './auth'
 import * as commentHandlers from './comments'
 import * as inviteHandlers from './invite'
+import * as issueRelationHandlers from './issueRelations'
 import * as issueHandlers from './issues'
 import * as labelHandlers from './labels'
 import * as milestoneHandlers from './milestones'
@@ -20,6 +21,7 @@ const handlerModules = [
   labelHandlers,
   milestoneHandlers,
   projectHandlers,
+  issueRelationHandlers,
   issueHandlers,
   storageHandlers,
   systemHandlers,

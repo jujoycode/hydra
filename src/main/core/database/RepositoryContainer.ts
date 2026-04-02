@@ -3,6 +3,7 @@
 import type { DatabaseAdapter } from './adapter/DatabaseAdapter'
 import type { CommentRepository } from './repository/interfaces/CommentRepository'
 import type { FileRepository } from './repository/interfaces/FileRepository'
+import type { IssueRelationRepository } from './repository/interfaces/IssueRelationRepository'
 import type { IssueRepository } from './repository/interfaces/IssueRepository'
 import type { LabelRepository } from './repository/interfaces/LabelRepository'
 import type { MilestoneRepository } from './repository/interfaces/MilestoneRepository'
@@ -21,6 +22,7 @@ export class RepositoryContainer {
   private _labels: LabelRepository | null = null
   private _milestones: MilestoneRepository | null = null
   private _tasks: TaskRepository | null = null
+  private _issueRelations: IssueRelationRepository | null = null
 
   private constructor() {}
 
@@ -40,7 +42,8 @@ export class RepositoryContainer {
     comments: CommentRepository,
     labels: LabelRepository,
     milestones: MilestoneRepository,
-    tasks: TaskRepository
+    tasks: TaskRepository,
+    issueRelations: IssueRelationRepository
   ): void {
     this.adapter = adapter
     this._users = users
@@ -51,6 +54,7 @@ export class RepositoryContainer {
     this._labels = labels
     this._milestones = milestones
     this._tasks = tasks
+    this._issueRelations = issueRelations
   }
 
   async teardown(): Promise<void> {
@@ -66,6 +70,7 @@ export class RepositoryContainer {
     this._labels = null
     this._milestones = null
     this._tasks = null
+    this._issueRelations = null
   }
 
   get db(): DatabaseAdapter {
@@ -129,6 +134,13 @@ export class RepositoryContainer {
       throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
     }
     return this._tasks
+  }
+
+  get issueRelations(): IssueRelationRepository {
+    if (!this._issueRelations) {
+      throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
+    }
+    return this._issueRelations
   }
 
   get isInitialized(): boolean {

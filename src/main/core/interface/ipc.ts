@@ -1,5 +1,6 @@
 import type { CommentRecord } from '../database/repository/interfaces/CommentRepository'
 import type { FileRecord } from '../database/repository/interfaces/FileRepository'
+import type { IssueRelationRecord } from '../database/repository/interfaces/IssueRelationRepository'
 import type { IssueRecord } from '../database/repository/interfaces/IssueRepository'
 import type { LabelRecord } from '../database/repository/interfaces/LabelRepository'
 import type { MilestoneRecord } from '../database/repository/interfaces/MilestoneRepository'
@@ -17,6 +18,11 @@ import type {
   ListIssueParams,
   UpdateIssueParams
 } from './types/issue'
+import type {
+  CreateIssueRelationParams,
+  DeleteIssueRelationParams,
+  ListIssueRelationsParams
+} from './types/issueRelation'
 import type {
   CreateLabelParams,
   DeleteLabelParams,
@@ -83,6 +89,11 @@ export enum IpcChannel {
   ISSUE_GET = 'issueGet',
   ISSUE_UPDATE = 'issueUpdate',
   ISSUE_DELETE = 'issueDelete',
+
+  // ISSUE_RELATION-
+  ISSUE_RELATION_CREATE = 'issueRelationCreate',
+  ISSUE_RELATION_LIST = 'issueRelationList',
+  ISSUE_RELATION_DELETE = 'issueRelationDelete',
 
   // COMMENT-
   COMMENT_CREATE = 'commentCreate',
@@ -234,6 +245,20 @@ export interface IpcPayloads extends BaseIpcPayloads {
   }
   [IpcChannel.ISSUE_DELETE]: {
     send: DeleteIssueParams
+    receive: BaseIpcResponse<boolean>
+  }
+
+  // ISSUE_RELATION-
+  [IpcChannel.ISSUE_RELATION_CREATE]: {
+    send: CreateIssueRelationParams
+    receive: BaseIpcResponse<IssueRelationRecord>
+  }
+  [IpcChannel.ISSUE_RELATION_LIST]: {
+    send: ListIssueRelationsParams
+    receive: BaseIpcResponse<IssueRelationRecord[]>
+  }
+  [IpcChannel.ISSUE_RELATION_DELETE]: {
+    send: DeleteIssueRelationParams
     receive: BaseIpcResponse<boolean>
   }
 

@@ -125,6 +125,19 @@ export const tasks = pgTable('tasks', {
   task_updated_at: timestamp('task_updated_at').defaultNow()
 })
 
+// 이슈 관계 테이블
+export const issueRelations = pgTable('issue_relations', {
+  relation_id: uuid('relation_id').primaryKey(),
+  source_issue_id: uuid('source_issue_id')
+    .notNull()
+    .references(() => issues.issue_id),
+  target_issue_id: uuid('target_issue_id')
+    .notNull()
+    .references(() => issues.issue_id),
+  relation_type: varchar('relation_type', { length: 50 }).notNull(),
+  relation_created_at: timestamp('relation_created_at').defaultNow()
+})
+
 // 초대 코드 테이블
 export const inviteCodes = pgTable('invite_codes', {
   invite_code_id: uuid('invite_code_id').primaryKey(),
