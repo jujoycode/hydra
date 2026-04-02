@@ -5,8 +5,8 @@ import { toast } from 'sonner'
 import { Button } from '@/components/atoms/Button'
 import { Input } from '@/components/atoms/Input'
 import { Label } from '@/components/atoms/Label'
+import { RichTextEditor } from '@/components/atoms/RichTextEditor'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/Select'
-import { Textarea } from '@/components/atoms/Textarea'
 import { useAuth } from '@/hooks/use-auth'
 import type {
   Comment as CommentRecord,
@@ -263,12 +263,7 @@ export default function IssueDetailPage() {
         <div className='col-span-2 space-y-6'>
           <div>
             <Label className='mb-2 block'>Description</Label>
-            <Textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder='Add a description...'
-              className='min-h-[200px] resize-y'
-            />
+            <RichTextEditor content={description} onChange={setDescription} placeholder='Add a description...' />
           </div>
 
           {/* Attachments */}
@@ -311,16 +306,18 @@ export default function IssueDetailPage() {
             <Label className='mb-2 block'>Comments</Label>
 
             {/* New comment input */}
-            <div className='flex gap-2 mb-4'>
-              <Textarea
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
+            <div className='space-y-2 mb-4'>
+              <RichTextEditor
+                content={newComment}
+                onChange={setNewComment}
                 placeholder='Add a comment...'
-                className='min-h-[80px] resize-y'
+                className='min-h-[80px]'
               />
-              <Button onClick={handleAddComment} disabled={!newComment.trim()} size='sm' className='self-end'>
-                Post
-              </Button>
+              <div className='flex justify-end'>
+                <Button onClick={handleAddComment} disabled={!newComment.trim()} size='sm'>
+                  Post
+                </Button>
+              </div>
             </div>
 
             {/* Comment list */}
@@ -371,23 +368,26 @@ export default function IssueDetailPage() {
                         )}
                       </div>
                       {isEditing ? (
-                        <div className='flex gap-2'>
-                          <Textarea
-                            value={editingContent}
-                            onChange={(e) => setEditingContent(e.target.value)}
+                        <div className='space-y-2'>
+                          <RichTextEditor
+                            content={editingContent}
+                            onChange={setEditingContent}
                             className='min-h-[60px]'
                           />
-                          <div className='flex flex-col gap-1 self-end'>
-                            <Button size='sm' onClick={() => handleUpdateComment(comment.comment_id)}>
-                              Save
-                            </Button>
+                          <div className='flex gap-1 justify-end'>
                             <Button size='sm' variant='ghost' onClick={() => setEditingCommentId(null)}>
                               Cancel
+                            </Button>
+                            <Button size='sm' onClick={() => handleUpdateComment(comment.comment_id)}>
+                              Save
                             </Button>
                           </div>
                         </div>
                       ) : (
-                        <p className='text-sm whitespace-pre-wrap'>{comment.comment_content}</p>
+                        <div
+                          className='text-sm prose prose-sm dark:prose-invert max-w-none'
+                          dangerouslySetInnerHTML={{ __html: comment.comment_content }}
+                        />
                       )}
                     </div>
                   )
