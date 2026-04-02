@@ -35,6 +35,7 @@ export interface IssueRecord {
   issue_created_by: string | null
   issue_modified_by: string | null
   issue_assigned_to: string | null
+  issue_milestone_id: string | null
   issue_created_at: Date | null
   issue_updated_at: Date | null
 }

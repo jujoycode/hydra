@@ -1,24 +1,32 @@
 import { useParams } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import type { Issue, Project } from '@/interface/CoreInterface'
+import { Button } from '@/atoms/Button'
+import { Input } from '@/atoms/Input'
+import type { Issue, Milestone, Project } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
 
 export default function ProjectDetailPage() {
   const { projectId } = useParams({ strict: false })
   const [project, setProject] = useState<Project | null>(null)
   const [issues, setIssues] = useState<Issue[]>([])
+  const [milestones, setMilestones] = useState<Milestone[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [showMilestoneForm, setShowMilestoneForm] = useState(false)
+  const [milestoneTitle, setMilestoneTitle] = useState('')
+  const [milestoneDueDate, setMilestoneDueDate] = useState('')
 
   useEffect(() => {
     if (!projectId) return
     const load = async () => {
       setIsLoading(true)
-      const [projectResult, issuesResult] = await Promise.all([
+      const [projectResult, issuesResult, milestonesResult] = await Promise.all([
         window.callApi(IpcChannel.PROJECT_GET, { projectId }),
-        window.callApi(IpcChannel.ISSUE_LIST, { projectId })
+        window.callApi(IpcChannel.ISSUE_LIST, { projectId }),
+        window.callApi(IpcChannel.MILESTONE_LIST, { projectId })
       ])
       if (projectResult.data) setProject(projectResult.data as Project)
       if (Array.isArray(issuesResult.data)) setIssues(issuesResult.data as Issue[])
+      if (Array.isArray(milestonesResult.data)) setMilestones(milestonesResult.data as Milestone[])
       setIsLoading(false)
     }
     load()
@@ -43,6 +51,21 @@ export default function ProjectDetailPage() {
   const inProgressIssues = issues.filter((i) => i.issue_status === 'in_progress').length
   const doneIssues = issues.filter((i) => i.issue_status === 'done').length
   const blockedIssues = issues.filter((i) => i.issue_status === 'blocked').length
+
+  const handleCreateMilestone = async () => {
+    if (!milestoneTitle.trim()) return
+    const result = await window.callApi(IpcChannel.MILESTONE_CREATE, {
+      projectId: projectId!,
+      milestoneTitle: milestoneTitle.trim(),
+      milestoneDueDate: milestoneDueDate || undefined
+    })
+    if (result.data) {
+      setMilestones((prev) => [...prev, result.data as Milestone])
+      setMilestoneTitle('')
+      setMilestoneDueDate('')
+      setShowMilestoneForm(false)
+    }
+  }
 
   return (
     <div className='p-6 h-full overflow-auto'>
@@ -90,6 +113,64 @@ export default function ProjectDetailPage() {
             ))
           )}
         </div>
+      </div>
+
+      {/* Milestones */}
+      <div className='rounded-lg border mt-6'>
+        <div className='p-4 border-b flex items-center justify-between'>
+          <h2 className='text-lg font-semibold'>Milestones</h2>
+          <Button variant='outline' size='sm' onClick={() => setShowMilestoneForm(!showMilestoneForm)}>
+            {showMilestoneForm ? 'Cancel' : 'Add Milestone'}
+          </Button>
+        </div>
+        {showMilestoneForm && (
+          <div className='p-4 border-b bg-muted/30 flex gap-2'>
+            <Input
+              value={milestoneTitle}
+              onChange={(e) => setMilestoneTitle(e.target.value)}
+              placeholder='Milestone title'
+              className='flex-1'
+            />
+            <Input
+              type='date'
+              value={milestoneDueDate}
+              onChange={(e) => setMilestoneDueDate(e.target.value)}
+              className='w-40'
+            />
+            <Button size='sm' onClick={handleCreateMilestone}>
+              Create
+            </Button>
+          </div>
+        )}
+        {milestones.length === 0 ? (
+          <div className='p-8 text-center text-muted-foreground'>No milestones</div>
+        ) : (
+          <div className='divide-y'>
+            {milestones.map((ms) => (
+              <div key={ms.milestone_id} className='p-4'>
+                <div className='flex items-center justify-between'>
+                  <h3 className='font-medium'>{ms.milestone_title}</h3>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full ${ms.milestone_status === 'closed' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'}`}
+                  >
+                    {ms.milestone_status || 'open'}
+                  </span>
+                </div>
+                {ms.milestone_desc && <p className='text-sm text-muted-foreground mt-1'>{ms.milestone_desc}</p>}
+                {ms.milestone_due_date && (
+                  <p className='text-xs text-muted-foreground mt-1'>
+                    Due:{' '}
+                    {new Date(ms.milestone_due_date).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
