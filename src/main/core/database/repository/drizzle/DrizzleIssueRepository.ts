@@ -1,9 +1,16 @@
 // Drizzle 기반 이슈 리포지토리 구현
 
-import { eq, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, ilike, sql } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
-import type { CreateIssueData, IssueRecord, IssueRepository, UpdateIssueData } from '../interfaces/IssueRepository'
+import type {
+  CreateIssueData,
+  IssueFilterOptions,
+  IssueRecord,
+  IssueRepository,
+  PaginatedResult,
+  UpdateIssueData
+} from '../interfaces/IssueRepository'
 
 const { issues } = schema
 
@@ -69,5 +76,65 @@ export class DrizzleIssueRepository implements IssueRepository {
       .from(issues)
       .where(eq(issues.project_id, projectId))
     return Number(rows[0].count)
+  }
+
+  async findByProjectFiltered(
+    projectId: string,
+    options: IssueFilterOptions
+  ): Promise<PaginatedResult<IssueRecord>> {
+    const conditions = [eq(issues.project_id, projectId)]
+
+    if (options.status) conditions.push(eq(issues.issue_status, options.status))
+    if (options.priority) conditions.push(eq(issues.issue_priority, options.priority))
+    if (options.category) conditions.push(eq(issues.issue_category, options.category))
+    if (options.assignedTo) conditions.push(eq(issues.issue_assigned_to, options.assignedTo))
+    if (options.search) conditions.push(ilike(issues.issue_title, `%${options.search}%`))
+
+    const where = and(...conditions)
+
+    // Count total
+    const countRows = await this.db.select({ count: sql<number>`count(*)` }).from(issues).where(where)
+    const total = Number(countRows[0].count)
+
+    // Sort
+    const sortColumn = this.getSortColumn(options.sortBy)
+    const orderFn = options.sortOrder === 'asc' ? asc : desc
+
+    // Paginate
+    const page = options.page ?? 1
+    const pageSize = options.pageSize ?? 20
+    const offset = (page - 1) * pageSize
+
+    const rows = await this.db
+      .select()
+      .from(issues)
+      .where(where)
+      .orderBy(orderFn(sortColumn))
+      .limit(pageSize)
+      .offset(offset)
+
+    return {
+      data: rows as IssueRecord[],
+      total,
+      page,
+      pageSize
+    }
+  }
+
+  private getSortColumn(sortBy?: string) {
+    switch (sortBy) {
+      case 'title':
+        return issues.issue_title
+      case 'status':
+        return issues.issue_status
+      case 'priority':
+        return issues.issue_priority
+      case 'created':
+        return issues.issue_created_at
+      case 'updated':
+        return issues.issue_updated_at
+      default:
+        return issues.issue_created_at
+    }
   }
 }

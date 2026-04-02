@@ -39,6 +39,25 @@ export interface IssueRecord {
   issue_updated_at: Date | null
 }
 
+export interface IssueFilterOptions {
+  status?: string
+  priority?: string
+  category?: string
+  assignedTo?: string
+  search?: string
+  page?: number
+  pageSize?: number
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
+}
+
+export interface PaginatedResult<T> {
+  data: T[]
+  total: number
+  page: number
+  pageSize: number
+}
+
 export interface IssueRepository {
   create(data: CreateIssueData): Promise<IssueRecord>
   findById(issueId: string): Promise<IssueRecord | null>
@@ -46,4 +65,5 @@ export interface IssueRepository {
   update(issueId: string, data: UpdateIssueData): Promise<IssueRecord>
   delete(issueId: string): Promise<boolean>
   countByProject(projectId: string): Promise<number>
+  findByProjectFiltered(projectId: string, options: IssueFilterOptions): Promise<PaginatedResult<IssueRecord>>
 }
