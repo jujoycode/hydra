@@ -8,7 +8,12 @@ import { Label } from '@/components/atoms/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/Select'
 import { Textarea } from '@/components/atoms/Textarea'
 import { useAuth } from '@/hooks/use-auth'
-import type { File as FileRecord, Issue as IssueRecord, User as UserRecord } from '@/interface/CoreInterface'
+import type {
+  Comment as CommentRecord,
+  File as FileRecord,
+  Issue as IssueRecord,
+  User as UserRecord
+} from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
 
 const STATUS_OPTIONS = [
@@ -48,6 +53,10 @@ export default function IssueDetailPage() {
   const [issue, setIssue] = useState<IssueRecord | null>(null)
   const [members, setMembers] = useState<UserRecord[]>([])
   const [files, setFiles] = useState<FileRecord[]>([])
+  const [comments, setComments] = useState<CommentRecord[]>([])
+  const [newComment, setNewComment] = useState('')
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
+  const [editingContent, setEditingContent] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
 
@@ -63,9 +72,10 @@ export default function IssueDetailPage() {
     if (!issueId) return
     const load = async () => {
       setIsLoading(true)
-      const [issueResult, usersResult] = await Promise.all([
+      const [issueResult, usersResult, commentsResult] = await Promise.all([
         window.callApi(IpcChannel.ISSUE_GET, { issueId }),
-        window.callApi(IpcChannel.AUTH_LIST_USERS)
+        window.callApi(IpcChannel.AUTH_LIST_USERS),
+        window.callApi(IpcChannel.COMMENT_LIST, { issueId })
       ])
       const issueData = issueResult.data as IssueRecord | null
       if (issueData) {
@@ -78,6 +88,7 @@ export default function IssueDetailPage() {
         setAssignee(issueData.issue_assigned_to)
       }
       if (Array.isArray(usersResult.data)) setMembers(usersResult.data as UserRecord[])
+      if (Array.isArray(commentsResult.data)) setComments(commentsResult.data as CommentRecord[])
 
       // Fetch attached files
       const filesResult = await window.callApi(IpcChannel.STORAGE_LIST_ISSUE_FILES, { issueId })
@@ -153,6 +164,38 @@ export default function IssueDetailPage() {
     })
     setFiles((prev) => prev.filter((f) => f.file_id !== fileId))
     toast.success('File removed')
+  }
+
+  const handleAddComment = async () => {
+    if (!issue || !user || !newComment.trim()) return
+    const result = await window.callApi(IpcChannel.COMMENT_CREATE, {
+      issueId: issue.issue_id,
+      commentContent: newComment.trim(),
+      userId: user.user_id
+    })
+    if (result.data) {
+      setComments((prev) => [result.data as CommentRecord, ...prev])
+      setNewComment('')
+    }
+  }
+
+  const handleUpdateComment = async (commentId: string) => {
+    if (!user || !editingContent.trim()) return
+    const result = await window.callApi(IpcChannel.COMMENT_UPDATE, {
+      commentId,
+      commentContent: editingContent.trim(),
+      userId: user.user_id
+    })
+    if (result.data) {
+      setComments((prev) => prev.map((c) => (c.comment_id === commentId ? (result.data as CommentRecord) : c)))
+      setEditingCommentId(null)
+      setEditingContent('')
+    }
+  }
+
+  const handleDeleteComment = async (commentId: string) => {
+    await window.callApi(IpcChannel.COMMENT_DELETE, { commentId })
+    setComments((prev) => prev.filter((c) => c.comment_id !== commentId))
   }
 
   if (isLoading)
@@ -239,6 +282,96 @@ export default function IssueDetailPage() {
                     </Button>
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+
+          {/* Comments */}
+          <div>
+            <Label className='mb-2 block'>Comments</Label>
+
+            {/* New comment input */}
+            <div className='flex gap-2 mb-4'>
+              <Textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder='Add a comment...'
+                className='min-h-[80px] resize-y'
+              />
+              <Button onClick={handleAddComment} disabled={!newComment.trim()} size='sm' className='self-end'>
+                Post
+              </Button>
+            </div>
+
+            {/* Comment list */}
+            {comments.length === 0 ? (
+              <p className='text-sm text-muted-foreground'>No comments yet</p>
+            ) : (
+              <div className='space-y-3'>
+                {comments.map((comment) => {
+                  const isEditing = editingCommentId === comment.comment_id
+                  const authorName =
+                    members.find((m) => m.user_id === comment.comment_created_by)?.user_name || 'Unknown'
+                  const isOwner = user?.user_id === comment.comment_created_by
+
+                  return (
+                    <div key={comment.comment_id} className='rounded border p-3'>
+                      <div className='flex items-center justify-between mb-2'>
+                        <div className='flex items-center gap-2'>
+                          <div className='w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium'>
+                            {authorName[0].toUpperCase()}
+                          </div>
+                          <span className='text-sm font-medium'>{authorName}</span>
+                          <span className='text-xs text-muted-foreground'>
+                            {formatDate(comment.comment_created_at)}
+                          </span>
+                        </div>
+                        {isOwner && !isEditing && (
+                          <div className='flex gap-1'>
+                            <Button
+                              variant='ghost'
+                              size='sm'
+                              className='h-6 px-2 text-xs'
+                              onClick={() => {
+                                setEditingCommentId(comment.comment_id)
+                                setEditingContent(comment.comment_content)
+                              }}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              variant='ghost'
+                              size='sm'
+                              className='h-6 px-2 text-xs text-destructive'
+                              onClick={() => handleDeleteComment(comment.comment_id)}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                      {isEditing ? (
+                        <div className='flex gap-2'>
+                          <Textarea
+                            value={editingContent}
+                            onChange={(e) => setEditingContent(e.target.value)}
+                            className='min-h-[60px]'
+                          />
+                          <div className='flex flex-col gap-1 self-end'>
+                            <Button size='sm' onClick={() => handleUpdateComment(comment.comment_id)}>
+                              Save
+                            </Button>
+                            <Button size='sm' variant='ghost' onClick={() => setEditingCommentId(null)}>
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className='text-sm whitespace-pre-wrap'>{comment.comment_content}</p>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             )}
           </div>
