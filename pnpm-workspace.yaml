@@ -1,0 +1,9 @@
+ignoredBuiltDependencies:
+  - esbuild
+onlyBuiltDependencies:
+  - '@swc/core'
+  - electron
+  - electron-winstaller
+  - '@prisma/client'
+  - '@prisma/engines'
+  - prisma
