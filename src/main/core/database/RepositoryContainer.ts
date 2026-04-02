@@ -1,6 +1,7 @@
 // 리포지토리 컨테이너 - 싱글톤 패턴으로 DB 어댑터와 리포지토리 인스턴스 관리
 
 import type { DatabaseAdapter } from './adapter/DatabaseAdapter'
+import type { CommentRepository } from './repository/interfaces/CommentRepository'
 import type { FileRepository } from './repository/interfaces/FileRepository'
 import type { IssueRepository } from './repository/interfaces/IssueRepository'
 import type { ProjectRepository } from './repository/interfaces/ProjectRepository'
@@ -13,6 +14,7 @@ export class RepositoryContainer {
   private _projects: ProjectRepository | null = null
   private _issues: IssueRepository | null = null
   private _files: FileRepository | null = null
+  private _comments: CommentRepository | null = null
 
   private constructor() {}
 
@@ -28,13 +30,15 @@ export class RepositoryContainer {
     users: UserRepository,
     projects: ProjectRepository,
     issues: IssueRepository,
-    files: FileRepository
+    files: FileRepository,
+    comments: CommentRepository
   ): void {
     this.adapter = adapter
     this._users = users
     this._projects = projects
     this._issues = issues
     this._files = files
+    this._comments = comments
   }
 
   async teardown(): Promise<void> {
@@ -46,6 +50,7 @@ export class RepositoryContainer {
     this._projects = null
     this._issues = null
     this._files = null
+    this._comments = null
   }
 
   get db(): DatabaseAdapter {
@@ -81,6 +86,13 @@ export class RepositoryContainer {
       throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
     }
     return this._files
+  }
+
+  get comments(): CommentRepository {
+    if (!this._comments) {
+      throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
+    }
+    return this._comments
   }
 
   get isInitialized(): boolean {

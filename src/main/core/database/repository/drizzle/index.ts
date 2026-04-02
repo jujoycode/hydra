@@ -1,3 +1,4 @@
+export { DrizzleCommentRepository } from './DrizzleCommentRepository'
 export { DrizzleFileRepository } from './DrizzleFileRepository'
 export { DrizzleIssueRepository } from './DrizzleIssueRepository'
 export { DrizzleProjectRepository } from './DrizzleProjectRepository'

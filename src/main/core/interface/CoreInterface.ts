@@ -1,5 +1,6 @@
 export * from './ipc'
 export * from './types/auth'
+export * from './types/comment'
 export * from './types/invite'
 export * from './types/issue'
 export * from './types/project'

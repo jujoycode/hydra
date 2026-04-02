@@ -1,9 +1,11 @@
+import type { CommentRecord } from '../database/repository/interfaces/CommentRepository'
 import type { FileRecord } from '../database/repository/interfaces/FileRepository'
 import type { IssueRecord } from '../database/repository/interfaces/IssueRepository'
 import type { ProjectRecord } from '../database/repository/interfaces/ProjectRepository'
 import type { UserRecord } from '../database/repository/interfaces/UserRepository'
 import type { WorkspaceConfig } from '../workspace/WorkspaceManager'
 import type { AuthDeleteUserParams, AuthUpdateUserParams, CreateMemberParams } from './types/auth'
+import type { CreateCommentParams, DeleteCommentParams, ListCommentsParams, UpdateCommentParams } from './types/comment'
 import type { InviteApplyParams, InviteCodeInfo, InviteGenerateParams } from './types/invite'
 import type {
   CreateIssueParams,
@@ -64,6 +66,12 @@ export enum IpcChannel {
   ISSUE_GET = 'issueGet',
   ISSUE_UPDATE = 'issueUpdate',
   ISSUE_DELETE = 'issueDelete',
+
+  // COMMENT-
+  COMMENT_CREATE = 'commentCreate',
+  COMMENT_LIST = 'commentList',
+  COMMENT_UPDATE = 'commentUpdate',
+  COMMENT_DELETE = 'commentDelete',
 
   // STORAGE-
   STORAGE_UPLOAD_FILE = 'storageUploadFile',
@@ -188,6 +196,24 @@ export interface IpcPayloads extends BaseIpcPayloads {
   }
   [IpcChannel.ISSUE_DELETE]: {
     send: DeleteIssueParams
+    receive: BaseIpcResponse<boolean>
+  }
+
+  // COMMENT-
+  [IpcChannel.COMMENT_CREATE]: {
+    send: CreateCommentParams
+    receive: BaseIpcResponse<CommentRecord>
+  }
+  [IpcChannel.COMMENT_LIST]: {
+    send: ListCommentsParams
+    receive: BaseIpcResponse<CommentRecord[]>
+  }
+  [IpcChannel.COMMENT_UPDATE]: {
+    send: UpdateCommentParams
+    receive: BaseIpcResponse<CommentRecord>
+  }
+  [IpcChannel.COMMENT_DELETE]: {
+    send: DeleteCommentParams
     receive: BaseIpcResponse<boolean>
   }
 

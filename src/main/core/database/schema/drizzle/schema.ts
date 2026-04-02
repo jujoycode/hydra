@@ -70,6 +70,19 @@ export const issuesFilesLink = pgTable('issues_files_link', {
   file_id: uuid('file_id').references(() => files.file_id)
 })
 
+// 댓글 테이블
+export const comments = pgTable('comments', {
+  comment_id: uuid('comment_id').primaryKey(),
+  issue_id: uuid('issue_id')
+    .notNull()
+    .references(() => issues.issue_id),
+  comment_content: text('comment_content').notNull(),
+  comment_created_by: uuid('comment_created_by'),
+  comment_updated_by: uuid('comment_updated_by'),
+  comment_created_at: timestamp('comment_created_at').defaultNow(),
+  comment_updated_at: timestamp('comment_updated_at').defaultNow()
+})
+
 // 초대 코드 테이블
 export const inviteCodes = pgTable('invite_codes', {
   invite_code_id: uuid('invite_code_id').primaryKey(),

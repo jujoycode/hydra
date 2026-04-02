@@ -3,6 +3,7 @@ import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 import { PostgresAdapter } from '@/database/adapter/PostgresAdapter'
 import { RepositoryContainer } from '@/database/RepositoryContainer'
 import {
+  DrizzleCommentRepository,
   DrizzleFileRepository,
   DrizzleIssueRepository,
   DrizzleProjectRepository,
@@ -40,8 +41,9 @@ export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPAC
     const projectRepo = new DrizzleProjectRepository(db)
     const issueRepo = new DrizzleIssueRepository(db)
     const fileRepo = new DrizzleFileRepository(db)
+    const commentRepo = new DrizzleCommentRepository(db)
 
-    container.initialize(adapter, userRepo, projectRepo, issueRepo, fileRepo)
+    container.initialize(adapter, userRepo, projectRepo, issueRepo, fileRepo, commentRepo)
 
     let user = await userRepo.findByDbRole(params.username)
     const isFirstLogin = !user

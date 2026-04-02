@@ -3,6 +3,7 @@ import { ipcMain } from 'electron/main'
 import { BaseError } from '@/error/BaseError'
 import { type BaseErrorType, ErrorCode } from '@/interface/CoreInterface'
 import * as authHandlers from './auth'
+import * as commentHandlers from './comments'
 import * as inviteHandlers from './invite'
 import * as issueHandlers from './issues'
 import * as projectHandlers from './projects'
@@ -12,6 +13,7 @@ import * as workspaceHandlers from './workspace'
 
 const handlerModules = [
   authHandlers,
+  commentHandlers,
   projectHandlers,
   issueHandlers,
   storageHandlers,
