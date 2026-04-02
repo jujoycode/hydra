@@ -10,6 +10,7 @@ import * as labelHandlers from './labels'
 import * as projectHandlers from './projects'
 import * as storageHandlers from './storage'
 import * as systemHandlers from './system'
+import * as taskHandlers from './tasks'
 import * as workspaceHandlers from './workspace'
 
 const handlerModules = [
@@ -20,6 +21,7 @@ const handlerModules = [
   issueHandlers,
   storageHandlers,
   systemHandlers,
+  taskHandlers,
   workspaceHandlers,
   inviteHandlers
 ]

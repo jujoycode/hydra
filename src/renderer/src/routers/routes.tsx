@@ -95,7 +95,7 @@ export const issueDetailRoute = createRoute({
 export const tasksRoute = createRoute({
   getParentRoute: () => projectLayoutRoute,
   path: '/tasks',
-  component: () => <TempComponent name='태스크 목록' />
+  component: lazyRoute(() => import('@/components/pages/TasksPage'))
 })
 
 export const taskDetailRoute = createRoute({

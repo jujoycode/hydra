@@ -1,6 +1,6 @@
 // Drizzle ORM 스키마 정의 - PostgreSQL
 
-import { integer, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
+import { boolean, integer, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 
 // 사용자 테이블
 export const users = pgTable('users', {
@@ -96,6 +96,18 @@ export const issuesLabelsLink = pgTable('issues_labels_link', {
   issue_label_link_id: uuid('issue_label_link_id').primaryKey(),
   issue_id: uuid('issue_id').references(() => issues.issue_id),
   label_id: uuid('label_id').references(() => labels.label_id)
+})
+
+// 태스크 테이블
+export const tasks = pgTable('tasks', {
+  task_id: uuid('task_id').primaryKey(),
+  issue_id: uuid('issue_id').references(() => issues.issue_id),
+  task_title: text('task_title').notNull(),
+  task_completed: boolean('task_completed').default(false),
+  task_order: integer('task_order').default(0),
+  task_created_by: uuid('task_created_by'),
+  task_created_at: timestamp('task_created_at').defaultNow(),
+  task_updated_at: timestamp('task_updated_at').defaultNow()
 })
 
 // 초대 코드 테이블

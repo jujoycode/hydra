@@ -1,4 +1,5 @@
 import type { CommentRecord } from '../database/repository/interfaces/CommentRepository'
+import type { TaskRecord } from '../database/repository/interfaces/TaskRepository'
 import type { FileRecord } from '../database/repository/interfaces/FileRepository'
 import type { IssueRecord } from '../database/repository/interfaces/IssueRepository'
 import type { LabelRecord } from '../database/repository/interfaces/LabelRepository'
@@ -7,13 +8,6 @@ import type { UserRecord } from '../database/repository/interfaces/UserRepositor
 import type { WorkspaceConfig } from '../workspace/WorkspaceManager'
 import type { AuthDeleteUserParams, AuthUpdateUserParams, CreateMemberParams } from './types/auth'
 import type { CreateCommentParams, DeleteCommentParams, ListCommentsParams, UpdateCommentParams } from './types/comment'
-import type {
-  CreateLabelParams,
-  DeleteLabelParams,
-  LinkLabelParams,
-  ListIssueLabelParams,
-  UpdateLabelParams
-} from './types/label'
 import type { InviteApplyParams, InviteCodeInfo, InviteGenerateParams } from './types/invite'
 import type {
   CreateIssueParams,
@@ -22,6 +16,14 @@ import type {
   ListIssueParams,
   UpdateIssueParams
 } from './types/issue'
+import type {
+  CreateLabelParams,
+  DeleteLabelParams,
+  LinkLabelParams,
+  ListIssueLabelParams,
+  UpdateLabelParams
+} from './types/label'
+import type { CreateTaskParams, DeleteTaskParams, ListTasksParams, UpdateTaskParams } from './types/task'
 import type {
   CreateProjectParams,
   DeleteProjectParams,
@@ -89,6 +91,12 @@ export enum IpcChannel {
   LABEL_LINK = 'labelLink',
   LABEL_UNLINK = 'labelUnlink',
   LABEL_LIST_BY_ISSUE = 'labelListByIssue',
+
+  // TASK-
+  TASK_CREATE = 'taskCreate',
+  TASK_LIST = 'taskList',
+  TASK_UPDATE = 'taskUpdate',
+  TASK_DELETE = 'taskDelete',
 
   // STORAGE-
   STORAGE_UPLOAD_FILE = 'storageUploadFile',
@@ -262,6 +270,24 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.LABEL_LIST_BY_ISSUE]: {
     send: ListIssueLabelParams
     receive: BaseIpcResponse<LabelRecord[]>
+  }
+
+  // TASK-
+  [IpcChannel.TASK_CREATE]: {
+    send: CreateTaskParams
+    receive: BaseIpcResponse<TaskRecord>
+  }
+  [IpcChannel.TASK_LIST]: {
+    send: ListTasksParams
+    receive: BaseIpcResponse<TaskRecord[]>
+  }
+  [IpcChannel.TASK_UPDATE]: {
+    send: UpdateTaskParams
+    receive: BaseIpcResponse<TaskRecord>
+  }
+  [IpcChannel.TASK_DELETE]: {
+    send: DeleteTaskParams
+    receive: BaseIpcResponse<boolean>
   }
 
   // STORAGE-
