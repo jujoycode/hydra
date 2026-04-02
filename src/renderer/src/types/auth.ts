@@ -1,0 +1,25 @@
+import type { User } from '@/interface/CoreInterface'
+
+export interface WorkspaceConfig {
+  id: string
+  name: string
+  host: string
+  port: number
+  dbName: string
+  username: string
+  sslCertPath?: string
+}
+
+export interface AuthState {
+  user: User | null
+  isConnected: boolean
+  isLoading: boolean
+  error: Error | null
+  currentWorkspace: WorkspaceConfig | null
+  setUser: (user: User | null) => void
+  setConnected: (connected: boolean) => void
+  setCurrentWorkspace: (ws: WorkspaceConfig | null) => void
+  setError: (error: Error | null) => void
+  disconnect: () => void
+  reset: () => void
+}
