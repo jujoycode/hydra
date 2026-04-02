@@ -39,21 +39,21 @@ export const BubbleChart = ({
   margin = { top: 10, right: 10, bottom: 10, left: 10 },
   xAxisConfig = {
     dataKey: 'name',
-    name: 'Category',
+    name: '카테고리',
     type: 'category'
   },
   yAxisConfig = {
     dataKey: 'value',
-    name: 'Importance'
+    name: '중요도'
   },
   zAxisConfig = {
     dataKey: 'count',
-    name: 'Issue Count',
+    name: '이슈 수',
     range: [30, 120]
   },
   tooltipFormatter = (value, name) => {
-    if (name === 'count') return [`${value}개`, 'Issue Count']
-    if (name === 'value') return [`${value}점`, 'Importance']
+    if (name === 'count') return [`${value}개`, '이슈 수']
+    if (name === 'value') return [`${value}점`, '중요도']
     return [value, name]
   }
 }: BubbleChartProps) => {
@@ -78,7 +78,7 @@ export const BubbleChart = ({
           />
           <ZAxis type='number' dataKey={zAxisConfig.dataKey} range={zAxisConfig.range} name={zAxisConfig.name} />
           <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} formatter={tooltipFormatter} />
-          <Scatter name='Issue Type' data={data} fill='#8884d8' animationDuration={1500}>
+          <Scatter name='이슈 유형' data={data} fill='#8884d8' animationDuration={1500}>
             {data.map((_, index) => (
               <Cell key={`cell-${index}`} fill={colors[index % colors.length]} fillOpacity={0.8} />
             ))}

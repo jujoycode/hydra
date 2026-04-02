@@ -24,18 +24,29 @@ export const AreaTrendChart = ({ data, height = 200, lines }: AreaTrendChartProp
           <defs>
             {lines.map((line) => (
               <linearGradient key={line.gradientId} id={line.gradientId} x1='0' y1='0' x2='0' y2='1'>
-                <stop offset='5%' stopColor={line.color} stopOpacity={0.8} />
+                <stop offset='5%' stopColor={line.color} stopOpacity={0.15} />
                 <stop offset='95%' stopColor={line.color} stopOpacity={0} />
               </linearGradient>
             ))}
           </defs>
-          <CartesianGrid strokeDasharray='3 3' stroke='var(--border)' opacity={0.3} />
-          <XAxis dataKey='name' tick={{ fontSize: 10 }} stroke='var(--muted-foreground)' />
-          <YAxis tick={{ fontSize: 10 }} stroke='var(--muted-foreground)' />
+          <CartesianGrid strokeDasharray='3 3' stroke='var(--border)' opacity={0.5} />
+          <XAxis
+            dataKey='name'
+            tick={{ fontSize: 11 }}
+            stroke='var(--muted-foreground)'
+            tickLine={false}
+            axisLine={false}
+          />
+          <YAxis
+            tick={{ fontSize: 11 }}
+            stroke='var(--muted-foreground)'
+            tickLine={false}
+            axisLine={false}
+            width={30}
+          />
           <Tooltip content={<CustomTooltip />} />
-          <Legend iconSize={8} wrapperStyle={{ fontSize: 10 }} />
-
-          {lines.map((line, index) => (
+          <Legend iconSize={8} wrapperStyle={{ fontSize: 11 }} />
+          {lines.map((line) => (
             <Area
               key={line.dataKey}
               type='monotone'
@@ -44,9 +55,8 @@ export const AreaTrendChart = ({ data, height = 200, lines }: AreaTrendChartProp
               strokeWidth={2}
               fillOpacity={1}
               fill={`url(#${line.gradientId})`}
-              activeDot={{ r: 4, strokeWidth: 0 }}
-              animationDuration={1500}
-              animationBegin={500 + index * 300}
+              activeDot={{ r: 3, strokeWidth: 0 }}
+              animationDuration={800}
             />
           ))}
         </AreaChart>
