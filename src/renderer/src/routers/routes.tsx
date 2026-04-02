@@ -128,7 +128,7 @@ export const myIssuesRoute = createRoute({
 export const notificationsRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: '/notifications',
-  component: () => <TempComponent name='알림' />
+  component: lazyRoute(() => import('@/components/pages/NotificationsPage'))
 })
 
 // Members

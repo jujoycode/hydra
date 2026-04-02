@@ -7,6 +7,7 @@ import type { IssueRelationRepository } from './repository/interfaces/IssueRelat
 import type { IssueRepository } from './repository/interfaces/IssueRepository'
 import type { LabelRepository } from './repository/interfaces/LabelRepository'
 import type { MilestoneRepository } from './repository/interfaces/MilestoneRepository'
+import type { NotificationRepository } from './repository/interfaces/NotificationRepository'
 import type { ProjectRepository } from './repository/interfaces/ProjectRepository'
 import type { TaskRepository } from './repository/interfaces/TaskRepository'
 import type { UserRepository } from './repository/interfaces/UserRepository'
@@ -23,6 +24,7 @@ export class RepositoryContainer {
   private _milestones: MilestoneRepository | null = null
   private _tasks: TaskRepository | null = null
   private _issueRelations: IssueRelationRepository | null = null
+  private _notifications: NotificationRepository | null = null
 
   private constructor() {}
 
@@ -43,7 +45,8 @@ export class RepositoryContainer {
     labels: LabelRepository,
     milestones: MilestoneRepository,
     tasks: TaskRepository,
-    issueRelations: IssueRelationRepository
+    issueRelations: IssueRelationRepository,
+    notifications: NotificationRepository
   ): void {
     this.adapter = adapter
     this._users = users
@@ -55,6 +58,7 @@ export class RepositoryContainer {
     this._milestones = milestones
     this._tasks = tasks
     this._issueRelations = issueRelations
+    this._notifications = notifications
   }
 
   async teardown(): Promise<void> {
@@ -71,6 +75,7 @@ export class RepositoryContainer {
     this._milestones = null
     this._tasks = null
     this._issueRelations = null
+    this._notifications = null
   }
 
   get db(): DatabaseAdapter {
@@ -141,6 +146,13 @@ export class RepositoryContainer {
       throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
     }
     return this._issueRelations
+  }
+
+  get notifications(): NotificationRepository {
+    if (!this._notifications) {
+      throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
+    }
+    return this._notifications
   }
 
   get isInitialized(): boolean {

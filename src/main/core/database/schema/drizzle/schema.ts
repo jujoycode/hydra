@@ -138,6 +138,20 @@ export const issueRelations = pgTable('issue_relations', {
   relation_created_at: timestamp('relation_created_at').defaultNow()
 })
 
+// 알림 테이블
+export const notifications = pgTable('notifications', {
+  notification_id: uuid('notification_id').primaryKey(),
+  user_id: uuid('user_id')
+    .notNull()
+    .references(() => users.user_id),
+  notification_type: varchar('notification_type', { length: 50 }).notNull(),
+  notification_title: text('notification_title').notNull(),
+  notification_message: text('notification_message'),
+  notification_read: boolean('notification_read').default(false),
+  notification_link: text('notification_link'),
+  notification_created_at: timestamp('notification_created_at').defaultNow()
+})
+
 // 초대 코드 테이블
 export const inviteCodes = pgTable('invite_codes', {
   invite_code_id: uuid('invite_code_id').primaryKey(),

@@ -4,6 +4,7 @@ import type { IssueRelationRecord } from '../database/repository/interfaces/Issu
 import type { IssueRecord } from '../database/repository/interfaces/IssueRepository'
 import type { LabelRecord } from '../database/repository/interfaces/LabelRepository'
 import type { MilestoneRecord } from '../database/repository/interfaces/MilestoneRepository'
+import type { NotificationRecord } from '../database/repository/interfaces/NotificationRepository'
 import type { ProjectRecord } from '../database/repository/interfaces/ProjectRepository'
 import type { TaskRecord } from '../database/repository/interfaces/TaskRepository'
 import type { UserRecord } from '../database/repository/interfaces/UserRepository'
@@ -45,6 +46,13 @@ import type {
 } from './types/project'
 import type { LinkFileParams, ListIssueFilesParams, UploadFileParams } from './types/storage'
 import type { OpenDialogOptions, OpenDialogReturnValue, OpenExternalUrlParams } from './types/system'
+import type {
+  CountUnreadParams,
+  DeleteNotificationParams,
+  ListNotificationsParams,
+  MarkAllNotificationsReadParams,
+  MarkNotificationReadParams
+} from './types/notification'
 import type { CreateTaskParams, DeleteTaskParams, ListTasksParams, UpdateTaskParams } from './types/task'
 import type {
   WorkspaceConnectParams,
@@ -121,6 +129,13 @@ export enum IpcChannel {
   TASK_LIST = 'taskList',
   TASK_UPDATE = 'taskUpdate',
   TASK_DELETE = 'taskDelete',
+
+  // NOTIFICATION-
+  NOTIFICATION_LIST = 'notificationList',
+  NOTIFICATION_MARK_READ = 'notificationMarkRead',
+  NOTIFICATION_MARK_ALL_READ = 'notificationMarkAllRead',
+  NOTIFICATION_DELETE = 'notificationDelete',
+  NOTIFICATION_COUNT_UNREAD = 'notificationCountUnread',
 
   // STORAGE-
   STORAGE_UPLOAD_FILE = 'storageUploadFile',
@@ -344,6 +359,28 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.TASK_DELETE]: {
     send: DeleteTaskParams
     receive: BaseIpcResponse<boolean>
+  }
+
+  // NOTIFICATION-
+  [IpcChannel.NOTIFICATION_LIST]: {
+    send: ListNotificationsParams
+    receive: BaseIpcResponse<NotificationRecord[]>
+  }
+  [IpcChannel.NOTIFICATION_MARK_READ]: {
+    send: MarkNotificationReadParams
+    receive: BaseIpcResponse<NotificationRecord>
+  }
+  [IpcChannel.NOTIFICATION_MARK_ALL_READ]: {
+    send: MarkAllNotificationsReadParams
+    receive: BaseIpcResponse<boolean>
+  }
+  [IpcChannel.NOTIFICATION_DELETE]: {
+    send: DeleteNotificationParams
+    receive: BaseIpcResponse<boolean>
+  }
+  [IpcChannel.NOTIFICATION_COUNT_UNREAD]: {
+    send: CountUnreadParams
+    receive: BaseIpcResponse<number>
   }
 
   // STORAGE-

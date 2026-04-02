@@ -4,6 +4,7 @@ export { DrizzleIssueRelationRepository } from './DrizzleIssueRelationRepository
 export { DrizzleIssueRepository } from './DrizzleIssueRepository'
 export { DrizzleLabelRepository } from './DrizzleLabelRepository'
 export { DrizzleMilestoneRepository } from './DrizzleMilestoneRepository'
+export { DrizzleNotificationRepository } from './DrizzleNotificationRepository'
 export { DrizzleProjectRepository } from './DrizzleProjectRepository'
 export { DrizzleTaskRepository } from './DrizzleTaskRepository'
 export { DrizzleUserRepository } from './DrizzleUserRepository'

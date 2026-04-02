@@ -7,6 +7,7 @@ import * as commentHandlers from './comments'
 import * as inviteHandlers from './invite'
 import * as issueRelationHandlers from './issueRelations'
 import * as issueHandlers from './issues'
+import * as notificationHandlers from './notifications'
 import * as labelHandlers from './labels'
 import * as milestoneHandlers from './milestones'
 import * as projectHandlers from './projects'
@@ -20,6 +21,7 @@ const handlerModules = [
   commentHandlers,
   labelHandlers,
   milestoneHandlers,
+  notificationHandlers,
   projectHandlers,
   issueRelationHandlers,
   issueHandlers,
