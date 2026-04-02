@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router'
 import { AlertCircle, CheckCircle2, Info } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/atoms/Button'
 import { Input } from '@/atoms/Input'
@@ -18,6 +19,8 @@ interface CreateProjectDialogProps {
 }
 
 export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjectDialogProps) {
+  const { t } = useTranslation('project')
+  const { t: tc } = useTranslation('common')
   // state
   const [isLoading, setIsLoading] = useState(false)
   const [projectName, setProjectName] = useState('')
@@ -58,17 +61,17 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
     e.preventDefault()
 
     if (!projectName.trim()) {
-      toast.error('Please enter a project name')
+      toast.error(t('validation.enterName'))
       return
     }
 
     if (!projectKey.trim()) {
-      toast.error('Please enter a project key')
+      toast.error(t('validation.enterKey'))
       return
     }
 
     if (!keyValid) {
-      toast.error('Please enter a valid project key')
+      toast.error(t('validation.invalidKey'))
       return
     }
 
@@ -83,7 +86,7 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
       })
 
       if (result.error) {
-        toast.error('Failed to create project')
+        toast.error(t('toast.createFailed'))
         handleClear()
         return
       }
@@ -92,7 +95,7 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
       if (result.data && projects) {
         setProjects([...projects, result.data])
 
-        toast.success('Project created successfully')
+        toast.success(t('toast.created'))
         handleClear()
 
         navigate({ to: '/projects/$projectId', params: { projectId: result.data.project_id } })
@@ -106,22 +109,22 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
     <div className='space-y-6'>
       <div>
         <div className='space-y-4'>
-          <InputField id='project-name' label='Project Name'>
+          <InputField id='project-name' label={t('label.name')}>
             <Input
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              placeholder='Enter new project name'
+              placeholder={t('placeholder.name')}
               autoFocus
               maxLength={50}
             />
           </InputField>
 
-          <InputField id='project-key' label='Project Key'>
+          <InputField id='project-key' label={t('label.key')}>
             <div className='relative'>
               <Input
                 value={projectKey}
                 onChange={handleKeyChange}
-                placeholder='ex) PRJ, HYDRA'
+                placeholder={t('placeholder.key')}
                 maxLength={5}
                 className={`uppercase ${keyValid === false ? 'border-destructive' : ''}`}
               />
@@ -137,18 +140,18 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
             </div>
             <p className='text-xs text-muted-foreground mt-1 flex items-start'>
               <Info className='inline-block w-3 h-3 mr-1 mt-0.5 flex-shrink-0' />
-              <span>A unique identifier for your project using 3-5 letters.</span>
+              <span>{t('placeholder.keyHelp')}</span>
             </p>
           </InputField>
         </div>
       </div>
 
       <div>
-        <InputField id='project-desc' label='Description'>
+        <InputField id='project-desc' label={t('label.description')}>
           <Textarea
             value={projectDesc}
             onChange={(e) => setProjectDesc(e.target.value)}
-            placeholder='Enter a brief description of the project'
+            placeholder={t('placeholder.description')}
             className='resize-none'
             maxLength={50}
           />
@@ -161,10 +164,10 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
   const dialogFooter = (
     <>
       <Button type='button' variant='outline' onClick={() => onOpenChange(false)} disabled={isLoading}>
-        Cancel
+        {tc('button.cancel')}
       </Button>
       <Button type='submit' loading={isLoading} disabled={isLoading || !projectName.trim() || !keyValid}>
-        Create
+        {tc('button.create')}
       </Button>
     </>
   )
@@ -173,8 +176,8 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
     <DialogTemplate
       open={open}
       onOpenChange={onOpenChange}
-      title='Create New Project'
-      description='Create a new project by providing the required information below.'
+      title={t('dialog.createTitle')}
+      description={t('dialog.createDescription')}
       onSubmit={handleSubmit}
       footer={dialogFooter}
       maxWidthClass='sm:max-w-[500px]'

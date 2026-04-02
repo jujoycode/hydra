@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { Bell, ChevronDown, Home, ListChecks, LogOut, Moon, Plus, Settings, Sun, Users } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useTranslation } from 'react-i18next'
 import { Avatar, AvatarFallback } from '@/atoms/Avatar'
 import {
   DropdownMenu,
@@ -35,6 +36,7 @@ function WorkspaceHeader() {
   const { currentWorkspace, disconnect } = useAuth()
   const { state } = useSidebar()
   const navigate = useNavigate()
+  const { t } = useTranslation('nav')
 
   const handleDisconnect = () => {
     disconnect()
@@ -63,7 +65,7 @@ function WorkspaceHeader() {
             <DropdownMenuSeparator />
             <DropdownMenuItem variant='destructive' onClick={handleDisconnect}>
               <LogOut className='size-4' />
-              워크스페이스 나가기
+              {t('leaveWorkspace')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -74,11 +76,12 @@ function WorkspaceHeader() {
 
 function MainNavGroup() {
   const location = useLocation()
+  const { t } = useTranslation('nav')
 
   const navItems = [
-    { label: '홈', icon: Home, href: '/' },
-    { label: '내 이슈', icon: ListChecks, href: '/my-issues' },
-    { label: '알림', icon: Bell, href: '/notifications', badge: NOTIFICATION_COUNT }
+    { label: t('home'), icon: Home, href: '/' },
+    { label: t('myIssues'), icon: ListChecks, href: '/my-issues' },
+    { label: t('notifications'), icon: Bell, href: '/notifications', badge: NOTIFICATION_COUNT }
   ]
 
   return (
@@ -109,6 +112,7 @@ function MainNavGroup() {
 function ProjectsGroup() {
   const { projects } = useProject()
   const location = useLocation()
+  const { t } = useTranslation('nav')
 
   const handleCreateProject = () => {
     // 추후 CreateProjectDialog 열기 연동
@@ -116,10 +120,10 @@ function ProjectsGroup() {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>프로젝트</SidebarGroupLabel>
-      <SidebarGroupAction title='프로젝트 추가' onClick={handleCreateProject}>
+      <SidebarGroupLabel>{t('projects')}</SidebarGroupLabel>
+      <SidebarGroupAction title={t('addProject')} onClick={handleCreateProject}>
         <Plus />
-        <span className='sr-only'>프로젝트 추가</span>
+        <span className='sr-only'>{t('addProject')}</span>
       </SidebarGroupAction>
       <SidebarGroupContent>
         <SidebarMenu>
@@ -142,7 +146,7 @@ function ProjectsGroup() {
           })}
           {(!projects || projects.length === 0) && (
             <SidebarMenuItem>
-              <span className='px-2 text-xs text-muted-foreground'>프로젝트 없음</span>
+              <span className='px-2 text-xs text-muted-foreground'>{t('noProjects')}</span>
             </SidebarMenuItem>
           )}
         </SidebarMenu>
@@ -153,10 +157,11 @@ function ProjectsGroup() {
 
 function BottomNavGroup() {
   const location = useLocation()
+  const { t } = useTranslation('nav')
 
   const navItems = [
-    { label: '멤버', icon: Users, href: '/members' },
-    { label: '설정', icon: Settings, href: '/settings' }
+    { label: t('members'), icon: Users, href: '/members' },
+    { label: t('settings'), icon: Settings, href: '/settings' }
   ]
 
   return (
@@ -188,6 +193,7 @@ function UserFooter() {
   const { state } = useSidebar()
   const navigate = useNavigate()
   const { theme, setTheme } = useTheme()
+  const { t } = useTranslation('nav')
 
   const handleDisconnect = () => {
     disconnect()
@@ -213,7 +219,7 @@ function UserFooter() {
               </Avatar>
               {state === 'expanded' && (
                 <div className='flex flex-col gap-0.5 leading-none overflow-hidden'>
-                  <span className='font-medium truncate'>{user?.user_name ?? '사용자'}</span>
+                  <span className='font-medium truncate'>{user?.user_name ?? t('user')}</span>
                   <span className='text-xs text-muted-foreground truncate'>{user?.user_email ?? ''}</span>
                 </div>
               )}
@@ -224,17 +230,17 @@ function UserFooter() {
             <DropdownMenuItem asChild>
               <Link to='/settings'>
                 <Settings className='size-4' />
-                설정
+                {t('settings')}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
               {theme === 'dark' ? <Sun className='mr-2 size-4' /> : <Moon className='mr-2 size-4' />}
-              {theme === 'dark' ? '라이트 모드' : '다크 모드'}
+              {theme === 'dark' ? t('lightMode') : t('darkMode')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem variant='destructive' onClick={handleDisconnect}>
               <LogOut className='size-4' />
-              로그아웃
+              {t('logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

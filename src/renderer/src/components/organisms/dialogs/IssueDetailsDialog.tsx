@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Badge } from '@/atoms/Badge'
 import { Button } from '@/atoms/Button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/atoms/Dialog'
@@ -20,6 +21,8 @@ export function IssueDetailsDialog({
   mode = issue ? 'view' : 'create',
   onSave
 }: IssueDetailsDialogProps) {
+  const { t } = useTranslation('issue')
+  const { t: tc } = useTranslation('common')
   const isCreateMode = mode === 'create'
   const isEditMode = mode === 'edit'
   const isFormMode = isCreateMode || isEditMode
@@ -103,7 +106,7 @@ export function IssueDetailsDialog({
                 value={formData.title}
                 onChange={(e) => handleChange('title', e.target.value)}
                 className='w-full mt-2'
-                placeholder='이슈 제목'
+                placeholder={t('placeholder.title')}
               />
             ) : (
               formData.title
@@ -114,67 +117,67 @@ export function IssueDetailsDialog({
           {isFormMode ? (
             <>
               <div className='grid gap-2'>
-                <Label htmlFor='type'>이슈 타입</Label>
+                <Label htmlFor='type'>{t('label.type')}</Label>
                 <Select value={formData.type} onValueChange={(value) => handleChange('type', value as IssueType)}>
                   <SelectTrigger id='type'>
-                    <SelectValue placeholder='이슈 타입 선택' />
+                    <SelectValue placeholder={t('placeholder.selectType')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='bug'>버그</SelectItem>
-                    <SelectItem value='feature'>기능</SelectItem>
+                    <SelectItem value='bug'>{tc('type.bug')}</SelectItem>
+                    <SelectItem value='feature'>{tc('type.feature')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className='grid gap-2'>
-                <Label htmlFor='assignee'>담당자</Label>
+                <Label htmlFor='assignee'>{t('label.assignee')}</Label>
                 <Input
                   id='assignee'
                   value={formData.assignee}
                   onChange={(e) => handleChange('assignee', e.target.value)}
-                  placeholder='담당자 이름'
+                  placeholder={t('placeholder.assigneeName')}
                 />
               </div>
 
               <div className='grid gap-2'>
-                <Label htmlFor='state'>상태</Label>
+                <Label htmlFor='state'>{t('label.status')}</Label>
                 <Select value={formData.state} onValueChange={(value) => handleChange('state', value as IssueState)}>
                   <SelectTrigger id='state'>
-                    <SelectValue placeholder='상태 선택' />
+                    <SelectValue placeholder={t('placeholder.selectStatus')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='in_progress'>In Progress</SelectItem>
-                    <SelectItem value='done'>Done</SelectItem>
-                    <SelectItem value='blocked'>Blocked</SelectItem>
-                    <SelectItem value='review'>Review</SelectItem>
+                    <SelectItem value='in_progress'>{tc('status.in_progress')}</SelectItem>
+                    <SelectItem value='done'>{tc('status.done')}</SelectItem>
+                    <SelectItem value='blocked'>{tc('status.blocked')}</SelectItem>
+                    <SelectItem value='review'>{tc('status.review')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className='grid gap-2'>
-                <Label htmlFor='priority'>우선순위</Label>
+                <Label htmlFor='priority'>{t('label.priority')}</Label>
                 <Select
                   value={formData.priority || 'medium'}
                   onValueChange={(value) => handleChange('priority', value as IssuePriority)}
                 >
                   <SelectTrigger id='priority'>
-                    <SelectValue placeholder='우선순위 선택' />
+                    <SelectValue placeholder={t('placeholder.selectPriority')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='low'>낮음</SelectItem>
-                    <SelectItem value='medium'>중간</SelectItem>
-                    <SelectItem value='high'>높음</SelectItem>
+                    <SelectItem value='low'>{tc('priority.low')}</SelectItem>
+                    <SelectItem value='medium'>{tc('priority.medium')}</SelectItem>
+                    <SelectItem value='high'>{tc('priority.high')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className='grid gap-2'>
-                <Label htmlFor='description'>설명</Label>
+                <Label htmlFor='description'>{t('label.description')}</Label>
                 <Textarea
                   id='description'
                   value={formData.description || ''}
                   onChange={(e) => handleChange('description', e.target.value)}
-                  placeholder='이슈에 대한 상세 설명을 입력하세요'
+                  placeholder={t('placeholder.detailedDescription')}
                   rows={5}
                 />
               </div>
@@ -182,16 +185,16 @@ export function IssueDetailsDialog({
           ) : (
             <>
               <InfoRow
-                label='Assignee'
+                label={tc('label.assignee')}
                 value={
                   <Badge variant='outline' className='font-normal'>
                     {formData.assignee}
                   </Badge>
                 }
               />
-              <InfoRow label='Status' value={<IssueBadge state={formData.state} variant='subtle' />} />
+              <InfoRow label={tc('label.status')} value={<IssueBadge state={formData.state} variant='subtle' />} />
               <InfoRow
-                label='Reporter'
+                label={tc('label.reporter')}
                 value={
                   <UserAvatar
                     name={formData.reporter.name}
@@ -202,12 +205,12 @@ export function IssueDetailsDialog({
                   />
                 }
               />
-              <InfoRow label='Created' value={formatDate(formData.created)} />
-              <InfoRow label='Updated' value={formatDate(formData.updated)} />
+              <InfoRow label={tc('label.created')} value={formatDate(formData.created)} />
+              <InfoRow label={tc('label.updated')} value={formatDate(formData.updated)} />
 
               {formData.priority && (
                 <InfoRow
-                  label='Priority'
+                  label={tc('label.priority')}
                   value={
                     <Badge
                       variant='subtle'
@@ -223,7 +226,7 @@ export function IssueDetailsDialog({
 
               {formData.description && (
                 <div className='mt-4'>
-                  <h4 className='font-medium mb-2'>Description</h4>
+                  <h4 className='font-medium mb-2'>{tc('label.description')}</h4>
                   <div className='p-4 bg-gray-50 rounded-md'>{formData.description}</div>
                 </div>
               )}
@@ -232,12 +235,12 @@ export function IssueDetailsDialog({
         </div>
         <div className='flex justify-end gap-2'>
           <Button variant='outline' onClick={() => onOpenChange(false)}>
-            취소
+            {tc('button.cancel')}
           </Button>
           {isFormMode ? (
-            <Button onClick={handleSave}>{isCreateMode ? '생성' : '저장'}</Button>
+            <Button onClick={handleSave}>{isCreateMode ? tc('button.create') : tc('button.save')}</Button>
           ) : (
-            <Button onClick={handleEdit}>이슈 수정</Button>
+            <Button onClick={handleEdit}>{t('button.edit')}</Button>
           )}
         </div>
       </DialogContent>

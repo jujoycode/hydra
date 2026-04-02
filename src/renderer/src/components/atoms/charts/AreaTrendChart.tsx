@@ -11,6 +11,7 @@ interface AreaTrendChartProps {
   height?: number
   lines: Array<{
     dataKey: string
+    name?: string
     color: string
     gradientId: string
   }>
@@ -51,6 +52,7 @@ export const AreaTrendChart = ({ data, height = 200, lines }: AreaTrendChartProp
               key={line.dataKey}
               type='monotone'
               dataKey={line.dataKey}
+              name={line.name ?? line.dataKey}
               stroke={line.color}
               strokeWidth={2}
               fillOpacity={1}

@@ -1,0 +1,34 @@
+{
+  "title": "Projects",
+  "description": "Manage and create projects.",
+  "label": {
+    "name": "Project Name",
+    "key": "Project Key",
+    "description": "Description"
+  },
+  "placeholder": {
+    "name": "Enter new project name",
+    "key": "ex) PRJ, HYDRA",
+    "keyHelp": "A unique identifier for your project using 3-5 letters.",
+    "description": "Enter a brief description of the project",
+    "search": "Search project by name..."
+  },
+  "dialog": {
+    "createTitle": "Create New Project",
+    "createDescription": "Create a new project by providing the required information below."
+  },
+  "toast": {
+    "created": "Project created successfully",
+    "createFailed": "Failed to create project"
+  },
+  "validation": {
+    "enterName": "Please enter a project name",
+    "enterKey": "Please enter a project key",
+    "invalidKey": "Please enter a valid project key"
+  },
+  "empty": {
+    "noProjects": "No projects",
+    "noProjectsDescription": "Create a new project to get started"
+  },
+  "loading": "Loading projects..."
+}

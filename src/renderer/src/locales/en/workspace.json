@@ -1,0 +1,35 @@
+{
+  "title": "Hydra",
+  "description": "Select or create a workspace to get started.",
+  "label": {
+    "name": "Name",
+    "host": "Host",
+    "port": "Port",
+    "database": "Database",
+    "username": "Username",
+    "password": "Database Password"
+  },
+  "placeholder": {
+    "name": "My Workspace",
+    "host": "localhost",
+    "port": "5432",
+    "database": "hydra",
+    "username": "postgres",
+    "password": "Database password",
+    "inviteCode": "Paste invite code here"
+  },
+  "button": {
+    "addWorkspace": "Add Workspace",
+    "useInviteCode": "Use Invite Code"
+  },
+  "dialog": {
+    "newTitle": "New Workspace",
+    "inviteTitle": "Enter Invite Code"
+  },
+  "toast": {
+    "added": "Workspace added",
+    "connected": "Connected to workspace",
+    "removed": "Workspace removed",
+    "inviteApplied": "Invite code applied. Complete the connection details."
+  }
+}

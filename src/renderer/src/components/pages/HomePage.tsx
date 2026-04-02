@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { TrendDataPoint } from '@/atoms/charts/AreaTrendChart'
 import type { StatusData } from '@/atoms/charts/StatusDonutChart'
 import { useAuth } from '@/hooks/use-auth'
@@ -15,6 +16,7 @@ const STATUS_COLORS = {
 
 export default function HomePage() {
   const { user } = useAuth()
+  const { t } = useTranslation('dashboard')
   const [issueStats, setIssueStats] = useState({
     total: 0,
     inProgress: 0,
@@ -55,10 +57,10 @@ export default function HomePage() {
       })
 
       setStatusData([
-        { name: '진행 중', value: statusCount.in_progress, color: STATUS_COLORS.in_progress },
-        { name: '완료', value: statusCount.done, color: STATUS_COLORS.done },
-        { name: '차단됨', value: statusCount.blocked, color: STATUS_COLORS.blocked },
-        { name: '검토 중', value: statusCount.review, color: STATUS_COLORS.review }
+        { name: t('status.inProgress'), value: statusCount.in_progress, color: STATUS_COLORS.in_progress },
+        { name: t('status.done'), value: statusCount.done, color: STATUS_COLORS.done },
+        { name: t('status.blocked'), value: statusCount.blocked, color: STATUS_COLORS.blocked },
+        { name: t('status.review'), value: statusCount.review, color: STATUS_COLORS.review }
       ])
 
       // 추이 데이터 (최근 6개월)
@@ -80,7 +82,7 @@ export default function HomePage() {
           return issue.issue_status === 'done' && t >= monthStart && t <= monthEnd
         }).length
 
-        months.push({ name: monthName, 생성: created, 해결: resolved })
+        months.push({ name: monthName, created, resolved })
       }
       setTrendData(months)
     }

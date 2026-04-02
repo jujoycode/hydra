@@ -1,5 +1,6 @@
 import { useParams } from '@tanstack/react-router'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { IssueDetailsDialog } from '@/organisms/dialogs/IssueDetailsDialog'
 import { IssueTable } from '@/organisms/issues/IssueTable'
 import type { Issue } from '@/types/issue'
@@ -7,6 +8,7 @@ import type { Issue } from '@/types/issue'
 import DUMMY_ISSUES from '../../../../../dummy/issues.json'
 
 export default function IssuePage() {
+  const { t } = useTranslation('issue')
   const { projectId } = useParams({ strict: false })
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null)
   const [issues, _] = useState<Issue[]>(DUMMY_ISSUES as unknown as Issue[])
@@ -16,7 +18,7 @@ export default function IssuePage() {
       <div className='flex justify-between items-center mb-6'>
         <div className='flex flex-col gap-1'>
           <p className='text-sm text-muted-foreground mt-2'>projects / {projectId}</p>
-          <h1 className='text-2xl font-bold'>Issues</h1>
+          <h1 className='text-2xl font-bold'>{t('title')}</h1>
         </div>
       </div>
 

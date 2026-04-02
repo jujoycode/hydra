@@ -1,0 +1,34 @@
+{
+  "title": "프로젝트",
+  "description": "프로젝트를 관리하고 생성하세요.",
+  "label": {
+    "name": "프로젝트 이름",
+    "key": "프로젝트 키",
+    "description": "설명"
+  },
+  "placeholder": {
+    "name": "새 프로젝트 이름을 입력하세요",
+    "key": "예) PRJ, HYDRA",
+    "keyHelp": "3~5자의 고유한 프로젝트 식별자입니다.",
+    "description": "프로젝트에 대한 간략한 설명을 입력하세요",
+    "search": "프로젝트 이름으로 검색..."
+  },
+  "dialog": {
+    "createTitle": "새 프로젝트 생성",
+    "createDescription": "아래 정보를 입력하여 새 프로젝트를 생성하세요."
+  },
+  "toast": {
+    "created": "프로젝트가 성공적으로 생성되었습니다",
+    "createFailed": "프로젝트 생성에 실패했습니다"
+  },
+  "validation": {
+    "enterName": "프로젝트 이름을 입력해주세요",
+    "enterKey": "프로젝트 키를 입력해주세요",
+    "invalidKey": "유효한 프로젝트 키를 입력해주세요"
+  },
+  "empty": {
+    "noProjects": "프로젝트 없음",
+    "noProjectsDescription": "새 프로젝트를 생성하여 시작하세요"
+  },
+  "loading": "프로젝트 로딩 중..."
+}

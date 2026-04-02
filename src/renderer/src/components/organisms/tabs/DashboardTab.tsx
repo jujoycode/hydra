@@ -1,5 +1,6 @@
 import { AlertCircle, CheckCircle2, Clock, ListTodo, Search } from 'lucide-react'
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { AreaTrendChart, type TrendDataPoint } from '@/atoms/charts/AreaTrendChart'
 import { type StatusData, StatusDonutChart } from '@/atoms/charts/StatusDonutChart'
 import { ChartCard } from '@/molecules/cards/ChartCard'
@@ -18,12 +19,14 @@ interface DashboardTabProps {
 }
 
 export const DashboardTab = ({ issueStats, statusData, trendData }: DashboardTabProps) => {
+  const { t } = useTranslation('dashboard')
+
   const trendLines = useMemo(
     () => [
-      { dataKey: '생성', color: '#3B82F6', gradientId: 'colorCreated' },
-      { dataKey: '해결', color: '#10B981', gradientId: 'colorResolved' }
+      { dataKey: 'created', name: t('chart.created'), color: '#3B82F6', gradientId: 'colorCreated' },
+      { dataKey: 'resolved', name: t('chart.resolved'), color: '#10B981', gradientId: 'colorResolved' }
     ],
-    []
+    [t]
   )
 
   const completionRate = issueStats.total > 0 ? Math.round((issueStats.done / issueStats.total) * 100) : 0
@@ -33,26 +36,26 @@ export const DashboardTab = ({ issueStats, statusData, trendData }: DashboardTab
       {/* 통계 카드 */}
       <div className='grid grid-cols-4 gap-3 mb-6'>
         <StatCard
-          title='전체 이슈'
+          title={t('stats.totalIssues')}
           value={issueStats.total}
           icon={<ListTodo className='size-4' />}
           iconColor='text-blue-600 dark:text-blue-400'
         />
         <StatCard
-          title='진행 중'
+          title={t('stats.inProgress')}
           value={issueStats.inProgress}
           icon={<Clock className='size-4' />}
           iconColor='text-amber-600 dark:text-amber-400'
         />
         <StatCard
-          title='완료'
+          title={t('stats.completed')}
           value={issueStats.done}
           icon={<CheckCircle2 className='size-4' />}
           iconColor='text-emerald-600 dark:text-emerald-400'
           description={`${completionRate}%`}
         />
         <StatCard
-          title='검토 중'
+          title={t('stats.underReview')}
           value={issueStats.review}
           icon={<Search className='size-4' />}
           iconColor='text-violet-600 dark:text-violet-400'
@@ -62,7 +65,7 @@ export const DashboardTab = ({ issueStats, statusData, trendData }: DashboardTab
       {/* 차트 영역 */}
       <div className='grid grid-cols-5 gap-4'>
         <div className='col-span-2'>
-          <ChartCard title='이슈 상태 분포'>
+          <ChartCard title={t('chart.statusDistribution')}>
             <StatusDonutChart data={statusData} height={220} />
             <div className='flex flex-wrap justify-center gap-3 mt-1'>
               {statusData.map((entry) => (
@@ -76,7 +79,7 @@ export const DashboardTab = ({ issueStats, statusData, trendData }: DashboardTab
           </ChartCard>
         </div>
         <div className='col-span-3'>
-          <ChartCard title='이슈 추이' description='최근 6개월'>
+          <ChartCard title={t('chart.trend')} description={t('chart.trendPeriod')}>
             <AreaTrendChart data={trendData} lines={trendLines} height={250} />
           </ChartCard>
         </div>
@@ -86,9 +89,7 @@ export const DashboardTab = ({ issueStats, statusData, trendData }: DashboardTab
       {issueStats.blocked > 0 && (
         <div className='mt-4 flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3'>
           <AlertCircle className='size-4 text-destructive' />
-          <span className='text-sm'>
-            차단된 이슈가 <span className='font-semibold'>{issueStats.blocked}건</span> 있습니다
-          </span>
+          <span className='text-sm'>{t('alert.blockedIssues', { count: issueStats.blocked })}</span>
         </div>
       )}
     </div>

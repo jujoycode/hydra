@@ -108,7 +108,7 @@ export const taskDetailRoute = createRoute({
 export const projectSettingsRoute = createRoute({
   getParentRoute: () => projectLayoutRoute,
   path: '/settings',
-  component: () => <TempComponent name='설정' />
+  component: lazyRoute(() => import('@/components/pages/ProjectSettingsPage'))
 })
 
 export const projectSettingsDetailRoute = createRoute({

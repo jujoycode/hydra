@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client'
 import { router } from '@/routers'
 import { useAuthStore } from '@/stores/auth'
 import './index.css'
+import './locales'
 
 function InnerApp() {
   const { user, isConnected, disconnect } = useAuthStore()

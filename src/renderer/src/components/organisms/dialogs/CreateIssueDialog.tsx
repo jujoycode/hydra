@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronsUp, ChevronUp, CircleDot, TriangleAlert, User2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/atoms/Button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/atoms/Dialog'
@@ -19,6 +20,8 @@ interface CreateIssueDialogProps {
 }
 
 export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDialogProps) {
+  const { t } = useTranslation('issue')
+  const { t: tc } = useTranslation('common')
   // 프로젝트 상태 관리
   const { projects } = useProject()
 
@@ -63,12 +66,12 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
   // 이슈 생성 제출 처리
   const handleSubmit = async () => {
     if (!selectedProject) {
-      toast.error('프로젝트를 선택해주세요')
+      toast.error(t('validation.selectProject'))
       return
     }
 
     if (!title.trim()) {
-      toast.error('이슈 제목을 입력해주세요')
+      toast.error(t('validation.enterTitle'))
       return
     }
 
@@ -93,15 +96,15 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
       })
 
       if (result.error) {
-        toast.error(`이슈 생성 실패: ${result.error.message}`)
+        toast.error(t('toast.createFailed', { error: result.error.message }))
         return
       }
 
-      toast.success('이슈가 성공적으로 생성되었습니다')
+      toast.success(t('toast.created'))
       onOpenChange(false)
     } catch (error) {
-      console.error('이슈 생성 실패:', error)
-      toast.error('이슈 생성에 실패했습니다')
+      console.error('Issue creation failed:', error)
+      toast.error(t('toast.createError'))
     } finally {
       setIsSubmitting(false)
     }
@@ -111,20 +114,20 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='sm:max-w-2xl'>
         <DialogHeader>
-          <DialogTitle>새 이슈 생성</DialogTitle>
-          <DialogDescription>이슈의 세부 정보를 입력하여 새 이슈를 생성합니다.</DialogDescription>
+          <DialogTitle>{t('dialog.createTitle')}</DialogTitle>
+          <DialogDescription>{t('dialog.createDescription')}</DialogDescription>
         </DialogHeader>
 
         <div className='grid gap-4 py-2'>
           {/* 프로젝트 선택 */}
           <div className='grid grid-cols-4 items-center gap-4'>
             <Label htmlFor='project' className='text-right'>
-              프로젝트
+              {t('label.project')}
             </Label>
             <div className='col-span-3'>
               <Select value={selectedProject} onValueChange={setSelectedProject}>
                 <SelectTrigger className='w-full'>
-                  <SelectValue placeholder='프로젝트 선택' />
+                  <SelectValue placeholder={t('placeholder.selectProject')} />
                 </SelectTrigger>
                 <SelectContent>
                   {projects?.map((project: Project) => (
@@ -140,24 +143,24 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
           {/* 이슈 타입 선택 */}
           <div className='grid grid-cols-4 items-center gap-4'>
             <Label htmlFor='type' className='text-right'>
-              이슈 타입
+              {t('label.type')}
             </Label>
             <div className='col-span-3'>
               <Select value={issueType} onValueChange={(value: 'bug' | 'feature') => setIssueType(value)}>
                 <SelectTrigger className='w-full'>
-                  <SelectValue placeholder='이슈 타입 선택' />
+                  <SelectValue placeholder={t('placeholder.selectType')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='bug'>
                     <div className='flex items-center'>
                       <TriangleAlert size={16} className='mr-2 text-red-500' />
-                      버그
+                      {tc('type.bug')}
                     </div>
                   </SelectItem>
                   <SelectItem value='feature'>
                     <div className='flex items-center'>
                       <CircleDot size={16} className='mr-2 text-green-500' />
-                      기능
+                      {tc('type.feature')}
                     </div>
                   </SelectItem>
                 </SelectContent>
@@ -168,12 +171,12 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
           {/* 담당자 선택 */}
           <div className='grid grid-cols-4 items-center gap-4'>
             <Label htmlFor='assignee' className='text-right'>
-              담당자
+              {t('label.assignee')}
             </Label>
             <div className='col-span-3'>
               <Select value={assignee} onValueChange={setAssignee}>
                 <SelectTrigger className='w-full'>
-                  <SelectValue placeholder='담당자 선택' />
+                  <SelectValue placeholder={t('placeholder.selectAssignee')} />
                 </SelectTrigger>
                 <SelectContent>
                   {members.map((member) => (
@@ -192,18 +195,18 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
           {/* 우선순위 선택 */}
           <div className='grid grid-cols-4 items-center gap-4'>
             <Label htmlFor='priority' className='text-right'>
-              우선순위
+              {t('label.priority')}
             </Label>
             <div className='col-span-3'>
               <Select value={priority} onValueChange={(value: IssuePriority) => setPriority(value)}>
                 <SelectTrigger className='w-full'>
-                  <SelectValue placeholder='우선순위 선택' />
+                  <SelectValue placeholder={t('placeholder.selectPriority')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='high'>
                     <div className='flex items-center'>
                       <ChevronsUp size={16} className='mr-2 text-red-500' />
-                      높음
+                      {tc('priority.high')}
                     </div>
                   </SelectItem>
                   <SelectItem value='medium'>
@@ -212,13 +215,13 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
                         <ChevronUp size={16} className='text-yellow-500 -mb-[10px]' />
                         <ChevronDown size={16} className='text-yellow-500' />
                       </div>
-                      중간
+                      {tc('priority.medium')}
                     </div>
                   </SelectItem>
                   <SelectItem value='low'>
                     <div className='flex items-center'>
                       <ChevronDown size={16} className='mr-2 text-green-500' />
-                      낮음
+                      {tc('priority.low')}
                     </div>
                   </SelectItem>
                 </SelectContent>
@@ -229,14 +232,14 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
           {/* 이슈 제목 */}
           <div className='grid grid-cols-4 items-center gap-4'>
             <Label htmlFor='title' className='text-right'>
-              제목
+              {t('label.title')}
             </Label>
             <div className='col-span-3'>
               <Input
                 id='title'
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder='이슈 제목을 입력하세요'
+                placeholder={t('placeholder.title')}
                 className='w-full'
               />
             </div>
@@ -245,29 +248,27 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
           {/* 내용 텍스트 에어리어 */}
           <div className='grid grid-cols-4 gap-4'>
             <Label htmlFor='description' className='text-right pt-2'>
-              내용
+              {t('label.description')}
             </Label>
             <div className='col-span-3'>
               <Textarea
                 id='description'
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder='이슈에 대한 설명을 작성해주세요...'
+                placeholder={t('placeholder.description')}
                 className='min-h-[240px] resize-y'
               />
-              <p className='text-xs text-muted-foreground mt-1'>
-                * EditorJS 기능은 업데이트 예정입니다. 현재는 기본 텍스트 편집만 가능합니다.
-              </p>
+              <p className='text-xs text-muted-foreground mt-1'>{t('help.editorNote')}</p>
             </div>
           </div>
         </div>
 
         <DialogFooter>
           <Button variant='outline' onClick={() => onOpenChange(false)}>
-            취소
+            {tc('button.cancel')}
           </Button>
           <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? '생성 중...' : '이슈 생성'}
+            {isSubmitting ? tc('button.connecting') : t('button.create')}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,0 +1,18 @@
+{
+  "home": "홈",
+  "myIssues": "내 이슈",
+  "notifications": "알림",
+  "members": "멤버",
+  "settings": "설정",
+  "projects": "프로젝트",
+  "addProject": "프로젝트 추가",
+  "noProjects": "프로젝트 없음",
+  "lightMode": "라이트 모드",
+  "darkMode": "다크 모드",
+  "logout": "로그아웃",
+  "leaveWorkspace": "워크스페이스 나가기",
+  "user": "사용자",
+  "issues": "이슈",
+  "tasks": "태스크",
+  "account": "계정"
+}

@@ -1,0 +1,53 @@
+{
+  "title": "Members",
+  "description": "Manage workspace members and invite new users.",
+  "button": {
+    "generateInvite": "Generate Invite",
+    "addMember": "Add Member"
+  },
+  "empty": {
+    "noMembers": "No members found",
+    "noMembersDescription": "Add a member to get started"
+  },
+  "label": {
+    "unknown": "Unknown",
+    "name": "Name",
+    "email": "Email",
+    "dbRole": "Database Role",
+    "password": "Database Password",
+    "role": "Role",
+    "inviteCode": "Invite Code",
+    "expiration": "Expiration"
+  },
+  "placeholder": {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "dbRole": "hydra_johndoe",
+    "password": "Enter a secure password"
+  },
+  "help": {
+    "dbRole": "Auto-generated from name. This will be the PostgreSQL role name."
+  },
+  "dialog": {
+    "addTitle": "Add Member",
+    "addDescription": "Create a new member with a PostgreSQL database role.",
+    "removeTitle": "Remove Member",
+    "removeDescription": "Are you sure you want to remove {{name}}? This will also remove the associated PostgreSQL role. This action cannot be undone.",
+    "inviteTitle": "Generate Invite Code",
+    "inviteDescription": "Create an invite code that others can use to connect to this workspace."
+  },
+  "toast": {
+    "added": "Member added successfully",
+    "addFailed": "Failed to add member",
+    "removed": "Member removed successfully",
+    "removeFailed": "Failed to remove member",
+    "inviteCopied": "Invite code copied to clipboard",
+    "noWorkspace": "No workspace connected",
+    "generateFailed": "Failed to generate invite code"
+  },
+  "validation": {
+    "enterName": "Please enter a user name",
+    "enterEmail": "Please enter an email",
+    "enterPassword": "Please enter a database password"
+  }
+}

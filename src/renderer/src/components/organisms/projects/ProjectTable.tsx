@@ -14,6 +14,7 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Project } from '@/interface/CoreInterface'
 import { ProjectColumns } from '@/molecules/projects/ProjectColumns'
 import { TableEmpty } from '@/molecules/tables/TableEmpty'
@@ -26,6 +27,7 @@ interface ProjectTableProps {
 }
 
 export function ProjectTable({ projects, onSelectProject, isLoading = false }: ProjectTableProps) {
+  const { t } = useTranslation('project')
   // 상태 초기화
   const [sorting, setSorting] = useState<SortingState>([{ id: 'project_name', desc: false }])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -78,12 +80,12 @@ export function ProjectTable({ projects, onSelectProject, isLoading = false }: P
         columns={ProjectColumns as ColumnDef<Project>[]}
         onRowClick={handleRowClick}
         isLoading={isLoading}
-        loadingMessage='Loading projects...'
-        emptyComponent={<TableEmpty message='No projects' description='Create a new project to get started' />}
+        loadingMessage={t('loading')}
+        emptyComponent={<TableEmpty message={t('empty.noProjects')} description={t('empty.noProjectsDescription')} />}
         // 검색 및 필터링 설정
         search={{
           searchColumn: 'project_name',
-          placeholder: 'Search project by name...',
+          placeholder: t('placeholder.search'),
           searchWidth: 'w-64 md:w-80'
         }}
         // 페이지네이션 설정

@@ -1,0 +1,35 @@
+{
+  "title": "Hydra",
+  "description": "워크스페이스를 선택하거나 생성하여 시작하세요.",
+  "label": {
+    "name": "이름",
+    "host": "호스트",
+    "port": "포트",
+    "database": "데이터베이스",
+    "username": "사용자 이름",
+    "password": "데이터베이스 비밀번호"
+  },
+  "placeholder": {
+    "name": "내 워크스페이스",
+    "host": "localhost",
+    "port": "5432",
+    "database": "hydra",
+    "username": "postgres",
+    "password": "데이터베이스 비밀번호",
+    "inviteCode": "초대 코드를 붙여넣으세요"
+  },
+  "button": {
+    "addWorkspace": "워크스페이스 추가",
+    "useInviteCode": "초대 코드 사용"
+  },
+  "dialog": {
+    "newTitle": "새 워크스페이스",
+    "inviteTitle": "초대 코드 입력"
+  },
+  "toast": {
+    "added": "워크스페이스가 추가되었습니다",
+    "connected": "워크스페이스에 연결되었습니다",
+    "removed": "워크스페이스가 삭제되었습니다",
+    "inviteApplied": "초대 코드가 적용되었습니다. 연결 정보를 완성해주세요."
+  }
+}

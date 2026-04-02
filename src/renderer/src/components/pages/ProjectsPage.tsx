@@ -1,5 +1,6 @@
 import { Folders } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/hooks/use-auth'
 import { useProject } from '@/hooks/use-project'
 import type { Project } from '@/interface/CoreInterface'
@@ -10,6 +11,7 @@ import { ProjectTable } from '@/organisms/projects/ProjectTable'
 // const MAX_PROJECTS_PER_USER = 3
 
 export default function ProjectsPage() {
+  const { t } = useTranslation('project')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [, setSelectedProject] = useState<Project | null>(null)
   const { user } = useAuth()
@@ -30,9 +32,9 @@ export default function ProjectsPage() {
         <div>
           <h1 className='text-xl font-semibold flex items-center gap-2'>
             <Folders />
-            Projects
+            {t('title')}
           </h1>
-          <p className='text-sm text-muted-foreground mt-1'>Manage and create projects.</p>
+          <p className='text-sm text-muted-foreground mt-1'>{t('description')}</p>
         </div>
       </div>
 

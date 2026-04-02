@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router'
 import { Plug, Plus, Ticket, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/components/atoms/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/atoms/Card'
@@ -14,6 +15,8 @@ import { useWorkspaceStore } from '@/stores/workspace'
 import type { WorkspaceConfig } from '@/types/auth'
 
 export default function WorkspacePage() {
+  const { t } = useTranslation('workspace')
+  const { t: tc } = useTranslation('common')
   const navigate = useNavigate()
   const { setUser, setConnected, setCurrentWorkspace } = useAuthStore()
   const { workspaces, addWorkspace, removeWorkspace } = useWorkspaceStore()
@@ -53,7 +56,7 @@ export default function WorkspacePage() {
       addWorkspace(result.data)
       setShowAddForm(false)
       setNewWs({ name: '', host: 'localhost', port: '5432', dbName: '', username: 'postgres', sslCertPath: '' })
-      toast.success('Workspace added')
+      toast.success(t('toast.added'))
     }
   }
 
@@ -72,7 +75,7 @@ export default function WorkspacePage() {
         setConnected(true)
         setUser(result.data.user)
         setCurrentWorkspace(ws)
-        toast.success('Connected to workspace')
+        toast.success(t('toast.connected'))
         navigate({ to: '/' })
       }
     } finally {
@@ -96,22 +99,22 @@ export default function WorkspacePage() {
       setShowInviteForm(false)
       setShowAddForm(true)
       setInviteCode('')
-      toast.success('Invite code applied. Complete the connection details.')
+      toast.success(t('toast.inviteApplied'))
     }
   }
 
   const handleDelete = async (id: string) => {
     await deleteWorkspace({ workspaceId: id })
     removeWorkspace(id)
-    toast.success('Workspace removed')
+    toast.success(t('toast.removed'))
   }
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-background'>
       <div className='w-full max-w-md space-y-6 p-6'>
         <div className='text-center space-y-2'>
-          <h1 className='text-3xl font-bold'>Hydra</h1>
-          <p className='text-muted-foreground'>Select or create a workspace to get started</p>
+          <h1 className='text-3xl font-bold'>{t('title')}</h1>
+          <p className='text-muted-foreground'>{t('description')}</p>
         </div>
 
         {/* Workspace List */}
@@ -134,19 +137,19 @@ export default function WorkspacePage() {
                   <CardContent className='p-4 pt-0 space-y-2'>
                     <Input
                       type='password'
-                      placeholder='Database password'
+                      placeholder={t('placeholder.password')}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
                     <Button className='w-full' size='sm' disabled={connecting} onClick={() => handleConnect(ws)}>
                       <Plug className='h-4 w-4 mr-2' />
-                      {connecting ? 'Connecting...' : 'Connect'}
+                      {connecting ? tc('button.connecting') : tc('button.connect')}
                     </Button>
                   </CardContent>
                 ) : (
                   <CardContent className='p-4 pt-0'>
                     <Button variant='outline' className='w-full' size='sm' onClick={() => setSelectedWs(ws)}>
-                      Connect
+                      {tc('button.connect')}
                     </Button>
                   </CardContent>
                 )}
@@ -161,57 +164,57 @@ export default function WorkspacePage() {
         {showAddForm ? (
           <Card>
             <CardHeader className='p-4 pb-2'>
-              <CardTitle className='text-sm'>New Workspace</CardTitle>
+              <CardTitle className='text-sm'>{t('dialog.newTitle')}</CardTitle>
             </CardHeader>
             <CardContent className='p-4 pt-0 space-y-3'>
               <div className='space-y-1'>
-                <Label className='text-xs'>Name</Label>
+                <Label className='text-xs'>{t('label.name')}</Label>
                 <Input
-                  placeholder='My Workspace'
+                  placeholder={t('placeholder.name')}
                   value={newWs.name}
                   onChange={(e) => setNewWs({ ...newWs, name: e.target.value })}
                 />
               </div>
               <div className='grid grid-cols-3 gap-2'>
                 <div className='col-span-2 space-y-1'>
-                  <Label className='text-xs'>Host</Label>
+                  <Label className='text-xs'>{t('label.host')}</Label>
                   <Input
-                    placeholder='localhost'
+                    placeholder={t('placeholder.host')}
                     value={newWs.host}
                     onChange={(e) => setNewWs({ ...newWs, host: e.target.value })}
                   />
                 </div>
                 <div className='space-y-1'>
-                  <Label className='text-xs'>Port</Label>
+                  <Label className='text-xs'>{t('label.port')}</Label>
                   <Input
-                    placeholder='5432'
+                    placeholder={t('placeholder.port')}
                     value={newWs.port}
                     onChange={(e) => setNewWs({ ...newWs, port: e.target.value })}
                   />
                 </div>
               </div>
               <div className='space-y-1'>
-                <Label className='text-xs'>Database</Label>
+                <Label className='text-xs'>{t('label.database')}</Label>
                 <Input
-                  placeholder='hydra'
+                  placeholder={t('placeholder.database')}
                   value={newWs.dbName}
                   onChange={(e) => setNewWs({ ...newWs, dbName: e.target.value })}
                 />
               </div>
               <div className='space-y-1'>
-                <Label className='text-xs'>Username</Label>
+                <Label className='text-xs'>{t('label.username')}</Label>
                 <Input
-                  placeholder='postgres'
+                  placeholder={t('placeholder.username')}
                   value={newWs.username}
                   onChange={(e) => setNewWs({ ...newWs, username: e.target.value })}
                 />
               </div>
               <div className='flex gap-2'>
                 <Button variant='outline' className='flex-1' onClick={() => setShowAddForm(false)}>
-                  Cancel
+                  {tc('button.cancel')}
                 </Button>
                 <Button className='flex-1' onClick={handleAddWorkspace}>
-                  Save
+                  {tc('button.save')}
                 </Button>
               </div>
             </CardContent>
@@ -219,20 +222,20 @@ export default function WorkspacePage() {
         ) : showInviteForm ? (
           <Card>
             <CardHeader className='p-4 pb-2'>
-              <CardTitle className='text-sm'>Enter Invite Code</CardTitle>
+              <CardTitle className='text-sm'>{t('dialog.inviteTitle')}</CardTitle>
             </CardHeader>
             <CardContent className='p-4 pt-0 space-y-3'>
               <Input
-                placeholder='Paste invite code here'
+                placeholder={t('placeholder.inviteCode')}
                 value={inviteCode}
                 onChange={(e) => setInviteCode(e.target.value)}
               />
               <div className='flex gap-2'>
                 <Button variant='outline' className='flex-1' onClick={() => setShowInviteForm(false)}>
-                  Cancel
+                  {tc('button.cancel')}
                 </Button>
                 <Button className='flex-1' onClick={handleApplyInvite}>
-                  Apply
+                  {tc('button.apply')}
                 </Button>
               </div>
             </CardContent>
@@ -241,11 +244,11 @@ export default function WorkspacePage() {
           <div className='space-y-2'>
             <Button variant='outline' className='w-full' onClick={() => setShowAddForm(true)}>
               <Plus className='h-4 w-4 mr-2' />
-              Add Workspace
+              {t('button.addWorkspace')}
             </Button>
             <Button variant='ghost' className='w-full' onClick={() => setShowInviteForm(true)}>
               <Ticket className='h-4 w-4 mr-2' />
-              Use Invite Code
+              {t('button.useInviteCode')}
             </Button>
           </div>
         )}

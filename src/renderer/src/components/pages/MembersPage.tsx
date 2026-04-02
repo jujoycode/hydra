@@ -1,5 +1,6 @@
 import { Copy, LinkIcon, Loader2, Trash2, UserPlus } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Badge } from '@/atoms/Badge'
 import { Button } from '@/atoms/Button'
@@ -31,6 +32,8 @@ function formatDate(date: Date | string | null): string {
 }
 
 export default function MembersPage() {
+  const { t } = useTranslation('member')
+  const { t: tc } = useTranslation('common')
   const [members, setMembers] = useState<UserRecord[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isAddOpen, setIsAddOpen] = useState(false)
@@ -79,15 +82,15 @@ export default function MembersPage() {
 
   const handleAddMember = async () => {
     if (!userName.trim()) {
-      toast.error('Please enter a user name')
+      toast.error(t('validation.enterName'))
       return
     }
     if (!userEmail.trim()) {
-      toast.error('Please enter an email')
+      toast.error(t('validation.enterEmail'))
       return
     }
     if (!dbPassword.trim()) {
-      toast.error('Please enter a database password')
+      toast.error(t('validation.enterPassword'))
       return
     }
 
@@ -102,11 +105,11 @@ export default function MembersPage() {
     setIsSubmitting(false)
 
     if (result.error) {
-      toast.error(result.error.message || 'Failed to add member')
+      toast.error(result.error.message || t('toast.addFailed'))
       return
     }
 
-    toast.success('Member added successfully')
+    toast.success(t('toast.added'))
     setIsAddOpen(false)
     resetAddForm()
     loadMembers()
@@ -128,11 +131,11 @@ export default function MembersPage() {
     setIsSubmitting(false)
 
     if (result.error) {
-      toast.error(result.error.message || 'Failed to remove member')
+      toast.error(result.error.message || t('toast.removeFailed'))
       return
     }
 
-    toast.success('Member removed successfully')
+    toast.success(t('toast.removed'))
     setIsDeleteOpen(false)
     setDeleteTarget(null)
     loadMembers()
@@ -140,7 +143,7 @@ export default function MembersPage() {
 
   const handleGenerateInvite = async () => {
     if (!currentWorkspace) {
-      toast.error('No workspace connected')
+      toast.error(t('toast.noWorkspace'))
       return
     }
 
@@ -155,7 +158,7 @@ export default function MembersPage() {
     setIsSubmitting(false)
 
     if (result.error) {
-      toast.error(result.error.message || 'Failed to generate invite code')
+      toast.error(result.error.message || t('toast.generateFailed'))
       return
     }
 
@@ -166,7 +169,7 @@ export default function MembersPage() {
 
   const handleCopyInvite = async () => {
     await navigator.clipboard.writeText(inviteCode)
-    toast.success('Invite code copied to clipboard')
+    toast.success(t('toast.inviteCopied'))
   }
 
   const handleCloseInvite = () => {
@@ -179,17 +182,17 @@ export default function MembersPage() {
     <div className='p-6 h-full overflow-auto'>
       <div className='flex justify-between items-center mb-6'>
         <div>
-          <h1 className='text-2xl font-bold'>Members</h1>
-          <p className='text-sm text-muted-foreground mt-1'>Manage workspace members and invite new users</p>
+          <h1 className='text-2xl font-bold'>{t('title')}</h1>
+          <p className='text-sm text-muted-foreground mt-1'>{t('description')}</p>
         </div>
         <div className='flex gap-2'>
           <Button variant='outline' onClick={() => setIsInviteOpen(true)}>
             <LinkIcon className='size-4 mr-2' />
-            Generate Invite
+            {t('button.generateInvite')}
           </Button>
           <Button onClick={() => setIsAddOpen(true)}>
             <UserPlus className='size-4 mr-2' />
-            Add Member
+            {t('button.addMember')}
           </Button>
         </div>
       </div>
@@ -201,8 +204,8 @@ export default function MembersPage() {
         </div>
       ) : members.length === 0 ? (
         <div className='flex flex-col items-center justify-center py-12 text-muted-foreground'>
-          <p className='text-lg font-medium'>No members found</p>
-          <p className='text-sm mt-1'>Add a member to get started</p>
+          <p className='text-lg font-medium'>{t('empty.noMembers')}</p>
+          <p className='text-sm mt-1'>{t('empty.noMembersDescription')}</p>
         </div>
       ) : (
         <div className='rounded-lg border'>
@@ -213,7 +216,7 @@ export default function MembersPage() {
                   {(member.user_name || '?')[0].toUpperCase()}
                 </div>
                 <div>
-                  <p className='font-medium'>{member.user_name || 'Unknown'}</p>
+                  <p className='font-medium'>{member.user_name || t('label.unknown')}</p>
                   <p className='text-sm text-muted-foreground'>{member.user_email || '-'}</p>
                 </div>
               </div>
@@ -248,60 +251,58 @@ export default function MembersPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Member</DialogTitle>
-            <DialogDescription>Create a new member with a PostgreSQL database role.</DialogDescription>
+            <DialogTitle>{t('dialog.addTitle')}</DialogTitle>
+            <DialogDescription>{t('dialog.addDescription')}</DialogDescription>
           </DialogHeader>
           <div className='grid gap-4 py-4'>
             <div className='grid gap-2'>
-              <Label htmlFor='userName'>Name</Label>
+              <Label htmlFor='userName'>{t('label.name')}</Label>
               <Input
                 id='userName'
-                placeholder='John Doe'
+                placeholder={t('placeholder.name')}
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
               />
             </div>
             <div className='grid gap-2'>
-              <Label htmlFor='userEmail'>Email</Label>
+              <Label htmlFor='userEmail'>{t('label.email')}</Label>
               <Input
                 id='userEmail'
                 type='email'
-                placeholder='john@example.com'
+                placeholder={t('placeholder.email')}
                 value={userEmail}
                 onChange={(e) => setUserEmail(e.target.value)}
               />
             </div>
             <div className='grid gap-2'>
-              <Label htmlFor='dbRoleName'>Database Role</Label>
+              <Label htmlFor='dbRoleName'>{t('label.dbRole')}</Label>
               <Input
                 id='dbRoleName'
-                placeholder='hydra_johndoe'
+                placeholder={t('placeholder.dbRole')}
                 value={dbRoleName}
                 onChange={(e) => setDbRoleName(e.target.value)}
               />
-              <p className='text-xs text-muted-foreground'>
-                Auto-generated from name. This will be the PostgreSQL role name.
-              </p>
+              <p className='text-xs text-muted-foreground'>{t('help.dbRole')}</p>
             </div>
             <div className='grid gap-2'>
-              <Label htmlFor='dbPassword'>Database Password</Label>
+              <Label htmlFor='dbPassword'>{t('label.password')}</Label>
               <Input
                 id='dbPassword'
                 type='password'
-                placeholder='Enter a secure password'
+                placeholder={t('placeholder.password')}
                 value={dbPassword}
                 onChange={(e) => setDbPassword(e.target.value)}
               />
             </div>
             <div className='grid gap-2'>
-              <Label htmlFor='userRole'>Role</Label>
+              <Label htmlFor='userRole'>{t('label.role')}</Label>
               <Select value={userRole} onValueChange={(v) => setUserRole(v as 'admin' | 'member')}>
                 <SelectTrigger className='w-full'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='member'>Member</SelectItem>
-                  <SelectItem value='admin'>Admin</SelectItem>
+                  <SelectItem value='member'>{tc('role.member')}</SelectItem>
+                  <SelectItem value='admin'>{tc('role.admin')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -314,11 +315,11 @@ export default function MembersPage() {
                 resetAddForm()
               }}
             >
-              Cancel
+              {tc('button.cancel')}
             </Button>
             <Button onClick={handleAddMember} disabled={isSubmitting}>
               {isSubmitting && <Loader2 className='size-4 mr-2 animate-spin' />}
-              Add Member
+              {t('button.addMember')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -328,20 +329,18 @@ export default function MembersPage() {
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Remove Member</DialogTitle>
+            <DialogTitle>{t('dialog.removeTitle')}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to remove{' '}
-              <span className='font-medium text-foreground'>{deleteTarget?.user_name || 'this member'}</span>? This will
-              also remove the associated PostgreSQL role. This action cannot be undone.
+              {t('dialog.removeDescription', { name: deleteTarget?.user_name || t('label.unknown') })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant='outline' onClick={() => setIsDeleteOpen(false)}>
-              Cancel
+              {tc('button.cancel')}
             </Button>
             <Button variant='destructive' onClick={handleDelete} disabled={isSubmitting}>
               {isSubmitting && <Loader2 className='size-4 mr-2 animate-spin' />}
-              Remove
+              {tc('button.remove')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -357,47 +356,45 @@ export default function MembersPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Generate Invite Code</DialogTitle>
-            <DialogDescription>
-              Create an invite code that others can use to connect to this workspace.
-            </DialogDescription>
+            <DialogTitle>{t('dialog.inviteTitle')}</DialogTitle>
+            <DialogDescription>{t('dialog.inviteDescription')}</DialogDescription>
           </DialogHeader>
           {inviteCode ? (
             <div className='grid gap-4 py-4'>
               <div className='grid gap-2'>
-                <Label>Invite Code</Label>
+                <Label>{t('label.inviteCode')}</Label>
                 <Textarea readOnly value={inviteCode} className='font-mono text-xs min-h-[80px]' />
               </div>
               <Button onClick={handleCopyInvite} className='w-full'>
                 <Copy className='size-4 mr-2' />
-                Copy to Clipboard
+                {tc('button.copy')}
               </Button>
             </div>
           ) : (
             <>
               <div className='grid gap-4 py-4'>
                 <div className='grid gap-2'>
-                  <Label>Expiration</Label>
+                  <Label>{t('label.expiration')}</Label>
                   <Select value={expiresInHours} onValueChange={setExpiresInHours}>
                     <SelectTrigger className='w-full'>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='24'>24 hours</SelectItem>
-                      <SelectItem value='48'>48 hours</SelectItem>
-                      <SelectItem value='72'>72 hours</SelectItem>
-                      <SelectItem value='168'>1 week</SelectItem>
+                      <SelectItem value='24'>{tc('expiration.24h')}</SelectItem>
+                      <SelectItem value='48'>{tc('expiration.48h')}</SelectItem>
+                      <SelectItem value='72'>{tc('expiration.72h')}</SelectItem>
+                      <SelectItem value='168'>{tc('expiration.1week')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
               <DialogFooter>
                 <Button variant='outline' onClick={handleCloseInvite}>
-                  Cancel
+                  {tc('button.cancel')}
                 </Button>
                 <Button onClick={handleGenerateInvite} disabled={isSubmitting}>
                   {isSubmitting && <Loader2 className='size-4 mr-2 animate-spin' />}
-                  Generate
+                  {tc('button.generate')}
                 </Button>
               </DialogFooter>
             </>

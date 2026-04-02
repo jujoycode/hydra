@@ -1,0 +1,26 @@
+{
+  "greeting": "Hello, {{name}}",
+  "description": "View your workspace status at a glance.",
+  "stats": {
+    "totalIssues": "Total Issues",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "underReview": "Under Review"
+  },
+  "chart": {
+    "statusDistribution": "Issue Status Distribution",
+    "trend": "Issue Trend",
+    "trendPeriod": "Last 6 months",
+    "created": "Created",
+    "resolved": "Resolved"
+  },
+  "status": {
+    "inProgress": "In Progress",
+    "done": "Done",
+    "blocked": "Blocked",
+    "review": "Review"
+  },
+  "alert": {
+    "blockedIssues": "There are <bold>{{count}}</bold> blocked issues"
+  }
+}
