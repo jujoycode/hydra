@@ -1,92 +1,200 @@
+import { Github, Send, Slack } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
+import { Button } from '@/atoms/Button'
+import { Input } from '@/atoms/Input'
+import { Label } from '@/atoms/Label'
+import { Checkbox } from '@/atoms/Checkbox'
+import type { Integration as IntegrationRecord } from '@/interface/CoreInterface'
+import { IpcChannel } from '@/interface/CoreInterface'
 import { SettingCard } from '@/molecules/cards/SettingCard'
 
 export default function IntegrationPage() {
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Slack state
+  const [slackUrl, setSlackUrl] = useState('')
+  const [slackEnabled, setSlackEnabled] = useState(false)
+  const [isSavingSlack, setIsSavingSlack] = useState(false)
+  const [isTesting, setIsTesting] = useState(false)
+
+  // GitHub state
+  const [githubToken, setGithubToken] = useState('')
+  const [githubRepo, setGithubRepo] = useState('')
+  const [githubEnabled, setGithubEnabled] = useState(false)
+  const [isSavingGithub, setIsSavingGithub] = useState(false)
+
+  useEffect(() => {
+    loadIntegrations()
+  }, [])
+
+  const loadIntegrations = async () => {
+    setIsLoading(true)
+    const result = await window.callApi(IpcChannel.INTEGRATION_LIST)
+    if (Array.isArray(result.data)) {
+      const records = result.data as IntegrationRecord[]
+      const slack = records.find((i) => i.integration_type === 'slack')
+      if (slack) {
+        try {
+          const config = JSON.parse(slack.integration_config)
+          setSlackUrl(config.webhookUrl || '')
+        } catch {}
+        setSlackEnabled(slack.integration_enabled ?? false)
+      }
+      const github = records.find((i) => i.integration_type === 'github')
+      if (github) {
+        try {
+          const config = JSON.parse(github.integration_config)
+          setGithubToken(config.token || '')
+          setGithubRepo(config.repo || '')
+        } catch {}
+        setGithubEnabled(github.integration_enabled ?? false)
+      }
+    }
+    setIsLoading(false)
+  }
+
+  const handleSaveSlack = async () => {
+    setIsSavingSlack(true)
+    const result = await window.callApi(IpcChannel.INTEGRATION_SAVE, {
+      integrationType: 'slack',
+      integrationConfig: JSON.stringify({ webhookUrl: slackUrl }),
+      integrationEnabled: slackEnabled
+    })
+    if (result.error) {
+      toast.error(`Failed: ${result.error.message}`)
+    } else {
+      toast.success('Slack settings saved')
+    }
+    setIsSavingSlack(false)
+  }
+
+  const handleTestSlack = async () => {
+    if (!slackUrl.trim()) {
+      toast.error('Enter a webhook URL first')
+      return
+    }
+    setIsTesting(true)
+    const result = await window.callApi(IpcChannel.INTEGRATION_TEST_SLACK, { webhookUrl: slackUrl })
+    if (result.data) {
+      toast.success('Test message sent to Slack!')
+    } else {
+      toast.error(result.error?.message || 'Failed to send test message')
+    }
+    setIsTesting(false)
+  }
+
+  const handleSaveGithub = async () => {
+    setIsSavingGithub(true)
+    const result = await window.callApi(IpcChannel.INTEGRATION_SAVE, {
+      integrationType: 'github',
+      integrationConfig: JSON.stringify({ token: githubToken, repo: githubRepo }),
+      integrationEnabled: githubEnabled
+    })
+    if (result.error) {
+      toast.error(`Failed: ${result.error.message}`)
+    } else {
+      toast.success('GitHub settings saved')
+    }
+    setIsSavingGithub(false)
+  }
+
+  if (isLoading) {
+    return (
+      <div className='w-full p-6'>
+        <p className='text-muted-foreground'>Loading...</p>
+      </div>
+    )
+  }
+
   return (
-    <div className='w-full'>
-      <SettingCard title='Service Integration'>
-        <div className='grid gap-4'>
-          <div className='border rounded-lg p-5 bg-muted/30'>
-            <div className='flex flex-col items-center justify-center text-center py-6'>
-              <div className='bg-primary/10 p-4 rounded-full mb-4'>
-                <svg
-                  width='24'
-                  height='24'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='1.5'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  className='text-primary'
-                >
-                  <circle cx='12' cy='12' r='10' />
-                  <path d='M12 8v8' />
-                  <path d='M8 12h8' />
-                </svg>
-              </div>
-              <h3 className='text-base font-medium mb-2'>Service Integration Feature is under development</h3>
-              <p className='text-sm text-muted-foreground max-w-md'>
-                No available integration services. <br />
-                More external service integration features will be added soon.
-              </p>
+    <div className='w-full space-y-6'>
+      {/* Slack */}
+      <SettingCard
+        title='Slack Integration'
+        description='Send notifications to a Slack channel via incoming webhook'
+      >
+        <div className='space-y-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-2'>
+              <Slack className='size-5 text-purple-600' />
+              <span className='font-medium'>Slack</span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <span className='text-xs text-muted-foreground'>{slackEnabled ? 'Enabled' : 'Disabled'}</span>
+              <Checkbox checked={slackEnabled} onCheckedChange={(v) => setSlackEnabled(v === true)} />
             </div>
           </div>
 
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            <div className='border rounded-lg p-4 opacity-60 cursor-not-allowed'>
-              <div className='flex items-center gap-3'>
-                <div className='bg-blue-100 dark:bg-blue-900/30 p-2 rounded-md'>
-                  <svg
-                    width='20'
-                    height='20'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='1.5'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    className='text-blue-600 dark:text-blue-400'
-                  >
-                    <path d='M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z' />
-                    <path d='M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z' />
-                    <path d='M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z' />
-                    <path d='M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z' />
-                    <path d='M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z' />
-                    <path d='M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z' />
-                    <path d='M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z' />
-                    <path d='M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z' />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className='text-sm font-medium'>Slack</h3>
-                  <p className='text-xs text-muted-foreground'>Update sharing and notifications</p>
-                </div>
-              </div>
+          <div>
+            <Label className='mb-1 block text-sm'>Webhook URL</Label>
+            <Input
+              value={slackUrl}
+              onChange={(e) => setSlackUrl(e.target.value)}
+              placeholder='https://hooks.slack.com/services/...'
+              className='font-mono text-sm'
+            />
+            <p className='text-xs text-muted-foreground mt-1'>
+              Create an incoming webhook in your Slack workspace settings
+            </p>
+          </div>
+
+          <div className='flex gap-2'>
+            <Button onClick={handleSaveSlack} disabled={isSavingSlack} size='sm'>
+              {isSavingSlack ? 'Saving...' : 'Save'}
+            </Button>
+            <Button onClick={handleTestSlack} disabled={isTesting || !slackUrl.trim()} variant='outline' size='sm'>
+              <Send className='size-3 mr-1' />
+              {isTesting ? 'Sending...' : 'Test'}
+            </Button>
+          </div>
+        </div>
+      </SettingCard>
+
+      {/* GitHub */}
+      <SettingCard
+        title='GitHub Integration'
+        description='Connect to a GitHub repository for issue synchronization'
+      >
+        <div className='space-y-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-2'>
+              <Github className='size-5' />
+              <span className='font-medium'>GitHub</span>
             </div>
-            <div className='border rounded-lg p-4 opacity-60 cursor-not-allowed'>
-              <div className='flex items-center gap-3'>
-                <div className='bg-slate-100 dark:bg-slate-900/50 p-2 rounded-md'>
-                  <svg
-                    width='20'
-                    height='20'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='1.5'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    className='text-slate-600 dark:text-slate-400'
-                  >
-                    <path d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22' />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className='text-sm font-medium'>GitHub</h3>
-                  <p className='text-xs text-muted-foreground'>Code repository connection</p>
-                </div>
-              </div>
+            <div className='flex items-center gap-2'>
+              <span className='text-xs text-muted-foreground'>{githubEnabled ? 'Enabled' : 'Disabled'}</span>
+              <Checkbox checked={githubEnabled} onCheckedChange={(v) => setGithubEnabled(v === true)} />
             </div>
           </div>
+
+          <div>
+            <Label className='mb-1 block text-sm'>Personal Access Token</Label>
+            <Input
+              type='password'
+              value={githubToken}
+              onChange={(e) => setGithubToken(e.target.value)}
+              placeholder='ghp_xxxxxxxxxxxxxxxxxxxx'
+              className='font-mono text-sm'
+            />
+          </div>
+
+          <div>
+            <Label className='mb-1 block text-sm'>Repository</Label>
+            <Input
+              value={githubRepo}
+              onChange={(e) => setGithubRepo(e.target.value)}
+              placeholder='owner/repository'
+              className='font-mono text-sm'
+            />
+            <p className='text-xs text-muted-foreground mt-1'>
+              Format: owner/repo (e.g., jujoycode/hydra)
+            </p>
+          </div>
+
+          <Button onClick={handleSaveGithub} disabled={isSavingGithub} size='sm'>
+            {isSavingGithub ? 'Saving...' : 'Save'}
+          </Button>
         </div>
       </SettingCard>
     </div>

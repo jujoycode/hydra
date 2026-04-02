@@ -163,6 +163,12 @@ export const settingsNotificationsRoute = createRoute({
   component: () => <TempComponent name='알림 설정' />
 })
 
+export const settingsIntegrationsRoute = createRoute({
+  getParentRoute: () => settingsLayoutRoute,
+  path: '/integrations',
+  component: lazyRoute(() => import('@/components/pages/settings/IntegrationPage'))
+})
+
 // Workspace (public)
 export const workspaceRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -193,7 +199,7 @@ export const routeTree = rootRoute.addChildren([
       projectSettingsRoute,
       projectSettingsDetailRoute
     ]),
-    settingsLayoutRoute.addChildren([accountRoute, settingsMembersRoute, settingsNotificationsRoute])
+    settingsLayoutRoute.addChildren([accountRoute, settingsMembersRoute, settingsNotificationsRoute, settingsIntegrationsRoute])
   ]),
   workspaceRoute
 ])

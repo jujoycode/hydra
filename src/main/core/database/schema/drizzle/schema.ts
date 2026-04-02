@@ -152,6 +152,16 @@ export const notifications = pgTable('notifications', {
   notification_created_at: timestamp('notification_created_at').defaultNow()
 })
 
+// 인테그레이션 설정 테이블
+export const integrations = pgTable('integrations', {
+  integration_id: uuid('integration_id').primaryKey(),
+  integration_type: varchar('integration_type', { length: 50 }).notNull(),
+  integration_config: text('integration_config').notNull(),
+  integration_enabled: boolean('integration_enabled').default(false),
+  integration_created_at: timestamp('integration_created_at').defaultNow(),
+  integration_updated_at: timestamp('integration_updated_at').defaultNow()
+})
+
 // 초대 코드 테이블
 export const inviteCodes = pgTable('invite_codes', {
   invite_code_id: uuid('invite_code_id').primaryKey(),

@@ -1,4 +1,5 @@
 import type { CommentRecord } from '../database/repository/interfaces/CommentRepository'
+import type { IntegrationRecord } from '../database/repository/interfaces/IntegrationRepository'
 import type { FileRecord } from '../database/repository/interfaces/FileRepository'
 import type { IssueRelationRecord } from '../database/repository/interfaces/IssueRelationRepository'
 import type { IssueRecord } from '../database/repository/interfaces/IssueRepository'
@@ -46,6 +47,7 @@ import type {
 } from './types/project'
 import type { LinkFileParams, ListIssueFilesParams, UploadFileParams } from './types/storage'
 import type { OpenDialogOptions, OpenDialogReturnValue, OpenExternalUrlParams } from './types/system'
+import type { DeleteIntegrationParams, SaveIntegrationParams, TestSlackWebhookParams } from './types/integration'
 import type {
   CountUnreadParams,
   DeleteNotificationParams,
@@ -136,6 +138,12 @@ export enum IpcChannel {
   NOTIFICATION_MARK_ALL_READ = 'notificationMarkAllRead',
   NOTIFICATION_DELETE = 'notificationDelete',
   NOTIFICATION_COUNT_UNREAD = 'notificationCountUnread',
+
+  // INTEGRATION-
+  INTEGRATION_LIST = 'integrationList',
+  INTEGRATION_SAVE = 'integrationSave',
+  INTEGRATION_DELETE = 'integrationDelete',
+  INTEGRATION_TEST_SLACK = 'integrationTestSlack',
 
   // STORAGE-
   STORAGE_UPLOAD_FILE = 'storageUploadFile',
@@ -381,6 +389,24 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.NOTIFICATION_COUNT_UNREAD]: {
     send: CountUnreadParams
     receive: BaseIpcResponse<number>
+  }
+
+  // INTEGRATION-
+  [IpcChannel.INTEGRATION_LIST]: {
+    send: undefined
+    receive: BaseIpcResponse<IntegrationRecord[]>
+  }
+  [IpcChannel.INTEGRATION_SAVE]: {
+    send: SaveIntegrationParams
+    receive: BaseIpcResponse<IntegrationRecord>
+  }
+  [IpcChannel.INTEGRATION_DELETE]: {
+    send: DeleteIntegrationParams
+    receive: BaseIpcResponse<boolean>
+  }
+  [IpcChannel.INTEGRATION_TEST_SLACK]: {
+    send: TestSlackWebhookParams
+    receive: BaseIpcResponse<boolean>
   }
 
   // STORAGE-

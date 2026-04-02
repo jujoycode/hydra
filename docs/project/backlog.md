@@ -229,6 +229,13 @@
 - **설명**: 이슈 테이블에서 다중 선택 → 일괄 상태 변경, 담당자 변경, 삭제.
 - **관련 파일**:
   - `src/renderer/src/components/organisms/issues/IssueTable.tsx`
+  - `src/main/handler/issues/UpdateIssueHandler.ts`
+- **구현 가이드**:
+  1. **백엔드**: `ISSUE_BULK_UPDATE` IPC 채널 추가 — `{ issueIds: string[], updates: { issueStatus?, issuePriority?, assignedTo? } }` → `IssueRecord[]`
+  2. **핸들러**: `BulkUpdateIssueHandler` — issueIds를 순회하며 repos.issues.update() 호출 (트랜잭션 래핑)
+  3. **프론트엔드**: IssueTable에 체크박스 컬럼 추가 (TanStack Table의 `enableRowSelection`), 선택된 행 수 표시
+  4. **벌크 액션 바**: 선택 시 상단에 플로팅 바 표시 — "Change Status", "Assign To", "Delete" 드롭다운
+  5. **확인 다이얼로그**: 삭제 시 `ISSUE_BULK_DELETE` 채널 별도 생성 (또는 개별 DELETE 순회)
 - **완료 조건**: 체크박스 다중 선택, 벌크 액션 드롭다운, 확인 다이얼로그
 
 ### HYDRA-021: 이슈 Due Date / 시간 추적
@@ -236,13 +243,30 @@
 - **비용**: S
 - **우선순위**: 🟢 Low
 - **설명**: 이슈 스키마에 `due_date`, `estimated_hours`, `actual_hours` 필드 추가. 캘린더 뷰 고려.
+- **관련 파일**:
+  - `src/main/core/database/schema/drizzle/schema.ts` (issues 테이블 컬럼 추가)
+  - `src/main/core/database/repository/interfaces/IssueRepository.ts` (IssueRecord 타입 확장)
+  - `src/renderer/src/components/pages/IssueDetailPage.tsx` (사이드바에 필드 추가)
+- **구현 가이드**:
+  1. **스키마**: issues 테이블에 `issue_due_date: timestamp`, `issue_estimated_hours: integer`, `issue_actual_hours: integer` 컬럼 추가
+  2. **타입 확장**: IssueRecord, CreateIssueData, UpdateIssueData에 새 필드 추가. CreateIssueParams, UpdateIssueParams도 확장
+  3. **리포지토리**: DrizzleIssueRepository의 create/update에서 새 필드 매핑
+  4. **프론트엔드 (IssueDetailPage)**: 사이드바에 Due Date (date input), Estimated Hours (number input), Actual Hours (number input) 필드 추가
+  5. **시각적 경고**: due_date가 지났으면 빨간색 배지 표시, 3일 이내면 노란색
+  6. **이슈 테이블**: due_date 컬럼 추가, 마감 임박/초과 시 색상 표시
 - **완료 조건**: 이슈에 마감일/예상시간 설정, 초과 시 시각적 경고
 
 ### HYDRA-022: 다크모드 / 테마 시스템
 
 - **비용**: S
 - **우선순위**: 🟢 Low
+- **상태**: ✅ 부분 완료 (commit 3457003 — next-themes + CSS 변수 기반 토글 구현됨)
 - **설명**: Tailwind CSS v4 기반 다크/라이트 모드 전환. 사용자 설정 저장.
+- **남은 작업**:
+  1. 전체 컴포넌트 다크모드 감사 — `dark:` variant 누락된 컴포넌트 확인 및 수정
+  2. 차트 컴포넌트 (Recharts) 다크모드 색상 대응
+  3. RichTextEditor (Tiptap) prose 스타일 다크모드 검증
+  4. Dialog/Sheet 오버레이 색상 다크모드 확인
 - **완료 조건**: 테마 토글, 시스템 설정 연동, 전체 컴포넌트 다크모드 대응
 
 ---

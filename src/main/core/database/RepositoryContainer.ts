@@ -3,6 +3,7 @@
 import type { DatabaseAdapter } from './adapter/DatabaseAdapter'
 import type { CommentRepository } from './repository/interfaces/CommentRepository'
 import type { FileRepository } from './repository/interfaces/FileRepository'
+import type { IntegrationRepository } from './repository/interfaces/IntegrationRepository'
 import type { IssueRelationRepository } from './repository/interfaces/IssueRelationRepository'
 import type { IssueRepository } from './repository/interfaces/IssueRepository'
 import type { LabelRepository } from './repository/interfaces/LabelRepository'
@@ -25,6 +26,7 @@ export class RepositoryContainer {
   private _tasks: TaskRepository | null = null
   private _issueRelations: IssueRelationRepository | null = null
   private _notifications: NotificationRepository | null = null
+  private _integrations: IntegrationRepository | null = null
 
   private constructor() {}
 
@@ -46,7 +48,8 @@ export class RepositoryContainer {
     milestones: MilestoneRepository,
     tasks: TaskRepository,
     issueRelations: IssueRelationRepository,
-    notifications: NotificationRepository
+    notifications: NotificationRepository,
+    integrations: IntegrationRepository
   ): void {
     this.adapter = adapter
     this._users = users
@@ -59,6 +62,7 @@ export class RepositoryContainer {
     this._tasks = tasks
     this._issueRelations = issueRelations
     this._notifications = notifications
+    this._integrations = integrations
   }
 
   async teardown(): Promise<void> {
@@ -76,6 +80,7 @@ export class RepositoryContainer {
     this._tasks = null
     this._issueRelations = null
     this._notifications = null
+    this._integrations = null
   }
 
   get db(): DatabaseAdapter {
@@ -153,6 +158,13 @@ export class RepositoryContainer {
       throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
     }
     return this._notifications
+  }
+
+  get integrations(): IntegrationRepository {
+    if (!this._integrations) {
+      throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
+    }
+    return this._integrations
   }
 
   get isInitialized(): boolean {
