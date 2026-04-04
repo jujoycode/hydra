@@ -71,13 +71,13 @@ export function TableSearch<TData>({
   selectOptions,
   onFilterChange
 }: TableSearchProps<TData>) {
+  const [searchValue, setSearchValue] = useState('')
+  const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({})
+
   // table이 null인 경우 기본값 처리
   if (!table) {
     return null
   }
-
-  const [searchValue, setSearchValue] = useState('')
-  const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({})
 
   // 검색 입력 핸들러
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
