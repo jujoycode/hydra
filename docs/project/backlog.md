@@ -325,6 +325,24 @@
 - **관련 파일**: `src/renderer/src/components/layouts/SettingsLayout.tsx`
 - **완료 조건**: 활성 라우트 하이라이팅, 4개 링크 렌더
 
+### HYDRA-028: 프로젝트 스코프 멤버 조회 IPC 핸들러
+
+- **비용**: S
+- **우선순위**: 🟠 High
+- **설명**: 현재 `CreateIssueDialog` 등 여러 곳에서 전역 `AUTH_LIST_USERS`를 사용 중. 프로젝트 멤버만 필터링해야 정확한 담당자 드롭다운이 된다. `users_projects_link` 기반 `ListProjectMembersHandler` 추가.
+- **관련 파일**:
+  - 신규: `src/main/handler/projects/ListProjectMembersHandler.ts`
+  - 수정: `CreateIssueDialog.tsx`의 TODO 주석 해소
+- **완료 조건**: `ISSUE_CREATE` / `ISSUE_UPDATE` 담당자 드롭다운이 프로젝트 멤버만 표시
+
+### HYDRA-029: Biome lint 일괄 청소
+
+- **비용**: S
+- **우선순위**: 🟡 Medium
+- **설명**: `pnpm lint`에서 기존 error 1 + warnings 34건 (BUG-002 subagent 발견). 주 대상: `DashboardTab.tsx`, `tanstack-table.d.ts`, renderer a11y / key prop 경고 등.
+- **관련 파일**: 다수 — `pnpm lint` 실행 후 리포트 기준
+- **완료 조건**: `pnpm lint` 0 error, 경고 10건 이하
+
 ---
 
 ## 요약 로드맵
@@ -332,9 +350,9 @@
 | 단계 | 티켓 | 예상 기간 |
 |------|------|----------|
 | **Phase 1: 크리티컬 버그** | BUG-001, BUG-002 | ~2일 |
-| **Phase 2: 핵심 연결** | HYDRA-002, 004 | ~1주 |
+| **Phase 2: 핵심 연결** | HYDRA-002, 004, 028 | ~1주 |
 | **Phase 3: 상세 페이지/접근성** | HYDRA-005, 006, 008b, 023, 027 | ~2주 |
-| **Phase 4: 협업/테스트** | HYDRA-009, 011, 012 | ~3주 |
+| **Phase 4: 협업/테스트** | HYDRA-009, 011, 012, 029 | ~3주 |
 | **Phase 5: 완성도** | HYDRA-013, 014, 024, 026 | ~2주 |
 | **Phase 6: 고도화** | HYDRA-016, 019a/b, 020, 021, 022, 025 | 장기 |
 
@@ -352,7 +370,8 @@ HYDRA-006 (이슈 상세 감사) → HYDRA-009 (파일 첨부 UI)
 HYDRA-011 (서버 필터) — 착수 가능
 HYDRA-023 (/my-issues) — 착수 가능
 HYDRA-027 (SettingsLayout 네비) → 기존 /settings/* 라우트들의 접근성 개선
+HYDRA-002 → HYDRA-028 (프로젝트 멤버 IPC; 담당자 드롭다운 품질 개선)
 
 독립:
-- HYDRA-008b, 012, 013, 016, 019a/b, 020, 021, 022, 024, 025, 026
+- HYDRA-008b, 012, 013, 016, 019a/b, 020, 021, 022, 024, 025, 026, 029
 ```
