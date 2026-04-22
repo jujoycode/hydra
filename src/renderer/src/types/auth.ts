@@ -14,6 +14,7 @@ export interface AuthState {
   user: User | null
   isConnected: boolean
   isLoading: boolean
+  isBootstrapped: boolean
   error: Error | null
   currentWorkspace: WorkspaceConfig | null
   setUser: (user: User | null) => void
@@ -22,4 +23,5 @@ export interface AuthState {
   setError: (error: Error | null) => void
   disconnect: () => void
   reset: () => void
+  bootstrap: () => Promise<void>
 }
