@@ -85,10 +85,11 @@
 - **선행 작업**: ~~HYDRA-001~~ ✅, ~~HYDRA-003~~ ✅
 - **완료 조건**: 이슈 상세 표시, 인라인 편집, 상태/담당자 변경 가능
 
-### HYDRA-007: 댓글/활동 로그 시스템
+### ~~HYDRA-007: 댓글/활동 로그 시스템~~ ✅ 완료
 
 - **비용**: L
 - **우선순위**: 🟠 High
+- **상태**: ✅ 완료 (commit 62b9393 — `comments` 테이블 + CRUD 핸들러 4개 + 이슈 상세 페이지 댓글 UI 구현)
 - **설명**: DB에 comments 테이블 없음. 이슈별 댓글 작성/수정/삭제 + 활동 로그(상태 변경, 담당자 변경 등 자동 기록).
 - **관련 파일**:
   - `src/main/core/database/schema/drizzle/schema.ts` (테이블 추가)
@@ -123,10 +124,11 @@
 
 ## 🟡 Medium
 
-### HYDRA-010: 라벨/태그 시스템
+### ~~HYDRA-010: 라벨/태그 시스템~~ ✅ 완료
 
 - **비용**: M
 - **우선순위**: 🟡 Medium
+- **상태**: ✅ 완료 (`labels` 테이블 + `issues_labels_link` 조인 + Label 핸들러 6개(List/Create/Update/Delete/Link/Unlink/ListIssueLabel) 전부 구현)
 - **설명**: 현재 `issue_category`(varchar) 하나로 분류. 다중 라벨(색상 포함) 시스템 도입 — labels 테이블 + issues_labels_link 조인 테이블.
 - **관련 파일**:
   - `src/main/core/database/schema/drizzle/schema.ts`
@@ -157,16 +159,15 @@
   - Utility: `CoreUtil.ts`
 - **완료 조건**: 주요 핸들러/리포지토리 테스트 작성, 커버리지 50%+ 달성
 
-### HYDRA-013: Tasks 페이지 구현
+### HYDRA-013: Tasks 상세 페이지
 
-- **비용**: L
+- **비용**: S (기존 L → 축소)
 - **우선순위**: 🟡 Medium
-- **설명**: `/projects/$projectId/tasks` 및 `/tasks/$taskId` 라우트가 TempComponent. 이슈 하위 태스크(체크리스트) 또는 독립 태스크 시스템 설계 필요.
+- **설명**: 태스크 목록/CRUD/체크리스트는 모두 구현 완료 (`TasksPage.tsx`, `tasks` 테이블, 4개 핸들러). 남은 작업은 `/tasks/$taskId` 상세 라우트 placeholder 해소.
 - **관련 파일**:
-  - `src/renderer/src/routers/routes.tsx:98, 104`
-  - DB 스키마 확장 (tasks 테이블)
-  - 신규: 페이지, 핸들러, 리포지토리
-- **완료 조건**: 태스크 CRUD, 이슈 연결, 체크리스트 UI
+  - `src/renderer/src/routers/routes.tsx` (taskDetailRoute)
+  - 신규: `src/renderer/src/components/pages/TaskDetailPage.tsx`
+- **완료 조건**: 태스크 개별 상세 뷰 (제목, 체크리스트, 연결 이슈, 완료 토글)
 
 ### HYDRA-014: 프로젝트 설정 페이지
 
@@ -179,10 +180,11 @@
 - **선행 작업**: HYDRA-005
 - **완료 조건**: 프로젝트 정보 수정, 위험 영역(삭제) 확인 다이얼로그
 
-### HYDRA-015: 리치 텍스트 에디터 (EditorJS)
+### ~~HYDRA-015: 리치 텍스트 에디터 (EditorJS)~~ ✅ 완료
 
 - **비용**: M
 - **우선순위**: 🟡 Medium
+- **상태**: ✅ 완료 (Tiptap 통합, `RichTextEditor` 컴포넌트가 이슈 설명/댓글에서 사용 중 — `IssueDetailPage.tsx:288, 335`)
 - **설명**: `HomePage.tsx:239`에 "EditorJS 기능은 업데이트 예정" 언급. 이슈 설명, 댓글에 마크다운/리치 텍스트 지원.
 - **관련 파일**:
   - 이슈 생성/상세 다이얼로그
@@ -201,26 +203,43 @@
 - **설명**: 마일스톤 테이블 생성, 이슈에 마일스톤 연결, 진행률 트래킹 대시보드.
 - **완료 조건**: 마일스톤 CRUD, 이슈 연결, 번다운 차트
 
-### HYDRA-017: 이슈 관계 (의존성/블로킹)
+### ~~HYDRA-017: 이슈 관계 (의존성/블로킹)~~ ✅ 완료
 
 - **비용**: M
 - **우선순위**: 🟢 Low
+- **상태**: ✅ 완료 (commit 382e9f5 — `issue_relations` 테이블 + 3개 핸들러(List/Create/Delete) + 이슈 상세 페이지 관계 UI(blocks/is_blocked_by/relates_to))
 - **설명**: 이슈 간 관계 (blocks, is blocked by, relates to) 조인 테이블 + UI.
 - **완료 조건**: 이슈 상세에서 관련 이슈 추가/표시, 의존성 그래프
 
-### HYDRA-018: 알림 시스템
+### ~~HYDRA-018: 알림 시스템~~ ✅ 완료
 
 - **비용**: L
 - **우선순위**: 🟢 Low
+- **상태**: ✅ 완료 (commit 62b9393 — `notifications` 테이블 + 5개 핸들러 + `NotificationsPage` + 읽음 상태/unread count)
 - **설명**: 인앱 알림 (담당 이슈 변경, 댓글 멘션, 마감 임박 등). Electron notification API 활용.
 - **완료 조건**: 알림 벨 아이콘, 알림 목록, 읽음 처리, OS 네이티브 알림
 
-### HYDRA-019: 서비스 인테그레이션 (GitHub/Slack)
+### ~~HYDRA-019: 서비스 인테그레이션 (1차)~~ ✅ 부분 완료
+
+- **상태**: ✅ 부분 완료 (commit 90a328f — Slack 웹훅 저장 + 테스트 전송, GitHub 토큰 저장 UI 구현)
+- **남은 작업**: HYDRA-019a / 019b 참조.
+
+### HYDRA-019a: Slack 이벤트 훅
+
+- **비용**: M
+- **우선순위**: 🟢 Low
+- **설명**: 이슈 생성/변경/담당자 변경 등 이벤트를 저장된 Slack 웹훅으로 전송.
+- **관련 파일**:
+  - `src/main/handler/issues/*Handler.ts` (이벤트 훅 포인트)
+  - `src/main/handler/integrations/` (기존 웹훅 저장/테스트)
+- **완료 조건**: 설정 가능한 이벤트 필터 + 실제 채널로 전송 확인
+
+### HYDRA-019b: GitHub OAuth 및 양방향 이슈 동기화
 
 - **비용**: XL
 - **우선순위**: 🟢 Low
-- **설명**: `IntegrationPage.tsx`에 GitHub/Slack 카드가 disabled 상태. OAuth 연동, 이슈 동기화, 슬랙 알림 등.
-- **완료 조건**: GitHub 이슈 양방향 동기화, Slack 웹훅 알림
+- **설명**: 기존 토큰 저장에서 OAuth로 업그레이드. GitHub 이슈를 Hydra로 import, Hydra 이슈 상태 변경을 GitHub로 반영.
+- **완료 조건**: OAuth 플로우, 양방향 동기화, 충돌 해결 정책
 
 ### HYDRA-020: 벌크 작업
 
@@ -269,41 +288,71 @@
   4. Dialog/Sheet 오버레이 색상 다크모드 확인
 - **완료 조건**: 테마 토글, 시스템 설정 연동, 전체 컴포넌트 다크모드 대응
 
+### HYDRA-023: /my-issues 페이지 구현
+
+- **비용**: S
+- **우선순위**: 🟠 High
+- **설명**: 현재 `/my-issues` 라우트가 TempComponent placeholder. 로그인 사용자에게 할당된 이슈 목록 표시.
+- **관련 파일**: `src/renderer/src/routers/routes.tsx:124`, 신규 `MyIssuesPage`
+- **완료 조건**: 담당 이슈 목록 + 상태별 그룹핑 + 이슈 상세로 이동
+
+### HYDRA-024: 알림 환경설정 UI
+
+- **비용**: S
+- **우선순위**: 🟡 Medium
+- **설명**: `/settings/notifications` placeholder. 알림 카테고리별 on/off 토글, 데스크톱 알림 활성화 여부.
+- **관련 파일**: `src/renderer/src/routers/routes.tsx:163`
+
+### HYDRA-025: 프로젝트 설정 상세 서브라우트 정리
+
+- **비용**: S
+- **우선순위**: 🟢 Low
+- **설명**: `/projects/$projectId/settings/$settingId` placeholder. ProjectSettingsPage 내부 탭으로 충분한지부터 판단 후, 불필요하면 라우트 제거, 필요하면 페이지 신설.
+- **관련 파일**: `src/renderer/src/routers/routes.tsx:117`
+
+### HYDRA-026: 마일스톤 진행률 위젯
+
+- **비용**: M
+- **우선순위**: 🟡 Medium
+- **설명**: `milestones` 테이블 + CRUD는 있으나 진행률 시각화 없음. ProjectDetailPage 또는 HomePage에 번다운/진행률 차트.
+- **관련 파일**: `src/renderer/src/components/pages/ProjectDetailPage.tsx`, `HomePage.tsx`
+
+### HYDRA-027: SettingsLayout 네비게이션 구현
+
+- **비용**: S
+- **우선순위**: 🟠 High
+- **설명**: `/settings/*` 하위 라우트(account, members, notifications, integrations)가 직접 URL로만 접근 가능. 사이드바/탭 내비게이션 추가.
+- **관련 파일**: `src/renderer/src/components/layouts/SettingsLayout.tsx`
+- **완료 조건**: 활성 라우트 하이라이팅, 4개 링크 렌더
+
 ---
 
 ## 요약 로드맵
 
 | 단계 | 티켓 | 예상 기간 |
 |------|------|----------|
-| **Phase 1: 핵심 연결** | ~~HYDRA-001~~ ✅ → 002 → ~~003~~ ✅ → 004 | ~2주 (진행 중) |
-| **Phase 2: 상세 페이지** | HYDRA-005, 006, 008, 009 | ~2주 |
-| **Phase 3: 협업 기능** | HYDRA-007, 010, 012 | ~3주 |
-| **Phase 4: 완성도** | HYDRA-011, 013, 014, 015 | ~3주 |
-| **Phase 5: 고도화** | HYDRA-016 ~ 022 | 장기 |
+| **Phase 1: 크리티컬 버그** | BUG-001, BUG-002 | ~2일 |
+| **Phase 2: 핵심 연결** | HYDRA-002, 004 | ~1주 |
+| **Phase 3: 상세 페이지/접근성** | HYDRA-005, 006, 008b, 023, 027 | ~2주 |
+| **Phase 4: 협업/테스트** | HYDRA-009, 011, 012 | ~3주 |
+| **Phase 5: 완성도** | HYDRA-013, 014, 024, 026 | ~2주 |
+| **Phase 6: 고도화** | HYDRA-016, 019a/b, 020, 021, 022, 025 | 장기 |
 
 ---
 
 ## 의존성 그래프
 
 ```
-HYDRA-001 ✅ (List/Get 핸들러) — 완료
-├── HYDRA-002 (이슈 생성 API 연결) — 선행 완료, 착수 가능
-├── HYDRA-004 (홈페이지 실데이터) — 선행 완료, 착수 가능
-├── HYDRA-005 (프로젝트 상세) — 선행 완료, 착수 가능
-│   └── HYDRA-014 (프로젝트 설정)
-├── HYDRA-006 (이슈 상세) — 선행 완료, 착수 가능
-│   ├── HYDRA-007 (댓글/활동 로그)
-│   │   └── HYDRA-015 (리치 텍스트 에디터)
-│   └── HYDRA-009 (파일 첨부 UI)
-└── HYDRA-011 (서버사이드 필터링) — 선행 완료, 착수 가능
+BUG-001, BUG-002 — 모든 기능 작업의 사전 조건 (새로고침 에러 / 접속 에러 처리)
 
-HYDRA-003 ✅ (Issue Store) — 완료
-└── HYDRA-006 (이슈 상세) — 선행 모두 완료, 착수 가능
+HYDRA-002 (이슈 생성 API) — 착수 가능
+HYDRA-004 (홈 실데이터) — 착수 가능
+HYDRA-005 (프로젝트 상세 감사) → HYDRA-014 (프로젝트 설정)
+HYDRA-006 (이슈 상세 감사) → HYDRA-009 (파일 첨부 UI)
+HYDRA-011 (서버 필터) — 착수 가능
+HYDRA-023 (/my-issues) — 착수 가능
+HYDRA-027 (SettingsLayout 네비) → 기존 /settings/* 라우트들의 접근성 개선
 
-독립 작업:
-├── HYDRA-008 (멤버 관리 UI)
-├── HYDRA-010 (라벨/태그)
-├── HYDRA-012 (테스트 커버리지)
-├── HYDRA-013 (Tasks 페이지)
-└── HYDRA-016 ~ 022 (고도화)
+독립:
+- HYDRA-008b, 012, 013, 016, 019a/b, 020, 021, 022, 024, 025, 026
 ```
