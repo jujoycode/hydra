@@ -1,108 +1,64 @@
 # Hydra
 
-<div align="center">
-  <!-- Logo or screenshot placeholder -->
-  <h3>Easy-to-use Desktop Issue Manager</h3>
-</div>
+Electron 기반 경량 프로젝트/이슈 관리 데스크톱 앱.
 
-## Overview
+- **Tech**: Electron + React 19 + TypeScript, Drizzle ORM + PostgreSQL
+- **특징**: 오프라인 우선, 멀티 워크스페이스, 오픈소스
 
-Hydra is a lightweight, offline-first desktop application for project and issue management. Built with Electron, it connects directly to your own PostgreSQL database — no cloud dependency, full data ownership.
+## Requirements
 
-### Key Features
+- Node.js 20+
+- pnpm 9+
+- Docker Desktop (로컬 PostgreSQL용, 직접 설치된 PG를 써도 무방)
 
-- Offline-first project/issue tracking
-- Multi-workspace support (connect to multiple databases)
-- Cross-platform desktop application (Windows, macOS, Linux)
-- Invite system for team collaboration
-- Role-based member management via PostgreSQL roles
-
-## Tech Stack
-
-| Category | Technology |
-|----------|-----------|
-| Framework | Electron + React 19 + TypeScript |
-| UI | shadcn/ui + Tailwind CSS v4 |
-| State | Zustand v5 |
-| ORM / DB | Drizzle ORM + PostgreSQL |
-| Routing | React Router v7 |
-| Table / Form | TanStack Table + TanStack Form |
-| Charts | Recharts |
-| Icons | lucide-react |
-| Linter | Biome |
-| Build | electron-vite + Electron Forge |
-
-## Screenshots
-
-<!-- Add 3-4 screenshots of key features here -->
-
-## Getting Started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) v22+
-- [pnpm](https://pnpm.io/) v10+
-- [Docker](https://www.docker.com/) (for local PostgreSQL)
-
-### Installation
+## Quick Start
 
 ```bash
-# Clone the repository
-git clone https://github.com/jujoycode/hydra.git
-cd hydra
-
-# Install dependencies
+# 1. 의존성 설치
 pnpm install
 
-# Start PostgreSQL via Docker
+# 2. 환경 변수 복사 (필요 시 값 조정)
+cp .env.example .env
+
+# 3. PostgreSQL 컨테이너 기동
 pnpm docker:up
 
-# Push database schema
+# 4. Drizzle 스키마를 DB에 push
 pnpm db:push
 
-# Run in development mode (with hot reload)
+# 5. Electron 앱 개발 모드 실행 (hot reload)
 pnpm hot
 ```
 
-### Environment Variables
+## 주요 명령어
 
-Copy `.env.example` to `.env` and adjust as needed:
+| 명령어 | 설명 |
+|--------|------|
+| `pnpm hot` | 개발 서버 (hot reload) |
+| `pnpm dev` | 개발 서버 (hot reload 없음) |
+| `pnpm build` | 타입체크 + 프로덕션 빌드 |
+| `pnpm typecheck` | 타입체크만 |
+| `pnpm lint` | Biome lint + autofix |
+| `pnpm format` | Biome format |
+| `pnpm test` | Vitest (1회 실행) |
+| `pnpm test:watch` | Vitest watch |
+| `pnpm docker:up` / `pnpm docker:down` | PostgreSQL 컨테이너 기동/중지 |
+| `pnpm db:push` | Drizzle 스키마 DB에 반영 |
+| `pnpm db:studio` | Drizzle Studio (DB GUI) |
+| `pnpm db:generate` | 마이그레이션 파일 생성 |
+| `pnpm package` / `pnpm make` | Electron Forge 패키징 / 설치파일 빌드 |
 
-```
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=hydra
-```
+## 트러블슈팅
 
-### Common Commands
+- **`pnpm db:push`가 "connection refused"**: 컨테이너가 healthy 상태가 될 때까지 수 초 기다린 뒤 재시도 (`docker ps` 로 `(healthy)` 확인 가능).
+- **포트 5432 충돌**: 이미 로컬에 PostgreSQL이 떠 있는 경우. 기존 프로세스를 끄거나 `docker-compose.yml`의 포트를 `'15432:5432'` 등으로 변경 후 `.env`의 `DB_PORT`도 같이 수정.
+- **첫 실행 후 워크스페이스 연결 화면**: DB 접속 정보를 앱 UI에서 입력하면 연결 + 초기 사용자 생성. `.env`는 drizzle CLI 전용이고 앱 런타임 접속과는 분리되어 있습니다.
 
-| Task | Command |
-|------|---------|
-| Dev (hot reload) | `pnpm hot` |
-| Dev (no hot reload) | `pnpm dev` |
-| Build | `pnpm build` |
-| Typecheck | `pnpm typecheck` |
-| Lint | `pnpm lint` |
-| Format | `pnpm format` |
-| Package | `pnpm package` |
-| Make installer | `pnpm make` |
-| Start PostgreSQL | `pnpm docker:up` |
-| Stop PostgreSQL | `pnpm docker:down` |
-| Push DB schema | `pnpm db:push` |
+## 프로젝트 구조
 
-## Documentation
+- `src/main/` — Electron main process (IPC, DB, workspace)
+- `src/preload/` — window.callApi 브리지
+- `src/renderer/src/` — React 렌더러 (Atomic Design)
+- `docs/` — 설계/백로그/계획 문서 (`docs/design/`, `docs/project/`, `docs/plans/`)
 
-- [Project Kick-off](docs/kick-off.md)
-- [Database Conventions](docs/convention-db.md)
-- [Database Schema (ERD)](docs/table-erd.md)
-
-## Contributors
-
-- Project Lead & Full-stack Developer: [@jujoycode](https://github.com/jujoycode)
-- Backend Developer: [@abruption](https://github.com/abruption)
-
-## License
-
-This project is open-sourced under the MIT License.
+자세한 아키텍처는 `CLAUDE.md`를 참고하세요.
