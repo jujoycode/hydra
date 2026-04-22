@@ -154,7 +154,7 @@ export const accountRoute = createRoute({
 export const settingsMembersRoute = createRoute({
   getParentRoute: () => settingsLayoutRoute,
   path: '/members',
-  component: () => <TempComponent name='멤버 설정' />
+  component: lazyRoute(() => import('@/components/pages/MembersPage'))
 })
 
 export const settingsNotificationsRoute = createRoute({
