@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
-import { Plug, Plus, Ticket, Trash2 } from 'lucide-react'
+import { Eye, EyeOff, Plug, Plus, Ticket, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -30,6 +30,7 @@ export default function WorkspacePage() {
   const [showInviteForm, setShowInviteForm] = useState(false)
   const [connecting, setConnecting] = useState(false)
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [selectedWs, setSelectedWs] = useState<WorkspaceConfig | null>(null)
   const [inviteCode, setInviteCode] = useState('')
 
@@ -81,6 +82,7 @@ export default function WorkspacePage() {
     } finally {
       setConnecting(false)
       setPassword('')
+      setShowPassword(false)
       setSelectedWs(null)
     }
   }
@@ -135,12 +137,24 @@ export default function WorkspacePage() {
                 </CardHeader>
                 {selectedWs?.id === ws.id ? (
                   <CardContent className='p-4 pt-0 space-y-2'>
-                    <Input
-                      type='password'
-                      placeholder={t('placeholder.password')}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
+                    <div className='relative'>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder={t('placeholder.password')}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className='pr-9'
+                      />
+                      <Button
+                        type='button'
+                        variant='ghost'
+                        size='icon'
+                        className='absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7'
+                        onClick={() => setShowPassword((v) => !v)}
+                      >
+                        {showPassword ? <EyeOff className='h-3.5 w-3.5' /> : <Eye className='h-3.5 w-3.5' />}
+                      </Button>
+                    </div>
                     <Button className='w-full' size='sm' disabled={connecting} onClick={() => handleConnect(ws)}>
                       <Plug className='h-4 w-4 mr-2' />
                       {connecting ? tc('button.connecting') : tc('button.connect')}
