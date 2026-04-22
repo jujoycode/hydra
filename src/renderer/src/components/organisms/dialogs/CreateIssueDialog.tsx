@@ -9,8 +9,9 @@ import { Label } from '@/atoms/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/atoms/Select'
 import { Textarea } from '@/atoms/Textarea'
 import { useProject } from '@/hooks/use-project'
-import type { Project, User } from '@/interface/CoreInterface'
+import type { Issue as IssueRecord, Project, User } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
+import { useIssueStore } from '@/stores/issue'
 import type { IssuePriority } from '@/types/issue'
 
 interface CreateIssueDialogProps {
@@ -24,6 +25,10 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
   const { t: tc } = useTranslation('common')
   // 프로젝트 상태 관리
   const { projects } = useProject()
+
+  // 이슈 store — 생성 성공 시 캐시된 리스트 갱신
+  const issues = useIssueStore((state) => state.issues)
+  const setIssues = useIssueStore((state) => state.setIssues)
 
   // 멤버 목록 상태 관리
   const [members, setMembers] = useState<User[]>([])
@@ -47,6 +52,7 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
     setDescription('')
   }
 
+  // TODO: 프로젝트 스코프 멤버 조회 IPC 핸들러가 추가되면 users_projects_link 기반으로 교체 (HYDRA-028).
   // 다이얼로그가 열릴 때 멤버 목록 조회
   useEffect(() => {
     if (open) {
@@ -98,6 +104,11 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
       if (result.error) {
         toast.error(t('toast.createFailed', { error: result.error.message }))
         return
+      }
+
+      // 캐시된 이슈 리스트에 신규 이슈 prepend (있을 때만)
+      if (result.data && issues) {
+        setIssues([result.data as IssueRecord, ...issues])
       }
 
       toast.success(t('toast.created'))
