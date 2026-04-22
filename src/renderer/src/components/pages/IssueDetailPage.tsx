@@ -78,7 +78,15 @@ export default function IssueDetailPage() {
     if (!issueId) return
     const load = async () => {
       setIsLoading(true)
-      const [issueResult, usersResult, commentsResult, issueLabelsResult, allLabelsResult, relationsResult, projectIssuesResult] = await Promise.all([
+      const [
+        issueResult,
+        usersResult,
+        commentsResult,
+        issueLabelsResult,
+        allLabelsResult,
+        relationsResult,
+        projectIssuesResult
+      ] = await Promise.all([
         window.callApi(IpcChannel.ISSUE_GET, { issueId }),
         window.callApi(IpcChannel.AUTH_LIST_USERS),
         window.callApi(IpcChannel.COMMENT_LIST, { issueId }),
@@ -580,9 +588,7 @@ export default function IssueDetailPage() {
                       .filter(
                         (i) =>
                           i.issue_id !== issue.issue_id &&
-                          !relations.some(
-                            (r) => r.source_issue_id === i.issue_id || r.target_issue_id === i.issue_id
-                          )
+                          !relations.some((r) => r.source_issue_id === i.issue_id || r.target_issue_id === i.issue_id)
                       )
                       .map((i) => (
                         <SelectItem key={`${type}:${i.issue_id}`} value={`${type}:${i.issue_id}`}>

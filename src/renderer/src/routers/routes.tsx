@@ -199,7 +199,12 @@ export const routeTree = rootRoute.addChildren([
       projectSettingsRoute,
       projectSettingsDetailRoute
     ]),
-    settingsLayoutRoute.addChildren([accountRoute, settingsMembersRoute, settingsNotificationsRoute, settingsIntegrationsRoute])
+    settingsLayoutRoute.addChildren([
+      accountRoute,
+      settingsMembersRoute,
+      settingsNotificationsRoute,
+      settingsIntegrationsRoute
+    ])
   ]),
   workspaceRoute
 ])

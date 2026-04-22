@@ -64,9 +64,7 @@ export default function NotificationsPage() {
         notificationId: notification.notification_id
       })
       setNotifications((prev) =>
-        prev.map((n) =>
-          n.notification_id === notification.notification_id ? { ...n, notification_read: true } : n
-        )
+        prev.map((n) => (n.notification_id === notification.notification_id ? { ...n, notification_read: true } : n))
       )
     }
 
@@ -101,7 +99,9 @@ export default function NotificationsPage() {
         <div>
           <h1 className='text-2xl font-bold'>Notifications</h1>
           <p className='text-sm text-muted-foreground mt-1'>
-            {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'No unread notifications'}
+            {unreadCount > 0
+              ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}`
+              : 'No unread notifications'}
           </p>
         </div>
         {unreadCount > 0 && (
@@ -155,13 +155,9 @@ export default function NotificationsPage() {
                   {notification.notification_title}
                 </p>
                 {notification.notification_message && (
-                  <p className='text-sm text-muted-foreground mt-0.5 truncate'>
-                    {notification.notification_message}
-                  </p>
+                  <p className='text-sm text-muted-foreground mt-0.5 truncate'>{notification.notification_message}</p>
                 )}
-                <p className='text-xs text-muted-foreground mt-1'>
-                  {timeAgo(notification.notification_created_at)}
-                </p>
+                <p className='text-xs text-muted-foreground mt-1'>{timeAgo(notification.notification_created_at)}</p>
               </div>
 
               {/* 삭제 버튼 */}

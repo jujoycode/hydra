@@ -2,9 +2,9 @@ import { Github, Send, Slack } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/atoms/Button'
+import { Checkbox } from '@/atoms/Checkbox'
 import { Input } from '@/atoms/Input'
 import { Label } from '@/atoms/Label'
-import { Checkbox } from '@/atoms/Checkbox'
 import type { Integration as IntegrationRecord } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
 import { SettingCard } from '@/molecules/cards/SettingCard'
@@ -110,10 +110,7 @@ export default function IntegrationPage() {
   return (
     <div className='w-full space-y-6'>
       {/* Slack */}
-      <SettingCard
-        title='Slack Integration'
-        description='Send notifications to a Slack channel via incoming webhook'
-      >
+      <SettingCard title='Slack Integration' description='Send notifications to a Slack channel via incoming webhook'>
         <div className='space-y-4'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
@@ -152,10 +149,7 @@ export default function IntegrationPage() {
       </SettingCard>
 
       {/* GitHub */}
-      <SettingCard
-        title='GitHub Integration'
-        description='Connect to a GitHub repository for issue synchronization'
-      >
+      <SettingCard title='GitHub Integration' description='Connect to a GitHub repository for issue synchronization'>
         <div className='space-y-4'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
@@ -187,9 +181,7 @@ export default function IntegrationPage() {
               placeholder='owner/repository'
               className='font-mono text-sm'
             />
-            <p className='text-xs text-muted-foreground mt-1'>
-              Format: owner/repo (e.g., jujoycode/hydra)
-            </p>
+            <p className='text-xs text-muted-foreground mt-1'>Format: owner/repo (e.g., jujoycode/hydra)</p>
           </div>
 
           <Button onClick={handleSaveGithub} disabled={isSavingGithub} size='sm'>

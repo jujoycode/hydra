@@ -11,7 +11,10 @@ import * as schema from '../schema/drizzle/schema'
 import type { ConnectionConfig, DatabaseAdapter } from './DatabaseAdapter'
 
 // pg 에러를 사용자 친화 메시지를 가진 DatabaseError로 래핑
-function wrapPgError(error: unknown, ctx: { host?: string; port?: number; database?: string; user?: string }): DatabaseError {
+function wrapPgError(
+  error: unknown,
+  ctx: { host?: string; port?: number; database?: string; user?: string }
+): DatabaseError {
   const err = error as { code?: string; message?: string }
   const code = err?.code
   const rawMessage = err?.message ?? 'Unknown database error'
@@ -25,18 +28,14 @@ function wrapPgError(error: unknown, ctx: { host?: string; port?: number; databa
     )
   }
   if (code === '3D000') {
-    return new DatabaseError(
-      ErrorCode.NOT_FOUND_ERROR,
-      `Database "${ctx.database ?? 'unknown'}" does not exist.`,
-      { pgCode: code }
-    )
+    return new DatabaseError(ErrorCode.NOT_FOUND_ERROR, `Database "${ctx.database ?? 'unknown'}" does not exist.`, {
+      pgCode: code
+    })
   }
   if (code === '42501') {
-    return new DatabaseError(
-      ErrorCode.PERMISSION_ERROR,
-      `Permission denied for user "${ctx.user ?? 'unknown'}".`,
-      { pgCode: code }
-    )
+    return new DatabaseError(ErrorCode.PERMISSION_ERROR, `Permission denied for user "${ctx.user ?? 'unknown'}".`, {
+      pgCode: code
+    })
   }
 
   // Network-level errors (Node.js errno codes)

@@ -1,6 +1,6 @@
 import type { CommentRecord } from '../database/repository/interfaces/CommentRepository'
-import type { IntegrationRecord } from '../database/repository/interfaces/IntegrationRepository'
 import type { FileRecord } from '../database/repository/interfaces/FileRepository'
+import type { IntegrationRecord } from '../database/repository/interfaces/IntegrationRepository'
 import type { IssueRelationRecord } from '../database/repository/interfaces/IssueRelationRepository'
 import type { IssueRecord } from '../database/repository/interfaces/IssueRepository'
 import type { LabelRecord } from '../database/repository/interfaces/LabelRepository'
@@ -9,9 +9,9 @@ import type { NotificationRecord } from '../database/repository/interfaces/Notif
 import type { ProjectRecord } from '../database/repository/interfaces/ProjectRepository'
 import type { TaskRecord } from '../database/repository/interfaces/TaskRepository'
 import type { UserRecord } from '../database/repository/interfaces/UserRepository'
-import type { WorkspaceConfig } from './types/workspace'
 import type { AuthDeleteUserParams, AuthUpdateUserParams, CreateMemberParams } from './types/auth'
 import type { CreateCommentParams, DeleteCommentParams, ListCommentsParams, UpdateCommentParams } from './types/comment'
+import type { DeleteIntegrationParams, SaveIntegrationParams, TestSlackWebhookParams } from './types/integration'
 import type { InviteApplyParams, InviteCodeInfo, InviteGenerateParams } from './types/invite'
 import type {
   CreateIssueParams,
@@ -39,6 +39,13 @@ import type {
   UpdateMilestoneParams
 } from './types/milestone'
 import type {
+  CountUnreadParams,
+  DeleteNotificationParams,
+  ListNotificationsParams,
+  MarkAllNotificationsReadParams,
+  MarkNotificationReadParams
+} from './types/notification'
+import type {
   CreateProjectParams,
   DeleteProjectParams,
   GetProjectParams,
@@ -47,16 +54,9 @@ import type {
 } from './types/project'
 import type { LinkFileParams, ListIssueFilesParams, UploadFileParams } from './types/storage'
 import type { OpenDialogOptions, OpenDialogReturnValue, OpenExternalUrlParams } from './types/system'
-import type { DeleteIntegrationParams, SaveIntegrationParams, TestSlackWebhookParams } from './types/integration'
-import type {
-  CountUnreadParams,
-  DeleteNotificationParams,
-  ListNotificationsParams,
-  MarkAllNotificationsReadParams,
-  MarkNotificationReadParams
-} from './types/notification'
 import type { CreateTaskParams, DeleteTaskParams, ListTasksParams, UpdateTaskParams } from './types/task'
 import type {
+  WorkspaceConfig,
   WorkspaceConnectParams,
   WorkspaceDeleteParams,
   WorkspaceSaveParams,
