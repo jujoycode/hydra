@@ -190,12 +190,14 @@ document the exact grant the workspace admin must create the service account wit
 
 ### 6.2 Type-portability rules (`schema.mysql.ts` ≠ naive copy of `schema.pg.ts`)
 
-1. **UUID PK**: switch generation from `uuidv4()` to **`uuidv7()`** (already available in
-   `uuid@13`) so ids are time-ordered — avoids InnoDB clustered-index fragmentation on MySQL
-   and helps PG locality. Store as `binary(16)` on MySQL where feasible (or `char(36)` with an
-   `ascii_bin`/`utf8mb4_bin` collation) so PK/FK joins are byte-exact and indexes stay small.
-   If existing v4 ids must be preserved for migrated PG workspaces, keep them but apply v7 for
-   new rows.
+1. **UUID PK** (decided): switch generation from `uuidv4()` to **`uuidv7()`** (already in
+   `uuid@13`) so ids are time-ordered — avoids InnoDB clustered-index fragmentation on MySQL and
+   helps PG index locality. **New rows use v7; existing v4 ids in already-populated PG workspaces
+   are left as-is** (PKs are not rewritten — v4 and v7 coexist safely, only insert locality
+   differs). Store the UUID as **`char(36)` with an `ascii_bin` collation** on MySQL (decided
+   over `binary(16)`: simpler cross-DBMS parity, human-readable in DB tools, no app-side byte
+   conversion; the larger index size is acceptable at this app's single-team desktop scale). PG
+   keeps its native `uuid` type.
 2. **Timestamps**: MySQL uses **`datetime({ fsp: 3 })`** (DATETIME — no 2038 limit, no implicit
    session-TZ conversion), **not** `timestamp()`. Set mysql2 connection `timezone: 'Z'`. Pin
    fractional precision to milliseconds on **both** engines (`timestamp({ precision: 3 })` on
@@ -355,11 +357,10 @@ the transaction-threading change (§4.4.3); audit every multi-write handler the 
 
 ## 13. Open Questions / Risks
 
-- **UUIDv7 vs preserving v4**: confirm whether existing PG workspaces' v4 ids must be preserved
-  (affects whether v7 is global or new-rows-only).
-- **`binary(16)` vs `char(36)`** for MySQL UUID storage: `binary(16)` is materially better but
-  touches every FK column; validate with an insert-throughput/fragmentation benchmark on
-  `issues`/`comments` before committing.
+- ✅ **RESOLVED — UUIDv7**: new rows generate v7; existing v4 ids are left as-is (new-rows-only,
+  not a global rewrite). See §6.2.1.
+- ✅ **RESOLVED — MySQL UUID storage**: `char(36)` with `ascii_bin` collation (chosen over
+  `binary(16)` for simplicity / readability / cross-DBMS parity). See §6.2.1.
 - **Drizzle cross-dialect typing**: the "one repository set" goal needs a small spike to confirm
   the query-builder types compose across pg/mysql with an injected `db`/`schema` (the highest
   implementation-uncertainty item).
