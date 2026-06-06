@@ -1,5 +1,7 @@
 // 프로젝트 리포지토리 인터페이스
 
+import type { RepoExecutor } from './RepoExecutor'
+
 export interface CreateProjectData {
   projectId: string
   projectName: string
@@ -30,13 +32,13 @@ export interface ProjectRecord {
 }
 
 export interface ProjectRepository {
-  create(data: CreateProjectData): Promise<ProjectRecord>
+  create(data: CreateProjectData, executor?: RepoExecutor): Promise<ProjectRecord>
   findAll(): Promise<ProjectRecord[]>
   findById(projectId: string): Promise<ProjectRecord | null>
   findByUserId(userId: string): Promise<ProjectRecord[]>
   update(projectId: string, data: UpdateProjectData): Promise<ProjectRecord>
   delete(projectId: string): Promise<boolean>
-  linkUser(linkId: string, userId: string, projectId: string): Promise<void>
+  linkUser(linkId: string, userId: string, projectId: string, executor?: RepoExecutor): Promise<void>
   unlinkUser(userId: string, projectId: string): Promise<void>
   countByCreator(userId: string): Promise<number>
   countByName(name: string): Promise<number>

@@ -9,14 +9,17 @@ import type {
   ProjectRepository,
   UpdateProjectData
 } from '../interfaces/ProjectRepository'
+import type { RepoExecutor } from '../interfaces/RepoExecutor'
+import type { DrizzleExecutor } from './executor'
 
 const { projects, usersProjectsLink } = schema
 
 export class DrizzleProjectRepository implements ProjectRepository {
   constructor(private db: NodePgDatabase<typeof schema>) {}
 
-  async create(data: CreateProjectData): Promise<ProjectRecord> {
-    const rows = await this.db
+  async create(data: CreateProjectData, executor: RepoExecutor = this.db): Promise<ProjectRecord> {
+    const ex = executor as DrizzleExecutor
+    const rows = await ex
       .insert(projects)
       .values({
         project_id: data.projectId,
@@ -76,8 +79,9 @@ export class DrizzleProjectRepository implements ProjectRepository {
     return true
   }
 
-  async linkUser(linkId: string, userId: string, projectId: string): Promise<void> {
-    await this.db.insert(usersProjectsLink).values({
+  async linkUser(linkId: string, userId: string, projectId: string, executor: RepoExecutor = this.db): Promise<void> {
+    const ex = executor as DrizzleExecutor
+    await ex.insert(usersProjectsLink).values({
       user_project_link_id: linkId,
       user_id: userId,
       project_id: projectId

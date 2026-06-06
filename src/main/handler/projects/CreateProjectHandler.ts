@@ -17,19 +17,22 @@ export class CreateProjectHandler extends CoreBaseHandler<IpcChannel.PROJECT_CRE
     const projectId = CoreUtil.getUuid()
 
     try {
-      const project = await this.repos.db.transaction(async () => {
-        const project = await this.repos.projects.create({
-          projectId,
-          projectName: params.projectName,
-          projectKey: params.projectKey,
-          projectDesc: params.projectDesc,
-          createdBy: params.userId,
-          startDate: new Date(),
-          endDate: new Date()
-        })
+      const project = await this.repos.db.transaction(async (tx) => {
+        const project = await this.repos.projects.create(
+          {
+            projectId,
+            projectName: params.projectName,
+            projectKey: params.projectKey,
+            projectDesc: params.projectDesc,
+            createdBy: params.userId,
+            startDate: new Date(),
+            endDate: new Date()
+          },
+          tx
+        )
 
-        // 사용자-프로젝트 연결 생성
-        await this.repos.projects.linkUser(CoreUtil.getUuid(), params.userId, project.project_id)
+        // 사용자-프로젝트 연결 생성 (동일 트랜잭션)
+        await this.repos.projects.linkUser(CoreUtil.getUuid(), params.userId, project.project_id, tx)
 
         return project
       })

@@ -1,6 +1,7 @@
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 import { PostgresAdapter } from '@/database/adapter/PostgresAdapter'
+import { getMigrationsFolder } from '@/database/migrate/migrationsPath'
 import { RepositoryContainer } from '@/database/RepositoryContainer'
 import {
   DrizzleCommentRepository,
@@ -43,6 +44,9 @@ export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPAC
       password: params.password,
       sslCertPath: params.sslCertPath
     })
+
+    // 스키마를 최신 마이그레이션으로 적용 (멱등)
+    await adapter.runMigrations(getMigrationsFolder())
 
     const db = adapter.getConnection() as NodePgDatabase<typeof schema>
     const userRepo = new DrizzleUserRepository(db)
