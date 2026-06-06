@@ -24,9 +24,7 @@ describe.runIf(process.env.RUN_DB_TESTS === '1')('PostgresAdapter.runMigrations'
   it('creates all application tables', async () => {
     await adapter.runMigrations(migrationsFolder)
     const db = adapter.getConnection()
-    const res = await db.execute(
-      sql`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'`
-    )
+    const res = await db.execute(sql`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'`)
     const names = res.rows.map((r) => r.table_name as string)
     expect(names).toEqual(expect.arrayContaining(['users', 'projects', 'issues', 'comments', 'notifications']))
   })

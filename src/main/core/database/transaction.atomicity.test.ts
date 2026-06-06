@@ -2,10 +2,10 @@ import { randomUUID } from 'node:crypto'
 import { resolve } from 'node:path'
 import { eq } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { createTestDatabase, dropTestDatabase, pgTestConfig } from './__testutils__/pgTestDb'
 import { PostgresAdapter } from './adapter/PostgresAdapter'
 import { DrizzleProjectRepository } from './repository/drizzle/DrizzleProjectRepository'
 import * as schema from './schema/drizzle/schema'
-import { createTestDatabase, dropTestDatabase, pgTestConfig } from './__testutils__/pgTestDb'
 
 describe.runIf(process.env.RUN_DB_TESTS === '1')('transaction atomicity', () => {
   let adapter: PostgresAdapter
@@ -34,7 +34,14 @@ describe.runIf(process.env.RUN_DB_TESTS === '1')('transaction atomicity', () => 
     await expect(
       adapter.transaction(async (tx) => {
         await repo.create(
-          { projectId, projectName: 'P', projectKey: 'P1', createdBy: userId, startDate: new Date(), endDate: new Date() },
+          {
+            projectId,
+            projectName: 'P',
+            projectKey: 'P1',
+            createdBy: userId,
+            startDate: new Date(),
+            endDate: new Date()
+          },
           tx
         )
         throw new Error('boom') // insert 이후 강제 롤백
