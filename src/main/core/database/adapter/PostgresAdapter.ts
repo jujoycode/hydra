@@ -4,6 +4,7 @@ import fs from 'node:fs'
 import { sql } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { drizzle } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { Pool } from 'pg'
 import { DatabaseError } from '@/error/DatabaseError'
 import { ErrorCode } from '@/interface/CoreInterface'
@@ -142,8 +143,11 @@ export class PostgresAdapter implements DatabaseAdapter {
     await this.db.execute(sql.raw(`DROP ROLE IF EXISTS "${escapedRole}"`))
   }
 
-  async runMigrations(): Promise<void> {
-    console.log('Migrations: use drizzle-kit push')
+  async runMigrations(migrationsFolder: string): Promise<void> {
+    if (!this.db) {
+      throw new Error('Database not connected. Call connect() first.')
+    }
+    await migrate(this.db, { migrationsFolder })
   }
 
   async transaction<T>(fn: (tx: unknown) => Promise<T>): Promise<T> {

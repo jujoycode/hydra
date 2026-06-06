@@ -16,6 +16,6 @@ export interface DatabaseAdapter {
   getConnection(): unknown
   createRole(roleName: string, password: string): Promise<void>
   dropRole(roleName: string): Promise<void>
-  runMigrations(): Promise<void>
+  runMigrations(migrationsFolder: string): Promise<void>
   transaction<T>(fn: (tx: unknown) => Promise<T>): Promise<T>
 }
