@@ -1,7 +1,6 @@
 // PostgreSQL 어댑터 - drizzle-orm + pg Pool 기반 구현
 
 import fs from 'node:fs'
-import { sql } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
@@ -124,23 +123,6 @@ export class PostgresAdapter implements DatabaseAdapter {
       throw new Error('Database not connected. Call connect() first.')
     }
     return this.db
-  }
-
-  async createRole(roleName: string, password: string): Promise<void> {
-    if (!this.db) {
-      throw new Error('Database not connected. Call connect() first.')
-    }
-    const escapedRole = roleName.replace(/"/g, '""')
-    const escapedPassword = password.replace(/'/g, "''")
-    await this.db.execute(sql.raw(`CREATE ROLE "${escapedRole}" WITH LOGIN PASSWORD '${escapedPassword}'`))
-  }
-
-  async dropRole(roleName: string): Promise<void> {
-    if (!this.db) {
-      throw new Error('Database not connected. Call connect() first.')
-    }
-    const escapedRole = roleName.replace(/"/g, '""')
-    await this.db.execute(sql.raw(`DROP ROLE IF EXISTS "${escapedRole}"`))
   }
 
   async runMigrations(migrationsFolder: string): Promise<void> {

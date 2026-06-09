@@ -30,6 +30,7 @@
     "types": ["electron-vite/node"],
     "baseUrl": ".",
     "paths": {
+      "@/auth/*": ["src/main/core/auth/*"],
       "@/base/*": ["src/main/core/base/*"],
       "@/constant/*": ["src/main/core/constant/*"],
       "@/database/*": ["src/main/core/database/*"],

@@ -18,7 +18,6 @@ import {
 } from '@/database/repository/drizzle'
 import type * as schema from '@/database/schema/drizzle/schema'
 import { IpcChannel, type WorkspaceConnectParams } from '@/interface/CoreInterface'
-import { CoreUtil } from '@/util/CoreUtil'
 
 export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPACE_CONNECT> {
   constructor() {
@@ -76,25 +75,13 @@ export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPAC
       integrationRepo
     )
 
-    let user = await userRepo.findByDbRole(params.username)
-    const isFirstLogin = !user
-
-    // 첫 연결 시 admin 유저 자동 생성
-    if (isFirstLogin) {
-      user = await userRepo.create({
-        userId: CoreUtil.getUuid(),
-        userName: params.username,
-        userEmail: '',
-        userDbRole: params.username,
-        userRole: 'admin'
-      })
-    }
+    // Phase 3: 연결 시 자동 admin 생성 제거. users 비어있으면 setup 필요.
+    const userCount = await userRepo.count()
 
     return {
       data: {
         connected: true,
-        user,
-        isFirstLogin
+        needsSetup: userCount === 0
       },
       error: null
     }
