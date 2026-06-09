@@ -26,7 +26,15 @@ describe.runIf(process.env.RUN_DB_TESTS === '1')('read-after-write (no RETURNING
   it('create() returns the inserted row without RETURNING', async () => {
     const db = adapter.getConnection()
     const userId = randomUUID()
-    await db.insert(schema.users).values({ user_id: userId, user_name: 'tester', user_role: 'admin' })
+    await db
+      .insert(schema.users)
+      .values({
+        user_id: userId,
+        user_sn: userId,
+        user_password_hash: 'test-hash',
+        user_name: 'tester',
+        user_role: 'admin'
+      })
 
     const projectRepo = new DrizzleProjectRepository(db)
     const projectId = randomUUID()
@@ -59,7 +67,15 @@ describe.runIf(process.env.RUN_DB_TESTS === '1')('read-after-write (no RETURNING
   it('case-insensitive search matches regardless of case', async () => {
     const db = adapter.getConnection()
     const userId = randomUUID()
-    await db.insert(schema.users).values({ user_id: userId, user_name: 't2', user_role: 'admin' })
+    await db
+      .insert(schema.users)
+      .values({
+        user_id: userId,
+        user_sn: userId,
+        user_password_hash: 'test-hash',
+        user_name: 't2',
+        user_role: 'admin'
+      })
     const projectId = randomUUID()
     await new DrizzleProjectRepository(db).create({
       projectId,

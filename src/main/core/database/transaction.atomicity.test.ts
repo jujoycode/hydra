@@ -28,7 +28,15 @@ describe.runIf(process.env.RUN_DB_TESTS === '1')('transaction atomicity', () => 
     const repo = new DrizzleProjectRepository(db)
 
     const userId = randomUUID()
-    await db.insert(schema.users).values({ user_id: userId, user_name: 'tester', user_role: 'admin' })
+    await db
+      .insert(schema.users)
+      .values({
+        user_id: userId,
+        user_sn: userId,
+        user_password_hash: 'test-hash',
+        user_name: 'tester',
+        user_role: 'admin'
+      })
 
     const projectId = randomUUID()
     await expect(
