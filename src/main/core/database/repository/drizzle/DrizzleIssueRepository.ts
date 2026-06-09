@@ -1,7 +1,8 @@
 // Drizzle 기반 이슈 리포지토리 구현
 
-import { and, asc, desc, eq, ilike, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, sql } from 'drizzle-orm'
 import * as schema from '../../schema/drizzle/schema'
+import { caseInsensitiveLike } from './portable'
 import type { DrizzleDb } from './executor'
 import type {
   CreateIssueData,
@@ -85,7 +86,7 @@ export class DrizzleIssueRepository implements IssueRepository {
     if (options.priority) conditions.push(eq(issues.issue_priority, options.priority))
     if (options.category) conditions.push(eq(issues.issue_category, options.category))
     if (options.assignedTo) conditions.push(eq(issues.issue_assigned_to, options.assignedTo))
-    if (options.search) conditions.push(ilike(issues.issue_title, `%${options.search}%`))
+    if (options.search) conditions.push(caseInsensitiveLike(issues.issue_title, options.search))
 
     const where = and(...conditions)
 
