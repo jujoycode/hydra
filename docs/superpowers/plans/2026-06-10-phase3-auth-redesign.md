@@ -1040,6 +1040,10 @@ git commit -m "feat: 로그인/셋업/로그아웃/세션 핸들러 + 연결 시
 **Files:**
 - Create: `src/main/core/auth/auth.integration.test.ts`
 
+- [ ] **Step 0: Fix Phase 1/2 test fixtures for the new NOT NULL columns**
+
+`transaction.atomicity.test.ts` and `repository/drizzle/readAfterWrite.test.ts` insert `users` rows directly (`db.insert(schema.users).values({ user_id, user_name, user_role })`). Since Task 4 made `user_sn`/`user_password_hash` NOT NULL, add them to each insert: `user_sn: userId` (the row's existing unique `userId`) and `user_password_hash: 'test-hash'`. (Three inserts total: one in `transaction.atomicity.test.ts`, two in `readAfterWrite.test.ts`.) Without this, `pnpm typecheck:node` and the DB tests fail. Commit with the auth tests below or separately. **This was already applied during execution as a Task 5 follow-up; verify it's present before relying on a green typecheck.**
+
 - [ ] **Step 1: Write the integration tests**
 
 ```ts
