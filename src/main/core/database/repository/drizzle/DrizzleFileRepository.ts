@@ -1,31 +1,29 @@
 // Drizzle 기반 파일 리포지토리 구현
 
 import { and, eq } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { CoreUtil } from '../../../util/CoreUtil'
 import * as schema from '../../schema/drizzle/schema'
 import type { CreateFileData, FileRecord, FileRepository } from '../interfaces/FileRepository'
+import type { DrizzleDb } from './executor'
+import { selectById } from './readAfterWrite'
 
 const { files, issuesFilesLink } = schema
 
 export class DrizzleFileRepository implements FileRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateFileData): Promise<FileRecord> {
     const now = new Date()
-    const rows = await this.db
-      .insert(files)
-      .values({
-        file_id: data.fileId,
-        file_name: data.fileName,
-        file_path: data.filePath,
-        file_type: data.fileType,
-        file_size: data.fileSize,
-        file_created_at: now,
-        file_updated_at: now
-      })
-      .returning()
-    return rows[0] as FileRecord
+    await this.db.insert(files).values({
+      file_id: data.fileId,
+      file_name: data.fileName,
+      file_path: data.filePath,
+      file_type: data.fileType,
+      file_size: data.fileSize,
+      file_created_at: now,
+      file_updated_at: now
+    })
+    return selectById<FileRecord>(this.db, files, files.file_id, data.fileId)
   }
 
   async findById(fileId: string): Promise<FileRecord | null> {

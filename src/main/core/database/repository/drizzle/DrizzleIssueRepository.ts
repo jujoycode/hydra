@@ -1,7 +1,6 @@
 // Drizzle 기반 이슈 리포지토리 구현
 
-import { and, asc, desc, eq, ilike, sql } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { and, asc, desc, eq, sql } from 'drizzle-orm'
 import * as schema from '../../schema/drizzle/schema'
 import type {
   CreateIssueData,
@@ -11,32 +10,32 @@ import type {
   PaginatedResult,
   UpdateIssueData
 } from '../interfaces/IssueRepository'
+import type { DrizzleDb } from './executor'
+import { caseInsensitiveLike } from './portable'
+import { selectById } from './readAfterWrite'
 
 const { issues } = schema
 
 export class DrizzleIssueRepository implements IssueRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateIssueData): Promise<IssueRecord> {
     const now = new Date()
-    const rows = await this.db
-      .insert(issues)
-      .values({
-        issue_id: data.issueId,
-        project_id: data.projectId,
-        issue_title: data.issueTitle,
-        issue_key: data.issueKey,
-        issue_desc: data.issueDesc ?? null,
-        issue_status: data.issueStatus ?? null,
-        issue_priority: data.issuePriority ?? null,
-        issue_category: data.issueCategory ?? null,
-        issue_created_by: data.createdBy,
-        issue_assigned_to: data.assignedTo ?? null,
-        issue_created_at: now,
-        issue_updated_at: now
-      })
-      .returning()
-    return rows[0] as IssueRecord
+    await this.db.insert(issues).values({
+      issue_id: data.issueId,
+      project_id: data.projectId,
+      issue_title: data.issueTitle,
+      issue_key: data.issueKey,
+      issue_desc: data.issueDesc ?? null,
+      issue_status: data.issueStatus ?? null,
+      issue_priority: data.issuePriority ?? null,
+      issue_category: data.issueCategory ?? null,
+      issue_created_by: data.createdBy,
+      issue_assigned_to: data.assignedTo ?? null,
+      issue_created_at: now,
+      issue_updated_at: now
+    })
+    return selectById<IssueRecord>(this.db, issues, issues.issue_id, data.issueId)
   }
 
   async findById(issueId: string): Promise<IssueRecord | null> {
@@ -61,8 +60,8 @@ export class DrizzleIssueRepository implements IssueRepository {
     if (data.modifiedBy !== undefined) values.issue_modified_by = data.modifiedBy
     if (data.assignedTo !== undefined) values.issue_assigned_to = data.assignedTo
 
-    const rows = await this.db.update(issues).set(values).where(eq(issues.issue_id, issueId)).returning()
-    return rows[0] as IssueRecord
+    await this.db.update(issues).set(values).where(eq(issues.issue_id, issueId))
+    return selectById<IssueRecord>(this.db, issues, issues.issue_id, issueId)
   }
 
   async delete(issueId: string): Promise<boolean> {
@@ -85,7 +84,7 @@ export class DrizzleIssueRepository implements IssueRepository {
     if (options.priority) conditions.push(eq(issues.issue_priority, options.priority))
     if (options.category) conditions.push(eq(issues.issue_category, options.category))
     if (options.assignedTo) conditions.push(eq(issues.issue_assigned_to, options.assignedTo))
-    if (options.search) conditions.push(ilike(issues.issue_title, `%${options.search}%`))
+    if (options.search) conditions.push(caseInsensitiveLike(issues.issue_title, options.search))
 
     const where = and(...conditions)
 
