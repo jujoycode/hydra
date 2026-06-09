@@ -8,6 +8,7 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     resolve: {
       alias: {
+        '@/auth': resolve('src/main/core/auth'),
         '@/base': resolve('src/main/core/base'),
         '@/constant': resolve('src/main/core/constant'),
         '@/database': resolve('src/main/core/database'),

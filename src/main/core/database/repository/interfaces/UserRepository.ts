@@ -1,22 +1,10 @@
-// 사용자 리포지토리 인터페이스
-
-export interface CreateUserData {
-  userId: string
-  userName: string
-  userEmail: string
-  userDbRole: string
-  userRole?: 'admin' | 'member'
-  userAvatarPath?: string | null
-}
-
-export interface UpdateUserData {
-  userName?: string
-  userEmail?: string
-  userAvatarPath?: string | null
-}
+import type { RepoExecutor } from './RepoExecutor'
 
 export interface UserRecord {
   user_id: string
+  user_sn: string
+  user_password_hash: string
+  user_status: string | null
   user_name: string | null
   user_email: string | null
   user_db_role: string | null
@@ -26,12 +14,33 @@ export interface UserRecord {
   user_updated_at: Date | null
 }
 
+// 비밀번호 해시를 제외한, 렌더러로 보낼 수 있는 안전한 사용자 형태
+export type SafeUser = Omit<UserRecord, 'user_password_hash'>
+
+export interface CreateUserData {
+  userId: string
+  userSn: string
+  passwordHash: string
+  userName?: string | null
+  userEmail?: string | null
+  userRole?: 'admin' | 'member'
+  userStatus?: string
+  userAvatarPath?: string | null
+}
+
+export interface UpdateUserData {
+  userName?: string
+  userEmail?: string
+  userAvatarPath?: string | null
+  userStatus?: string
+}
+
 export interface UserRepository {
   findById(userId: string): Promise<UserRecord | null>
-  findByDbRole(dbRole: string): Promise<UserRecord | null>
+  findBySn(userSn: string): Promise<UserRecord | null>
   findAll(): Promise<UserRecord[]>
-  create(data: CreateUserData): Promise<UserRecord>
+  create(data: CreateUserData, executor?: RepoExecutor): Promise<UserRecord>
   update(userId: string, data: UpdateUserData): Promise<UserRecord>
   delete(userId: string): Promise<boolean>
-  count(): Promise<number>
+  count(executor?: RepoExecutor): Promise<number>
 }

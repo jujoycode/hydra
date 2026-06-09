@@ -28,17 +28,20 @@ import {
   SidebarSeparator,
   useSidebar
 } from '@/organisms/sidebars/Sidebar'
+import { useAuthStore } from '@/stores/auth'
 
 // 알림 뱃지 카운트 (추후 실제 데이터로 교체)
 const NOTIFICATION_COUNT = 0
 
 function WorkspaceHeader() {
   const { currentWorkspace, disconnect } = useAuth()
+  const logout = useAuthStore((s) => s.logout)
   const { state } = useSidebar()
   const navigate = useNavigate()
   const { t } = useTranslation('nav')
 
-  const handleDisconnect = () => {
+  const handleDisconnect = async () => {
+    await logout()
     disconnect()
     navigate({ to: '/workspace' })
   }
@@ -190,12 +193,14 @@ function BottomNavGroup() {
 
 function UserFooter() {
   const { user, disconnect } = useAuth()
+  const logout = useAuthStore((s) => s.logout)
   const { state } = useSidebar()
   const navigate = useNavigate()
   const { theme, setTheme } = useTheme()
   const { t } = useTranslation('nav')
 
-  const handleDisconnect = () => {
+  const handleDisconnect = async () => {
+    await logout()
     disconnect()
     navigate({ to: '/workspace' })
   }

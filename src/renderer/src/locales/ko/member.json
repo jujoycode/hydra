@@ -11,15 +11,17 @@
   },
   "label": {
     "unknown": "알 수 없음",
+    "userSn": "아이디",
     "name": "이름",
     "email": "이메일",
     "dbRole": "데이터베이스 역할",
-    "password": "데이터베이스 비밀번호",
+    "password": "비밀번호",
     "role": "역할",
     "inviteCode": "초대 코드",
     "expiration": "만료 기간"
   },
   "placeholder": {
+    "userSn": "로그인 아이디",
     "name": "홍길동",
     "email": "hong@example.com",
     "dbRole": "hydra_honggildong",
@@ -46,8 +48,9 @@
     "generateFailed": "초대 코드 생성에 실패했습니다"
   },
   "validation": {
+    "enterUserSn": "아이디를 입력하세요",
     "enterName": "사용자 이름을 입력해주세요",
     "enterEmail": "이메일을 입력해주세요",
-    "enterPassword": "데이터베이스 비밀번호를 입력해주세요"
+    "enterPassword": "비밀번호를 입력해주세요"
   }
 }

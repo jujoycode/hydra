@@ -1,3 +1,4 @@
+import { toSafeUser } from '@/auth/safeUser'
 import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 import { IpcChannel } from '@/interface/CoreInterface'
 
@@ -8,6 +9,6 @@ export class ListUsersHandler extends CoreBaseHandler<IpcChannel.AUTH_LIST_USERS
 
   async handler() {
     const users = await this.repos.users.findAll()
-    return { data: users, error: null }
+    return { data: users.map(toSafeUser), error: null }
   }
 }
