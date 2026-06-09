@@ -5,6 +5,9 @@ import { boolean, index, integer, pgTable, text, timestamp, uuid, varchar } from
 // 사용자 테이블
 export const users = pgTable('users', {
   user_id: uuid('user_id').primaryKey(),
+  user_sn: varchar('user_sn', { length: 255 }).notNull().unique(),
+  user_password_hash: varchar('user_password_hash', { length: 255 }).notNull(),
+  user_status: varchar('user_status', { length: 20 }).default('active'),
   user_name: varchar('user_name', { length: 255 }),
   user_email: varchar('user_email', { length: 255 }),
   user_db_role: varchar('user_db_role', { length: 255 }),
