@@ -18,7 +18,7 @@ export default function WorkspacePage() {
   const { t } = useTranslation('workspace')
   const { t: tc } = useTranslation('common')
   const navigate = useNavigate()
-  const { setUser, setConnected, setCurrentWorkspace } = useAuthStore()
+  const { setConnected, setCurrentWorkspace, setNeedsSetup } = useAuthStore()
   const { workspaces, addWorkspace, removeWorkspace } = useWorkspaceStore()
 
   const saveWorkspace = useIpcHandler(IpcChannel.WORKSPACE_SAVE)
@@ -74,10 +74,10 @@ export default function WorkspacePage() {
       })
       if (result.data) {
         setConnected(true)
-        setUser(result.data.user)
         setCurrentWorkspace(ws)
+        setNeedsSetup(result.data.needsSetup)
         toast.success(t('toast.connected'))
-        navigate({ to: '/' })
+        navigate({ to: result.data.needsSetup ? '/setup' : '/login' })
       }
     } finally {
       setConnecting(false)
