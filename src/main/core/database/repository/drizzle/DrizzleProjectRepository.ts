@@ -10,6 +10,7 @@ import type {
 } from '../interfaces/ProjectRepository'
 import type { RepoExecutor } from '../interfaces/RepoExecutor'
 import type { DrizzleDb, DrizzleExecutor } from './executor'
+import { selectById } from './readAfterWrite'
 
 const { projects, usersProjectsLink } = schema
 
@@ -18,19 +19,16 @@ export class DrizzleProjectRepository implements ProjectRepository {
 
   async create(data: CreateProjectData, executor: RepoExecutor = this.db): Promise<ProjectRecord> {
     const ex = executor as DrizzleExecutor
-    const rows = await ex
-      .insert(projects)
-      .values({
-        project_id: data.projectId,
-        project_name: data.projectName,
-        project_key: data.projectKey,
-        project_desc: data.projectDesc ?? null,
-        project_created_by: data.createdBy,
-        project_start_date: data.startDate ?? null,
-        project_end_date: data.endDate ?? null
-      })
-      .returning()
-    return rows[0] as ProjectRecord
+    await ex.insert(projects).values({
+      project_id: data.projectId,
+      project_name: data.projectName,
+      project_key: data.projectKey,
+      project_desc: data.projectDesc ?? null,
+      project_created_by: data.createdBy,
+      project_start_date: data.startDate ?? null,
+      project_end_date: data.endDate ?? null
+    })
+    return selectById<ProjectRecord>(ex, projects, projects.project_id, data.projectId)
   }
 
   async findAll(): Promise<ProjectRecord[]> {
@@ -69,8 +67,8 @@ export class DrizzleProjectRepository implements ProjectRepository {
     if (data.startDate !== undefined) values.project_start_date = data.startDate
     if (data.endDate !== undefined) values.project_end_date = data.endDate
 
-    const rows = await this.db.update(projects).set(values).where(eq(projects.project_id, projectId)).returning()
-    return rows[0] as ProjectRecord
+    await this.db.update(projects).set(values).where(eq(projects.project_id, projectId))
+    return selectById<ProjectRecord>(this.db, projects, projects.project_id, projectId)
   }
 
   async delete(projectId: string): Promise<boolean> {

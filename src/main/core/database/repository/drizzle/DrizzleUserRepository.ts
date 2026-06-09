@@ -4,6 +4,7 @@ import { eq, sql } from 'drizzle-orm'
 import * as schema from '../../schema/drizzle/schema'
 import type { CreateUserData, UpdateUserData, UserRecord, UserRepository } from '../interfaces/UserRepository'
 import type { DrizzleDb } from './executor'
+import { selectById } from './readAfterWrite'
 
 const { users } = schema
 
@@ -27,20 +28,17 @@ export class DrizzleUserRepository implements UserRepository {
 
   async create(data: CreateUserData): Promise<UserRecord> {
     const now = new Date()
-    const rows = await this.db
-      .insert(users)
-      .values({
-        user_id: data.userId,
-        user_name: data.userName,
-        user_email: data.userEmail,
-        user_db_role: data.userDbRole,
-        user_role: data.userRole ?? 'member',
-        user_avatar_path: data.userAvatarPath ?? null,
-        user_created_at: now,
-        user_updated_at: now
-      })
-      .returning()
-    return rows[0] as UserRecord
+    await this.db.insert(users).values({
+      user_id: data.userId,
+      user_name: data.userName,
+      user_email: data.userEmail,
+      user_db_role: data.userDbRole,
+      user_role: data.userRole ?? 'member',
+      user_avatar_path: data.userAvatarPath ?? null,
+      user_created_at: now,
+      user_updated_at: now
+    })
+    return selectById<UserRecord>(this.db, users, users.user_id, data.userId)
   }
 
   async update(userId: string, data: UpdateUserData): Promise<UserRecord> {
@@ -51,8 +49,8 @@ export class DrizzleUserRepository implements UserRepository {
     if (data.userEmail !== undefined) values.user_email = data.userEmail
     if (data.userAvatarPath !== undefined) values.user_avatar_path = data.userAvatarPath
 
-    const rows = await this.db.update(users).set(values).where(eq(users.user_id, userId)).returning()
-    return rows[0] as UserRecord
+    await this.db.update(users).set(values).where(eq(users.user_id, userId))
+    return selectById<UserRecord>(this.db, users, users.user_id, userId)
   }
 
   async delete(userId: string): Promise<boolean> {

@@ -2,8 +2,6 @@
 
 import { and, asc, desc, eq, sql } from 'drizzle-orm'
 import * as schema from '../../schema/drizzle/schema'
-import { caseInsensitiveLike } from './portable'
-import type { DrizzleDb } from './executor'
 import type {
   CreateIssueData,
   IssueFilterOptions,
@@ -12,6 +10,9 @@ import type {
   PaginatedResult,
   UpdateIssueData
 } from '../interfaces/IssueRepository'
+import type { DrizzleDb } from './executor'
+import { caseInsensitiveLike } from './portable'
+import { selectById } from './readAfterWrite'
 
 const { issues } = schema
 
@@ -20,24 +21,21 @@ export class DrizzleIssueRepository implements IssueRepository {
 
   async create(data: CreateIssueData): Promise<IssueRecord> {
     const now = new Date()
-    const rows = await this.db
-      .insert(issues)
-      .values({
-        issue_id: data.issueId,
-        project_id: data.projectId,
-        issue_title: data.issueTitle,
-        issue_key: data.issueKey,
-        issue_desc: data.issueDesc ?? null,
-        issue_status: data.issueStatus ?? null,
-        issue_priority: data.issuePriority ?? null,
-        issue_category: data.issueCategory ?? null,
-        issue_created_by: data.createdBy,
-        issue_assigned_to: data.assignedTo ?? null,
-        issue_created_at: now,
-        issue_updated_at: now
-      })
-      .returning()
-    return rows[0] as IssueRecord
+    await this.db.insert(issues).values({
+      issue_id: data.issueId,
+      project_id: data.projectId,
+      issue_title: data.issueTitle,
+      issue_key: data.issueKey,
+      issue_desc: data.issueDesc ?? null,
+      issue_status: data.issueStatus ?? null,
+      issue_priority: data.issuePriority ?? null,
+      issue_category: data.issueCategory ?? null,
+      issue_created_by: data.createdBy,
+      issue_assigned_to: data.assignedTo ?? null,
+      issue_created_at: now,
+      issue_updated_at: now
+    })
+    return selectById<IssueRecord>(this.db, issues, issues.issue_id, data.issueId)
   }
 
   async findById(issueId: string): Promise<IssueRecord | null> {
@@ -62,8 +60,8 @@ export class DrizzleIssueRepository implements IssueRepository {
     if (data.modifiedBy !== undefined) values.issue_modified_by = data.modifiedBy
     if (data.assignedTo !== undefined) values.issue_assigned_to = data.assignedTo
 
-    const rows = await this.db.update(issues).set(values).where(eq(issues.issue_id, issueId)).returning()
-    return rows[0] as IssueRecord
+    await this.db.update(issues).set(values).where(eq(issues.issue_id, issueId))
+    return selectById<IssueRecord>(this.db, issues, issues.issue_id, issueId)
   }
 
   async delete(issueId: string): Promise<boolean> {

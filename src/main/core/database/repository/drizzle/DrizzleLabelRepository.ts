@@ -3,6 +3,7 @@ import { CoreUtil } from '../../../util/CoreUtil'
 import * as schema from '../../schema/drizzle/schema'
 import type { CreateLabelData, LabelRecord, LabelRepository } from '../interfaces/LabelRepository'
 import type { DrizzleDb } from './executor'
+import { selectById } from './readAfterWrite'
 
 const { labels, issuesLabelsLink } = schema
 
@@ -10,15 +11,12 @@ export class DrizzleLabelRepository implements LabelRepository {
   constructor(private db: DrizzleDb) {}
 
   async create(data: CreateLabelData): Promise<LabelRecord> {
-    const rows = await this.db
-      .insert(labels)
-      .values({
-        label_id: data.labelId,
-        label_name: data.labelName,
-        label_color: data.labelColor
-      })
-      .returning()
-    return rows[0] as LabelRecord
+    await this.db.insert(labels).values({
+      label_id: data.labelId,
+      label_name: data.labelName,
+      label_color: data.labelColor
+    })
+    return selectById<LabelRecord>(this.db, labels, labels.label_id, data.labelId)
   }
 
   async findAll(): Promise<LabelRecord[]> {
@@ -31,8 +29,8 @@ export class DrizzleLabelRepository implements LabelRepository {
     if (data.labelName !== undefined) updateData.label_name = data.labelName
     if (data.labelColor !== undefined) updateData.label_color = data.labelColor
 
-    const rows = await this.db.update(labels).set(updateData).where(eq(labels.label_id, labelId)).returning()
-    return rows[0] as LabelRecord
+    await this.db.update(labels).set(updateData).where(eq(labels.label_id, labelId))
+    return selectById<LabelRecord>(this.db, labels, labels.label_id, labelId)
   }
 
   async delete(labelId: string): Promise<boolean> {

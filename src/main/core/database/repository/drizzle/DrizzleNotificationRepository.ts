@@ -1,11 +1,12 @@
 import { and, count, desc, eq } from 'drizzle-orm'
 import * as schema from '../../schema/drizzle/schema'
-import type { DrizzleDb } from './executor'
 import type {
   CreateNotificationData,
   NotificationRecord,
   NotificationRepository
 } from '../interfaces/NotificationRepository'
+import type { DrizzleDb } from './executor'
+import { selectById } from './readAfterWrite'
 
 const { notifications } = schema
 
@@ -13,18 +14,15 @@ export class DrizzleNotificationRepository implements NotificationRepository {
   constructor(private db: DrizzleDb) {}
 
   async create(data: CreateNotificationData): Promise<NotificationRecord> {
-    const rows = await this.db
-      .insert(notifications)
-      .values({
-        notification_id: data.notificationId,
-        user_id: data.userId,
-        notification_type: data.notificationType,
-        notification_title: data.notificationTitle,
-        notification_message: data.notificationMessage ?? null,
-        notification_link: data.notificationLink ?? null
-      })
-      .returning()
-    return rows[0] as NotificationRecord
+    await this.db.insert(notifications).values({
+      notification_id: data.notificationId,
+      user_id: data.userId,
+      notification_type: data.notificationType,
+      notification_title: data.notificationTitle,
+      notification_message: data.notificationMessage ?? null,
+      notification_link: data.notificationLink ?? null
+    })
+    return selectById<NotificationRecord>(this.db, notifications, notifications.notification_id, data.notificationId)
   }
 
   async findByUser(userId: string): Promise<NotificationRecord[]> {
@@ -38,12 +36,11 @@ export class DrizzleNotificationRepository implements NotificationRepository {
   }
 
   async markAsRead(notificationId: string): Promise<NotificationRecord> {
-    const rows = await this.db
+    await this.db
       .update(notifications)
       .set({ notification_read: true })
       .where(eq(notifications.notification_id, notificationId))
-      .returning()
-    return rows[0] as NotificationRecord
+    return selectById<NotificationRecord>(this.db, notifications, notifications.notification_id, notificationId)
   }
 
   async markAllAsRead(userId: string): Promise<boolean> {
