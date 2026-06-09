@@ -1,7 +1,6 @@
 // Drizzle 기반 프로젝트 리포지토리 구현
 
 import { and, eq, sql } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
 import type {
   CreateProjectData,
@@ -10,12 +9,12 @@ import type {
   UpdateProjectData
 } from '../interfaces/ProjectRepository'
 import type { RepoExecutor } from '../interfaces/RepoExecutor'
-import type { DrizzleExecutor } from './executor'
+import type { DrizzleDb, DrizzleExecutor } from './executor'
 
 const { projects, usersProjectsLink } = schema
 
 export class DrizzleProjectRepository implements ProjectRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateProjectData, executor: RepoExecutor = this.db): Promise<ProjectRecord> {
     const ex = executor as DrizzleExecutor

@@ -1,6 +1,6 @@
 import { asc, eq } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
+import type { DrizzleDb } from './executor'
 import type {
   CreateMilestoneData,
   MilestoneRecord,
@@ -11,7 +11,7 @@ import type {
 const { milestones } = schema
 
 export class DrizzleMilestoneRepository implements MilestoneRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateMilestoneData): Promise<MilestoneRecord> {
     const now = new Date()

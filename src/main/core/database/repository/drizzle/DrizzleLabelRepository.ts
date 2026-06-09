@@ -1,13 +1,13 @@
 import { and, eq } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { CoreUtil } from '../../../util/CoreUtil'
 import * as schema from '../../schema/drizzle/schema'
 import type { CreateLabelData, LabelRecord, LabelRepository } from '../interfaces/LabelRepository'
+import type { DrizzleDb } from './executor'
 
 const { labels, issuesLabelsLink } = schema
 
 export class DrizzleLabelRepository implements LabelRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateLabelData): Promise<LabelRecord> {
     const rows = await this.db

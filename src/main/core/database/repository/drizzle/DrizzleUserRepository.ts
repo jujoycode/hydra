@@ -1,14 +1,14 @@
 // Drizzle 기반 사용자 리포지토리 구현
 
 import { eq, sql } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
 import type { CreateUserData, UpdateUserData, UserRecord, UserRepository } from '../interfaces/UserRepository'
+import type { DrizzleDb } from './executor'
 
 const { users } = schema
 
 export class DrizzleUserRepository implements UserRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async findById(userId: string): Promise<UserRecord | null> {
     const rows = await this.db.select().from(users).where(eq(users.user_id, userId)).limit(1)

@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
+import type { DrizzleDb } from './executor'
 import type {
   CreateIntegrationData,
   IntegrationRecord,
@@ -10,7 +10,7 @@ import type {
 const { integrations } = schema
 
 export class DrizzleIntegrationRepository implements IntegrationRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateIntegrationData): Promise<IntegrationRecord> {
     const rows = await this.db

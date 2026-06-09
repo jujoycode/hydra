@@ -1,8 +1,8 @@
 // Drizzle 기반 이슈 리포지토리 구현
 
 import { and, asc, desc, eq, ilike, sql } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
+import type { DrizzleDb } from './executor'
 import type {
   CreateIssueData,
   IssueFilterOptions,
@@ -15,7 +15,7 @@ import type {
 const { issues } = schema
 
 export class DrizzleIssueRepository implements IssueRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateIssueData): Promise<IssueRecord> {
     const now = new Date()

@@ -1,6 +1,6 @@
 import { and, count, desc, eq } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
+import type { DrizzleDb } from './executor'
 import type {
   CreateNotificationData,
   NotificationRecord,
@@ -10,7 +10,7 @@ import type {
 const { notifications } = schema
 
 export class DrizzleNotificationRepository implements NotificationRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateNotificationData): Promise<NotificationRecord> {
     const rows = await this.db

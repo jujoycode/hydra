@@ -1,6 +1,6 @@
 import { desc, eq } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
+import type { DrizzleDb } from './executor'
 import type {
   CommentRecord,
   CommentRepository,
@@ -11,7 +11,7 @@ import type {
 const { comments } = schema
 
 export class DrizzleCommentRepository implements CommentRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateCommentData): Promise<CommentRecord> {
     const now = new Date()

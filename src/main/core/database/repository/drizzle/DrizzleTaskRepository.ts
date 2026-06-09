@@ -1,12 +1,12 @@
 import { asc, eq } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
 import type { CreateTaskData, TaskRecord, TaskRepository } from '../interfaces/TaskRepository'
+import type { DrizzleDb } from './executor'
 
 const { tasks } = schema
 
 export class DrizzleTaskRepository implements TaskRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateTaskData): Promise<TaskRecord> {
     const now = new Date()

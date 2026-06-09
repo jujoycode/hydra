@@ -1,6 +1,6 @@
 import { eq, or } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
+import type { DrizzleDb } from './executor'
 import type {
   CreateRelationData,
   IssueRelationRecord,
@@ -10,7 +10,7 @@ import type {
 const { issueRelations } = schema
 
 export class DrizzleIssueRelationRepository implements IssueRelationRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateRelationData): Promise<IssueRelationRecord> {
     const rows = await this.db
