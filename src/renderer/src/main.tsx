@@ -9,7 +9,7 @@ import './index.css'
 import './locales'
 
 function InnerApp() {
-  const { user, isConnected, disconnect, isBootstrapped, bootstrap } = useAuthStore()
+  const { user, isConnected, isAuthenticated, needsSetup, disconnect, isBootstrapped, bootstrap } = useAuthStore()
 
   // 앱 진입 시 1회 main 프로세스 상태와 동기화.
   // main이 재시작되어 RepositoryContainer 가 비어있는 경우 persist 된 isConnected 를 초기화한다.
@@ -23,7 +23,12 @@ function InnerApp() {
     return <EmptyPage />
   }
 
-  return <RouterProvider router={router} context={{ auth: { user, isConnected, disconnect } }} />
+  return (
+    <RouterProvider
+      router={router}
+      context={{ auth: { user, isConnected, isAuthenticated, needsSetup, disconnect } }}
+    />
+  )
 }
 
 createRoot(document.getElementById('root')!).render(
