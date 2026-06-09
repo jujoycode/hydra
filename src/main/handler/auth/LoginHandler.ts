@@ -17,7 +17,7 @@ export class LoginHandler extends CoreBaseHandler<IpcChannel.AUTH_LOGIN> {
     const user = await this.repos.users.findBySn(sn)
     // 사용자 열거 방지를 위해 미존재/오답/비활성 모두 동일한 일반 오류
     const ok = user ? await verifyPassword(params.password, user.user_password_hash) : false
-    if (!user || !ok || user.user_status === 'inactive') {
+    if (!user || !ok || user.user_status !== 'active') {
       throw new DatabaseError(ErrorCode.AUTH_ERROR, '아이디 또는 비밀번호가 올바르지 않습니다.', null)
     }
     const session = createSessionRecord(

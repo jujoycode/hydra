@@ -18,7 +18,7 @@ export class SessionStatusHandler extends CoreBaseHandler<IpcChannel.AUTH_SESSIO
     }
     // 사용자 존재 + 활성 재검증
     const user = await this.repos.users.findById(session.userId)
-    if (!user || user.user_status === 'inactive') {
+    if (!user || user.user_status !== 'active') {
       mgr.clear()
       return { data: { authenticated: false, user: null }, error: null }
     }

@@ -18,7 +18,7 @@ export default function WorkspacePage() {
   const { t } = useTranslation('workspace')
   const { t: tc } = useTranslation('common')
   const navigate = useNavigate()
-  const { setConnected, setCurrentWorkspace, setNeedsSetup } = useAuthStore()
+  const { setConnected, setCurrentWorkspace, setNeedsSetup, setUser, setAuthenticated } = useAuthStore()
   const { workspaces, addWorkspace, removeWorkspace } = useWorkspaceStore()
 
   const saveWorkspace = useIpcHandler(IpcChannel.WORKSPACE_SAVE)
@@ -77,7 +77,19 @@ export default function WorkspacePage() {
         setCurrentWorkspace(ws)
         setNeedsSetup(result.data.needsSetup)
         toast.success(t('toast.connected'))
-        navigate({ to: result.data.needsSetup ? '/setup' : '/login' })
+        if (result.data.needsSetup) {
+          navigate({ to: '/setup' })
+          return
+        }
+        // remember-me: 유효한 세션이 있으면 로그인 건너뜀
+        const session = await window.callApi(IpcChannel.AUTH_SESSION_STATUS)
+        if (session?.data?.authenticated && session.data.user) {
+          setUser(session.data.user)
+          setAuthenticated(true)
+          navigate({ to: '/' })
+        } else {
+          navigate({ to: '/login' })
+        }
       }
     } finally {
       setConnecting(false)
