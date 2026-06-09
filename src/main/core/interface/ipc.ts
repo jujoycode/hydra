@@ -8,8 +8,15 @@ import type { MilestoneRecord } from '../database/repository/interfaces/Mileston
 import type { NotificationRecord } from '../database/repository/interfaces/NotificationRepository'
 import type { ProjectRecord } from '../database/repository/interfaces/ProjectRepository'
 import type { TaskRecord } from '../database/repository/interfaces/TaskRepository'
-import type { UserRecord } from '../database/repository/interfaces/UserRepository'
-import type { AuthDeleteUserParams, AuthUpdateUserParams, CreateMemberParams } from './types/auth'
+import type { SafeUser } from '../database/repository/interfaces/UserRepository'
+import type {
+  AuthDeleteUserParams,
+  AuthUpdateUserParams,
+  CreateMemberParams,
+  LoginParams,
+  SessionStatusResponse,
+  SetupAdminParams
+} from './types/auth'
 import type { CreateCommentParams, DeleteCommentParams, ListCommentsParams, UpdateCommentParams } from './types/comment'
 import type { DeleteIntegrationParams, SaveIntegrationParams, TestSlackWebhookParams } from './types/integration'
 import type { InviteApplyParams, InviteCodeInfo, InviteGenerateParams } from './types/invite'
@@ -81,6 +88,10 @@ export enum IpcChannel {
   AUTH_DELETE_USER = 'authDeleteUser',
   AUTH_CREATE_MEMBER = 'authCreateMember',
   AUTH_LIST_USERS = 'authListUsers',
+  AUTH_LOGIN = 'authLogin',
+  AUTH_LOGOUT = 'authLogout',
+  AUTH_SETUP_ADMIN = 'authSetupAdmin',
+  AUTH_SESSION_STATUS = 'authSessionStatus',
 
   // INVITE-
   INVITE_GENERATE = 'inviteGenerate',
@@ -206,15 +217,31 @@ export interface IpcPayloads extends BaseIpcPayloads {
   }
   [IpcChannel.AUTH_UPDATE_USER]: {
     send: AuthUpdateUserParams
-    receive: BaseIpcResponse<UserRecord>
+    receive: BaseIpcResponse<SafeUser>
   }
   [IpcChannel.AUTH_CREATE_MEMBER]: {
     send: CreateMemberParams
-    receive: BaseIpcResponse<UserRecord>
+    receive: BaseIpcResponse<SafeUser>
   }
   [IpcChannel.AUTH_LIST_USERS]: {
     send: undefined
-    receive: BaseIpcResponse<UserRecord[]>
+    receive: BaseIpcResponse<SafeUser[]>
+  }
+  [IpcChannel.AUTH_LOGIN]: {
+    send: LoginParams
+    receive: BaseIpcResponse<SafeUser>
+  }
+  [IpcChannel.AUTH_LOGOUT]: {
+    send: undefined
+    receive: BaseIpcResponse<boolean>
+  }
+  [IpcChannel.AUTH_SETUP_ADMIN]: {
+    send: SetupAdminParams
+    receive: BaseIpcResponse<SafeUser>
+  }
+  [IpcChannel.AUTH_SESSION_STATUS]: {
+    send: undefined
+    receive: BaseIpcResponse<SessionStatusResponse>
   }
 
   // INVITE-
