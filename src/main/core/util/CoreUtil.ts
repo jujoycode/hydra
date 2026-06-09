@@ -1,15 +1,15 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { basename, dirname, extname, join, resolve } from 'node:path'
-import { v4 as uuidv4 } from 'uuid'
+import { v7 as uuidv7 } from 'uuid'
 import { CoreBase } from '@/base/CoreBase'
 
 export class CoreUtil extends CoreBase {
   /**
    * getUuid
-   * @returns UUID v4 문자열
+   * @returns UUID v7 문자열 (시간 정렬 가능 — InnoDB/PG 인덱스 지역성 향상)
    */
   static getUuid(): string {
-    return uuidv4()
+    return uuidv7()
   }
 
   /**

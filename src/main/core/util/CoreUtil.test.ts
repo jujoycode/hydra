@@ -3,9 +3,9 @@ import { CoreUtil } from './CoreUtil'
 
 describe('CoreUtil', () => {
   describe('getUuid', () => {
-    it('should return a valid UUID v4 string', () => {
+    it('should return a valid UUID v7 string', () => {
       const uuid = CoreUtil.getUuid()
-      expect(uuid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
+      expect(uuid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
     })
 
     it('should return unique values on each call', () => {
@@ -31,5 +31,20 @@ describe('CoreUtil', () => {
         'Environment variable NON_EXISTENT_VAR_12345 is not set'
       )
     })
+  })
+})
+
+describe('CoreUtil.getUuid', () => {
+  it('generates a v7 UUID (time-ordered)', () => {
+    const id = CoreUtil.getUuid()
+    // RFC 9562: version nibble is the first char of the 3rd group
+    expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
+  })
+
+  it('generates time-ordered ids (later id sorts after earlier id)', async () => {
+    const a = CoreUtil.getUuid()
+    await new Promise((r) => setTimeout(r, 2))
+    const b = CoreUtil.getUuid()
+    expect(a < b).toBe(true)
   })
 })
