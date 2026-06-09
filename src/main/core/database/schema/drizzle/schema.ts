@@ -105,10 +105,7 @@ export const issuesFilesLink = pgTable(
     issue_id: uuid('issue_id').references(() => issues.issue_id),
     file_id: uuid('file_id').references(() => files.file_id)
   },
-  (t) => [
-    index('idx_issues_files_link_issue').on(t.issue_id),
-    index('idx_issues_files_link_file').on(t.file_id)
-  ]
+  (t) => [index('idx_issues_files_link_issue').on(t.issue_id), index('idx_issues_files_link_file').on(t.file_id)]
 )
 
 // 댓글 테이블
@@ -144,10 +141,7 @@ export const issuesLabelsLink = pgTable(
     issue_id: uuid('issue_id').references(() => issues.issue_id),
     label_id: uuid('label_id').references(() => labels.label_id)
   },
-  (t) => [
-    index('idx_issues_labels_link_issue').on(t.issue_id),
-    index('idx_issues_labels_link_label').on(t.label_id)
-  ]
+  (t) => [index('idx_issues_labels_link_issue').on(t.issue_id), index('idx_issues_labels_link_label').on(t.label_id)]
 )
 
 // 태스크 테이블
