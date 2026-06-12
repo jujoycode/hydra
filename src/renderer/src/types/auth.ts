@@ -7,6 +7,7 @@ export interface WorkspaceConfig {
   port: number
   dbName: string
   username: string
+  dbms: 'postgresql' | 'mysql'
   sslCertPath?: string
 }
 

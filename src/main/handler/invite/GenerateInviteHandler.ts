@@ -16,6 +16,7 @@ export class GenerateInviteHandler extends CoreBaseHandler<IpcChannel.INVITE_GEN
       host: params.host,
       port: params.port,
       dbName: params.dbName,
+      dbms: params.dbms,
       expiresAt
     }
 

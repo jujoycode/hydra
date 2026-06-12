@@ -7,6 +7,7 @@ import { Button } from '@/components/atoms/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/atoms/Card'
 import { Input } from '@/components/atoms/Input'
 import { Label } from '@/components/atoms/Label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/Select'
 import { Separator } from '@/components/atoms/Separator'
 import { useIpcHandler } from '@/hooks/use-ipc'
 import { IpcChannel } from '@/interface/CoreInterface'
@@ -41,8 +42,23 @@ export default function WorkspacePage() {
     port: '5432',
     dbName: '',
     username: 'postgres',
+    dbms: 'postgresql' as 'postgresql' | 'mysql',
     sslCertPath: ''
   })
+
+  const handleDbmsChange = (dbms: 'postgresql' | 'mysql') => {
+    setNewWs((prev) => ({
+      ...prev,
+      dbms,
+      port: prev.port === '5432' || prev.port === '3306' ? (dbms === 'mysql' ? '3306' : '5432') : prev.port,
+      username:
+        prev.username === 'postgres' || prev.username === 'root'
+          ? dbms === 'mysql'
+            ? 'root'
+            : 'postgres'
+          : prev.username
+    }))
+  }
 
   const handleAddWorkspace = async () => {
     const result = await saveWorkspace({
@@ -51,12 +67,21 @@ export default function WorkspacePage() {
       port: parseInt(newWs.port, 10),
       dbName: newWs.dbName,
       username: newWs.username,
+      dbms: newWs.dbms,
       sslCertPath: newWs.sslCertPath || undefined
     })
     if (result.data) {
       addWorkspace(result.data)
       setShowAddForm(false)
-      setNewWs({ name: '', host: 'localhost', port: '5432', dbName: '', username: 'postgres', sslCertPath: '' })
+      setNewWs({
+        name: '',
+        host: 'localhost',
+        port: '5432',
+        dbName: '',
+        username: 'postgres',
+        dbms: 'postgresql',
+        sslCertPath: ''
+      })
       toast.success(t('toast.added'))
     }
   }
@@ -70,6 +95,7 @@ export default function WorkspacePage() {
         dbName: ws.dbName,
         username: ws.username,
         password,
+        dbms: ws.dbms,
         sslCertPath: ws.sslCertPath
       })
       if (result.data) {
@@ -108,6 +134,7 @@ export default function WorkspacePage() {
         port: String(result.data.port),
         dbName: result.data.dbName,
         username: '',
+        dbms: result.data.dbms ?? 'postgresql',
         sslCertPath: ''
       })
       setShowInviteForm(false)
@@ -200,6 +227,18 @@ export default function WorkspacePage() {
                   value={newWs.name}
                   onChange={(e) => setNewWs({ ...newWs, name: e.target.value })}
                 />
+              </div>
+              <div className='space-y-1'>
+                <Label className='text-xs'>DBMS</Label>
+                <Select value={newWs.dbms} onValueChange={(v) => handleDbmsChange(v as 'postgresql' | 'mysql')}>
+                  <SelectTrigger className='w-full'>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='postgresql'>PostgreSQL</SelectItem>
+                    <SelectItem value='mysql'>MySQL 8</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className='grid grid-cols-3 gap-2'>
                 <div className='col-span-2 space-y-1'>

@@ -144,6 +144,7 @@ export default function MembersPage() {
       host: currentWorkspace.host,
       port: currentWorkspace.port,
       dbName: currentWorkspace.dbName,
+      dbms: currentWorkspace.dbms ?? 'postgresql',
       expiresInHours: Number(expiresInHours)
     })
     setIsSubmitting(false)
