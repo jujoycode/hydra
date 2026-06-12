@@ -1,6 +1,10 @@
 import { electronAPI } from '@electron-toolkit/preload'
 import { contextBridge, ipcRenderer } from 'electron'
 import { IpcChannel, type IpcRequest, type IpcResponse } from '@/interface/CoreInterface'
+import { getMockResponse } from './mockApi'
+
+// TEMP(디자인 미리보기): true면 DB 대신 mock 데이터를 반환. 정식 연결 복구 시 false.
+const MOCK_API = true
 
 // Custom APIs for renderer
 function checkSupportedIpcChannel(channel: IpcChannel) {
@@ -11,6 +15,9 @@ function checkSupportedIpcChannel(channel: IpcChannel) {
 
 async function callOnce<T extends IpcChannel>(channel: T, data?: IpcRequest<T>): Promise<IpcResponse<T>> {
   checkSupportedIpcChannel(channel)
+  if (MOCK_API) {
+    return getMockResponse(channel, data) as IpcResponse<T>
+  }
   return ipcRenderer.invoke(channel, data)
 }
 

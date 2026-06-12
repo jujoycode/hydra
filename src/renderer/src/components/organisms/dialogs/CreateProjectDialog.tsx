@@ -131,7 +131,7 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
               {keyValid !== null && (
                 <div className='absolute right-3 top-1/2 transform -translate-y-1/2'>
                   {keyValid ? (
-                    <CheckCircle2 className='w-4 h-4 text-green-500' />
+                    <CheckCircle2 className='w-4 h-4 text-success' />
                   ) : (
                     <AlertCircle className='w-4 h-4 text-destructive' />
                   )}

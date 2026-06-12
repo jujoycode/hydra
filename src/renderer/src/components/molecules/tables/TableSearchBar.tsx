@@ -76,12 +76,12 @@ export function TableSearchBar<TData, TValue>({
         {searchValue && (
           <button
             onClick={clearSearch}
-            className='absolute right-8 top-0 h-full flex items-center px-2 text-gray-400 hover:text-gray-600'
+            className='absolute right-8 top-0 h-full flex items-center px-2 text-muted-foreground hover:text-foreground'
           >
             <X className='h-4 w-4' />
           </button>
         )}
-        <div className='absolute right-2 top-0 h-full flex items-center px-2 text-gray-400'>
+        <div className='absolute right-2 top-0 h-full flex items-center px-2 text-muted-foreground'>
           <Search className='h-4 w-4' />
         </div>
       </div>

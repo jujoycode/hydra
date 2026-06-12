@@ -5,33 +5,19 @@ import { toast } from 'sonner'
 import { Button } from '@/atoms/Button'
 import type { Notification } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
+import { formatRelativeKorean } from '@/lib/formatDate'
 import { useAuthStore } from '@/stores/auth'
-
-function timeAgo(date: Date | string | null): string {
-  if (!date) return ''
-  const d = typeof date === 'string' ? new Date(date) : date
-  const now = new Date()
-  const diffMs = now.getTime() - d.getTime()
-  const diffMin = Math.floor(diffMs / 60000)
-  if (diffMin < 1) return 'just now'
-  if (diffMin < 60) return `${diffMin}m ago`
-  const diffHour = Math.floor(diffMin / 60)
-  if (diffHour < 24) return `${diffHour}h ago`
-  const diffDay = Math.floor(diffHour / 24)
-  if (diffDay < 30) return `${diffDay}d ago`
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
 
 function NotificationIcon({ type }: { type: string }) {
   switch (type) {
     case 'issue_assigned':
-      return <UserCheck className='size-4 text-blue-500' />
+      return <UserCheck className='size-4 text-info' />
     case 'issue_updated':
-      return <Target className='size-4 text-amber-500' />
+      return <Target className='size-4 text-warning' />
     case 'comment_added':
-      return <MessageSquare className='size-4 text-green-500' />
+      return <MessageSquare className='size-4 text-success' />
     case 'milestone_due':
-      return <Bell className='size-4 text-red-500' />
+      return <Bell className='size-4 text-destructive' />
     default:
       return <Bell className='size-4 text-muted-foreground' />
   }
@@ -64,9 +50,7 @@ export default function NotificationsPage() {
         notificationId: notification.notification_id
       })
       setNotifications((prev) =>
-        prev.map((n) =>
-          n.notification_id === notification.notification_id ? { ...n, notification_read: true } : n
-        )
+        prev.map((n) => (n.notification_id === notification.notification_id ? { ...n, notification_read: true } : n))
       )
     }
 
@@ -81,7 +65,7 @@ export default function NotificationsPage() {
     const result = await window.callApi(IpcChannel.NOTIFICATION_MARK_ALL_READ, { userId: user.user_id })
     if (result.data) {
       setNotifications((prev) => prev.map((n) => ({ ...n, notification_read: true })))
-      toast.success('All notifications marked as read')
+      toast.success('모든 알림을 읽음 처리했습니다')
     }
   }
 
@@ -96,18 +80,18 @@ export default function NotificationsPage() {
   const unreadCount = notifications.filter((n) => !n.notification_read).length
 
   return (
-    <div className='p-6 h-full overflow-auto'>
+    <div className='p-page h-full overflow-auto'>
       <div className='flex justify-between items-center mb-6'>
         <div>
-          <h1 className='text-2xl font-bold'>Notifications</h1>
-          <p className='text-sm text-muted-foreground mt-1'>
-            {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'No unread notifications'}
+          <h1 className='text-title'>알림</h1>
+          <p className='text-caption text-muted-foreground mt-1'>
+            {unreadCount > 0 ? `읽지 않은 알림 ${unreadCount}개` : '읽지 않은 알림이 없습니다'}
           </p>
         </div>
         {unreadCount > 0 && (
           <Button variant='outline' onClick={handleMarkAllAsRead}>
             <CheckCheck className='size-4 mr-2' />
-            Mark all as read
+            모두 읽음 처리
           </Button>
         )}
       </div>
@@ -119,8 +103,8 @@ export default function NotificationsPage() {
       ) : notifications.length === 0 ? (
         <div className='flex flex-col items-center justify-center py-12 text-muted-foreground'>
           <Bell className='size-10 mb-3 opacity-50' />
-          <p className='text-lg font-medium'>No notifications</p>
-          <p className='text-sm mt-1'>You&apos;re all caught up!</p>
+          <p className='text-section'>알림이 없습니다</p>
+          <p className='text-caption mt-1'>모두 확인했습니다!</p>
         </div>
       ) : (
         <div className='rounded-lg border'>
@@ -138,7 +122,7 @@ export default function NotificationsPage() {
               {/* 읽음 표시 */}
               <div className='mt-1 shrink-0'>
                 {!notification.notification_read ? (
-                  <div className='size-2 rounded-full bg-blue-500' />
+                  <div className='size-2 rounded-full bg-primary' />
                 ) : (
                   <div className='size-2' />
                 )}
@@ -155,12 +139,10 @@ export default function NotificationsPage() {
                   {notification.notification_title}
                 </p>
                 {notification.notification_message && (
-                  <p className='text-sm text-muted-foreground mt-0.5 truncate'>
-                    {notification.notification_message}
-                  </p>
+                  <p className='text-sm text-muted-foreground mt-0.5 truncate'>{notification.notification_message}</p>
                 )}
-                <p className='text-xs text-muted-foreground mt-1'>
-                  {timeAgo(notification.notification_created_at)}
+                <p className='text-caption text-muted-foreground mt-1'>
+                  {formatRelativeKorean(notification.notification_created_at)}
                 </p>
               </div>
 

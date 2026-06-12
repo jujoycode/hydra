@@ -1,5 +1,6 @@
 import { CartesianGrid, Cell, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from 'recharts'
 import { CustomTooltip } from '@/atoms/charts/CustomTooltip'
+import { getCssVar } from '@/lib/statusTokens'
 
 export interface BubbleDataPoint {
   name: string
@@ -30,12 +31,20 @@ interface BubbleChartProps {
   tooltipFormatter?: (value: any, name: string) => [string, string]
 }
 
-const defaultColors = ['#8B5CF6', '#EC4899', '#3B82F6', '#14B8A6', '#F59E0B', '#EF4444']
+// 차트 시리즈 기본색은 토큰을 런타임 hex로 읽어 SVG fill에 주입(라이트/다크 추종)
+const getDefaultColors = () => [
+  getCssVar('--chart-5'),
+  getCssVar('--mc-pink'),
+  getCssVar('--chart-1'),
+  getCssVar('--chart-3'),
+  getCssVar('--chart-4'),
+  getCssVar('--chart-2')
+]
 
 export const BubbleChart = ({
   data,
   height = 200,
-  colors = defaultColors,
+  colors = getDefaultColors(),
   margin = { top: 10, right: 10, bottom: 10, left: 10 },
   xAxisConfig = {
     dataKey: 'name',
@@ -78,7 +87,7 @@ export const BubbleChart = ({
           />
           <ZAxis type='number' dataKey={zAxisConfig.dataKey} range={zAxisConfig.range} name={zAxisConfig.name} />
           <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} formatter={tooltipFormatter} />
-          <Scatter name='이슈 유형' data={data} fill='#8884d8' animationDuration={1500}>
+          <Scatter name='이슈 유형' data={data} fill={getCssVar('--chart-1')} animationDuration={1500}>
             {data.map((_, index) => (
               <Cell key={`cell-${index}`} fill={colors[index % colors.length]} fillOpacity={0.8} />
             ))}

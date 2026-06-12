@@ -15,13 +15,15 @@
     "copy": "클립보드에 복사"
   },
   "status": {
-    "open": "열림",
+    "backlog": "대기",
+    "open": "대기",
     "in_progress": "진행 중",
-    "review": "검토 중",
+    "review": "검토",
     "done": "완료",
-    "blocked": "차단됨"
+    "blocked": "차단"
   },
   "priority": {
+    "urgent": "긴급",
     "high": "높음",
     "medium": "보통",
     "low": "낮음"
@@ -47,7 +49,14 @@
     "updated": "수정일",
     "role": "역할",
     "password": "비밀번호",
-    "loading": "로딩 중..."
+    "loading": "로딩 중...",
+    "key": "키",
+    "title": "제목"
+  },
+  "confirm": {
+    "delete": "삭제할까요?",
+    "saved": "저장되었습니다",
+    "deleted": "삭제되었습니다"
   },
   "empty": {
     "noData": "데이터가 없습니다"

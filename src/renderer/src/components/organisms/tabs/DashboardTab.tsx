@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AreaTrendChart, type TrendDataPoint } from '@/atoms/charts/AreaTrendChart'
 import { type StatusData, StatusDonutChart } from '@/atoms/charts/StatusDonutChart'
+import { getCssVar } from '@/lib/statusTokens'
 import { ChartCard } from '@/molecules/cards/ChartCard'
 import { StatCard } from '@/molecules/cards/StatCard'
 
@@ -23,8 +24,8 @@ export const DashboardTab = ({ issueStats, statusData, trendData }: DashboardTab
 
   const trendLines = useMemo(
     () => [
-      { dataKey: 'created', name: t('chart.created'), color: '#3B82F6', gradientId: 'colorCreated' },
-      { dataKey: 'resolved', name: t('chart.resolved'), color: '#10B981', gradientId: 'colorResolved' }
+      { dataKey: 'created', name: t('chart.created'), color: getCssVar('--chart-1'), gradientId: 'colorCreated' },
+      { dataKey: 'resolved', name: t('chart.resolved'), color: getCssVar('--chart-3'), gradientId: 'colorResolved' }
     ],
     [t]
   )
@@ -32,33 +33,33 @@ export const DashboardTab = ({ issueStats, statusData, trendData }: DashboardTab
   const completionRate = issueStats.total > 0 ? Math.round((issueStats.done / issueStats.total) * 100) : 0
 
   return (
-    <div className='h-full overflow-auto p-6'>
+    <div className='h-full overflow-auto p-page'>
       {/* 통계 카드 */}
       <div className='grid grid-cols-4 gap-3 mb-6'>
         <StatCard
           title={t('stats.totalIssues')}
           value={issueStats.total}
           icon={<ListTodo className='size-4' />}
-          iconColor='text-blue-600 dark:text-blue-400'
+          iconColor='text-info'
         />
         <StatCard
           title={t('stats.inProgress')}
           value={issueStats.inProgress}
           icon={<Clock className='size-4' />}
-          iconColor='text-amber-600 dark:text-amber-400'
+          iconColor='text-priority-medium'
         />
         <StatCard
           title={t('stats.completed')}
           value={issueStats.done}
           icon={<CheckCircle2 className='size-4' />}
-          iconColor='text-emerald-600 dark:text-emerald-400'
+          iconColor='text-success'
           description={`${completionRate}%`}
         />
         <StatCard
           title={t('stats.underReview')}
           value={issueStats.review}
           icon={<Search className='size-4' />}
-          iconColor='text-violet-600 dark:text-violet-400'
+          iconColor='text-status-review-fg'
         />
       </div>
 

@@ -31,11 +31,7 @@ export class DrizzleIntegrationRepository implements IntegrationRepository {
   }
 
   async findByType(type: string): Promise<IntegrationRecord | null> {
-    const rows = await this.db
-      .select()
-      .from(integrations)
-      .where(eq(integrations.integration_type, type))
-      .limit(1)
+    const rows = await this.db.select().from(integrations).where(eq(integrations.integration_type, type)).limit(1)
     return (rows[0] as IntegrationRecord) ?? null
   }
 

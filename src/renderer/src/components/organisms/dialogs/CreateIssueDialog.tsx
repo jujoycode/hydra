@@ -153,13 +153,13 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
                 <SelectContent>
                   <SelectItem value='bug'>
                     <div className='flex items-center'>
-                      <TriangleAlert size={16} className='mr-2 text-red-500' />
+                      <TriangleAlert size={16} className='mr-2 text-destructive' />
                       {tc('type.bug')}
                     </div>
                   </SelectItem>
                   <SelectItem value='feature'>
                     <div className='flex items-center'>
-                      <CircleDot size={16} className='mr-2 text-green-500' />
+                      <CircleDot size={16} className='mr-2 text-mc-green' />
                       {tc('type.feature')}
                     </div>
                   </SelectItem>
@@ -205,22 +205,22 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
                 <SelectContent>
                   <SelectItem value='high'>
                     <div className='flex items-center'>
-                      <ChevronsUp size={16} className='mr-2 text-red-500' />
+                      <ChevronsUp size={16} className='mr-2 text-priority-high' />
                       {tc('priority.high')}
                     </div>
                   </SelectItem>
                   <SelectItem value='medium'>
                     <div className='flex items-center'>
                       <div className='relative flex flex-col mr-2'>
-                        <ChevronUp size={16} className='text-yellow-500 -mb-[10px]' />
-                        <ChevronDown size={16} className='text-yellow-500' />
+                        <ChevronUp size={16} className='text-priority-medium -mb-[10px]' />
+                        <ChevronDown size={16} className='text-priority-medium' />
                       </div>
                       {tc('priority.medium')}
                     </div>
                   </SelectItem>
                   <SelectItem value='low'>
                     <div className='flex items-center'>
-                      <ChevronDown size={16} className='mr-2 text-green-500' />
+                      <ChevronDown size={16} className='mr-2 text-priority-low' />
                       {tc('priority.low')}
                     </div>
                   </SelectItem>

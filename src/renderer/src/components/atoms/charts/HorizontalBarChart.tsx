@@ -1,4 +1,5 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { getCssVar } from '@/lib/statusTokens'
 
 export interface BarDataPoint {
   name: string
@@ -23,7 +24,7 @@ export const HorizontalBarChart = ({
   data,
   dataKey,
   height = 200,
-  fill = '#8884d8',
+  fill = getCssVar('--chart-1'),
   gradientId,
   gradientColors,
   yAxisWidth = 80,

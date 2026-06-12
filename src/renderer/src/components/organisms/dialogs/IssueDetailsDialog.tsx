@@ -7,7 +7,8 @@ import { Input } from '@/atoms/Input'
 import { Label } from '@/atoms/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/atoms/Select'
 import { Textarea } from '@/atoms/Textarea'
-import { formatDate } from '@/lib/utils'
+import { formatKoreanDate } from '@/lib/formatDate'
+import { PRIORITY_LABEL } from '@/lib/statusTokens'
 import { InfoRow } from '@/molecules/InfoRow'
 import { IssueBadge, type IssueState } from '@/molecules/issues/IssueBadge'
 import { UserAvatar } from '@/molecules/users/UserAvatar'
@@ -205,8 +206,8 @@ export function IssueDetailsDialog({
                   />
                 }
               />
-              <InfoRow label={tc('label.created')} value={formatDate(formData.created)} />
-              <InfoRow label={tc('label.updated')} value={formatDate(formData.updated)} />
+              <InfoRow label={tc('label.created')} value={formatKoreanDate(formData.created)} />
+              <InfoRow label={tc('label.updated')} value={formatKoreanDate(formData.updated)} />
 
               {formData.priority && (
                 <InfoRow
@@ -215,10 +216,14 @@ export function IssueDetailsDialog({
                     <Badge
                       variant='subtle'
                       colorScheme={
-                        formData.priority === 'high' ? 'red' : formData.priority === 'medium' ? 'yellow' : 'green'
+                        formData.priority === 'urgent' || formData.priority === 'high'
+                          ? 'red'
+                          : formData.priority === 'medium'
+                            ? 'orange'
+                            : 'gray'
                       }
                     >
-                      {formData.priority}
+                      {PRIORITY_LABEL[formData.priority]}
                     </Badge>
                   }
                 />
@@ -227,7 +232,7 @@ export function IssueDetailsDialog({
               {formData.description && (
                 <div className='mt-4'>
                   <h4 className='font-medium mb-2'>{tc('label.description')}</h4>
-                  <div className='p-4 bg-gray-50 rounded-md'>{formData.description}</div>
+                  <div className='p-4 bg-muted rounded-md body-lg'>{formData.description}</div>
                 </div>
               )}
             </>

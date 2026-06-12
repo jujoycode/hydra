@@ -9,7 +9,7 @@ export function DetailPanel() {
   if (!isDetailOpen || !selectedIssueId) return null
 
   return (
-    <div className='flex h-full flex-col border-l bg-muted/30'>
+    <div className='glass-panel flex h-full flex-col border-l transition-colors'>
       <div className='flex items-center justify-between border-b px-4 py-3'>
         <span className='text-sm text-muted-foreground'>{selectedIssueId}</span>
         <Button variant='ghost' size='icon' className='size-7' onClick={closeDetail}>

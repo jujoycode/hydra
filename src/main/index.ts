@@ -11,11 +11,17 @@ function simpleLog(message: string) {
 function createWindow() {
   const coreUtil = new CoreUtil()
 
+  const isWindows = process.platform === CoreConstant.OS_TYPE.WINDOWS
+
   const main = new BrowserWindow({
     width: 1400,
     height: 800,
     show: false,
     autoHideMenuBar: true,
+    // 글래스모피즘: 창 배경을 투명하게 두고 OS 머티리얼이 비치도록 한다.
+    backgroundColor: '#00000000',
+    // Windows 11: acrylic(반투명 흐림), macOS: under-window vibrancy
+    ...(isWindows ? { backgroundMaterial: 'acrylic' as const } : { vibrancy: 'under-window' as const }),
     webPreferences: {
       preload: coreUtil.pathJoin(__dirname, '..', 'preload', 'index.mjs'),
       sandbox: false

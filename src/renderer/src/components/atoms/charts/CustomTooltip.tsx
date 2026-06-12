@@ -21,7 +21,7 @@ export const CustomTooltip = ({ active, payload, label, showLabel = true, labelF
             <div className='flex items-center gap-1.5'>
               <div
                 className='size-2.5 rounded-full'
-                style={{ backgroundColor: entry.color || entry.payload?.color || '#8884d8' }}
+                style={{ backgroundColor: entry.color || entry.payload?.color || 'var(--chart-1)' }}
               />
               <span className='text-xs text-muted-foreground'>{entry.name}</span>
             </div>

@@ -1,6 +1,5 @@
-import { createRootRouteWithContext, createRoute, Link, Outlet, redirect } from '@tanstack/react-router'
+import { createRootRouteWithContext, createRoute, Outlet, redirect } from '@tanstack/react-router'
 import React from 'react'
-import { Button } from '@/components/atoms/Button'
 import { MainLayout } from '@/layouts/MainLayout'
 import { ProjectLayout } from '@/layouts/ProjectLayout'
 import { SettingsLayout } from '@/layouts/SettingsLayout'
@@ -16,18 +15,6 @@ function lazyRoute(importFn: () => Promise<{ default: React.ComponentType }>) {
     </React.Suspense>
   )
 }
-
-// Temporary page component
-const TempComponent = ({ name }: { name: string }) => (
-  <div className='container p-8'>
-    <h1 className='text-2xl font-bold mb-4'>{name} 페이지</h1>
-    <p>이 페이지는 아직 구현되지 않았습니다.</p>
-    <br />
-    <Button variant='outline' asChild>
-      <Link to='/workspace'>Back to workspace selection</Link>
-    </Button>
-  </div>
-)
 
 // Root Route
 export const rootRoute = createRootRouteWithContext<RouterContext>()({
@@ -98,12 +85,6 @@ export const tasksRoute = createRoute({
   component: lazyRoute(() => import('@/components/pages/TasksPage'))
 })
 
-export const taskDetailRoute = createRoute({
-  getParentRoute: () => projectLayoutRoute,
-  path: '/tasks/$taskId',
-  component: () => <TempComponent name='태스크 상세' />
-})
-
 // Project Settings
 export const projectSettingsRoute = createRoute({
   getParentRoute: () => projectLayoutRoute,
@@ -111,17 +92,11 @@ export const projectSettingsRoute = createRoute({
   component: lazyRoute(() => import('@/components/pages/ProjectSettingsPage'))
 })
 
-export const projectSettingsDetailRoute = createRoute({
-  getParentRoute: () => projectLayoutRoute,
-  path: '/settings/$settingId',
-  component: () => <TempComponent name='설정 상세' />
-})
-
 // My Issues
 export const myIssuesRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: '/my-issues',
-  component: () => <TempComponent name='내 이슈' />
+  component: lazyRoute(() => import('@/components/pages/MyIssuesPage'))
 })
 
 // Notifications
@@ -154,13 +129,13 @@ export const accountRoute = createRoute({
 export const settingsMembersRoute = createRoute({
   getParentRoute: () => settingsLayoutRoute,
   path: '/members',
-  component: () => <TempComponent name='멤버 설정' />
+  component: lazyRoute(() => import('@/components/pages/MembersPage'))
 })
 
 export const settingsNotificationsRoute = createRoute({
   getParentRoute: () => settingsLayoutRoute,
   path: '/notifications',
-  component: () => <TempComponent name='알림 설정' />
+  component: lazyRoute(() => import('@/components/pages/NotificationsPage'))
 })
 
 export const settingsIntegrationsRoute = createRoute({
@@ -195,9 +170,7 @@ export const routeTree = rootRoute.addChildren([
       issuesRoute,
       issueDetailRoute,
       tasksRoute,
-      taskDetailRoute,
-      projectSettingsRoute,
-      projectSettingsDetailRoute
+      projectSettingsRoute
     ]),
     settingsLayoutRoute.addChildren([
       accountRoute,

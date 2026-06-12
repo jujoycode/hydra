@@ -15,6 +15,7 @@
     "copy": "Copy to Clipboard"
   },
   "status": {
+    "backlog": "Backlog",
     "open": "Open",
     "in_progress": "In Progress",
     "review": "Review",
@@ -22,6 +23,7 @@
     "blocked": "Blocked"
   },
   "priority": {
+    "urgent": "Urgent",
     "high": "High",
     "medium": "Medium",
     "low": "Low"
@@ -47,7 +49,14 @@
     "updated": "Updated",
     "role": "Role",
     "password": "Password",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "key": "Key",
+    "title": "Title"
+  },
+  "confirm": {
+    "delete": "Delete this?",
+    "saved": "Saved",
+    "deleted": "Deleted"
   },
   "empty": {
     "noData": "No data available"

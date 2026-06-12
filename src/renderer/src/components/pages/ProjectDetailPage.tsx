@@ -4,6 +4,28 @@ import { Button } from '@/atoms/Button'
 import { Input } from '@/atoms/Input'
 import type { Issue, Milestone, Project } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
+import { formatKoreanDate } from '@/lib/formatDate'
+import { PRIORITY_CLASS, PRIORITY_LABEL, STATUS_CLASS, STATUS_LABEL } from '@/lib/statusTokens'
+import { cn } from '@/lib/utils'
+import type { IssueState } from '@/molecules/issues/IssueBadge'
+import type { IssuePriority } from '@/types/issue'
+import i18n from '../../locales'
+
+/** DB의 issue_status('open' 별칭 포함)를 IssueState 토큰 키로 정규화 */
+function toIssueState(status: string | null | undefined): IssueState {
+  switch (status) {
+    case 'open':
+      return 'backlog'
+    case 'in_progress':
+    case 'review':
+    case 'done':
+    case 'blocked':
+    case 'backlog':
+      return status
+    default:
+      return 'backlog'
+  }
+}
 
 export default function ProjectDetailPage() {
   const { projectId } = useParams({ strict: false })
@@ -34,14 +56,14 @@ export default function ProjectDetailPage() {
 
   if (isLoading)
     return (
-      <div className='p-6'>
-        <p className='text-muted-foreground'>Loading...</p>
+      <div className='p-page'>
+        <p className='text-muted-foreground'>{i18n.t('common:label.loading')}</p>
       </div>
     )
   if (!project)
     return (
-      <div className='p-6'>
-        <p className='text-muted-foreground'>Project not found</p>
+      <div className='p-page'>
+        <p className='text-muted-foreground'>{i18n.t('common:empty.noData')}</p>
       </div>
     )
 
@@ -68,33 +90,33 @@ export default function ProjectDetailPage() {
   }
 
   return (
-    <div className='p-6 h-full overflow-auto'>
+    <div className='p-page h-full overflow-auto'>
       {/* Header */}
       <div className='mb-6'>
         <div className='flex items-center gap-2 text-sm text-muted-foreground mb-1'>
           <span>{project.project_key}</span>
         </div>
-        <h1 className='text-2xl font-bold'>{project.project_name}</h1>
+        <h1 className='text-title'>{project.project_name}</h1>
         {project.project_desc && <p className='text-muted-foreground mt-2'>{project.project_desc}</p>}
       </div>
 
       {/* Stats Grid */}
       <div className='grid grid-cols-5 gap-3 mb-6'>
-        <StatCard label='Total' value={totalIssues} />
-        <StatCard label='Open' value={openIssues} className='text-blue-600' />
-        <StatCard label='In Progress' value={inProgressIssues} className='text-yellow-600' />
-        <StatCard label='Done' value={doneIssues} className='text-green-600' />
-        <StatCard label='Blocked' value={blockedIssues} className='text-red-600' />
+        <StatCard label='전체' value={totalIssues} />
+        <StatCard label={STATUS_LABEL.backlog} value={openIssues} className='text-status-in-progress-fg' />
+        <StatCard label={STATUS_LABEL.in_progress} value={inProgressIssues} className='text-priority-medium' />
+        <StatCard label={STATUS_LABEL.done} value={doneIssues} className='text-success' />
+        <StatCard label={STATUS_LABEL.blocked} value={blockedIssues} className='text-status-blocked-fg' />
       </div>
 
       {/* Recent Issues */}
       <div className='rounded-lg border'>
         <div className='p-4 border-b'>
-          <h2 className='text-lg font-semibold'>Recent Issues</h2>
+          <h2 className='text-section'>최근 이슈</h2>
         </div>
         <div className='divide-y'>
           {issues.length === 0 ? (
-            <div className='p-8 text-center text-muted-foreground'>No issues yet</div>
+            <div className='p-8 text-center text-muted-foreground'>{i18n.t('common:empty.noData')}</div>
           ) : (
             issues.slice(0, 10).map((issue) => (
               <div key={issue.issue_id} className='flex items-center justify-between p-3 hover:bg-muted/50'>
@@ -118,9 +140,9 @@ export default function ProjectDetailPage() {
       {/* Milestones */}
       <div className='rounded-lg border mt-6'>
         <div className='p-4 border-b flex items-center justify-between'>
-          <h2 className='text-lg font-semibold'>Milestones</h2>
+          <h2 className='text-section'>마일스톤</h2>
           <Button variant='outline' size='sm' onClick={() => setShowMilestoneForm(!showMilestoneForm)}>
-            {showMilestoneForm ? 'Cancel' : 'Add Milestone'}
+            {showMilestoneForm ? i18n.t('common:button.cancel') : '마일스톤 추가'}
           </Button>
         </div>
         {showMilestoneForm && (
@@ -128,7 +150,7 @@ export default function ProjectDetailPage() {
             <Input
               value={milestoneTitle}
               onChange={(e) => setMilestoneTitle(e.target.value)}
-              placeholder='Milestone title'
+              placeholder='마일스톤 제목'
               className='flex-1'
             />
             <Input
@@ -138,37 +160,40 @@ export default function ProjectDetailPage() {
               className='w-40'
             />
             <Button size='sm' onClick={handleCreateMilestone}>
-              Create
+              {i18n.t('common:button.create')}
             </Button>
           </div>
         )}
         {milestones.length === 0 ? (
-          <div className='p-8 text-center text-muted-foreground'>No milestones</div>
+          <div className='p-8 text-center text-muted-foreground'>{i18n.t('common:empty.noData')}</div>
         ) : (
           <div className='divide-y'>
-            {milestones.map((ms) => (
-              <div key={ms.milestone_id} className='p-4'>
-                <div className='flex items-center justify-between'>
-                  <h3 className='font-medium'>{ms.milestone_title}</h3>
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full ${ms.milestone_status === 'closed' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'}`}
-                  >
-                    {ms.milestone_status || 'open'}
-                  </span>
+            {milestones.map((ms) => {
+              const closed = ms.milestone_status === 'closed'
+              return (
+                <div key={ms.milestone_id} className='p-4'>
+                  <div className='flex items-center justify-between'>
+                    <h3 className='font-medium'>{ms.milestone_title}</h3>
+                    <span
+                      className={cn(
+                        'text-xs px-2 py-0.5 rounded-full',
+                        closed
+                          ? 'bg-status-done text-status-done-fg'
+                          : 'bg-status-in-progress text-status-in-progress-fg'
+                      )}
+                    >
+                      {closed ? '완료' : '진행 중'}
+                    </span>
+                  </div>
+                  {ms.milestone_desc && <p className='text-sm text-muted-foreground mt-1'>{ms.milestone_desc}</p>}
+                  {ms.milestone_due_date && (
+                    <p className='text-caption tabular-nums text-muted-foreground mt-1'>
+                      마감: {formatKoreanDate(ms.milestone_due_date)}
+                    </p>
+                  )}
                 </div>
-                {ms.milestone_desc && <p className='text-sm text-muted-foreground mt-1'>{ms.milestone_desc}</p>}
-                {ms.milestone_due_date && (
-                  <p className='text-xs text-muted-foreground mt-1'>
-                    Due:{' '}
-                    {new Date(ms.milestone_due_date).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </p>
-                )}
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>
@@ -187,22 +212,15 @@ function StatCard({ label, value, className }: { label: string; value: number; c
 }
 
 function StatusBadge({ status }: { status: string | null }) {
-  const colors: Record<string, string> = {
-    open: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-    in_progress: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
-    done: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-    blocked: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
-    review: 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
-  }
-  const s = status || 'open'
-  return <span className={`text-xs px-2 py-0.5 rounded-full ${colors[s] || 'bg-muted'}`}>{s.replace('_', ' ')}</span>
+  const state = toIssueState(status)
+  return (
+    <span className={cn('text-xs px-2 py-0.5 rounded-sm font-medium', STATUS_CLASS[state])}>{STATUS_LABEL[state]}</span>
+  )
 }
 
 function PriorityBadge({ priority }: { priority: string }) {
-  const colors: Record<string, string> = {
-    high: 'text-red-600',
-    medium: 'text-yellow-600',
-    low: 'text-green-600'
-  }
-  return <span className={`text-xs font-medium ${colors[priority] || ''}`}>{priority}</span>
+  const isKnown = priority === 'urgent' || priority === 'high' || priority === 'medium' || priority === 'low'
+  if (!isKnown) return <span className='text-xs font-medium text-muted-foreground'>{priority}</span>
+  const p = priority as IssuePriority
+  return <span className={cn('text-xs font-medium', PRIORITY_CLASS[p])}>{PRIORITY_LABEL[p]}</span>
 }

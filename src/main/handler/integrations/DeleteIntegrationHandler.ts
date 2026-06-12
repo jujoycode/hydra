@@ -1,5 +1,5 @@
 import { CoreBaseHandler } from '@/base/CoreBaseHandler'
-import { IpcChannel, type DeleteIntegrationParams } from '@/interface/CoreInterface'
+import { type DeleteIntegrationParams, IpcChannel } from '@/interface/CoreInterface'
 
 export class DeleteIntegrationHandler extends CoreBaseHandler<IpcChannel.INTEGRATION_DELETE> {
   constructor() {

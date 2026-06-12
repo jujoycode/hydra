@@ -1,6 +1,6 @@
 import { Outlet } from '@tanstack/react-router'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/atoms/ResizablePanel'
-import { Toaster } from '@/atoms/Sonner'
+import { ErrorBoundary } from '@/components/molecules/ErrorBoundary'
 import { useAuth } from '@/hooks/use-auth'
 import { DetailPanel } from '@/organisms/panels/DetailPanel'
 import { AppSidebar } from '@/organisms/sidebars/AppSidebar'
@@ -20,11 +20,13 @@ export function MainLayout() {
         <ResizablePanelGroup direction='horizontal' className='h-screen'>
           <ResizablePanel defaultSize={isDetailOpen ? 60 : 100} minSize={40}>
             <div className='flex h-full flex-col'>
-              <div className='flex items-center gap-2 border-b px-4 py-2'>
+              <div className='glass sticky top-0 z-10 flex items-center gap-2 border-b border-border px-4 py-2'>
                 <SidebarTrigger className='-ml-1' />
               </div>
               <main className='flex-1 overflow-auto'>
-                <Outlet />
+                <ErrorBoundary>
+                  <Outlet />
+                </ErrorBoundary>
               </main>
             </div>
           </ResizablePanel>
@@ -38,7 +40,6 @@ export function MainLayout() {
           )}
         </ResizablePanelGroup>
       </SidebarInset>
-      <Toaster />
     </SidebarProvider>
   )
 }

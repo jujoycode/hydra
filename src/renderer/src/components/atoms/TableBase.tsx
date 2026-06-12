@@ -22,12 +22,12 @@ import { cn } from '@/lib/utils'
 // 테이블 스타일 상수 정의
 export const TABLE_STYLES = {
   header: {
-    base: 'bg-muted/70 sticky top-0 z-10',
+    base: 'bg-muted sticky top-0 z-10 border-b border-border',
     height: 'h-9'
   },
   headerCell: {
     base: 'py-2 px-2',
-    sortable: 'cursor-pointer select-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-150'
+    sortable: 'cursor-pointer select-none hover:bg-accent transition-colors duration-150'
   },
   headerContent: {
     base: 'flex items-center',
@@ -36,20 +36,20 @@ export const TABLE_STYLES = {
     right: 'justify-end',
     spaceBetween: 'justify-between'
   },
-  headerText: 'text-xs font-medium',
+  headerText: 'micro',
   sortIcon: {
     base: 'flex',
     margin: {
       default: 'ml-1',
       centered: 'ml-0.5'
     },
-    active: 'h-3 w-3 text-blue-500',
-    inactive: 'h-3 w-3 text-gray-400'
+    active: 'h-3 w-3 text-foreground',
+    inactive: 'h-3 w-3 text-muted-foreground'
   },
   row: {
-    base: 'group/row hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-colors duration-200',
+    base: 'group/row border-b border-hairline-soft hover:bg-accent transition-colors duration-200',
     height: 'h-9',
-    selected: 'bg-blue-50 dark:bg-blue-950/30',
+    selected: 'bg-green-50',
     clickable: 'cursor-pointer'
   },
   cell: {

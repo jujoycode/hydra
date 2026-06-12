@@ -4,12 +4,13 @@ import { Button } from '@/atoms/Button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/atoms/DropdownMenu'
 import { createActionsColumn, createColumn } from '@/atoms/TableColumnDef'
 import type { Project } from '@/interface/CoreInterface'
-import { formatDate } from '@/lib/utils'
+import { formatKoreanDate } from '@/lib/formatDate'
+import i18n from '../../../locales'
 
 // Project name column
 export const projectNameColumn = createColumn<Project, string>({
   id: 'project_name',
-  header: 'Name',
+  header: i18n.t('common:label.name'),
   enableSorting: false,
   accessorKey: 'project_name',
   cell: ({ row }) => {
@@ -25,7 +26,7 @@ export const projectNameColumn = createColumn<Project, string>({
 // Project key column
 export const projectKeyColumn = createColumn<Project, string>({
   id: 'project_key',
-  header: 'Key',
+  header: i18n.t('common:label.key'),
   accessorKey: 'project_key',
   enableSorting: false,
   cell: ({ row }) => {
@@ -47,7 +48,7 @@ export const projectKeyColumn = createColumn<Project, string>({
 // Project description column
 export const projectDescColumn = createColumn<Project, string>({
   id: 'project_desc',
-  header: 'Description',
+  header: i18n.t('common:label.description'),
   accessorKey: 'project_desc',
   enableSorting: false,
   cell: ({ row }) => {
@@ -66,7 +67,11 @@ export const startDateColumn = createColumn<Project, Date | string | null>({
   header: 'Start',
   accessorKey: 'project_start_date',
   enableSorting: true,
-  cell: ({ row }) => <div className='text-center'>{formatDate(row.original.project_start_date)}</div>,
+  cell: ({ row }) => (
+    <div className='text-center text-caption tabular-nums text-muted-foreground'>
+      {formatKoreanDate(row.original.project_start_date)}
+    </div>
+  ),
   meta: {
     align: 'center',
     width: 'w-1/6'
@@ -79,7 +84,11 @@ export const endDateColumn = createColumn<Project, Date | string | null>({
   header: 'End',
   accessorKey: 'project_end_date',
   enableSorting: true,
-  cell: ({ row }) => <div className='text-center'>{formatDate(row.original.project_end_date)}</div>,
+  cell: ({ row }) => (
+    <div className='text-center text-caption tabular-nums text-muted-foreground'>
+      {formatKoreanDate(row.original.project_end_date)}
+    </div>
+  ),
   meta: {
     align: 'center',
     width: 'w-1/6'
@@ -103,11 +112,11 @@ export const actionsColumn = createActionsColumn<Project>({
           <DropdownMenuContent align='end'>
             <DropdownMenuItem className='cursor-pointer'>
               <Pencil className='h-3.5 w-3.5 mr-2' />
-              Edit
+              {i18n.t('common:button.edit')}
             </DropdownMenuItem>
             <DropdownMenuItem className='text-destructive focus:text-destructive cursor-pointer'>
-              <Trash2 color='red' className='h-3.5 w-3.5 mr-2' />
-              Delete
+              <Trash2 className='h-3.5 w-3.5 mr-2' />
+              {i18n.t('common:button.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

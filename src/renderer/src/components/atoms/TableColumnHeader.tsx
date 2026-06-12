@@ -30,8 +30,8 @@ export function TableColumnHeader<TData, TValue>({
 }: TableColumnHeaderProps<TData, TValue>) {
   // 정렬 아이콘 스타일
   const iconStyles = {
-    active: 'w-4 h-4 text-blue-600',
-    inactive: 'w-4 h-4 text-gray-500'
+    active: 'w-4 h-4 text-foreground',
+    inactive: 'w-4 h-4 text-muted-foreground'
   }
 
   // 정렬 아이콘 렌더링
@@ -65,7 +65,7 @@ export function TableColumnHeader<TData, TValue>({
 
   return (
     <div className={cn('flex items-center', getContainerStyles(), className)}>
-      <span className='text-xs font-medium truncate'>{title}</span>
+      <span className='micro truncate'>{title}</span>
       {renderSortIcon()}
     </div>
   )

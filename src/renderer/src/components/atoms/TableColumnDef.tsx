@@ -123,7 +123,7 @@ export function createSelectColumn<TData>({
       <div className='flex items-center justify-center'>
         <input
           type='checkbox'
-          className='h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary'
+          className='h-4 w-4 text-primary rounded border-input-strong focus:ring-primary'
           checked={table.getIsAllRowsSelected()}
           onChange={(e) => table.toggleAllRowsSelected(e.target.checked)}
           aria-label='Select all'
@@ -134,7 +134,7 @@ export function createSelectColumn<TData>({
       <div className='flex items-center justify-center'>
         <input
           type='checkbox'
-          className='h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary'
+          className='h-4 w-4 text-primary rounded border-input-strong focus:ring-primary'
           checked={row.getIsSelected()}
           onChange={(e) => row.toggleSelected(e.target.checked)}
           aria-label='Select row'

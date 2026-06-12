@@ -5,14 +5,16 @@ import type { StatusData } from '@/atoms/charts/StatusDonutChart'
 import { useAuth } from '@/hooks/use-auth'
 import type { Issue, Project } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
+import { getCssVar } from '@/lib/statusTokens'
 import { HomePageTemplate } from '@/templates/HomePageTemplate'
 
-const STATUS_COLORS = {
-  in_progress: '#3B82F6',
-  done: '#10B981',
-  blocked: '#EF4444',
-  review: '#F59E0B'
-}
+// 도넛 차트 색은 토큰을 런타임 hex로 읽어 SVG fill에 주입(라이트/다크 추종)
+const getStatusColors = () => ({
+  in_progress: getCssVar('--chart-1'),
+  done: getCssVar('--success'),
+  blocked: getCssVar('--destructive'),
+  review: getCssVar('--chart-4')
+})
 
 export default function HomePage() {
   const { user } = useAuth()
@@ -56,11 +58,12 @@ export default function HomePage() {
         blocked: statusCount.blocked
       })
 
+      const statusColors = getStatusColors()
       setStatusData([
-        { name: t('status.inProgress'), value: statusCount.in_progress, color: STATUS_COLORS.in_progress },
-        { name: t('status.done'), value: statusCount.done, color: STATUS_COLORS.done },
-        { name: t('status.blocked'), value: statusCount.blocked, color: STATUS_COLORS.blocked },
-        { name: t('status.review'), value: statusCount.review, color: STATUS_COLORS.review }
+        { name: t('status.inProgress'), value: statusCount.in_progress, color: statusColors.in_progress },
+        { name: t('status.done'), value: statusCount.done, color: statusColors.done },
+        { name: t('status.blocked'), value: statusCount.blocked, color: statusColors.blocked },
+        { name: t('status.review'), value: statusCount.review, color: statusColors.review }
       ])
 
       // 추이 데이터 (최근 6개월)

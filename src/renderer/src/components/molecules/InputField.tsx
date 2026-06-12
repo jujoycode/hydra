@@ -68,7 +68,7 @@ function InputFieldPassword({ showForgotPassword, required = true, className, ..
       {showForgotPassword && (
         <div className='flex justify-end'>
           <a href='#' className='text-sm underline-offset-2 hover:underline'>
-            Forgot your password?
+            비밀번호를 잊으셨나요?
           </a>
         </div>
       )}

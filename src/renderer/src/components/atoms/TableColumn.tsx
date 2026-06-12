@@ -11,15 +11,15 @@ interface TableColumnHeaderProps<TData, TValue> {
 export function TableColumnHeader<TData, TValue>({ column, title, className }: TableColumnHeaderProps<TData, TValue>) {
   return (
     <div className={cn('flex items-center', className)}>
-      <span className='text-xs font-medium'>{title}</span>
+      <span className='micro'>{title}</span>
       {column.getCanSort() && (
         <div className='ml-1.5'>
           {column.getIsSorted() === 'asc' ? (
-            <ArrowUp className='w-4 h-4 text-blue-600' strokeWidth={2.5} />
+            <ArrowUp className='w-4 h-4 text-foreground' strokeWidth={2.5} />
           ) : column.getIsSorted() === 'desc' ? (
-            <ArrowDown className='w-4 h-4 text-blue-600' strokeWidth={2.5} />
+            <ArrowDown className='w-4 h-4 text-foreground' strokeWidth={2.5} />
           ) : (
-            <ArrowUpDown className='w-4 h-4 text-gray-500' strokeWidth={2} />
+            <ArrowUpDown className='w-4 h-4 text-muted-foreground' strokeWidth={2} />
           )}
         </div>
       )}
@@ -48,7 +48,7 @@ export function TableSelectCell({ checked, onCheckedChange, disabled }: TableSel
     <div className='flex items-center justify-center'>
       <input
         type='checkbox'
-        className='h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary'
+        className='h-4 w-4 text-primary rounded border-input-strong focus:ring-primary'
         checked={checked}
         onChange={(e) => onCheckedChange(e.target.checked)}
         disabled={disabled}

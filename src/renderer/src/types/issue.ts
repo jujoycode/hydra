@@ -33,7 +33,7 @@ export interface Issue {
   /** 이슈 설명 (선택사항) */
   description?: string
   /** 이슈 우선순위 (선택사항) */
-  priority?: 'low' | 'medium' | 'high'
+  priority?: 'low' | 'medium' | 'high' | 'urgent'
   /** 이슈 태그 목록 (선택사항) */
   tags?: string[]
 }

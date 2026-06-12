@@ -11,15 +11,17 @@ import {
 import { Button } from '@/atoms/Button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/atoms/DropdownMenu'
 import { createActionsColumn, createColumn } from '@/atoms/TableColumnDef'
-import { formatDate } from '@/lib/utils'
+import { formatKoreanDate } from '@/lib/formatDate'
+import { PRIORITY_CLASS, PRIORITY_LABEL } from '@/lib/statusTokens'
 import { IssueBadge } from '@/molecules/issues/IssueBadge'
 import { UserAvatar } from '@/molecules/users/UserAvatar'
 import type { Issue, IssuePriority, IssueTableMeta } from '@/types/issue'
+import i18n from '../../../locales'
 
 // Type Column
 export const typeColumn = createColumn<Issue, 'bug' | 'feature'>({
   id: 'type',
-  header: 'Type',
+  header: i18n.t('common:label.type'),
   accessorKey: 'type',
   enableSorting: false,
   cell: ({ row }) => {
@@ -27,9 +29,9 @@ export const typeColumn = createColumn<Issue, 'bug' | 'feature'>({
     return (
       <div className='flex justify-center'>
         {type === 'bug' ? (
-          <TriangleAlert size={16} strokeWidth={1.5} color='#dc2626' className='opacity-80' />
+          <TriangleAlert size={16} strokeWidth={1.5} className='text-destructive opacity-80' />
         ) : (
-          <CircleDot size={16} strokeWidth={1.5} color='#16a34a' className='opacity-80' />
+          <CircleDot size={16} strokeWidth={1.5} className='text-mc-green opacity-80' />
         )}
       </div>
     )
@@ -39,7 +41,7 @@ export const typeColumn = createColumn<Issue, 'bug' | 'feature'>({
 // Priority Column
 export const priorityColumn = createColumn<Issue, IssuePriority | undefined>({
   id: 'priority',
-  header: 'Priority',
+  header: i18n.t('common:label.priority'),
   accessorKey: 'priority',
   enableSorting: false,
   cell: ({ row }) => {
@@ -48,49 +50,34 @@ export const priorityColumn = createColumn<Issue, IssuePriority | undefined>({
     if (!priority)
       return (
         <div className='flex justify-center'>
-          <div className='h-[14px] w-[14px] text-gray-300' />
+          <div className='h-[14px] w-[14px] text-muted' />
         </div>
       )
 
-    const getPriorityConfig = () => {
+    const getPriorityIcon = () => {
+      const colorClass = PRIORITY_CLASS[priority]
       switch (priority) {
+        case 'urgent':
+          return <ChevronsUp size={14} strokeWidth={2.5} className={colorClass} />
         case 'high':
-          return {
-            color: '#dc2626',
-            label: 'High',
-            icon: <ChevronsUp size={14} strokeWidth={2} className='text-red-600' />
-          }
+          return <ChevronsUp size={14} strokeWidth={2} className={colorClass} />
         case 'medium':
-          return {
-            color: '#f59e0b',
-            label: 'Medium',
-            icon: (
-              <div className='relative flex flex-col'>
-                <ChevronUp size={14} strokeWidth={2} className='text-yellow-500 -mb-[10px]' />
-                <ChevronDown size={14} strokeWidth={2} className='text-yellow-500' />
-              </div>
-            )
-          }
+          return (
+            <div className='relative flex flex-col'>
+              <ChevronUp size={14} strokeWidth={2} className={`${colorClass} -mb-[10px]`} />
+              <ChevronDown size={14} strokeWidth={2} className={colorClass} />
+            </div>
+          )
         case 'low':
-          return {
-            color: '#16a34a',
-            label: 'Low',
-            icon: <ChevronDown size={14} strokeWidth={2} className='text-green-600' />
-          }
+          return <ChevronDown size={14} strokeWidth={2} className={colorClass} />
         default:
-          return {
-            color: '#6b7280',
-            label: 'None',
-            icon: <div className='h-[14px] w-[14px]' />
-          }
+          return <div className='h-[14px] w-[14px]' />
       }
     }
 
-    const { label, icon } = getPriorityConfig()
-
     return (
-      <div className='flex justify-center items-center' title={label}>
-        {icon}
+      <div className='flex justify-center items-center' title={PRIORITY_LABEL[priority]}>
+        {getPriorityIcon()}
       </div>
     )
   }
@@ -99,7 +86,7 @@ export const priorityColumn = createColumn<Issue, IssuePriority | undefined>({
 // Key Column
 export const keyColumn = createColumn<Issue, string>({
   id: 'key',
-  header: 'Key',
+  header: i18n.t('common:label.key'),
   accessorKey: 'key',
   enableSorting: true,
   sortDirection: 'desc',
@@ -128,7 +115,7 @@ export const keyColumn = createColumn<Issue, string>({
 // Title Column
 export const titleColumn = createColumn<Issue, string>({
   id: 'title',
-  header: 'Title',
+  header: i18n.t('common:label.title'),
   accessorKey: 'title',
   enableSorting: false,
   cell: ({ row, table }) => {
@@ -156,7 +143,7 @@ export const titleColumn = createColumn<Issue, string>({
 // Assignee Column
 export const assigneeColumn = createColumn<Issue, string>({
   id: 'assignee',
-  header: 'Assignee',
+  header: i18n.t('common:label.assignee'),
   accessorKey: 'assignee',
   enableSorting: false,
   cell: ({ row }) => {
@@ -172,7 +159,7 @@ export const assigneeColumn = createColumn<Issue, string>({
 // Reporter Column
 export const reporterColumn = createColumn<Issue>({
   id: 'reporter',
-  header: 'Reporter',
+  header: i18n.t('common:label.reporter'),
   enableSorting: false,
   cell: ({ row }) => {
     const issue = row.original
@@ -194,14 +181,14 @@ export const reporterColumn = createColumn<Issue>({
 // Status Column
 export const statusColumn = createColumn<Issue>({
   id: 'state',
-  header: 'Status',
+  header: i18n.t('common:label.status'),
   accessorKey: 'state',
   enableSorting: false,
   cell: ({ row }) => {
     const state = row.getValue('state')
     return (
       <div className='text-left'>
-        <IssueBadge state={state as any} size='sm' variant='subtle' />
+        <IssueBadge state={state as any} size='sm' />
       </div>
     )
   }
@@ -210,14 +197,14 @@ export const statusColumn = createColumn<Issue>({
 // Created Date Column
 export const createdDateColumn = createColumn<Issue, Date>({
   id: 'created',
-  header: 'Created',
+  header: i18n.t('common:label.created'),
   accessorKey: 'created',
   enableSorting: true,
   cell: ({ row }) => {
     const date = row.getValue('created') as Date
     return (
       <div className='text-center'>
-        <span className='text-xs text-gray-600'>{formatDate(date)}</span>
+        <span className='text-caption tabular-nums text-muted-foreground'>{formatKoreanDate(date)}</span>
       </div>
     )
   }
@@ -226,14 +213,14 @@ export const createdDateColumn = createColumn<Issue, Date>({
 // Updated Date Column
 export const updatedDateColumn = createColumn<Issue, Date>({
   id: 'updated',
-  header: 'Updated',
+  header: i18n.t('common:label.updated'),
   accessorKey: 'updated',
   enableSorting: true,
   cell: ({ row }) => {
     const date = row.getValue('updated') as Date
     return (
       <div className='text-center'>
-        <span className='text-xs text-gray-600'>{formatDate(date)}</span>
+        <span className='text-caption tabular-nums text-muted-foreground'>{formatKoreanDate(date)}</span>
       </div>
     )
   }
@@ -255,8 +242,8 @@ export const actionsColumn = createActionsColumn<Issue>({
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
             <DropdownMenuItem className='text-destructive focus:text-destructive cursor-pointer'>
-              <Trash2 color='red' className='h-3.5 w-3.5 mr-2' />
-              Delete
+              <Trash2 className='h-3.5 w-3.5 mr-2' />
+              {i18n.t('common:button.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
