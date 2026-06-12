@@ -14,7 +14,9 @@ erDiagram
   UUID user_id PK
   VARCHAR(255) user_name "nullable"
   VARCHAR(255) user_email "nullable"
-  VARCHAR(255) user_db_role "nullable"
+  VARCHAR(255) user_sn UK
+  VARCHAR(255) user_password_hash
+  VARCHAR(20) user_status "default: active"
   VARCHAR(1024) user_avatar_path "nullable"
   VARCHAR(50) user_role "default: member"
   TIMESTAMP user_created_at "nullable"
@@ -23,13 +25,15 @@ erDiagram
 ```
 
 ### `users`
-사용자 정보를 저장합니다. DB 연결 시 PostgreSQL ROLE과 매핑됩니다.
+사용자 정보를 저장합니다. 앱 레벨 로컬 계정(user_sn + 비밀번호 해시)으로 로그인합니다.
 
 **Properties**
   - `user_id`: UUID 기본키
   - `user_name`: 사용자 이름
   - `user_email`: 이메일
-  - `user_db_role`: PostgreSQL 데이터베이스 역할명
+  - `user_sn`: 로그인 ID (정규화, 유니크)
+  - `user_password_hash`: scrypt 해시 (파라미터 자기기술 포맷)
+  - `user_status`: active / inactive
   - `user_avatar_path`: 아바타 이미지 경로
   - `user_role`: 앱 내 역할 (admin / member)
   - `user_created_at`: 생성일시

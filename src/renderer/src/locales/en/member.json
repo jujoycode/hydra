@@ -27,9 +27,9 @@
   },
   "dialog": {
     "addTitle": "Add Member",
-    "addDescription": "Create a new member with a PostgreSQL database role.",
+    "addDescription": "Create a new member with a login ID and initial password.",
     "removeTitle": "Remove Member",
-    "removeDescription": "Are you sure you want to remove {{name}}? This will also remove the associated PostgreSQL role. This action cannot be undone.",
+    "removeDescription": "Are you sure you want to remove {{name}}? This action cannot be undone.",
     "inviteTitle": "Generate Invite Code",
     "inviteDescription": "Create an invite code that others can use to connect to this workspace."
   },
