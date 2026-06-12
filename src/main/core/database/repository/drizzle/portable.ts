@@ -3,14 +3,16 @@
 import type { AnyColumn, SQL } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 
-// 사용자 입력의 LIKE 와일드카드(%, _, \)를 리터럴로 이스케이프
+// 사용자 입력의 LIKE 와일드카드(%, _, !)를 리터럴로 이스케이프.
+// 이스케이프 문자를 '!'로 고정 — backslash('\')는 MySQL에서 escape '\\' 구문이
+// 드라이버 레이어를 거칠 때 이중 이스케이프 문제를 일으키므로 사용하지 않는다.
 export function escapeLikePattern(value: string): string {
-  return value.replace(/[\\%_]/g, (ch) => `\\${ch}`)
+  return value.replace(/[!%_]/g, (ch) => `!${ch}`)
 }
 
 // 대소문자 무시 부분 일치. pg/mysql 모두에서 collation 과 무관하게 동작.
 // 패턴은 바인드 파라미터로 전달되어 SQL 인젝션에 안전하다.
 export function caseInsensitiveLike(column: AnyColumn, value: string): SQL {
   const pattern = `%${escapeLikePattern(value)}%`
-  return sql`lower(${column}) like lower(${pattern}) escape '\\'`
+  return sql`lower(${column}) like lower(${pattern}) escape '!'`
 }
