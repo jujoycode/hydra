@@ -4,9 +4,11 @@
 import { join, resolve } from 'node:path'
 import { app } from 'electron'
 
-export function getMigrationsFolder(): string {
+export type MigrationDialect = 'pg' | 'mysql'
+
+export function getMigrationsFolder(dialect: MigrationDialect): string {
   if (app.isPackaged) {
-    return join(process.resourcesPath, 'drizzle')
+    return join(process.resourcesPath, 'drizzle', dialect)
   }
-  return resolve(process.cwd(), 'drizzle')
+  return resolve(process.cwd(), 'drizzle', dialect)
 }

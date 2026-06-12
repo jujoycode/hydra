@@ -1,20 +1,22 @@
 import { desc, eq } from 'drizzle-orm'
-import * as schema from '../../schema/drizzle/schema'
+import * as pgSchema from '../../schema/drizzle/schema'
 import type {
   CommentRecord,
   CommentRepository,
   CreateCommentData,
   UpdateCommentData
 } from '../interfaces/CommentRepository'
-import type { DrizzleDb } from './executor'
+import type { DrizzleDb, DrizzleSchema } from './executor'
 import { selectById } from './readAfterWrite'
 
-const { comments } = schema
-
 export class DrizzleCommentRepository implements CommentRepository {
-  constructor(private db: DrizzleDb) {}
+  constructor(
+    private db: DrizzleDb,
+    private schema: DrizzleSchema = pgSchema
+  ) {}
 
   async create(data: CreateCommentData): Promise<CommentRecord> {
+    const { comments } = this.schema
     const now = new Date()
     await this.db.insert(comments).values({
       comment_id: data.commentId,
@@ -28,6 +30,7 @@ export class DrizzleCommentRepository implements CommentRepository {
   }
 
   async findByIssue(issueId: string): Promise<CommentRecord[]> {
+    const { comments } = this.schema
     const rows = await this.db
       .select()
       .from(comments)
@@ -37,6 +40,7 @@ export class DrizzleCommentRepository implements CommentRepository {
   }
 
   async update(commentId: string, data: UpdateCommentData): Promise<CommentRecord> {
+    const { comments } = this.schema
     await this.db
       .update(comments)
       .set({
@@ -49,6 +53,7 @@ export class DrizzleCommentRepository implements CommentRepository {
   }
 
   async delete(commentId: string): Promise<boolean> {
+    const { comments } = this.schema
     await this.db.delete(comments).where(eq(comments.comment_id, commentId))
     return true
   }

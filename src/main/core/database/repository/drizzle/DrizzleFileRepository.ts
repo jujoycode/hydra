@@ -2,17 +2,19 @@
 
 import { and, eq } from 'drizzle-orm'
 import { CoreUtil } from '../../../util/CoreUtil'
-import * as schema from '../../schema/drizzle/schema'
+import * as pgSchema from '../../schema/drizzle/schema'
 import type { CreateFileData, FileRecord, FileRepository } from '../interfaces/FileRepository'
-import type { DrizzleDb } from './executor'
+import type { DrizzleDb, DrizzleSchema } from './executor'
 import { selectById } from './readAfterWrite'
 
-const { files, issuesFilesLink } = schema
-
 export class DrizzleFileRepository implements FileRepository {
-  constructor(private db: DrizzleDb) {}
+  constructor(
+    private db: DrizzleDb,
+    private schema: DrizzleSchema = pgSchema
+  ) {}
 
   async create(data: CreateFileData): Promise<FileRecord> {
+    const { files } = this.schema
     const now = new Date()
     await this.db.insert(files).values({
       file_id: data.fileId,
@@ -27,16 +29,19 @@ export class DrizzleFileRepository implements FileRepository {
   }
 
   async findById(fileId: string): Promise<FileRecord | null> {
+    const { files } = this.schema
     const rows = await this.db.select().from(files).where(eq(files.file_id, fileId)).limit(1)
     return (rows[0] as FileRecord) ?? null
   }
 
   async delete(fileId: string): Promise<boolean> {
+    const { files } = this.schema
     await this.db.delete(files).where(eq(files.file_id, fileId))
     return true
   }
 
   async linkToIssue(issueId: string, fileId: string): Promise<void> {
+    const { issuesFilesLink } = this.schema
     await this.db.insert(issuesFilesLink).values({
       issue_file_link_id: CoreUtil.getUuid(),
       issue_id: issueId,
@@ -45,12 +50,14 @@ export class DrizzleFileRepository implements FileRepository {
   }
 
   async unlinkFromIssue(issueId: string, fileId: string): Promise<void> {
+    const { issuesFilesLink } = this.schema
     await this.db
       .delete(issuesFilesLink)
       .where(and(eq(issuesFilesLink.issue_id, issueId), eq(issuesFilesLink.file_id, fileId)))
   }
 
   async findByIssue(issueId: string): Promise<FileRecord[]> {
+    const { files, issuesFilesLink } = this.schema
     const rows = await this.db
       .select({
         file_id: files.file_id,

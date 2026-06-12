@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Hydra is a lightweight Electron desktop app for project/issue management. Offline-first, multi-workspace, open-source. Users connect their own PostgreSQL database.
+Hydra is a lightweight Electron desktop app for project/issue management. Offline-first, multi-workspace, open-source. Users connect their own PostgreSQL or MySQL 8 database.
 
-**Tech Stack**: Electron + React 19 + TypeScript, shadcn/ui + Tailwind CSS v4, Zustand v5, Drizzle ORM + PostgreSQL, TanStack Router + Table + Form, Tiptap (rich text), Recharts, lucide-react, i18next (+ react-i18next), sonner (toast), next-themes, react-resizable-panels, Vitest.
+**Tech Stack**: Electron + React 19 + TypeScript, shadcn/ui + Tailwind CSS v4, Zustand v5, Drizzle ORM + PostgreSQL/MySQL, TanStack Router + Table + Form, Tiptap (rich text), Recharts, lucide-react, i18next (+ react-i18next), sonner (toast), next-themes, react-resizable-panels, Vitest.
 
 ## Commands
 
@@ -27,6 +27,7 @@ Hydra is a lightweight Electron desktop app for project/issue management. Offlin
 | Stop PostgreSQL | `pnpm docker:down` |
 | Drizzle push schema | `pnpm db:push` |
 | Drizzle generate migration | `pnpm db:generate` |
+| Drizzle generate MySQL migration | `pnpm db:generate:mysql` |
 | Drizzle Studio (DB GUI) | `pnpm db:studio` |
 | Test (once) | `pnpm test` |
 | Test (watch) | `pnpm test:watch` |
@@ -55,6 +56,8 @@ Electron three-process model:
 - **DB Abstraction** (`core/database/`):
   - `adapter/DatabaseAdapter.ts` — Interface for multi-DBMS support
   - `adapter/PostgresAdapter.ts` — Drizzle + pg implementation (errors wrapped by `DatabaseError` via `wrapPgError()`)
+  - `adapter/MySqlAdapter.ts` — Drizzle + mysql2 implementation (workspace `dbms: 'mysql'`)
+  - `adapter/createAdapter.ts` — dbms → adapter factory
   - `repository/interfaces/` — UserRepository, ProjectRepository, IssueRepository, FileRepository, ...
   - `repository/drizzle/` — PostgreSQL implementations
   - `schema/drizzle/schema.ts` — Drizzle table definitions. Tables (15): `users`, `projects`, `users_projects_link`, `milestones`, `issues`, `files`, `issues_files_link`, `comments`, `labels`, `issues_labels_link`, `tasks`, `issue_relations`, `notifications`, `integrations`, `invite_codes`. Naming rules: see `docs/design/convention-db.md`.

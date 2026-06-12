@@ -54,6 +54,30 @@ pnpm hot
 - **포트 5432 충돌**: 이미 로컬에 PostgreSQL이 떠 있는 경우. 기존 프로세스를 끄거나 `docker-compose.yml`의 포트를 `'15432:5432'` 등으로 변경 후 `.env`의 `DB_PORT`도 같이 수정.
 - **첫 실행 후 워크스페이스 연결 화면**: DB 접속 정보를 앱 UI에서 입력하면 연결 + 초기 사용자 생성. `.env`는 drizzle CLI 전용이고 앱 런타임 접속과는 분리되어 있습니다.
 
+## MySQL 8 workspace
+
+Hydra can connect to MySQL 8.0+ as well as PostgreSQL. Select the DBMS when adding a workspace.
+
+Runtime service account needs DML only (never `ALL PRIVILEGES`):
+
+```sql
+CREATE USER 'hydra_app'@'%' IDENTIFIED BY '<password>';
+GRANT SELECT, INSERT, UPDATE, DELETE ON hydra.* TO 'hydra_app'@'%';
+```
+
+Schema migrations run automatically at connect. When the schema is already up-to-date,
+Hydra skips the migrator entirely — so a DML-only account works for normal operation.
+
+**First connect and after an app upgrade** (when new migrations are pending), you must
+connect once with an account that can run DDL (`CREATE, ALTER, INDEX, REFERENCES`), or
+use an admin account for that single connect. Subsequent connects can use the DML-only
+account above. The database must use the `utf8mb4` charset.
+
+> Note: never run `drizzle-kit push` against a MySQL workspace — use the generated
+> migrations only (collation is owned by the schema's custom types).
+
+로컬 개발 시 `docker-compose.yml`에 mysql 서비스를 추가하고 `MYSQL_PORT` 환경변수로 호스트 포트를 변경할 수 있습니다 (예: `'3307:3306'`).
+
 ## 프로젝트 구조
 
 - `src/main/` — Electron main process (IPC, DB, workspace)

@@ -1,7 +1,7 @@
 // Drizzle 기반 프로젝트 리포지토리 구현
 
 import { and, eq, sql } from 'drizzle-orm'
-import * as schema from '../../schema/drizzle/schema'
+import * as pgSchema from '../../schema/drizzle/schema'
 import type {
   CreateProjectData,
   ProjectRecord,
@@ -9,15 +9,17 @@ import type {
   UpdateProjectData
 } from '../interfaces/ProjectRepository'
 import type { RepoExecutor } from '../interfaces/RepoExecutor'
-import type { DrizzleDb, DrizzleExecutor } from './executor'
+import type { DrizzleDb, DrizzleExecutor, DrizzleSchema } from './executor'
 import { selectById } from './readAfterWrite'
 
-const { projects, usersProjectsLink } = schema
-
 export class DrizzleProjectRepository implements ProjectRepository {
-  constructor(private db: DrizzleDb) {}
+  constructor(
+    private db: DrizzleDb,
+    private schema: DrizzleSchema = pgSchema
+  ) {}
 
   async create(data: CreateProjectData, executor: RepoExecutor = this.db): Promise<ProjectRecord> {
+    const { projects } = this.schema
     const ex = executor as DrizzleExecutor
     await ex.insert(projects).values({
       project_id: data.projectId,
@@ -32,16 +34,19 @@ export class DrizzleProjectRepository implements ProjectRepository {
   }
 
   async findAll(): Promise<ProjectRecord[]> {
+    const { projects } = this.schema
     const rows = await this.db.select().from(projects)
     return rows as ProjectRecord[]
   }
 
   async findById(projectId: string): Promise<ProjectRecord | null> {
+    const { projects } = this.schema
     const rows = await this.db.select().from(projects).where(eq(projects.project_id, projectId)).limit(1)
     return (rows[0] as ProjectRecord) ?? null
   }
 
   async findByUserId(userId: string): Promise<ProjectRecord[]> {
+    const { projects, usersProjectsLink } = this.schema
     const rows = await this.db
       .select({
         project_id: projects.project_id,
@@ -60,6 +65,7 @@ export class DrizzleProjectRepository implements ProjectRepository {
   }
 
   async update(projectId: string, data: UpdateProjectData): Promise<ProjectRecord> {
+    const { projects } = this.schema
     const values: Record<string, unknown> = {}
     if (data.projectName !== undefined) values.project_name = data.projectName
     if (data.projectDesc !== undefined) values.project_desc = data.projectDesc
@@ -72,11 +78,13 @@ export class DrizzleProjectRepository implements ProjectRepository {
   }
 
   async delete(projectId: string): Promise<boolean> {
+    const { projects } = this.schema
     await this.db.delete(projects).where(eq(projects.project_id, projectId))
     return true
   }
 
   async linkUser(linkId: string, userId: string, projectId: string, executor: RepoExecutor = this.db): Promise<void> {
+    const { usersProjectsLink } = this.schema
     const ex = executor as DrizzleExecutor
     await ex.insert(usersProjectsLink).values({
       user_project_link_id: linkId,
@@ -86,12 +94,14 @@ export class DrizzleProjectRepository implements ProjectRepository {
   }
 
   async unlinkUser(userId: string, projectId: string): Promise<void> {
+    const { usersProjectsLink } = this.schema
     await this.db
       .delete(usersProjectsLink)
       .where(and(eq(usersProjectsLink.user_id, userId), eq(usersProjectsLink.project_id, projectId)))
   }
 
   async countByCreator(userId: string): Promise<number> {
+    const { projects } = this.schema
     const rows = await this.db
       .select({ count: sql<number>`count(*)` })
       .from(projects)
@@ -100,6 +110,7 @@ export class DrizzleProjectRepository implements ProjectRepository {
   }
 
   async countByName(name: string): Promise<number> {
+    const { projects } = this.schema
     const rows = await this.db
       .select({ count: sql<number>`count(*)` })
       .from(projects)
@@ -108,6 +119,7 @@ export class DrizzleProjectRepository implements ProjectRepository {
   }
 
   async countByKey(key: string): Promise<number> {
+    const { projects } = this.schema
     const rows = await this.db
       .select({ count: sql<number>`count(*)` })
       .from(projects)

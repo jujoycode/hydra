@@ -1,19 +1,21 @@
 import { eq } from 'drizzle-orm'
-import * as schema from '../../schema/drizzle/schema'
+import * as pgSchema from '../../schema/drizzle/schema'
 import type {
   CreateIntegrationData,
   IntegrationRecord,
   IntegrationRepository
 } from '../interfaces/IntegrationRepository'
-import type { DrizzleDb } from './executor'
+import type { DrizzleDb, DrizzleSchema } from './executor'
 import { selectById } from './readAfterWrite'
 
-const { integrations } = schema
-
 export class DrizzleIntegrationRepository implements IntegrationRepository {
-  constructor(private db: DrizzleDb) {}
+  constructor(
+    private db: DrizzleDb,
+    private schema: DrizzleSchema = pgSchema
+  ) {}
 
   async create(data: CreateIntegrationData): Promise<IntegrationRecord> {
+    const { integrations } = this.schema
     await this.db.insert(integrations).values({
       integration_id: data.integrationId,
       integration_type: data.integrationType,
@@ -24,11 +26,13 @@ export class DrizzleIntegrationRepository implements IntegrationRepository {
   }
 
   async findAll(): Promise<IntegrationRecord[]> {
+    const { integrations } = this.schema
     const rows = await this.db.select().from(integrations)
     return rows as IntegrationRecord[]
   }
 
   async findByType(type: string): Promise<IntegrationRecord | null> {
+    const { integrations } = this.schema
     const rows = await this.db.select().from(integrations).where(eq(integrations.integration_type, type)).limit(1)
     return (rows[0] as IntegrationRecord) ?? null
   }
@@ -37,6 +41,7 @@ export class DrizzleIntegrationRepository implements IntegrationRepository {
     integrationId: string,
     data: { integrationConfig?: string; integrationEnabled?: boolean }
   ): Promise<IntegrationRecord> {
+    const { integrations } = this.schema
     const updateData: Record<string, unknown> = {
       integration_updated_at: new Date()
     }
@@ -51,6 +56,7 @@ export class DrizzleIntegrationRepository implements IntegrationRepository {
   }
 
   async delete(integrationId: string): Promise<boolean> {
+    const { integrations } = this.schema
     await this.db.delete(integrations).where(eq(integrations.integration_id, integrationId))
     return true
   }

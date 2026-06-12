@@ -1,4 +1,4 @@
-// Drizzle ORM 스키마 정의 - PostgreSQL
+// Drizzle ORM 스키마 정의 - PostgreSQL (schema.mysql.ts 와 컬럼 패리티 유지 — schema.parity.test.ts 가 검증)
 
 import { boolean, index, integer, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 
@@ -13,8 +13,8 @@ export const users = pgTable('users', {
   user_db_role: varchar('user_db_role', { length: 255 }),
   user_avatar_path: varchar('user_avatar_path', { length: 1024 }),
   user_role: varchar('user_role', { length: 50 }).default('member'),
-  user_created_at: timestamp('user_created_at'),
-  user_updated_at: timestamp('user_updated_at')
+  user_created_at: timestamp('user_created_at', { precision: 3 }),
+  user_updated_at: timestamp('user_updated_at', { precision: 3 })
 })
 
 // 프로젝트 테이블
@@ -25,8 +25,8 @@ export const projects = pgTable('projects', {
   project_desc: text('project_desc'),
   project_created_by: uuid('project_created_by'),
   project_modified_by: uuid('project_modified_by'),
-  project_start_date: timestamp('project_start_date'),
-  project_end_date: timestamp('project_end_date')
+  project_start_date: timestamp('project_start_date', { precision: 3 }),
+  project_end_date: timestamp('project_end_date', { precision: 3 })
 })
 
 // 사용자-프로젝트 연결 테이블
@@ -53,10 +53,10 @@ export const milestones = pgTable(
       .references(() => projects.project_id),
     milestone_title: text('milestone_title').notNull(),
     milestone_desc: text('milestone_desc'),
-    milestone_due_date: timestamp('milestone_due_date'),
+    milestone_due_date: timestamp('milestone_due_date', { precision: 3 }),
     milestone_status: varchar('milestone_status', { length: 50 }).default('open'),
-    milestone_created_at: timestamp('milestone_created_at').defaultNow(),
-    milestone_updated_at: timestamp('milestone_updated_at').defaultNow()
+    milestone_created_at: timestamp('milestone_created_at', { precision: 3 }).defaultNow(),
+    milestone_updated_at: timestamp('milestone_updated_at', { precision: 3 }).defaultNow()
   },
   (t) => [index('idx_milestones_project_id').on(t.project_id)]
 )
@@ -79,8 +79,8 @@ export const issues = pgTable(
     issue_modified_by: uuid('issue_modified_by'),
     issue_assigned_to: uuid('issue_assigned_to'),
     issue_milestone_id: uuid('issue_milestone_id').references(() => milestones.milestone_id),
-    issue_created_at: timestamp('issue_created_at').defaultNow(),
-    issue_updated_at: timestamp('issue_updated_at').defaultNow()
+    issue_created_at: timestamp('issue_created_at', { precision: 3 }).defaultNow(),
+    issue_updated_at: timestamp('issue_updated_at', { precision: 3 }).defaultNow()
   },
   (t) => [
     index('idx_issues_project_id').on(t.project_id),
@@ -96,8 +96,8 @@ export const files = pgTable('files', {
   file_path: text('file_path').notNull(),
   file_type: text('file_type').notNull(),
   file_size: integer('file_size'),
-  file_created_at: timestamp('file_created_at').defaultNow(),
-  file_updated_at: timestamp('file_updated_at').defaultNow()
+  file_created_at: timestamp('file_created_at', { precision: 3 }).defaultNow(),
+  file_updated_at: timestamp('file_updated_at', { precision: 3 }).defaultNow()
 })
 
 // 이슈-파일 연결 테이블
@@ -122,8 +122,8 @@ export const comments = pgTable(
     comment_content: text('comment_content').notNull(),
     comment_created_by: uuid('comment_created_by'),
     comment_updated_by: uuid('comment_updated_by'),
-    comment_created_at: timestamp('comment_created_at').defaultNow(),
-    comment_updated_at: timestamp('comment_updated_at').defaultNow()
+    comment_created_at: timestamp('comment_created_at', { precision: 3 }).defaultNow(),
+    comment_updated_at: timestamp('comment_updated_at', { precision: 3 }).defaultNow()
   },
   (t) => [index('idx_comments_issue_id').on(t.issue_id)]
 )
@@ -133,7 +133,7 @@ export const labels = pgTable('labels', {
   label_id: uuid('label_id').primaryKey(),
   label_name: varchar('label_name', { length: 100 }).notNull(),
   label_color: varchar('label_color', { length: 7 }).notNull(),
-  label_created_at: timestamp('label_created_at').defaultNow()
+  label_created_at: timestamp('label_created_at', { precision: 3 }).defaultNow()
 })
 
 // 이슈-라벨 연결 테이블
@@ -157,8 +157,8 @@ export const tasks = pgTable(
     task_completed: boolean('task_completed').default(false),
     task_order: integer('task_order').default(0),
     task_created_by: uuid('task_created_by'),
-    task_created_at: timestamp('task_created_at').defaultNow(),
-    task_updated_at: timestamp('task_updated_at').defaultNow()
+    task_created_at: timestamp('task_created_at', { precision: 3 }).defaultNow(),
+    task_updated_at: timestamp('task_updated_at', { precision: 3 }).defaultNow()
   },
   (t) => [index('idx_tasks_issue_id').on(t.issue_id)]
 )
@@ -175,7 +175,7 @@ export const issueRelations = pgTable(
       .notNull()
       .references(() => issues.issue_id),
     relation_type: varchar('relation_type', { length: 50 }).notNull(),
-    relation_created_at: timestamp('relation_created_at').defaultNow()
+    relation_created_at: timestamp('relation_created_at', { precision: 3 }).defaultNow()
   },
   (t) => [
     index('idx_issue_relations_source').on(t.source_issue_id),
@@ -196,7 +196,7 @@ export const notifications = pgTable(
     notification_message: text('notification_message'),
     notification_read: boolean('notification_read').default(false),
     notification_link: text('notification_link'),
-    notification_created_at: timestamp('notification_created_at').defaultNow()
+    notification_created_at: timestamp('notification_created_at', { precision: 3 }).defaultNow()
   },
   (t) => [index('idx_notifications_user_id').on(t.user_id)]
 )
@@ -207,8 +207,8 @@ export const integrations = pgTable('integrations', {
   integration_type: varchar('integration_type', { length: 50 }).notNull(),
   integration_config: text('integration_config').notNull(),
   integration_enabled: boolean('integration_enabled').default(false),
-  integration_created_at: timestamp('integration_created_at').defaultNow(),
-  integration_updated_at: timestamp('integration_updated_at').defaultNow()
+  integration_created_at: timestamp('integration_created_at', { precision: 3 }).defaultNow(),
+  integration_updated_at: timestamp('integration_updated_at', { precision: 3 }).defaultNow()
 })
 
 // 초대 코드 테이블
@@ -220,6 +220,6 @@ export const inviteCodes = pgTable('invite_codes', {
   port: integer('port').notNull(),
   db_name: text('db_name').notNull(),
   created_by: text('created_by'),
-  created_at: timestamp('created_at').defaultNow(),
-  expires_at: timestamp('expires_at')
+  created_at: timestamp('created_at', { precision: 3 }).defaultNow(),
+  expires_at: timestamp('expires_at', { precision: 3 })
 })

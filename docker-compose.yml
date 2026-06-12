@@ -17,6 +17,24 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
+  mysql:
+    image: mysql:8.0
+    container_name: hydra-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: hydra
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-mysql}
+    ports:
+      - '${MYSQL_PORT:-3306}:3306'
+    volumes:
+      - hydra_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'sh', '-c', 'mysqladmin ping -h localhost -p"$$MYSQL_ROOT_PASSWORD"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
 
 volumes:
   hydra_data:
+  hydra_mysql_data:

@@ -15,13 +15,13 @@ describe.runIf(process.env.RUN_DB_TESTS === '1')('read-after-write (no RETURNING
     dbName = await createTestDatabase()
     adapter = new PostgresAdapter()
     await adapter.connect({ ...pgTestConfig(), database: dbName })
-    await adapter.runMigrations(resolve(process.cwd(), 'drizzle'))
-  })
+    await adapter.runMigrations(resolve(process.cwd(), 'drizzle/pg'))
+  }, 30000)
 
   afterAll(async () => {
     await adapter.disconnect()
     await dropTestDatabase(dbName)
-  })
+  }, 30000)
 
   it('create() returns the inserted row without RETURNING', async () => {
     const db = adapter.getConnection()

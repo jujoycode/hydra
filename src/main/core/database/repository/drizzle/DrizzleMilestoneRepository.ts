@@ -1,20 +1,22 @@
 import { asc, eq } from 'drizzle-orm'
-import * as schema from '../../schema/drizzle/schema'
+import * as pgSchema from '../../schema/drizzle/schema'
 import type {
   CreateMilestoneData,
   MilestoneRecord,
   MilestoneRepository,
   UpdateMilestoneData
 } from '../interfaces/MilestoneRepository'
-import type { DrizzleDb } from './executor'
+import type { DrizzleDb, DrizzleSchema } from './executor'
 import { selectById } from './readAfterWrite'
 
-const { milestones } = schema
-
 export class DrizzleMilestoneRepository implements MilestoneRepository {
-  constructor(private db: DrizzleDb) {}
+  constructor(
+    private db: DrizzleDb,
+    private schema: DrizzleSchema = pgSchema
+  ) {}
 
   async create(data: CreateMilestoneData): Promise<MilestoneRecord> {
+    const { milestones } = this.schema
     const now = new Date()
     await this.db.insert(milestones).values({
       milestone_id: data.milestoneId,
@@ -29,6 +31,7 @@ export class DrizzleMilestoneRepository implements MilestoneRepository {
   }
 
   async findByProject(projectId: string): Promise<MilestoneRecord[]> {
+    const { milestones } = this.schema
     const rows = await this.db
       .select()
       .from(milestones)
@@ -38,11 +41,13 @@ export class DrizzleMilestoneRepository implements MilestoneRepository {
   }
 
   async findById(milestoneId: string): Promise<MilestoneRecord | null> {
+    const { milestones } = this.schema
     const rows = await this.db.select().from(milestones).where(eq(milestones.milestone_id, milestoneId))
     return (rows[0] as MilestoneRecord) ?? null
   }
 
   async update(milestoneId: string, data: UpdateMilestoneData): Promise<MilestoneRecord> {
+    const { milestones } = this.schema
     const updateData: Record<string, unknown> = {
       milestone_updated_at: new Date()
     }
@@ -56,6 +61,7 @@ export class DrizzleMilestoneRepository implements MilestoneRepository {
   }
 
   async delete(milestoneId: string): Promise<boolean> {
+    const { milestones } = this.schema
     await this.db.delete(milestones).where(eq(milestones.milestone_id, milestoneId))
     return true
   }

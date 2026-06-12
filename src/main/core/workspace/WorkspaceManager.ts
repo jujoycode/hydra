@@ -36,12 +36,13 @@ export class WorkspaceManager {
     try {
       const raw = readFileSync(this.storePath)
 
-      if (safeStorage.isEncryptionAvailable()) {
-        const decrypted = safeStorage.decryptString(raw)
-        return JSON.parse(decrypted) as WorkspaceStore
-      }
+      const parsed = safeStorage.isEncryptionAvailable()
+        ? (JSON.parse(safeStorage.decryptString(raw)) as WorkspaceStore)
+        : (JSON.parse(raw.toString('utf-8')) as WorkspaceStore)
 
-      return JSON.parse(raw.toString('utf-8')) as WorkspaceStore
+      // Phase 4 이전 저장본에는 dbms가 없다 → postgresql로 백필 (기존 값 우선)
+      parsed.workspaces = parsed.workspaces.map((ws) => ({ ...ws, dbms: ws.dbms ?? 'postgresql' }))
+      return parsed
     } catch {
       return { workspaces: [] }
     }

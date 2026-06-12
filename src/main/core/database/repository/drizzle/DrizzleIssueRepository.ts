@@ -1,7 +1,7 @@
 // Drizzle 기반 이슈 리포지토리 구현
 
 import { and, asc, desc, eq, sql } from 'drizzle-orm'
-import * as schema from '../../schema/drizzle/schema'
+import * as pgSchema from '../../schema/drizzle/schema'
 import type {
   CreateIssueData,
   IssueFilterOptions,
@@ -10,16 +10,18 @@ import type {
   PaginatedResult,
   UpdateIssueData
 } from '../interfaces/IssueRepository'
-import type { DrizzleDb } from './executor'
+import type { DrizzleDb, DrizzleSchema } from './executor'
 import { caseInsensitiveLike } from './portable'
 import { selectById } from './readAfterWrite'
 
-const { issues } = schema
-
 export class DrizzleIssueRepository implements IssueRepository {
-  constructor(private db: DrizzleDb) {}
+  constructor(
+    private db: DrizzleDb,
+    private schema: DrizzleSchema = pgSchema
+  ) {}
 
   async create(data: CreateIssueData): Promise<IssueRecord> {
+    const { issues } = this.schema
     const now = new Date()
     await this.db.insert(issues).values({
       issue_id: data.issueId,
@@ -39,16 +41,19 @@ export class DrizzleIssueRepository implements IssueRepository {
   }
 
   async findById(issueId: string): Promise<IssueRecord | null> {
+    const { issues } = this.schema
     const rows = await this.db.select().from(issues).where(eq(issues.issue_id, issueId)).limit(1)
     return (rows[0] as IssueRecord) ?? null
   }
 
   async findByProject(projectId: string): Promise<IssueRecord[]> {
+    const { issues } = this.schema
     const rows = await this.db.select().from(issues).where(eq(issues.project_id, projectId))
     return rows as IssueRecord[]
   }
 
   async update(issueId: string, data: UpdateIssueData): Promise<IssueRecord> {
+    const { issues } = this.schema
     const values: Record<string, unknown> = {
       issue_updated_at: new Date()
     }
@@ -65,11 +70,13 @@ export class DrizzleIssueRepository implements IssueRepository {
   }
 
   async delete(issueId: string): Promise<boolean> {
+    const { issues } = this.schema
     await this.db.delete(issues).where(eq(issues.issue_id, issueId))
     return true
   }
 
   async countByProject(projectId: string): Promise<number> {
+    const { issues } = this.schema
     const rows = await this.db
       .select({ count: sql<number>`count(*)` })
       .from(issues)
@@ -78,6 +85,7 @@ export class DrizzleIssueRepository implements IssueRepository {
   }
 
   async findByProjectFiltered(projectId: string, options: IssueFilterOptions): Promise<PaginatedResult<IssueRecord>> {
+    const { issues } = this.schema
     const conditions = [eq(issues.project_id, projectId)]
 
     if (options.status) conditions.push(eq(issues.issue_status, options.status))
@@ -93,7 +101,7 @@ export class DrizzleIssueRepository implements IssueRepository {
     const total = Number(countRows[0].count)
 
     // Sort
-    const sortColumn = this.getSortColumn(options.sortBy)
+    const sortColumn = this.getSortColumn(issues, options.sortBy)
     const orderFn = options.sortOrder === 'asc' ? asc : desc
 
     // Paginate
@@ -117,7 +125,7 @@ export class DrizzleIssueRepository implements IssueRepository {
     }
   }
 
-  private getSortColumn(sortBy?: string) {
+  private getSortColumn(issues: DrizzleSchema['issues'], sortBy?: string) {
     switch (sortBy) {
       case 'title':
         return issues.issue_title

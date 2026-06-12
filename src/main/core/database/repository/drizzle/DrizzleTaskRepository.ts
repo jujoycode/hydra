@@ -1,15 +1,17 @@
 import { asc, eq } from 'drizzle-orm'
-import * as schema from '../../schema/drizzle/schema'
+import * as pgSchema from '../../schema/drizzle/schema'
 import type { CreateTaskData, TaskRecord, TaskRepository } from '../interfaces/TaskRepository'
-import type { DrizzleDb } from './executor'
+import type { DrizzleDb, DrizzleSchema } from './executor'
 import { selectById } from './readAfterWrite'
 
-const { tasks } = schema
-
 export class DrizzleTaskRepository implements TaskRepository {
-  constructor(private db: DrizzleDb) {}
+  constructor(
+    private db: DrizzleDb,
+    private schema: DrizzleSchema = pgSchema
+  ) {}
 
   async create(data: CreateTaskData): Promise<TaskRecord> {
+    const { tasks } = this.schema
     const now = new Date()
     await this.db.insert(tasks).values({
       task_id: data.taskId,
@@ -24,6 +26,7 @@ export class DrizzleTaskRepository implements TaskRepository {
   }
 
   async findByIssue(issueId: string): Promise<TaskRecord[]> {
+    const { tasks } = this.schema
     const rows = await this.db.select().from(tasks).where(eq(tasks.issue_id, issueId)).orderBy(asc(tasks.task_order))
     return rows as TaskRecord[]
   }
@@ -32,6 +35,7 @@ export class DrizzleTaskRepository implements TaskRepository {
     taskId: string,
     data: { taskTitle?: string; taskCompleted?: boolean; taskOrder?: number }
   ): Promise<TaskRecord> {
+    const { tasks } = this.schema
     const updateData: Record<string, unknown> = {
       task_updated_at: new Date()
     }
@@ -44,6 +48,7 @@ export class DrizzleTaskRepository implements TaskRepository {
   }
 
   async delete(taskId: string): Promise<boolean> {
+    const { tasks } = this.schema
     await this.db.delete(tasks).where(eq(tasks.task_id, taskId))
     return true
   }

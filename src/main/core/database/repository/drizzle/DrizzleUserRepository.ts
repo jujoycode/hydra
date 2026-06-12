@@ -1,33 +1,38 @@
 // Drizzle 기반 사용자 리포지토리 구현
 
 import { eq, sql } from 'drizzle-orm'
-import * as schema from '../../schema/drizzle/schema'
+import * as pgSchema from '../../schema/drizzle/schema'
 import type { RepoExecutor } from '../interfaces/RepoExecutor'
 import type { CreateUserData, UpdateUserData, UserRecord, UserRepository } from '../interfaces/UserRepository'
-import type { DrizzleDb, DrizzleExecutor } from './executor'
+import type { DrizzleDb, DrizzleExecutor, DrizzleSchema } from './executor'
 import { selectById } from './readAfterWrite'
 
-const { users } = schema
-
 export class DrizzleUserRepository implements UserRepository {
-  constructor(private db: DrizzleDb) {}
+  constructor(
+    private db: DrizzleDb,
+    private schema: DrizzleSchema = pgSchema
+  ) {}
 
   async findById(userId: string): Promise<UserRecord | null> {
+    const { users } = this.schema
     const rows = await this.db.select().from(users).where(eq(users.user_id, userId)).limit(1)
     return (rows[0] as UserRecord) ?? null
   }
 
   async findBySn(userSn: string): Promise<UserRecord | null> {
+    const { users } = this.schema
     const rows = await this.db.select().from(users).where(eq(users.user_sn, userSn)).limit(1)
     return (rows[0] as UserRecord) ?? null
   }
 
   async findAll(): Promise<UserRecord[]> {
+    const { users } = this.schema
     const rows = await this.db.select().from(users)
     return rows as UserRecord[]
   }
 
   async create(data: CreateUserData, executor: RepoExecutor = this.db): Promise<UserRecord> {
+    const { users } = this.schema
     const ex = executor as DrizzleExecutor
     const now = new Date()
     await ex.insert(users).values({
@@ -46,6 +51,7 @@ export class DrizzleUserRepository implements UserRepository {
   }
 
   async update(userId: string, data: UpdateUserData): Promise<UserRecord> {
+    const { users } = this.schema
     const values: Record<string, unknown> = { user_updated_at: new Date() }
     if (data.userName !== undefined) values.user_name = data.userName
     if (data.userEmail !== undefined) values.user_email = data.userEmail
@@ -57,11 +63,13 @@ export class DrizzleUserRepository implements UserRepository {
   }
 
   async delete(userId: string): Promise<boolean> {
+    const { users } = this.schema
     await this.db.delete(users).where(eq(users.user_id, userId))
     return true
   }
 
   async count(executor: RepoExecutor = this.db): Promise<number> {
+    const { users } = this.schema
     const ex = executor as DrizzleExecutor
     const rows = await ex.select({ count: sql<number>`count(*)` }).from(users)
     return Number(rows[0].count)
