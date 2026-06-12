@@ -125,12 +125,25 @@ export class PostgresAdapter implements DatabaseAdapter {
     return this.db
   }
 
-  // TODO: 스펙 §8.4 — 동시 기동 마이그레이션 가드(pg_advisory_lock) 미구현. MySqlAdapter.runMigrations(GET_LOCK)와 대칭 맞출 것.
+  // 동시 기동 마이그레이션 가드 (스펙 §8.4) — DB 스코프 advisory lock, MySqlAdapter.runMigrations(GET_LOCK)와 대칭
   async runMigrations(migrationsFolder: string): Promise<void> {
-    if (!this.db) {
+    if (!this.db || !this.pool) {
       throw new Error('Database not connected. Call connect() first.')
     }
-    await migrate(this.db, { migrationsFolder })
+    const client = await this.pool.connect()
+    try {
+      // hashtext는 현재 DB 안에서만 의미 — 같은 서버의 다른 DB와 경합하지 않는다
+      await client.query("SELECT pg_advisory_lock(hashtext('hydra_migrations'))")
+      await migrate(this.db, { migrationsFolder })
+    } finally {
+      try {
+        await client.query("SELECT pg_advisory_unlock(hashtext('hydra_migrations'))")
+        client.release()
+      } catch {
+        // unlock 실패는 사실상 죽은 커넥션 — 풀에 되돌리지 않고 폐기 (락은 세션 종료로 자동 해제)
+        client.release(true)
+      }
+    }
   }
 
   async transaction<T>(fn: (tx: unknown) => Promise<T>): Promise<T> {

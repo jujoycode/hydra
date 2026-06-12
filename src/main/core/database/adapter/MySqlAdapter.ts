@@ -1,6 +1,7 @@
 // MySQL 어댑터 - drizzle-orm + mysql2 Pool 기반 구현 (스펙 §4.1, §7)
 
 import fs from 'node:fs'
+import { join } from 'node:path'
 import type { MySql2Database } from 'drizzle-orm/mysql2'
 import { drizzle } from 'drizzle-orm/mysql2'
 import { migrate } from 'drizzle-orm/mysql2/migrator'
@@ -73,6 +74,8 @@ export class MySqlAdapter implements DatabaseAdapter {
   private pool: Pool | null = null
   private db: MySql2Database<typeof schema> | null = null
   private database: string | null = null
+  private host: string | null = null
+  private user: string | null = null
 
   async connect(config: ConnectionConfig): Promise<void> {
     const poolOptions: PoolOptions = {
@@ -123,6 +126,8 @@ export class MySqlAdapter implements DatabaseAdapter {
     this.pool = pool
     this.db = drizzle(pool, { schema, mode: 'default' })
     this.database = config.database
+    this.host = config.host ?? null
+    this.user = config.user ?? null
   }
 
   async disconnect(): Promise<void> {
@@ -131,6 +136,8 @@ export class MySqlAdapter implements DatabaseAdapter {
       this.pool = null
       this.db = null
       this.database = null
+      this.host = null
+      this.user = null
     }
   }
 
@@ -145,11 +152,37 @@ export class MySqlAdapter implements DatabaseAdapter {
     return this.db
   }
 
+  // 적용된 마이그레이션 수가 로컬 저널과 같으면 migrate를 건너뛴다.
+  // 이유: drizzle mysql 마이그레이터는 매번 CREATE TABLE IF NOT EXISTS를 실행하는데
+  // MySQL은 테이블이 존재해도 CREATE 권한을 요구한다(errno 1142) — DML-only 런타임
+  // 계정(README의 최소권한 GRANT)이 재연결마다 실패하지 않으려면 사전 검사가 필요하다.
+  private async isMigrationCurrent(migrationsFolder: string): Promise<boolean> {
+    if (!this.pool) return false
+    const journalPath = join(migrationsFolder, 'meta', '_journal.json')
+    let localCount: number
+    try {
+      const journal = JSON.parse(fs.readFileSync(journalPath, 'utf-8')) as { entries?: unknown[] }
+      localCount = journal.entries?.length ?? 0
+    } catch {
+      return false // 저널을 못 읽으면 마이그레이터에 맡긴다
+    }
+    if (localCount === 0) return false
+    try {
+      const [rows] = await this.pool.query<RowDataPacket[]>('SELECT COUNT(*) AS cnt FROM `__drizzle_migrations`')
+      return Number(rows[0]?.cnt) >= localCount
+    } catch {
+      return false // 테이블 없음(fresh DB) 등 — 마이그레이터 실행 필요
+    }
+  }
+
   // GET_LOCK으로 동시 기동 마이그레이션 가드 (스펙 §8.4 — PG advisory lock 대응물)
   // 락 이름을 DB 스코프로 제한: 같은 MySQL 서버의 다른 데이터베이스를 쓰는 워크스페이스가 서버 전역 락에서 경합하지 않도록
   async runMigrations(migrationsFolder: string): Promise<void> {
     if (!this.db || !this.pool) {
       throw new Error('Database not connected. Call connect() first.')
+    }
+    if (await this.isMigrationCurrent(migrationsFolder)) {
+      return
     }
     // MySQL GET_LOCK 이름은 64자 제한 — DB 이름 포함 스코프 키로 truncate
     const lockName = `hydra_migrations:${this.database}`.slice(0, 64)
@@ -163,7 +196,15 @@ export class MySqlAdapter implements DatabaseAdapter {
           null
         )
       }
-      await migrate(this.db, { migrationsFolder })
+      try {
+        await migrate(this.db, { migrationsFolder })
+      } catch (error: unknown) {
+        throw wrapMySqlError(error, {
+          host: this.host ?? undefined,
+          database: this.database ?? undefined,
+          user: this.user ?? undefined
+        })
+      }
     } finally {
       try {
         await conn.query('SELECT RELEASE_LOCK(?)', [lockName])

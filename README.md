@@ -65,9 +65,13 @@ CREATE USER 'hydra_app'@'%' IDENTIFIED BY '<password>';
 GRANT SELECT, INSERT, UPDATE, DELETE ON hydra.* TO 'hydra_app'@'%';
 ```
 
-Schema migrations run automatically at connect; the very first connect needs an account
-that can also run DDL (`CREATE, ALTER, INDEX, REFERENCES`), or run it once with an
-admin account. The database must use the `utf8mb4` charset.
+Schema migrations run automatically at connect. When the schema is already up-to-date,
+Hydra skips the migrator entirely — so a DML-only account works for normal operation.
+
+**First connect and after an app upgrade** (when new migrations are pending), you must
+connect once with an account that can run DDL (`CREATE, ALTER, INDEX, REFERENCES`), or
+use an admin account for that single connect. Subsequent connects can use the DML-only
+account above. The database must use the `utf8mb4` charset.
 
 > Note: never run `drizzle-kit push` against a MySQL workspace — use the generated
 > migrations only (collation is owned by the schema's custom types).
