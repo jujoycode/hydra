@@ -29,7 +29,7 @@ services:
     volumes:
       - hydra_mysql_data:/var/lib/mysql
     healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-pmysql']
+      test: ['CMD', 'sh', '-c', 'mysqladmin ping -h localhost -p"$$MYSQL_ROOT_PASSWORD"']
       interval: 5s
       timeout: 5s
       retries: 10
