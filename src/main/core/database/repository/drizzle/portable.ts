@@ -3,9 +3,10 @@
 import type { AnyColumn, SQL } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 
-// 사용자 입력의 LIKE 와일드카드(%, _, !)를 리터럴로 이스케이프.
-// 이스케이프 문자를 '!'로 고정 — backslash('\')는 MySQL에서 escape '\\' 구문이
-// 드라이버 레이어를 거칠 때 이중 이스케이프 문제를 일으키므로 사용하지 않는다.
+// 사용자 입력의 LIKE 와일드카드(%, _)와 이스케이프 문자 자신(!)을 리터럴로 이스케이프.
+// 이스케이프 문자를 '!'로 고정 — backslash('\')를 쓰면 ESCAPE '\' 절의 백슬래시를
+// MySQL 서버 파서가 문자열 리터럴 이스케이프로 해석해(\' → escaped quote) 리터럴이
+// 닫히지 않는 구문 오류가 된다. '!'는 양 엔진 모두에서 평범한 문자라 동일하게 동작한다.
 export function escapeLikePattern(value: string): string {
   return value.replace(/[!%_]/g, (ch) => `!${ch}`)
 }

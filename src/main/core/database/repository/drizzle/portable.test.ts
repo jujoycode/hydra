@@ -11,4 +11,8 @@ describe('escapeLikePattern', () => {
   it('leaves ordinary text untouched', () => {
     expect(escapeLikePattern('hello world')).toBe('hello world')
   })
+
+  it('leaves backslash untouched (it is a literal under ESCAPE "!")', () => {
+    expect(escapeLikePattern('back\\slash')).toBe('back\\slash')
+  })
 })

@@ -117,7 +117,7 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySQL cross-engine integ
             startDate: new Date(),
             endDate: new Date()
           },
-          tx as never
+          tx
         )
         throw new Error('boom') // create 이후 강제 롤백
       })
@@ -198,5 +198,51 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySQL cross-engine integ
     const res = await issueRepo.findByProjectFiltered(projectId, { search: 'FINDME' })
     expect(res.total).toBe(1)
     expect(res.data[0].issue_title).toBe('findme bug')
+  })
+
+  // ── 6. 와일드카드 리터럴 매치: '%'가 LIKE 와일드카드가 아닌 리터럴로 처리됨 ──────────
+  it('findByProjectFiltered() treats "%" in search term as a literal character, not a wildcard', async () => {
+    const userRepo = new DrizzleUserRepository(db, schema)
+    const projectRepo = new DrizzleProjectRepository(db, schema)
+    const issueRepo = new DrizzleIssueRepository(db, schema)
+
+    const userId = randomUUID()
+    await userRepo.create({
+      userId,
+      userSn: `sn-wc-${userId}`,
+      passwordHash: 'hash6',
+      userName: 'wc-tester',
+      userRole: 'admin'
+    })
+
+    const projectId = randomUUID()
+    await projectRepo.create({
+      projectId,
+      projectName: 'WC-Project',
+      projectKey: `WC-${projectId.slice(0, 8)}`,
+      createdBy: userId
+    })
+
+    // 첫 번째: '%'가 포함된 제목 — 검색어와 리터럴 일치
+    await issueRepo.create({
+      issueId: randomUUID(),
+      projectId,
+      issueTitle: 'progress 50% done',
+      issueKey: `WC1-${projectId.slice(0, 6)}`,
+      createdBy: userId
+    })
+
+    // 두 번째: '%' 대신 'X' — 검색어와 불일치해야 함
+    await issueRepo.create({
+      issueId: randomUUID(),
+      projectId,
+      issueTitle: 'progress 50X done',
+      issueKey: `WC2-${projectId.slice(0, 6)}`,
+      createdBy: userId
+    })
+
+    const res = await issueRepo.findByProjectFiltered(projectId, { search: '50% done' })
+    expect(res.total).toBe(1)
+    expect(res.data[0].issue_title).toBe('progress 50% done')
   })
 })
