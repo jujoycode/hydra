@@ -16,6 +16,10 @@ function mysqlTables(): AnyMySqlTable[] {
 }
 
 describe('schema parity (pg vs mysql)', () => {
+  it('exports the same module keys (repositories destructure by export name)', () => {
+    expect(Object.keys(mysqlSchema).sort()).toEqual(Object.keys(pgSchema).sort())
+  })
+
   it('defines the same set of tables', () => {
     const pgNames = pgTables().map(getTableName).sort()
     const myNames = mysqlTables().map(getTableName).sort()

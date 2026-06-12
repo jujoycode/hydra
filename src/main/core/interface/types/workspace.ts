@@ -1,3 +1,5 @@
+export type DbmsType = 'postgresql' | 'mysql'
+
 export interface WorkspaceConfig {
   id: string
   name: string
@@ -5,6 +7,7 @@ export interface WorkspaceConfig {
   port: number
   dbName: string
   username: string
+  dbms: DbmsType
   sslCertPath?: string
 }
 
@@ -14,6 +17,7 @@ export interface WorkspaceSaveParams {
   port: number
   dbName: string
   username: string
+  dbms: DbmsType
   sslCertPath?: string
 }
 
@@ -27,6 +31,8 @@ export interface WorkspaceConnectParams {
   dbName: string
   username: string
   password: string
+  // 미지정 시 postgresql (구버전 renderer persist 호환)
+  dbms?: DbmsType
   sslCertPath?: string
 }
 

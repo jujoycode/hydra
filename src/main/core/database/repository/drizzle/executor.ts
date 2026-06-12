@@ -10,3 +10,5 @@ export type DrizzleTx = Parameters<Parameters<DrizzleDb['transaction']>[0]>[0]
 export type DrizzleExecutor = DrizzleDb | DrizzleTx
 // 주입 가능한 스키마 집합 (pg 스키마 모듈의 형태가 규범)
 export type DrizzleSchema = typeof schema
+// 주의: 리포지토리 생성자의 schema 기본값은 pg다. MySQL 연결 와이어링은 반드시 mysqlSchema를 명시 주입해야 한다
+// (누락 시 컴파일은 통과하지만 런타임에 pg 테이블 객체로 MySQL에 쿼리하게 됨 — ConnectWorkspaceHandler 참고)
