@@ -1,19 +1,21 @@
 import { eq, or } from 'drizzle-orm'
-import * as schema from '../../schema/drizzle/schema'
+import * as pgSchema from '../../schema/drizzle/schema'
 import type {
   CreateRelationData,
   IssueRelationRecord,
   IssueRelationRepository
 } from '../interfaces/IssueRelationRepository'
-import type { DrizzleDb } from './executor'
+import type { DrizzleDb, DrizzleSchema } from './executor'
 import { selectById } from './readAfterWrite'
 
-const { issueRelations } = schema
-
 export class DrizzleIssueRelationRepository implements IssueRelationRepository {
-  constructor(private db: DrizzleDb) {}
+  constructor(
+    private db: DrizzleDb,
+    private schema: DrizzleSchema = pgSchema
+  ) {}
 
   async create(data: CreateRelationData): Promise<IssueRelationRecord> {
+    const { issueRelations } = this.schema
     await this.db.insert(issueRelations).values({
       relation_id: data.relationId,
       source_issue_id: data.sourceIssueId,
@@ -25,6 +27,7 @@ export class DrizzleIssueRelationRepository implements IssueRelationRepository {
   }
 
   async findByIssue(issueId: string): Promise<IssueRelationRecord[]> {
+    const { issueRelations } = this.schema
     const rows = await this.db
       .select()
       .from(issueRelations)
@@ -33,6 +36,7 @@ export class DrizzleIssueRelationRepository implements IssueRelationRepository {
   }
 
   async delete(relationId: string): Promise<boolean> {
+    const { issueRelations } = this.schema
     await this.db.delete(issueRelations).where(eq(issueRelations.relation_id, relationId))
     return true
   }
