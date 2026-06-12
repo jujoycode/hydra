@@ -4,8 +4,8 @@ import fs from 'node:fs'
 import type { MySql2Database } from 'drizzle-orm/mysql2'
 import { drizzle } from 'drizzle-orm/mysql2'
 import { migrate } from 'drizzle-orm/mysql2/migrator'
-import mysql from 'mysql2/promise'
 import type { Pool, PoolOptions, RowDataPacket } from 'mysql2/promise'
+import mysql from 'mysql2/promise'
 import { DatabaseError } from '@/error/DatabaseError'
 import { ErrorCode } from '@/interface/CoreInterface'
 import * as schema from '../schema/drizzle/schema.mysql'
@@ -32,13 +32,13 @@ export function wrapMySqlError(
   if (errno === 1049) {
     // ER_BAD_DB_ERROR
     return new DatabaseError(ErrorCode.NOT_FOUND_ERROR, `Database "${ctx.database ?? 'unknown'}" does not exist.`, {
-      mysqlErrno: errno,
+      mysqlErrno: errno
     })
   }
   if (errno === 1044 || errno === 1142 || errno === 1227) {
     // ER_DBACCESS_DENIED / ER_TABLEACCESS_DENIED / ER_SPECIFIC_ACCESS_DENIED
     return new DatabaseError(ErrorCode.PERMISSION_ERROR, `Permission denied for user "${ctx.user ?? 'unknown'}".`, {
-      mysqlErrno: errno,
+      mysqlErrno: errno
     })
   }
 
@@ -82,7 +82,7 @@ export class MySqlAdapter implements DatabaseAdapter {
       password: config.password,
       timezone: 'Z', // UTC 고정 — 세션 TZ 변환 차단 (스펙 §6.2.2)
       connectTimeout: 5000,
-      connectionLimit: 10,
+      connectionLimit: 10
     }
 
     if (config.sslCertPath) {
@@ -109,7 +109,7 @@ export class MySqlAdapter implements DatabaseAdapter {
         host: config.host,
         port: config.port,
         database: config.database,
-        user: config.user,
+        user: config.user
       })
     }
 
@@ -145,7 +145,11 @@ export class MySqlAdapter implements DatabaseAdapter {
     try {
       const [rows] = await conn.query<RowDataPacket[]>("SELECT GET_LOCK('hydra_migrations', 60) AS got")
       if (Number(rows[0]?.got) !== 1) {
-        throw new DatabaseError(ErrorCode.DB_ERROR, 'Could not acquire migration lock (another instance migrating?)', null)
+        throw new DatabaseError(
+          ErrorCode.DB_ERROR,
+          'Could not acquire migration lock (another instance migrating?)',
+          null
+        )
       }
       await migrate(this.db, { migrationsFolder })
     } finally {
