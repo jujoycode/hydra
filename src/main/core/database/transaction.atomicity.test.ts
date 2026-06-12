@@ -15,7 +15,7 @@ describe.runIf(process.env.RUN_DB_TESTS === '1')('transaction atomicity', () => 
     dbName = await createTestDatabase()
     adapter = new PostgresAdapter()
     await adapter.connect({ ...pgTestConfig(), database: dbName })
-    await adapter.runMigrations(resolve(process.cwd(), 'drizzle'))
+    await adapter.runMigrations(resolve(process.cwd(), 'drizzle/pg'))
   })
 
   afterAll(async () => {

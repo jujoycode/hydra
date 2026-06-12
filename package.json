@@ -24,6 +24,7 @@
     "make:linux": "npm run build && electron-forge make --platform linux",
     "approve-dependencies": "pnpm approve-builds",
     "db:generate": "drizzle-kit generate",
+    "db:generate:mysql": "drizzle-kit generate --config drizzle.mysql.config.ts",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "docker:up": "docker-compose up -d",

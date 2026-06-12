@@ -45,7 +45,7 @@ export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPAC
     })
 
     // 스키마를 최신 마이그레이션으로 적용 (멱등)
-    await adapter.runMigrations(getMigrationsFolder())
+    await adapter.runMigrations(getMigrationsFolder('pg'))
 
     const db = adapter.getConnection() as NodePgDatabase<typeof schema>
     const userRepo = new DrizzleUserRepository(db)
