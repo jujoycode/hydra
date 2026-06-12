@@ -17,9 +17,14 @@ export function wrapMySqlError(
   error: unknown,
   ctx: { host?: string; port?: number; database?: string; user?: string }
 ): DatabaseError {
-  const err = error as { errno?: number; code?: string; message?: string }
+  // drizzle-orm 0.45+ wraps query errors as DrizzleQueryError with the original mysql2 error in `.cause`
+  // errno가 없으면 cause 체인을 따라 내려가서 원본 mysql2 에러를 꺼낸다 (무한루프 방지: cause !== err 체크)
+  let err = error as { errno?: number; code?: string; message?: string; cause?: unknown }
+  while (err && typeof err.errno !== 'number' && err.cause != null && err.cause !== err) {
+    err = err.cause as typeof err
+  }
   const errno = err?.errno
-  const rawMessage = err?.message ?? 'Unknown database error'
+  const rawMessage = err?.message ?? (error as { message?: string })?.message ?? 'Unknown database error'
 
   // MySQL server error codes
   if (errno === 1045) {

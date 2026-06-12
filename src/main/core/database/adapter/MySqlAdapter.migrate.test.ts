@@ -1,6 +1,7 @@
 import { resolve } from 'node:path'
 import mysql from 'mysql2/promise'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { ErrorCode } from '../../interface/CoreInterface'
 import { createMySqlTestDatabase, dropMySqlTestDatabase, mysqlTestConfig } from '../__testutils__/mysqlTestDb'
 import { MySqlAdapter } from './MySqlAdapter'
 
@@ -65,6 +66,32 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySqlAdapter migrations'
       const cleanup = await mysql.createConnection(cfg)
       await cleanup.query(`DROP USER IF EXISTS '${dmlUser}'@'%'`).catch(() => {})
       await cleanup.end()
+    }
+  })
+
+  it('maps migration permission failure to PERMISSION_ERROR for a DML-only account on a fresh DB', async () => {
+    // DrizzleQueryError cause 체인 언랩 검증 — fresh DB이므로 isMigrationCurrent가 false를 반환하고
+    // migrate()가 DDL 실행 시 errno 1142를 발생시킨다 → wrapMySqlError가 PERMISSION_ERROR로 매핑해야 한다
+    const cfg = mysqlTestConfig()
+    const freshDb = await createMySqlTestDatabase()
+    const dmlUser = `dmlf_${Date.now() % 100000}`
+    const admin = await mysql.createConnection(cfg)
+    try {
+      await admin.query(`CREATE USER '${dmlUser}'@'%' IDENTIFIED BY 'dmlpw'`)
+      await admin.query(`GRANT SELECT, INSERT, UPDATE, DELETE ON \`${freshDb}\`.* TO '${dmlUser}'@'%'`)
+    } finally {
+      await admin.end()
+    }
+    const dmlAdapter = new MySqlAdapter()
+    try {
+      await dmlAdapter.connect({ ...cfg, user: dmlUser, password: 'dmlpw', database: freshDb })
+      await expect(dmlAdapter.runMigrations(MIGRATIONS)).rejects.toMatchObject({ code: ErrorCode.PERMISSION_ERROR })
+    } finally {
+      await dmlAdapter.disconnect()
+      const cleanup = await mysql.createConnection(cfg)
+      await cleanup.query(`DROP USER IF EXISTS '${dmlUser}'@'%'`).catch(() => {})
+      await cleanup.end()
+      await dropMySqlTestDatabase(freshDb)
     }
   })
 })

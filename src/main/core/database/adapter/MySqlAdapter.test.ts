@@ -32,4 +32,15 @@ describe('wrapMySqlError', () => {
     expect(e.code).toBe(ErrorCode.DB_ERROR)
     expect(e.message).toBe('boom')
   })
+
+  it('unwraps DrizzleQueryError cause chains to map the original errno', () => {
+    // drizzle-orm 0.45+ wraps query errors: outer message는 'Failed query: <DDL>' 형태,
+    // 원본 mysql2 에러는 cause에 있다 — errno 1142는 PERMISSION_ERROR로 매핑돼야 한다
+    const drizzleStyle = {
+      message: 'Failed query: CREATE TABLE ...',
+      cause: { errno: 1142, message: 'CREATE command denied to user' }
+    }
+    const e = wrapMySqlError(drizzleStyle, ctx)
+    expect(e.code).toBe(ErrorCode.PERMISSION_ERROR)
+  })
 })
