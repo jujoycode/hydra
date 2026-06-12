@@ -25,6 +25,19 @@ jobs:
           --health-timeout 5s
           --health-retries 10
 
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: hydra
+          MYSQL_ROOT_PASSWORD: mysql
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost -pmysql"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,6 +70,11 @@ jobs:
           DB_PORT: '5432'
           DB_USER: postgres
           DB_PASSWORD: postgres
+          RUN_DB_TESTS_MYSQL: '1'
+          MYSQL_HOST: localhost
+          MYSQL_PORT: '3306'
+          MYSQL_USER: root
+          MYSQL_PASSWORD: mysql
 
       - name: Build
         run: pnpm build
