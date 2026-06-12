@@ -10,7 +10,7 @@ import { Label } from '@/components/atoms/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/Select'
 import { Separator } from '@/components/atoms/Separator'
 import { useIpcHandler } from '@/hooks/use-ipc'
-import { IpcChannel } from '@/interface/CoreInterface'
+import { type DbmsType, IpcChannel } from '@/interface/CoreInterface'
 import { useAuthStore } from '@/stores/auth'
 import { useWorkspaceStore } from '@/stores/workspace'
 import type { WorkspaceConfig } from '@/types/auth'
@@ -42,11 +42,11 @@ export default function WorkspacePage() {
     port: '5432',
     dbName: '',
     username: 'postgres',
-    dbms: 'postgresql' as 'postgresql' | 'mysql',
+    dbms: 'postgresql' as DbmsType,
     sslCertPath: ''
   })
 
-  const handleDbmsChange = (dbms: 'postgresql' | 'mysql') => {
+  const handleDbmsChange = (dbms: DbmsType) => {
     setNewWs((prev) => ({
       ...prev,
       dbms,
@@ -173,6 +173,9 @@ export default function WorkspacePage() {
                   <CardDescription className='text-xs'>
                     {ws.host}:{ws.port}/{ws.dbName}
                   </CardDescription>
+                  <CardDescription className='text-xs text-muted-foreground/60'>
+                    {(ws as { dbms?: string }).dbms === 'mysql' ? 'MySQL 8' : 'PostgreSQL'}
+                  </CardDescription>
                 </CardHeader>
                 {selectedWs?.id === ws.id ? (
                   <CardContent className='p-4 pt-0 space-y-2'>
@@ -229,8 +232,8 @@ export default function WorkspacePage() {
                 />
               </div>
               <div className='space-y-1'>
-                <Label className='text-xs'>DBMS</Label>
-                <Select value={newWs.dbms} onValueChange={(v) => handleDbmsChange(v as 'postgresql' | 'mysql')}>
+                <Label className='text-xs'>{t('label.dbms')}</Label>
+                <Select value={newWs.dbms} onValueChange={(v) => handleDbmsChange(v as DbmsType)}>
                   <SelectTrigger className='w-full'>
                     <SelectValue />
                   </SelectTrigger>

@@ -1,4 +1,4 @@
-import type { User } from '@/interface/CoreInterface'
+import type { DbmsType, User } from '@/interface/CoreInterface'
 
 export interface WorkspaceConfig {
   id: string
@@ -7,7 +7,7 @@ export interface WorkspaceConfig {
   port: number
   dbName: string
   username: string
-  dbms: 'postgresql' | 'mysql'
+  dbms: DbmsType
   sslCertPath?: string
 }
 

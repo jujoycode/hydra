@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { IpcChannel, type User } from '@/interface/CoreInterface'
+import { type DbmsType, IpcChannel, type User } from '@/interface/CoreInterface'
 import type { AuthState, WorkspaceConfig } from '@/types/auth'
 
 export const useAuthStore = create<AuthState>()(
@@ -89,7 +89,19 @@ export const useAuthStore = create<AuthState>()(
         isAuthenticated: state.isAuthenticated,
         needsSetup: state.needsSetup,
         currentWorkspace: state.currentWorkspace
-      })
+      }),
+      version: 1,
+      // Phase 4 이전 persist에는 currentWorkspace.dbms 필드가 없다 → postgresql로 백필
+      migrate: (persisted: unknown, _version: number): Partial<AuthState> => {
+        const state = persisted as Partial<AuthState>
+        if (state?.currentWorkspace) {
+          state.currentWorkspace = {
+            ...state.currentWorkspace,
+            dbms: (state.currentWorkspace as { dbms?: DbmsType }).dbms ?? 'postgresql'
+          }
+        }
+        return state
+      }
     }
   )
 )

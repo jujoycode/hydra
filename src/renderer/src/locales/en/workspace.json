@@ -3,6 +3,7 @@
   "description": "Select or create a workspace to get started.",
   "label": {
     "name": "Name",
+    "dbms": "DBMS",
     "host": "Host",
     "port": "Port",
     "database": "Database",

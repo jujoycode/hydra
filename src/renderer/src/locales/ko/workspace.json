@@ -3,6 +3,7 @@
   "description": "워크스페이스를 선택하거나 생성하여 시작하세요.",
   "label": {
     "name": "이름",
+    "dbms": "DBMS",
     "host": "호스트",
     "port": "포트",
     "database": "데이터베이스",
