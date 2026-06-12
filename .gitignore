@@ -6,7 +6,11 @@ out
 *.log*
 .env
 .env.*
+!.env.example
 *.crt
 
 # Prisma
 src/main/core/database/prisma/generated
+
+# Superpowers brainstorm artifacts
+.superpowers

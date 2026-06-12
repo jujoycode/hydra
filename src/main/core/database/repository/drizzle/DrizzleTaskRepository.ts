@@ -1,28 +1,26 @@
 import { asc, eq } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
 import type { CreateTaskData, TaskRecord, TaskRepository } from '../interfaces/TaskRepository'
+import type { DrizzleDb } from './executor'
+import { selectById } from './readAfterWrite'
 
 const { tasks } = schema
 
 export class DrizzleTaskRepository implements TaskRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateTaskData): Promise<TaskRecord> {
     const now = new Date()
-    const rows = await this.db
-      .insert(tasks)
-      .values({
-        task_id: data.taskId,
-        issue_id: data.issueId,
-        task_title: data.taskTitle,
-        task_order: data.taskOrder ?? 0,
-        task_created_by: data.createdBy,
-        task_created_at: now,
-        task_updated_at: now
-      })
-      .returning()
-    return rows[0] as TaskRecord
+    await this.db.insert(tasks).values({
+      task_id: data.taskId,
+      issue_id: data.issueId,
+      task_title: data.taskTitle,
+      task_order: data.taskOrder ?? 0,
+      task_created_by: data.createdBy,
+      task_created_at: now,
+      task_updated_at: now
+    })
+    return selectById<TaskRecord>(this.db, tasks, tasks.task_id, data.taskId)
   }
 
   async findByIssue(issueId: string): Promise<TaskRecord[]> {
@@ -41,8 +39,8 @@ export class DrizzleTaskRepository implements TaskRepository {
     if (data.taskCompleted !== undefined) updateData.task_completed = data.taskCompleted
     if (data.taskOrder !== undefined) updateData.task_order = data.taskOrder
 
-    const rows = await this.db.update(tasks).set(updateData).where(eq(tasks.task_id, taskId)).returning()
-    return rows[0] as TaskRecord
+    await this.db.update(tasks).set(updateData).where(eq(tasks.task_id, taskId))
+    return selectById<TaskRecord>(this.db, tasks, tasks.task_id, taskId)
   }
 
   async delete(taskId: string): Promise<boolean> {

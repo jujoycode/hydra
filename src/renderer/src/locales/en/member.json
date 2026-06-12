@@ -11,15 +11,17 @@
   },
   "label": {
     "unknown": "Unknown",
+    "userSn": "Username",
     "name": "Name",
     "email": "Email",
     "dbRole": "Database Role",
-    "password": "Database Password",
+    "password": "Password",
     "role": "Role",
     "inviteCode": "Invite Code",
     "expiration": "Expiration"
   },
   "placeholder": {
+    "userSn": "Login username",
     "name": "John Doe",
     "email": "john@example.com",
     "dbRole": "hydra_johndoe",
@@ -46,8 +48,9 @@
     "generateFailed": "Failed to generate invite code"
   },
   "validation": {
+    "enterUserSn": "Enter a username",
     "enterName": "Please enter a user name",
     "enterEmail": "Please enter an email",
-    "enterPassword": "Please enter a database password"
+    "enterPassword": "Please enter a password"
   }
 }

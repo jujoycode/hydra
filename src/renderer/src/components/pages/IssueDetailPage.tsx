@@ -416,6 +416,7 @@ export default function IssueDetailPage() {
                       ) : (
                         <div
                           className='text-sm prose prose-sm dark:prose-invert max-w-none'
+                          // biome-ignore lint/security/noDangerouslySetInnerHtml: Tiptap이 생성한 HTML(화이트리스트 스키마)을 렌더링
                           dangerouslySetInnerHTML={{ __html: comment.comment_content }}
                         />
                       )}

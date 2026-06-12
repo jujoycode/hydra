@@ -1,5 +1,3 @@
-import type { UserRecord } from '../../database/repository/interfaces/UserRepository'
-
 export interface WorkspaceConfig {
   id: string
   name: string
@@ -34,6 +32,5 @@ export interface WorkspaceConnectParams {
 
 export interface WorkspaceStatusResponse {
   connected: boolean
-  user: UserRecord | null
-  isFirstLogin: boolean
+  needsSetup: boolean
 }

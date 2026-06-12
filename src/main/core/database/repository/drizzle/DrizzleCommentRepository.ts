@@ -1,5 +1,4 @@
 import { desc, eq } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
 import type {
   CommentRecord,
@@ -7,26 +6,25 @@ import type {
   CreateCommentData,
   UpdateCommentData
 } from '../interfaces/CommentRepository'
+import type { DrizzleDb } from './executor'
+import { selectById } from './readAfterWrite'
 
 const { comments } = schema
 
 export class DrizzleCommentRepository implements CommentRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
   async create(data: CreateCommentData): Promise<CommentRecord> {
     const now = new Date()
-    const rows = await this.db
-      .insert(comments)
-      .values({
-        comment_id: data.commentId,
-        issue_id: data.issueId,
-        comment_content: data.commentContent,
-        comment_created_by: data.createdBy,
-        comment_created_at: now,
-        comment_updated_at: now
-      })
-      .returning()
-    return rows[0] as CommentRecord
+    await this.db.insert(comments).values({
+      comment_id: data.commentId,
+      issue_id: data.issueId,
+      comment_content: data.commentContent,
+      comment_created_by: data.createdBy,
+      comment_created_at: now,
+      comment_updated_at: now
+    })
+    return selectById<CommentRecord>(this.db, comments, comments.comment_id, data.commentId)
   }
 
   async findByIssue(issueId: string): Promise<CommentRecord[]> {
@@ -39,7 +37,7 @@ export class DrizzleCommentRepository implements CommentRepository {
   }
 
   async update(commentId: string, data: UpdateCommentData): Promise<CommentRecord> {
-    const rows = await this.db
+    await this.db
       .update(comments)
       .set({
         comment_content: data.commentContent,
@@ -47,8 +45,7 @@ export class DrizzleCommentRepository implements CommentRepository {
         comment_updated_at: new Date()
       })
       .where(eq(comments.comment_id, commentId))
-      .returning()
-    return rows[0] as CommentRecord
+    return selectById<CommentRecord>(this.db, comments, comments.comment_id, commentId)
   }
 
   async delete(commentId: string): Promise<boolean> {

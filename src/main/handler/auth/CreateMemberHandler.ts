@@ -1,3 +1,6 @@
+import { normalizeHandle } from '@/auth/normalize'
+import { hashPassword } from '@/auth/password'
+import { toSafeUser } from '@/auth/safeUser'
 import { CoreBaseHandler } from '@/base/CoreBaseHandler'
 import { type CreateMemberParams, IpcChannel } from '@/interface/CoreInterface'
 import { CoreUtil } from '@/util/CoreUtil'
@@ -8,18 +11,15 @@ export class CreateMemberHandler extends CoreBaseHandler<IpcChannel.AUTH_CREATE_
   }
 
   async handler(params: CreateMemberParams) {
-    // 1. DB 역할 생성
-    await this.repos.db.createRole(params.dbRoleName, params.dbPassword)
-
-    // 2. 사용자 레코드 생성
+    const passwordHash = await hashPassword(params.initialPassword)
     const user = await this.repos.users.create({
       userId: CoreUtil.getUuid(),
+      userSn: normalizeHandle(params.userSn),
+      passwordHash,
       userName: params.userName,
-      userEmail: params.userEmail,
-      userDbRole: params.dbRoleName,
+      userEmail: params.userEmail ? normalizeHandle(params.userEmail) : null,
       userRole: params.userRole ?? 'member'
     })
-
-    return { data: user, error: null }
+    return { data: toSafeUser(user), error: null }
   }
 }

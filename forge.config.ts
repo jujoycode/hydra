@@ -10,7 +10,8 @@ const config: ForgeConfig = {
     icon: 'build/icon',
     appBundleId: 'com.hydra.app',
     name: 'hydra',
-    executableName: 'hydra'
+    executableName: 'hydra',
+    extraResource: ['./drizzle']
   },
   makers: [
     new MakerSquirrel({

@@ -4,7 +4,7 @@ import { IpcChannel, type IpcRequest, type IpcResponse } from '@/interface/CoreI
 import { getMockResponse } from './mockApi'
 
 // TEMP(디자인 미리보기): true면 DB 대신 mock 데이터를 반환. 정식 연결 복구 시 false.
-const MOCK_API = true
+const MOCK_API = false
 
 // Custom APIs for renderer
 function checkSupportedIpcChannel(channel: IpcChannel) {

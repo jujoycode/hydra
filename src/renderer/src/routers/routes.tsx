@@ -26,13 +26,12 @@ export const authenticatedRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: '_authenticated',
   beforeLoad: ({ context }) => {
-    const { isConnected, user, disconnect } = context.auth
-    if (isConnected && !user) {
-      disconnect()
-      throw redirect({ to: '/workspace' })
-    }
+    const { isConnected, isAuthenticated, needsSetup } = context.auth
     if (!isConnected) {
       throw redirect({ to: '/workspace' })
+    }
+    if (!isAuthenticated) {
+      throw redirect({ to: needsSetup ? '/setup' : '/login' })
     }
   },
   component: MainLayout
@@ -149,12 +148,38 @@ export const workspaceRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/workspace',
   beforeLoad: ({ context }) => {
-    const { isConnected, user } = context.auth
-    if (isConnected && user) {
+    const { isConnected, isAuthenticated } = context.auth
+    if (isConnected && isAuthenticated) {
       throw redirect({ to: '/' })
     }
   },
   component: lazyRoute(() => import('@/pages/WorkspacePage'))
+})
+
+// Login (public)
+export const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/login',
+  beforeLoad: ({ context }) => {
+    const { isConnected, isAuthenticated, needsSetup } = context.auth
+    if (!isConnected) throw redirect({ to: '/workspace' })
+    if (isAuthenticated) throw redirect({ to: '/' })
+    if (needsSetup) throw redirect({ to: '/setup' })
+  },
+  component: lazyRoute(() => import('@/components/pages/LoginPage'))
+})
+
+// Admin Setup (public)
+export const setupRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/setup',
+  beforeLoad: ({ context }) => {
+    const { isConnected, isAuthenticated, needsSetup } = context.auth
+    if (!isConnected) throw redirect({ to: '/workspace' })
+    if (isAuthenticated) throw redirect({ to: '/' })
+    if (!needsSetup) throw redirect({ to: '/login' })
+  },
+  component: lazyRoute(() => import('@/components/pages/AdminSetupPage'))
 })
 
 // Route Tree
@@ -179,5 +204,7 @@ export const routeTree = rootRoute.addChildren([
       settingsIntegrationsRoute
     ])
   ]),
-  workspaceRoute
+  workspaceRoute,
+  loginRoute,
+  setupRoute
 ])

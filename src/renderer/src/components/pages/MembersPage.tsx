@@ -13,14 +13,6 @@ import type { User as UserRecord } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
 import { useAuthStore } from '@/stores/auth'
 
-function generateDbRoleName(userName: string): string {
-  const sanitized = userName
-    .toLowerCase()
-    .replace(/\s+/g, '_')
-    .replace(/[^a-z0-9_]/g, '')
-  return `hydra_${sanitized}`
-}
-
 function formatDate(date: Date | string | null): string {
   if (!date) return '-'
   const d = typeof date === 'string' ? new Date(date) : date
@@ -44,10 +36,10 @@ export default function MembersPage() {
   const { currentWorkspace } = useAuthStore()
 
   // Add member form state
+  const [userSn, setUserSn] = useState('')
   const [userName, setUserName] = useState('')
   const [userEmail, setUserEmail] = useState('')
-  const [dbRoleName, setDbRoleName] = useState('')
-  const [dbPassword, setDbPassword] = useState('')
+  const [initialPassword, setInitialPassword] = useState('')
   const [userRole, setUserRole] = useState<'admin' | 'member'>('member')
 
   // Invite state
@@ -67,20 +59,19 @@ export default function MembersPage() {
     loadMembers()
   }, [loadMembers])
 
-  // Auto-generate dbRoleName when userName changes
-  useEffect(() => {
-    setDbRoleName(generateDbRoleName(userName))
-  }, [userName])
-
   const resetAddForm = () => {
+    setUserSn('')
     setUserName('')
     setUserEmail('')
-    setDbRoleName('')
-    setDbPassword('')
+    setInitialPassword('')
     setUserRole('member')
   }
 
   const handleAddMember = async () => {
+    if (!userSn.trim()) {
+      toast.error(t('validation.enterUserSn'))
+      return
+    }
     if (!userName.trim()) {
       toast.error(t('validation.enterName'))
       return
@@ -89,17 +80,17 @@ export default function MembersPage() {
       toast.error(t('validation.enterEmail'))
       return
     }
-    if (!dbPassword.trim()) {
+    if (!initialPassword.trim()) {
       toast.error(t('validation.enterPassword'))
       return
     }
 
     setIsSubmitting(true)
     const result = await window.callApi(IpcChannel.AUTH_CREATE_MEMBER, {
+      userSn: userSn.trim(),
       userName: userName.trim(),
       userEmail: userEmail.trim(),
-      dbRoleName: dbRoleName.trim(),
-      dbPassword: dbPassword.trim(),
+      initialPassword: initialPassword.trim(),
       userRole
     })
     setIsSubmitting(false)
@@ -256,6 +247,15 @@ export default function MembersPage() {
           </DialogHeader>
           <div className='grid gap-4 py-4'>
             <div className='grid gap-2'>
+              <Label htmlFor='userSn'>{t('label.userSn')}</Label>
+              <Input
+                id='userSn'
+                placeholder={t('placeholder.userSn')}
+                value={userSn}
+                onChange={(e) => setUserSn(e.target.value)}
+              />
+            </div>
+            <div className='grid gap-2'>
               <Label htmlFor='userName'>{t('label.name')}</Label>
               <Input
                 id='userName'
@@ -275,23 +275,13 @@ export default function MembersPage() {
               />
             </div>
             <div className='grid gap-2'>
-              <Label htmlFor='dbRoleName'>{t('label.dbRole')}</Label>
+              <Label htmlFor='initialPassword'>{t('label.password')}</Label>
               <Input
-                id='dbRoleName'
-                placeholder={t('placeholder.dbRole')}
-                value={dbRoleName}
-                onChange={(e) => setDbRoleName(e.target.value)}
-              />
-              <p className='text-xs text-muted-foreground'>{t('help.dbRole')}</p>
-            </div>
-            <div className='grid gap-2'>
-              <Label htmlFor='dbPassword'>{t('label.password')}</Label>
-              <Input
-                id='dbPassword'
+                id='initialPassword'
                 type='password'
                 placeholder={t('placeholder.password')}
-                value={dbPassword}
-                onChange={(e) => setDbPassword(e.target.value)}
+                value={initialPassword}
+                onChange={(e) => setInitialPassword(e.target.value)}
               />
             </div>
             <div className='grid gap-2'>

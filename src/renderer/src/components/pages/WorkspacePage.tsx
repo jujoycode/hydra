@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
-import { Plug, Plus, Ticket, Trash2 } from 'lucide-react'
+import { Eye, EyeOff, Plug, Plus, Ticket, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -18,7 +18,7 @@ export default function WorkspacePage() {
   const { t } = useTranslation('workspace')
   const { t: tc } = useTranslation('common')
   const navigate = useNavigate()
-  const { setUser, setConnected, setCurrentWorkspace } = useAuthStore()
+  const { setConnected, setCurrentWorkspace, setNeedsSetup, setUser, setAuthenticated } = useAuthStore()
   const { workspaces, addWorkspace, removeWorkspace } = useWorkspaceStore()
 
   const saveWorkspace = useIpcHandler(IpcChannel.WORKSPACE_SAVE)
@@ -30,6 +30,7 @@ export default function WorkspacePage() {
   const [showInviteForm, setShowInviteForm] = useState(false)
   const [connecting, setConnecting] = useState(false)
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [selectedWs, setSelectedWs] = useState<WorkspaceConfig | null>(null)
   const [inviteCode, setInviteCode] = useState('')
 
@@ -73,14 +74,27 @@ export default function WorkspacePage() {
       })
       if (result.data) {
         setConnected(true)
-        setUser(result.data.user)
         setCurrentWorkspace(ws)
+        setNeedsSetup(result.data.needsSetup)
         toast.success(t('toast.connected'))
-        navigate({ to: '/' })
+        if (result.data.needsSetup) {
+          navigate({ to: '/setup' })
+          return
+        }
+        // remember-me: 유효한 세션이 있으면 로그인 건너뜀
+        const session = await window.callApi(IpcChannel.AUTH_SESSION_STATUS)
+        if (session?.data?.authenticated && session.data.user) {
+          setUser(session.data.user)
+          setAuthenticated(true)
+          navigate({ to: '/' })
+        } else {
+          navigate({ to: '/login' })
+        }
       }
     } finally {
       setConnecting(false)
       setPassword('')
+      setShowPassword(false)
       setSelectedWs(null)
     }
   }
@@ -135,12 +149,24 @@ export default function WorkspacePage() {
                 </CardHeader>
                 {selectedWs?.id === ws.id ? (
                   <CardContent className='p-4 pt-0 space-y-2'>
-                    <Input
-                      type='password'
-                      placeholder={t('placeholder.password')}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
+                    <div className='relative'>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder={t('placeholder.password')}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className='pr-9'
+                      />
+                      <Button
+                        type='button'
+                        variant='ghost'
+                        size='icon'
+                        className='absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7'
+                        onClick={() => setShowPassword((v) => !v)}
+                      >
+                        {showPassword ? <EyeOff className='h-3.5 w-3.5' /> : <Eye className='h-3.5 w-3.5' />}
+                      </Button>
+                    </div>
                     <Button className='w-full' size='sm' disabled={connecting} onClick={() => handleConnect(ws)}>
                       <Plug className='h-4 w-4 mr-2' />
                       {connecting ? tc('button.connecting') : tc('button.connect')}

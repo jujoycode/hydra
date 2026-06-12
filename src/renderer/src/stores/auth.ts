@@ -1,27 +1,17 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import type { User } from '@/interface/CoreInterface'
+import { IpcChannel, type User } from '@/interface/CoreInterface'
 import type { AuthState, WorkspaceConfig } from '@/types/auth'
-
-// TEMP(디자인 미리보기): 로그인/연결 없이 대시보드 진입용 mock 유저. 정식 인증 복구 시 제거.
-const MOCK_USER: User = {
-  user_id: 'preview-admin',
-  user_name: 'Preview Admin',
-  user_email: 'preview@hydra.local',
-  user_db_role: 'postgres',
-  user_avatar_path: null,
-  user_role: 'admin',
-  user_created_at: null,
-  user_updated_at: null
-}
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
-      // TEMP(디자인 미리보기): 기본을 연결됨 + mock 유저로 둬 인증 게이트 우회
-      user: MOCK_USER,
-      isConnected: true,
+    (set, _get) => ({
+      user: null,
+      isConnected: false,
       isLoading: false,
+      isBootstrapped: false,
+      isAuthenticated: false,
+      needsSetup: false,
       error: null,
       currentWorkspace: null,
 
@@ -29,11 +19,15 @@ export const useAuthStore = create<AuthState>()(
       setConnected: (connected: boolean) => set({ isConnected: connected }),
       setCurrentWorkspace: (ws: WorkspaceConfig | null) => set({ currentWorkspace: ws }),
       setError: (error: Error | null) => set({ error }),
+      setAuthenticated: (v: boolean) => set({ isAuthenticated: v }),
+      setNeedsSetup: (v: boolean) => set({ needsSetup: v }),
 
       disconnect: () =>
         set({
           user: null,
           isConnected: false,
+          isAuthenticated: false,
+          needsSetup: false,
           currentWorkspace: null
         }),
 
@@ -41,25 +35,61 @@ export const useAuthStore = create<AuthState>()(
         set({
           user: null,
           isConnected: false,
+          isAuthenticated: false,
+          needsSetup: false,
           isLoading: false,
           error: null,
           currentWorkspace: null
-        })
+        }),
+
+      logout: async () => {
+        try {
+          await window.callApi(IpcChannel.AUTH_LOGOUT)
+        } finally {
+          set({ user: null, isAuthenticated: false })
+        }
+      },
+
+      // 앱 부팅 시 main 프로세스의 실제 연결 상태와 renderer persist 상태를 동기화한다.
+      // main이 재시작되어 RepositoryContainer 가 초기화되지 않은 상태이면 disconnect 처리.
+      bootstrap: async () => {
+        try {
+          const status = await window.callApi(IpcChannel.WORKSPACE_STATUS)
+          const connectedInMain = status?.data?.connected === true
+          const needsSetup = status?.data?.needsSetup === true
+
+          if (!connectedInMain) {
+            set({ user: null, isConnected: false, isAuthenticated: false, needsSetup: false, currentWorkspace: null })
+            return
+          }
+
+          // 연결됨 → 세션 재검증
+          const session = await window.callApi(IpcChannel.AUTH_SESSION_STATUS)
+          const authed = session?.data?.authenticated === true
+          set({
+            isConnected: true,
+            needsSetup,
+            isAuthenticated: authed,
+            user: authed ? (session?.data?.user ?? null) : null
+          })
+        } catch (error) {
+          console.error('[auth.bootstrap] failed to sync with main', error)
+          set({ user: null, isConnected: false, isAuthenticated: false, needsSetup: false, currentWorkspace: null })
+        } finally {
+          set({ isBootstrapped: true })
+        }
+      }
     }),
     {
       name: 'hydra-auth-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
+        isConnected: state.isConnected,
+        isAuthenticated: state.isAuthenticated,
+        needsSetup: state.needsSetup,
         currentWorkspace: state.currentWorkspace
-      }),
-      onRehydrateStorage: () => (state) => {
-        // TEMP(디자인 미리보기): 재시작 후에도 연결됨 + mock 유저 유지 (인증 게이트 우회)
-        if (state) {
-          state.setConnected(true)
-          state.setUser(MOCK_USER) // 미리보기: mock 데이터 담당자 ID와 일치하도록 항상 고정
-        }
-      }
+      })
     }
   )
 )

@@ -5,33 +5,34 @@ import { ThemeProvider } from 'next-themes'
 import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Toaster } from '@/atoms/Sonner'
-import { IpcChannel } from '@/interface/CoreInterface'
 import { queryClient } from '@/lib/queryClient'
+import { EmptyPage } from '@/pages/EmptyPage'
 import { router } from '@/routers'
 import { useAuthStore } from '@/stores/auth'
-import { useProjectStore } from '@/stores/project'
 import './index.css'
 import './locales'
 
 function InnerApp() {
-  const { user, isConnected, disconnect } = useAuthStore()
+  const { user, isConnected, isAuthenticated, needsSetup, disconnect, isBootstrapped, bootstrap } = useAuthStore()
 
-  // TEMP(디자인 미리보기): project 스토어를 채우는 부트스트랩이 없어, 시작 시 PROJECT_LIST로 시드한다.
+  // 앱 진입 시 1회 main 프로세스 상태와 동기화.
+  // main이 재시작되어 RepositoryContainer 가 비어있는 경우 persist 된 isConnected 를 초기화한다.
   useEffect(() => {
-    window
-      .callApi(IpcChannel.PROJECT_LIST, { userId: user?.user_id ?? '' })
-      .then((res) => {
-        const projects = res?.data
-        if (Array.isArray(projects) && projects.length > 0) {
-          const store = useProjectStore.getState()
-          store.setProjects(projects)
-          if (!store.selectedProjectId) store.setSelectedProjectId(projects[0].project_id)
-        }
-      })
-      .catch(() => {})
-  }, [user?.user_id])
+    if (!isBootstrapped) {
+      bootstrap()
+    }
+  }, [isBootstrapped, bootstrap])
 
-  return <RouterProvider router={router} context={{ auth: { user, isConnected, disconnect } }} />
+  if (!isBootstrapped) {
+    return <EmptyPage />
+  }
+
+  return (
+    <RouterProvider
+      router={router}
+      context={{ auth: { user, isConnected, isAuthenticated, needsSetup, disconnect } }}
+    />
+  )
 }
 
 createRoot(document.getElementById('root')!).render(

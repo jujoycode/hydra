@@ -1,7 +1,6 @@
 // Drizzle 기반 프로젝트 리포지토리 구현
 
 import { and, eq, sql } from 'drizzle-orm'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import * as schema from '../../schema/drizzle/schema'
 import type {
   CreateProjectData,
@@ -9,26 +8,27 @@ import type {
   ProjectRepository,
   UpdateProjectData
 } from '../interfaces/ProjectRepository'
+import type { RepoExecutor } from '../interfaces/RepoExecutor'
+import type { DrizzleDb, DrizzleExecutor } from './executor'
+import { selectById } from './readAfterWrite'
 
 const { projects, usersProjectsLink } = schema
 
 export class DrizzleProjectRepository implements ProjectRepository {
-  constructor(private db: NodePgDatabase<typeof schema>) {}
+  constructor(private db: DrizzleDb) {}
 
-  async create(data: CreateProjectData): Promise<ProjectRecord> {
-    const rows = await this.db
-      .insert(projects)
-      .values({
-        project_id: data.projectId,
-        project_name: data.projectName,
-        project_key: data.projectKey,
-        project_desc: data.projectDesc ?? null,
-        project_created_by: data.createdBy,
-        project_start_date: data.startDate ?? null,
-        project_end_date: data.endDate ?? null
-      })
-      .returning()
-    return rows[0] as ProjectRecord
+  async create(data: CreateProjectData, executor: RepoExecutor = this.db): Promise<ProjectRecord> {
+    const ex = executor as DrizzleExecutor
+    await ex.insert(projects).values({
+      project_id: data.projectId,
+      project_name: data.projectName,
+      project_key: data.projectKey,
+      project_desc: data.projectDesc ?? null,
+      project_created_by: data.createdBy,
+      project_start_date: data.startDate ?? null,
+      project_end_date: data.endDate ?? null
+    })
+    return selectById<ProjectRecord>(ex, projects, projects.project_id, data.projectId)
   }
 
   async findAll(): Promise<ProjectRecord[]> {
@@ -67,8 +67,8 @@ export class DrizzleProjectRepository implements ProjectRepository {
     if (data.startDate !== undefined) values.project_start_date = data.startDate
     if (data.endDate !== undefined) values.project_end_date = data.endDate
 
-    const rows = await this.db.update(projects).set(values).where(eq(projects.project_id, projectId)).returning()
-    return rows[0] as ProjectRecord
+    await this.db.update(projects).set(values).where(eq(projects.project_id, projectId))
+    return selectById<ProjectRecord>(this.db, projects, projects.project_id, projectId)
   }
 
   async delete(projectId: string): Promise<boolean> {
@@ -76,8 +76,9 @@ export class DrizzleProjectRepository implements ProjectRepository {
     return true
   }
 
-  async linkUser(linkId: string, userId: string, projectId: string): Promise<void> {
-    await this.db.insert(usersProjectsLink).values({
+  async linkUser(linkId: string, userId: string, projectId: string, executor: RepoExecutor = this.db): Promise<void> {
+    const ex = executor as DrizzleExecutor
+    await ex.insert(usersProjectsLink).values({
       user_project_link_id: linkId,
       user_id: userId,
       project_id: projectId

@@ -1,4 +1,8 @@
 export { CreateMemberHandler } from './CreateMemberHandler'
 export { DeleteUserHandler } from './DeleteUserHandler'
 export { ListUsersHandler } from './ListUsersHandler'
+export { LoginHandler } from './LoginHandler'
+export { LogoutHandler } from './LogoutHandler'
+export { SessionStatusHandler } from './SessionStatusHandler'
+export { SetupAdminHandler } from './SetupAdminHandler'
 export { UpdateUserHandler } from './UpdateUserHandler'
