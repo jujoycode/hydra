@@ -18,6 +18,7 @@ import {
 import type { DrizzleDb, DrizzleSchema } from '@/database/repository/drizzle/executor'
 import * as pgSchema from '@/database/schema/drizzle/schema'
 import * as mysqlSchema from '@/database/schema/drizzle/schema.mysql'
+import { DatabaseError } from '@/error/DatabaseError'
 import { IpcChannel, type WorkspaceConnectParams } from '@/interface/CoreInterface'
 
 export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPACE_CONNECT> {
@@ -52,6 +53,14 @@ export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPAC
     } catch (error) {
       // 마이그레이션 실패 시 컨테이너에 등록되지 않은 어댑터의 풀이 누수되지 않도록 정리
       await adapter.disconnect().catch(() => {})
+      // 연결 자격증명 문제와 구분되도록 마이그레이션 맥락을 명시 (예: DML-only 계정은 스키마 변경 시 DDL 권한 필요)
+      if (error instanceof DatabaseError) {
+        throw new DatabaseError(
+          error.code,
+          `Schema migration failed: ${error.message} (a schema update requires an account with DDL privileges — see README "MySQL 8 workspace")`,
+          error.data
+        )
+      }
       throw error
     }
 
