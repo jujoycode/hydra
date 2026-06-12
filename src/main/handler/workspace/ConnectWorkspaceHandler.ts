@@ -1,5 +1,5 @@
 import { CoreBaseHandler } from '@/base/CoreBaseHandler'
-import { createAdapter } from '@/database/adapter/createAdapter'
+import { createAdapter, toMigrationDialect } from '@/database/adapter/createAdapter'
 import { getMigrationsFolder } from '@/database/migrate/migrationsPath'
 import { RepositoryContainer } from '@/database/RepositoryContainer'
 import {
@@ -47,7 +47,13 @@ export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPAC
     })
 
     // 스키마를 최신 마이그레이션으로 적용 (멱등) — dialect별 폴더
-    await adapter.runMigrations(getMigrationsFolder(dbms === 'mysql' ? 'mysql' : 'pg'))
+    try {
+      await adapter.runMigrations(getMigrationsFolder(toMigrationDialect(dbms)))
+    } catch (error) {
+      // 마이그레이션 실패 시 컨테이너에 등록되지 않은 어댑터의 풀이 누수되지 않도록 정리
+      await adapter.disconnect().catch(() => {})
+      throw error
+    }
 
     // 단일 리포지토리 셋: 타입 기준은 pg, MySQL은 구조 호환 캐스트 (executor.ts 참고)
     const db = adapter.getConnection() as unknown as DrizzleDb
