@@ -25,7 +25,7 @@ services:
       MYSQL_DATABASE: hydra
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-mysql}
     ports:
-      - '3306:3306'
+      - '${MYSQL_PORT:-3306}:3306'
     volumes:
       - hydra_mysql_data:/var/lib/mysql
     healthcheck:
