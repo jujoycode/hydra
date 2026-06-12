@@ -1,3 +1,4 @@
+// 주의: MySQL은 generate + 마이그레이터만 사용한다. drizzle-kit push는 collation을 strip할 수 있어 금지.
 import { defineConfig } from 'drizzle-kit'
 
 export default defineConfig({

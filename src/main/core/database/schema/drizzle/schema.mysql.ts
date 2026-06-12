@@ -1,16 +1,29 @@
 // Drizzle ORM 스키마 정의 - MySQL 8 (schema.ts 의 PG 스키마와 테이블/컬럼명 패리티 유지 — schema.parity.test.ts)
-// 타입 매핑 규칙은 스펙 §6.2: uuid→char(36, ascii_bin은 마이그레이션 SQL에서), timestamp→datetime(3), TEXT-UNIQUE→varchar-UNIQUE
+// 타입 매핑 규칙은 스펙 §6.2: uuid→char(36, ascii_bin), timestamp→datetime(3), TEXT-UNIQUE→varchar-UNIQUE
 
 import { sql } from 'drizzle-orm'
-import { boolean, char, datetime, index, int, mysqlTable, text, varchar } from 'drizzle-orm/mysql-core'
+import { boolean, customType, datetime, index, int, mysqlTable, text, varchar } from 'drizzle-orm/mysql-core'
 
 const now3 = sql`CURRENT_TIMESTAMP(3)`
 
+// collation을 스키마가 소유해 향후 generate 시 MODIFY COLUMN에서도 보존되게 한다 (수동 SQL 편집 금지)
+const uuidChar = customType<{ data: string }>({
+  dataType() {
+    return 'char(36) CHARACTER SET ascii COLLATE ascii_bin'
+  }
+})
+
+const asciiVarchar255 = customType<{ data: string }>({
+  dataType() {
+    return 'varchar(255) CHARACTER SET ascii COLLATE ascii_bin'
+  }
+})
+
 // 사용자 테이블
 export const users = mysqlTable('users', {
-  user_id: char('user_id', { length: 36 }).primaryKey(),
-  user_sn: varchar('user_sn', { length: 255 }).notNull().unique(),
-  user_password_hash: varchar('user_password_hash', { length: 255 }).notNull(),
+  user_id: uuidChar('user_id').primaryKey(),
+  user_sn: asciiVarchar255('user_sn').notNull().unique(),
+  user_password_hash: asciiVarchar255('user_password_hash').notNull(),
   user_status: varchar('user_status', { length: 20 }).default('active'),
   user_name: varchar('user_name', { length: 255 }),
   user_email: varchar('user_email', { length: 255 }),
@@ -23,12 +36,12 @@ export const users = mysqlTable('users', {
 
 // 프로젝트 테이블 (project_key: TEXT-UNIQUE 불가 → varchar(50) UNIQUE, 스펙 §6.2.3)
 export const projects = mysqlTable('projects', {
-  project_id: char('project_id', { length: 36 }).primaryKey(),
+  project_id: uuidChar('project_id').primaryKey(),
   project_name: text('project_name').notNull(),
   project_key: varchar('project_key', { length: 50 }).notNull().unique(),
   project_desc: text('project_desc'),
-  project_created_by: char('project_created_by', { length: 36 }),
-  project_modified_by: char('project_modified_by', { length: 36 }),
+  project_created_by: uuidChar('project_created_by'),
+  project_modified_by: uuidChar('project_modified_by'),
   project_start_date: datetime('project_start_date', { fsp: 3 }),
   project_end_date: datetime('project_end_date', { fsp: 3 })
 })
@@ -37,9 +50,9 @@ export const projects = mysqlTable('projects', {
 export const usersProjectsLink = mysqlTable(
   'users_projects_link',
   {
-    user_project_link_id: char('user_project_link_id', { length: 36 }).primaryKey(),
-    user_id: char('user_id', { length: 36 }).references(() => users.user_id),
-    project_id: char('project_id', { length: 36 }).references(() => projects.project_id)
+    user_project_link_id: uuidChar('user_project_link_id').primaryKey(),
+    user_id: uuidChar('user_id').references(() => users.user_id),
+    project_id: uuidChar('project_id').references(() => projects.project_id)
   },
   (t) => [
     index('idx_users_projects_link_user').on(t.user_id),
@@ -51,8 +64,8 @@ export const usersProjectsLink = mysqlTable(
 export const milestones = mysqlTable(
   'milestones',
   {
-    milestone_id: char('milestone_id', { length: 36 }).primaryKey(),
-    project_id: char('project_id', { length: 36 })
+    milestone_id: uuidChar('milestone_id').primaryKey(),
+    project_id: uuidChar('project_id')
       .notNull()
       .references(() => projects.project_id),
     milestone_title: text('milestone_title').notNull(),
@@ -69,8 +82,8 @@ export const milestones = mysqlTable(
 export const issues = mysqlTable(
   'issues',
   {
-    issue_id: char('issue_id', { length: 36 }).primaryKey(),
-    project_id: char('project_id', { length: 36 })
+    issue_id: uuidChar('issue_id').primaryKey(),
+    project_id: uuidChar('project_id')
       .notNull()
       .references(() => projects.project_id),
     issue_title: text('issue_title').notNull(),
@@ -79,10 +92,10 @@ export const issues = mysqlTable(
     issue_status: varchar('issue_status', { length: 50 }),
     issue_priority: varchar('issue_priority', { length: 50 }),
     issue_category: varchar('issue_category', { length: 100 }),
-    issue_created_by: char('issue_created_by', { length: 36 }),
-    issue_modified_by: char('issue_modified_by', { length: 36 }),
-    issue_assigned_to: char('issue_assigned_to', { length: 36 }),
-    issue_milestone_id: char('issue_milestone_id', { length: 36 }).references(() => milestones.milestone_id),
+    issue_created_by: uuidChar('issue_created_by'),
+    issue_modified_by: uuidChar('issue_modified_by'),
+    issue_assigned_to: uuidChar('issue_assigned_to'),
+    issue_milestone_id: uuidChar('issue_milestone_id').references(() => milestones.milestone_id),
     issue_created_at: datetime('issue_created_at', { fsp: 3 }).default(now3),
     issue_updated_at: datetime('issue_updated_at', { fsp: 3 }).default(now3)
   },
@@ -95,7 +108,7 @@ export const issues = mysqlTable(
 
 // 파일 테이블
 export const files = mysqlTable('files', {
-  file_id: char('file_id', { length: 36 }).primaryKey(),
+  file_id: uuidChar('file_id').primaryKey(),
   file_name: text('file_name').notNull(),
   file_path: text('file_path').notNull(),
   file_type: text('file_type').notNull(),
@@ -108,9 +121,9 @@ export const files = mysqlTable('files', {
 export const issuesFilesLink = mysqlTable(
   'issues_files_link',
   {
-    issue_file_link_id: char('issue_file_link_id', { length: 36 }).primaryKey(),
-    issue_id: char('issue_id', { length: 36 }).references(() => issues.issue_id),
-    file_id: char('file_id', { length: 36 }).references(() => files.file_id)
+    issue_file_link_id: uuidChar('issue_file_link_id').primaryKey(),
+    issue_id: uuidChar('issue_id').references(() => issues.issue_id),
+    file_id: uuidChar('file_id').references(() => files.file_id)
   },
   (t) => [index('idx_issues_files_link_issue').on(t.issue_id), index('idx_issues_files_link_file').on(t.file_id)]
 )
@@ -119,13 +132,13 @@ export const issuesFilesLink = mysqlTable(
 export const comments = mysqlTable(
   'comments',
   {
-    comment_id: char('comment_id', { length: 36 }).primaryKey(),
-    issue_id: char('issue_id', { length: 36 })
+    comment_id: uuidChar('comment_id').primaryKey(),
+    issue_id: uuidChar('issue_id')
       .notNull()
       .references(() => issues.issue_id),
     comment_content: text('comment_content').notNull(),
-    comment_created_by: char('comment_created_by', { length: 36 }),
-    comment_updated_by: char('comment_updated_by', { length: 36 }),
+    comment_created_by: uuidChar('comment_created_by'),
+    comment_updated_by: uuidChar('comment_updated_by'),
     comment_created_at: datetime('comment_created_at', { fsp: 3 }).default(now3),
     comment_updated_at: datetime('comment_updated_at', { fsp: 3 }).default(now3)
   },
@@ -134,7 +147,7 @@ export const comments = mysqlTable(
 
 // 라벨 테이블
 export const labels = mysqlTable('labels', {
-  label_id: char('label_id', { length: 36 }).primaryKey(),
+  label_id: uuidChar('label_id').primaryKey(),
   label_name: varchar('label_name', { length: 100 }).notNull(),
   label_color: varchar('label_color', { length: 7 }).notNull(),
   label_created_at: datetime('label_created_at', { fsp: 3 }).default(now3)
@@ -144,9 +157,9 @@ export const labels = mysqlTable('labels', {
 export const issuesLabelsLink = mysqlTable(
   'issues_labels_link',
   {
-    issue_label_link_id: char('issue_label_link_id', { length: 36 }).primaryKey(),
-    issue_id: char('issue_id', { length: 36 }).references(() => issues.issue_id),
-    label_id: char('label_id', { length: 36 }).references(() => labels.label_id)
+    issue_label_link_id: uuidChar('issue_label_link_id').primaryKey(),
+    issue_id: uuidChar('issue_id').references(() => issues.issue_id),
+    label_id: uuidChar('label_id').references(() => labels.label_id)
   },
   (t) => [index('idx_issues_labels_link_issue').on(t.issue_id), index('idx_issues_labels_link_label').on(t.label_id)]
 )
@@ -155,12 +168,12 @@ export const issuesLabelsLink = mysqlTable(
 export const tasks = mysqlTable(
   'tasks',
   {
-    task_id: char('task_id', { length: 36 }).primaryKey(),
-    issue_id: char('issue_id', { length: 36 }).references(() => issues.issue_id),
+    task_id: uuidChar('task_id').primaryKey(),
+    issue_id: uuidChar('issue_id').references(() => issues.issue_id),
     task_title: text('task_title').notNull(),
     task_completed: boolean('task_completed').default(false),
     task_order: int('task_order').default(0),
-    task_created_by: char('task_created_by', { length: 36 }),
+    task_created_by: uuidChar('task_created_by'),
     task_created_at: datetime('task_created_at', { fsp: 3 }).default(now3),
     task_updated_at: datetime('task_updated_at', { fsp: 3 }).default(now3)
   },
@@ -171,11 +184,11 @@ export const tasks = mysqlTable(
 export const issueRelations = mysqlTable(
   'issue_relations',
   {
-    relation_id: char('relation_id', { length: 36 }).primaryKey(),
-    source_issue_id: char('source_issue_id', { length: 36 })
+    relation_id: uuidChar('relation_id').primaryKey(),
+    source_issue_id: uuidChar('source_issue_id')
       .notNull()
       .references(() => issues.issue_id),
-    target_issue_id: char('target_issue_id', { length: 36 })
+    target_issue_id: uuidChar('target_issue_id')
       .notNull()
       .references(() => issues.issue_id),
     relation_type: varchar('relation_type', { length: 50 }).notNull(),
@@ -191,8 +204,8 @@ export const issueRelations = mysqlTable(
 export const notifications = mysqlTable(
   'notifications',
   {
-    notification_id: char('notification_id', { length: 36 }).primaryKey(),
-    user_id: char('user_id', { length: 36 })
+    notification_id: uuidChar('notification_id').primaryKey(),
+    user_id: uuidChar('user_id')
       .notNull()
       .references(() => users.user_id),
     notification_type: varchar('notification_type', { length: 50 }).notNull(),
@@ -207,7 +220,7 @@ export const notifications = mysqlTable(
 
 // 인테그레이션 설정 테이블
 export const integrations = mysqlTable('integrations', {
-  integration_id: char('integration_id', { length: 36 }).primaryKey(),
+  integration_id: uuidChar('integration_id').primaryKey(),
   integration_type: varchar('integration_type', { length: 50 }).notNull(),
   integration_config: text('integration_config').notNull(),
   integration_enabled: boolean('integration_enabled').default(false),
@@ -217,7 +230,7 @@ export const integrations = mysqlTable('integrations', {
 
 // 초대 코드 테이블 (code: TEXT-UNIQUE 불가 + 조회되지 않는 컬럼 → UNIQUE 없이 저장만, 스펙 §6.2.3)
 export const inviteCodes = mysqlTable('invite_codes', {
-  invite_code_id: char('invite_code_id', { length: 36 }).primaryKey(),
+  invite_code_id: uuidChar('invite_code_id').primaryKey(),
   code: text('code').notNull(),
   workspace_name: text('workspace_name').notNull(),
   host: text('host').notNull(),

@@ -44,6 +44,7 @@ export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPAC
       sslCertPath: params.sslCertPath
     })
 
+    // TODO(Task 7): workspace dbms 설정에 따라 dialect 분기
     // 스키마를 최신 마이그레이션으로 적용 (멱등)
     await adapter.runMigrations(getMigrationsFolder('pg'))
 

@@ -1,3 +1,4 @@
+-- NOTE: DEFAULT CHARSET=utf8mb4 manually appended per table; review on regeneration
 CREATE TABLE `comments` (
 	`comment_id` char(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
 	`issue_id` char(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,

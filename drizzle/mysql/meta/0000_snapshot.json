@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "eebfe385-12c3-4b79-b039-41648ff6d45f",
+  "id": "cb46bdce-72b0-4d26-85e2-97fe4cd6187e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "comments": {
@@ -9,14 +9,14 @@
       "columns": {
         "comment_id": {
           "name": "comment_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "issue_id": {
           "name": "issue_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -30,14 +30,14 @@
         },
         "comment_created_by": {
           "name": "comment_created_by",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "comment_updated_by": {
           "name": "comment_updated_by",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -99,7 +99,7 @@
       "columns": {
         "file_id": {
           "name": "file_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -167,7 +167,7 @@
       "columns": {
         "integration_id": {
           "name": "integration_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -229,7 +229,7 @@
       "columns": {
         "invite_code_id": {
           "name": "invite_code_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -310,21 +310,21 @@
       "columns": {
         "relation_id": {
           "name": "relation_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "source_issue_id": {
           "name": "source_issue_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "target_issue_id": {
           "name": "target_issue_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -405,14 +405,14 @@
       "columns": {
         "issue_id": {
           "name": "issue_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "project_id": {
           "name": "project_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -461,28 +461,28 @@
         },
         "issue_created_by": {
           "name": "issue_created_by",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "issue_modified_by": {
           "name": "issue_modified_by",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "issue_assigned_to": {
           "name": "issue_assigned_to",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "issue_milestone_id": {
           "name": "issue_milestone_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -571,21 +571,21 @@
       "columns": {
         "issue_file_link_id": {
           "name": "issue_file_link_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "issue_id": {
           "name": "issue_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "file_id": {
           "name": "file_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -651,21 +651,21 @@
       "columns": {
         "issue_label_link_id": {
           "name": "issue_label_link_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "issue_id": {
           "name": "issue_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "label_id": {
           "name": "label_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -731,7 +731,7 @@
       "columns": {
         "label_id": {
           "name": "label_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -777,14 +777,14 @@
       "columns": {
         "milestone_id": {
           "name": "milestone_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "project_id": {
           "name": "project_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -875,14 +875,14 @@
       "columns": {
         "notification_id": {
           "name": "notification_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "user_id": {
           "name": "user_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -972,7 +972,7 @@
       "columns": {
         "project_id": {
           "name": "project_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1000,14 +1000,14 @@
         },
         "project_created_by": {
           "name": "project_created_by",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "project_modified_by": {
           "name": "project_modified_by",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1052,14 +1052,14 @@
       "columns": {
         "task_id": {
           "name": "task_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "issue_id": {
           "name": "issue_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1089,7 +1089,7 @@
         },
         "task_created_by": {
           "name": "task_created_by",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1151,21 +1151,21 @@
       "columns": {
         "user_id": {
           "name": "user_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "user_sn": {
           "name": "user_sn",
-          "type": "varchar(255)",
+          "type": "varchar(255) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "user_password_hash": {
           "name": "user_password_hash",
-          "type": "varchar(255)",
+          "type": "varchar(255) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1254,21 +1254,21 @@
       "columns": {
         "user_project_link_id": {
           "name": "user_project_link_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "user_id": {
           "name": "user_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "project_id": {
           "name": "project_id",
-          "type": "char(36)",
+          "type": "char(36) CHARACTER SET ascii COLLATE ascii_bin",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
