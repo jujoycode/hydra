@@ -72,6 +72,7 @@ export function wrapMySqlError(
 export class MySqlAdapter implements DatabaseAdapter {
   private pool: Pool | null = null
   private db: MySql2Database<typeof schema> | null = null
+  private database: string | null = null
 
   async connect(config: ConnectionConfig): Promise<void> {
     const poolOptions: PoolOptions = {
@@ -80,6 +81,7 @@ export class MySqlAdapter implements DatabaseAdapter {
       database: config.database,
       user: config.user,
       password: config.password,
+      charset: 'utf8mb4', // connection charset 고정 — mysql2 기본값에 의존하지 않음 (스펙 §7)
       timezone: 'Z', // UTC 고정 — 세션 TZ 변환 차단 (스펙 §6.2.2)
       connectTimeout: 5000,
       connectionLimit: 10
@@ -92,13 +94,18 @@ export class MySqlAdapter implements DatabaseAdapter {
     const pool = mysql.createPool(poolOptions)
 
     // Pool warm-up + utf8mb4 검증 (스펙 §7 — 기존 DB를 조용히 가정하지 않는다)
+    // connection charset은 위에서 utf8mb4로 고정, 마이그레이션 SQL도 테이블마다 DEFAULT CHARSET=utf8mb4를 핀하므로
+    // DB 기본 charset 불일치는 차단 사유가 아니라 경고 사유: Hydra 외부에서 생성된 테이블이
+    // non-utf8mb4 charset을 기본값으로 가질 수 있음을 알린다.
     try {
       const conn = await pool.getConnection()
       try {
         const [rows] = await conn.query<RowDataPacket[]>('SELECT @@character_set_database AS cs')
         const cs = rows[0]?.cs as string | undefined
         if (cs !== 'utf8mb4') {
-          console.warn(`[MySqlAdapter] database charset is "${cs}", expected utf8mb4 — non-ASCII text may corrupt`)
+          console.warn(
+            `[MySqlAdapter] database charset is "${cs}", expected utf8mb4 — new tables created outside Hydra may default to a non-utf8mb4 charset`
+          )
         }
       } finally {
         conn.release()
@@ -115,6 +122,7 @@ export class MySqlAdapter implements DatabaseAdapter {
 
     this.pool = pool
     this.db = drizzle(pool, { schema, mode: 'default' })
+    this.database = config.database
   }
 
   async disconnect(): Promise<void> {
@@ -122,6 +130,7 @@ export class MySqlAdapter implements DatabaseAdapter {
       await this.pool.end()
       this.pool = null
       this.db = null
+      this.database = null
     }
   }
 
@@ -137,13 +146,16 @@ export class MySqlAdapter implements DatabaseAdapter {
   }
 
   // GET_LOCK으로 동시 기동 마이그레이션 가드 (스펙 §8.4 — PG advisory lock 대응물)
+  // 락 이름을 DB 스코프로 제한: 같은 MySQL 서버의 다른 데이터베이스를 쓰는 워크스페이스가 서버 전역 락에서 경합하지 않도록
   async runMigrations(migrationsFolder: string): Promise<void> {
     if (!this.db || !this.pool) {
       throw new Error('Database not connected. Call connect() first.')
     }
+    // MySQL GET_LOCK 이름은 64자 제한 — DB 이름 포함 스코프 키로 truncate
+    const lockName = `hydra_migrations:${this.database}`.slice(0, 64)
     const conn = await this.pool.getConnection()
     try {
-      const [rows] = await conn.query<RowDataPacket[]>("SELECT GET_LOCK('hydra_migrations', 60) AS got")
+      const [rows] = await conn.query<RowDataPacket[]>('SELECT GET_LOCK(?, 60) AS got', [lockName])
       if (Number(rows[0]?.got) !== 1) {
         throw new DatabaseError(
           ErrorCode.DB_ERROR,
@@ -153,8 +165,13 @@ export class MySqlAdapter implements DatabaseAdapter {
       }
       await migrate(this.db, { migrationsFolder })
     } finally {
-      await conn.query("SELECT RELEASE_LOCK('hydra_migrations')").catch(() => {})
-      conn.release()
+      try {
+        await conn.query('SELECT RELEASE_LOCK(?)', [lockName])
+        conn.release()
+      } catch {
+        // RELEASE_LOCK 실패는 사실상 죽은 커넥션 — 풀에 되돌리지 않고 폐기 (락은 세션 종료로 자동 해제)
+        conn.destroy()
+      }
     }
   }
 

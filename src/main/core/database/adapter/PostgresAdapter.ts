@@ -125,6 +125,7 @@ export class PostgresAdapter implements DatabaseAdapter {
     return this.db
   }
 
+  // TODO: 스펙 §8.4 — 동시 기동 마이그레이션 가드(pg_advisory_lock) 미구현. MySqlAdapter.runMigrations(GET_LOCK)와 대칭 맞출 것.
   async runMigrations(migrationsFolder: string): Promise<void> {
     if (!this.db) {
       throw new Error('Database not connected. Call connect() first.')

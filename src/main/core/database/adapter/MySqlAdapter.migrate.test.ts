@@ -16,8 +16,11 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySqlAdapter migrations'
   })
 
   afterAll(async () => {
-    await adapter.disconnect()
-    await dropMySqlTestDatabase(dbName)
+    try {
+      await adapter.disconnect()
+    } finally {
+      if (dbName) await dropMySqlTestDatabase(dbName)
+    }
   })
 
   it('applies the baseline migration (15 tables + journal)', async () => {
