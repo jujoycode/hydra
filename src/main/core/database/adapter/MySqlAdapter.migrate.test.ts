@@ -15,7 +15,7 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySqlAdapter migrations'
     dbName = await createMySqlTestDatabase()
     adapter = new MySqlAdapter()
     await adapter.connect({ ...mysqlTestConfig(), database: dbName })
-  })
+  }, 30000)
 
   afterAll(async () => {
     try {
@@ -23,7 +23,7 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySqlAdapter migrations'
     } finally {
       if (dbName) await dropMySqlTestDatabase(dbName)
     }
-  })
+  }, 30000)
 
   it('applies the baseline migration (15 tables + journal)', async () => {
     await adapter.runMigrations(MIGRATIONS)
@@ -32,11 +32,11 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySqlAdapter migrations'
       `SELECT COUNT(*) AS cnt FROM information_schema.tables WHERE table_schema = '${dbName}' AND table_name NOT LIKE '\\_\\_%'`
     )
     expect(Number((rows as unknown as Array<{ cnt: number | string }>)[0].cnt)).toBe(15)
-  })
+  }, 30000)
 
   it('is idempotent on re-run', async () => {
     await expect(adapter.runMigrations(MIGRATIONS)).resolves.not.toThrow()
-  })
+  }, 30000)
 
   it('stores uuid columns as ascii_bin char(36)', async () => {
     const db = adapter.getConnection()
@@ -44,7 +44,7 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySqlAdapter migrations'
       `SELECT collation_name AS cn FROM information_schema.columns WHERE table_schema = '${dbName}' AND table_name = 'users' AND column_name = 'user_id'`
     )
     expect((rows as unknown as Array<{ cn: string }>)[0].cn).toBe('ascii_bin')
-  })
+  }, 30000)
 
   it('skips the migrator for a DML-only account when schema is current', async () => {
     const cfg = mysqlTestConfig()
@@ -67,7 +67,7 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySqlAdapter migrations'
       await cleanup.query(`DROP USER IF EXISTS '${dmlUser}'@'%'`).catch(() => {})
       await cleanup.end()
     }
-  })
+  }, 30000)
 
   it('maps migration permission failure to PERMISSION_ERROR for a DML-only account on a fresh DB', async () => {
     // DrizzleQueryError cause 체인 언랩 검증 — fresh DB이므로 isMigrationCurrent가 false를 반환하고
@@ -93,5 +93,5 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySqlAdapter migrations'
       await cleanup.end()
       await dropMySqlTestDatabase(freshDb)
     }
-  })
+  }, 30000)
 })

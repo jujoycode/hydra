@@ -14,12 +14,12 @@ describe.runIf(process.env.RUN_DB_TESTS === '1')('PostgresAdapter.runMigrations'
     dbName = await createTestDatabase()
     adapter = new PostgresAdapter()
     await adapter.connect({ ...pgTestConfig(), database: dbName })
-  })
+  }, 30000)
 
   afterAll(async () => {
     await adapter.disconnect()
     await dropTestDatabase(dbName)
-  })
+  }, 30000)
 
   it('creates all application tables', async () => {
     await adapter.runMigrations(migrationsFolder)

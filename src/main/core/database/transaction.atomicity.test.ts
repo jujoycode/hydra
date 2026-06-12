@@ -16,12 +16,12 @@ describe.runIf(process.env.RUN_DB_TESTS === '1')('transaction atomicity', () => 
     adapter = new PostgresAdapter()
     await adapter.connect({ ...pgTestConfig(), database: dbName })
     await adapter.runMigrations(resolve(process.cwd(), 'drizzle/pg'))
-  })
+  }, 30000)
 
   afterAll(async () => {
     await adapter.disconnect()
     await dropTestDatabase(dbName)
-  })
+  }, 30000)
 
   it('rolls back the project insert when a later write throws', async () => {
     const db = adapter.getConnection()
