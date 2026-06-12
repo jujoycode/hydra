@@ -14,7 +14,6 @@
     "userSn": "아이디",
     "name": "이름",
     "email": "이메일",
-    "dbRole": "데이터베이스 역할",
     "password": "비밀번호",
     "role": "역할",
     "inviteCode": "초대 코드",
@@ -24,11 +23,7 @@
     "userSn": "로그인 아이디",
     "name": "홍길동",
     "email": "hong@example.com",
-    "dbRole": "hydra_honggildong",
     "password": "안전한 비밀번호를 입력하세요"
-  },
-  "help": {
-    "dbRole": "이름에서 자동 생성됩니다. PostgreSQL 역할 이름으로 사용됩니다."
   },
   "dialog": {
     "addTitle": "멤버 추가",

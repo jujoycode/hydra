@@ -14,7 +14,6 @@
     "userSn": "Username",
     "name": "Name",
     "email": "Email",
-    "dbRole": "Database Role",
     "password": "Password",
     "role": "Role",
     "inviteCode": "Invite Code",
@@ -24,11 +23,7 @@
     "userSn": "Login username",
     "name": "John Doe",
     "email": "john@example.com",
-    "dbRole": "hydra_johndoe",
     "password": "Enter a secure password"
-  },
-  "help": {
-    "dbRole": "Auto-generated from name. This will be the PostgreSQL role name."
   },
   "dialog": {
     "addTitle": "Add Member",

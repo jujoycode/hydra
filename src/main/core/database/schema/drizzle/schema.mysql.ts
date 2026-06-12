@@ -27,7 +27,6 @@ export const users = mysqlTable('users', {
   user_status: varchar('user_status', { length: 20 }).default('active'),
   user_name: varchar('user_name', { length: 255 }),
   user_email: varchar('user_email', { length: 255 }),
-  user_db_role: varchar('user_db_role', { length: 255 }),
   user_avatar_path: varchar('user_avatar_path', { length: 1024 }),
   user_role: varchar('user_role', { length: 50 }).default('member'),
   user_created_at: datetime('user_created_at', { fsp: 3 }),
