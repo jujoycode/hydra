@@ -1,3 +1,4 @@
+export { DrizzleActivityLogRepository } from './DrizzleActivityLogRepository'
 export { DrizzleCommentRepository } from './DrizzleCommentRepository'
 export { DrizzleFileRepository } from './DrizzleFileRepository'
 export { DrizzleIntegrationRepository } from './DrizzleIntegrationRepository'
