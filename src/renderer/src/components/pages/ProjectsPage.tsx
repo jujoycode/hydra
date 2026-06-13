@@ -15,7 +15,7 @@ export default function ProjectsPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [, setSelectedProject] = useState<Project | null>(null)
   const { user } = useAuth()
-  const { projects } = useProject()
+  const { projects, isLoading } = useProject()
 
   // Count of projects created by the user
   // const myProjectsCount = projects ? projects.filter((project) => project.project_created_by === user?.id).length : 0
@@ -41,7 +41,7 @@ export default function ProjectsPage() {
       {/* Content area */}
       <div className='flex-1 overflow-auto pt-8'>
         {/* Project table */}
-        <ProjectTable projects={projects ?? []} onSelectProject={setSelectedProject} />
+        <ProjectTable projects={projects ?? []} onSelectProject={setSelectedProject} isLoading={isLoading} />
       </div>
 
       {/* Dialog */}
