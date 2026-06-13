@@ -1,0 +1,80 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.9/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on"
+        }
+      }
+    }
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/out",
+      "!**/dist",
+      "!**/pnpm-lock.yaml",
+      "!**/*.json",
+      "!**/*.css",
+      "!.superpowers",
+      "!.claude"
+    ]
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "correctness": {
+        "noUnusedImports": "warn",
+        "noUnusedVariables": "warn",
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "warn"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn"
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "warn",
+        "noDocumentCookie": "warn",
+        "useIterableCallbackReturn": "warn"
+      },
+      "a11y": {
+        "useButtonType": "warn",
+        "useHtmlLang": "warn",
+        "useValidAnchor": "warn",
+        "noSvgWithoutTitle": "warn",
+        "useKeyWithClickEvents": "warn",
+        "noStaticElementInteractions": "warn",
+        "useFocusableInteractive": "warn",
+        "useSemanticElements": "warn",
+        "useAriaPropsForRole": "warn",
+        "noLabelWithoutControl": "warn",
+        "noRedundantAlt": "warn"
+      },
+      "complexity": {
+        "noStaticOnlyClass": "warn"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 120,
+    "lineEnding": "lf"
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "jsxQuoteStyle": "single",
+      "semicolons": "asNeeded",
+      "trailingCommas": "none"
+    }
+  }
+}

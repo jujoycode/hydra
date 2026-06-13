@@ -1,0 +1,75 @@
+{
+  "button": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "remove": "Remove",
+    "apply": "Apply",
+    "generate": "Generate",
+    "change": "Change",
+    "connect": "Connect",
+    "connecting": "Connecting...",
+    "copy": "Copy to Clipboard"
+  },
+  "status": {
+    "backlog": "Backlog",
+    "open": "Open",
+    "in_progress": "In Progress",
+    "review": "Review",
+    "done": "Done",
+    "blocked": "Blocked"
+  },
+  "priority": {
+    "urgent": "Urgent",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "type": {
+    "bug": "Bug",
+    "feature": "Feature"
+  },
+  "role": {
+    "admin": "Admin",
+    "member": "Member"
+  },
+  "label": {
+    "name": "Name",
+    "email": "Email",
+    "description": "Description",
+    "type": "Type",
+    "status": "Status",
+    "priority": "Priority",
+    "assignee": "Assignee",
+    "reporter": "Reporter",
+    "created": "Created",
+    "updated": "Updated",
+    "role": "Role",
+    "password": "Password",
+    "loading": "Loading...",
+    "key": "Key",
+    "title": "Title"
+  },
+  "confirm": {
+    "delete": "Delete this?",
+    "saved": "Saved",
+    "deleted": "Deleted"
+  },
+  "empty": {
+    "noData": "No data available"
+  },
+  "toast": {
+    "success": "Success",
+    "error": "Error",
+    "genericError": "An error occurred"
+  },
+  "expiration": {
+    "24h": "24 hours",
+    "48h": "48 hours",
+    "72h": "72 hours",
+    "1week": "1 week"
+  }
+}

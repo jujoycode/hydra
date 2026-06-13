@@ -1,0 +1,14 @@
+{
+  "title": "설정",
+  "account": {
+    "title": "계정",
+    "profileTitle": "프로필",
+    "profileDescription": "사용자 프로필 정보를 관리합니다.",
+    "clickToSelect": "클릭하여 선택"
+  },
+  "language": {
+    "title": "언어",
+    "description": "애플리케이션 표시 언어를 선택합니다.",
+    "label": "표시 언어"
+  }
+}

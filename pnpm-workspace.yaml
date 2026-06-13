@@ -1,0 +1,17 @@
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  '@swc/core': true
+  electron: true
+  electron-winstaller: true
+  esbuild: true
+  prisma: true
+ignoredBuiltDependencies:
+  - esbuild
+onlyBuiltDependencies:
+  - '@swc/core'
+  - electron
+  - electron-winstaller
+  - '@prisma/client'
+  - '@prisma/engines'
+  - prisma

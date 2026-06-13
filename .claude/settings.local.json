@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git ls-tree:*)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git:*)",
+      "Bash(pnpm remove:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(ls src/renderer/tsconfig*.json)",
+      "Bash(gh auth:*)",
+      "Bash(gh api:*)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --env-filter ':*)",
+      "Bash(find /c/Users/A040-000-0001/Documents/hydra/src/renderer -type f \\\\\\(-name *MainLayout* -o -name *Layout* -o -name *route* \\\\\\))",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "Bash(pnpm -v)",
+      "Bash(pnpm:*)",
+      "Bash(xargs head:*)",
+      "Bash(cat /c/Users/A040-000-0001/Documents/hydra/node_modules/.pnpm/@tanstack+react-table*/node_modules/@tanstack/react-table/package.json)",
+      "Bash(docker exec:*)",
+      "Bash(PGPASSWORD=postgres psql -h localhost -p 5432 -U postgres -d hydra -c \"SELECT 1\" 2>&1)",
+      "Bash(bash \"C:/Users/A040-000-0001/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.6/skills/brainstorming/scripts/start-server.sh\" --project-dir \"C:/Users/A040-000-0001/Documents/hydra\")",
+      "Bash(python:*)",
+      "Bash(for wt:*)",
+      "Bash(do)",
+      "Bash(done)",
+      "Bash(docker ps:*)",
+      "Bash(docker volume:*)",
+      "Bash(gh run:*)"
+    ]
+  }
+}

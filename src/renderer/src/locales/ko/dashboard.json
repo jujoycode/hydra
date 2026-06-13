@@ -1,0 +1,26 @@
+{
+  "greeting": "안녕하세요, {{name}}님",
+  "description": "워크스페이스 현황을 한눈에 확인하세요.",
+  "stats": {
+    "totalIssues": "전체 이슈",
+    "inProgress": "진행 중",
+    "completed": "완료",
+    "underReview": "검토 중"
+  },
+  "chart": {
+    "statusDistribution": "이슈 상태 분포",
+    "trend": "이슈 추이",
+    "trendPeriod": "최근 6개월",
+    "created": "생성",
+    "resolved": "해결"
+  },
+  "status": {
+    "inProgress": "진행 중",
+    "done": "완료",
+    "blocked": "차단됨",
+    "review": "검토 중"
+  },
+  "alert": {
+    "blockedIssues": "차단된 이슈가 <bold>{{count}}건</bold> 있습니다"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "title": "Issues",
+  "dialog": {
+    "createTitle": "Create New Issue",
+    "createDescription": "Create a new issue by entering the details below."
+  },
+  "label": {
+    "project": "Project",
+    "type": "Issue Type",
+    "assignee": "Assignee",
+    "priority": "Priority",
+    "title": "Title",
+    "description": "Description",
+    "status": "Status"
+  },
+  "placeholder": {
+    "selectProject": "Select Project",
+    "selectType": "Select Issue Type",
+    "selectAssignee": "Select Assignee",
+    "selectPriority": "Select Priority",
+    "selectStatus": "Select Status",
+    "title": "Enter issue title",
+    "description": "Write a description for the issue...",
+    "detailedDescription": "Enter a detailed description for the issue",
+    "assigneeName": "Assignee name",
+    "search": "Search issue by title..."
+  },
+  "help": {
+    "editorNote": "* EditorJS features are coming soon. Currently only basic text editing is available."
+  },
+  "toast": {
+    "created": "Issue created successfully",
+    "createFailed": "Failed to create issue: {{error}}",
+    "createError": "Failed to create issue",
+    "updated": "Issue updated",
+    "saveFailed": "Failed to save",
+    "filesAttached": "Files attached",
+    "fileRemoved": "File removed"
+  },
+  "validation": {
+    "selectProject": "Please select a project",
+    "enterTitle": "Please enter an issue title"
+  },
+  "button": {
+    "create": "Create Issue",
+    "edit": "Edit Issue"
+  }
+}

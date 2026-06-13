@@ -1,0 +1,18 @@
+{
+  "home": "Home",
+  "myIssues": "My Issues",
+  "notifications": "Notifications",
+  "members": "Members",
+  "settings": "Settings",
+  "projects": "Projects",
+  "addProject": "Add Project",
+  "noProjects": "No Projects",
+  "lightMode": "Light Mode",
+  "darkMode": "Dark Mode",
+  "logout": "Logout",
+  "leaveWorkspace": "Leave Workspace",
+  "user": "User",
+  "issues": "Issues",
+  "tasks": "Tasks",
+  "account": "Account"
+}

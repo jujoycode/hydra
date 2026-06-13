@@ -1,13 +1,24 @@
-import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { contextBridge, ipcRenderer } from 'electron'
+import { IpcChannel, type IpcRequest, type IpcResponse } from '@/interface/CoreInterface'
+import { getMockResponse } from './mockApi'
+
+// TEMP(디자인 미리보기): true면 DB 대신 mock 데이터를 반환. 정식 연결 복구 시 false.
+const MOCK_API = false
 
 // Custom APIs for renderer
-const api = {
-  getOS: () => ({
-    isMac: process.platform === 'darwin',
-    isWin: process.platform === 'win32',
-    isLinux: process.platform === 'linux'
-  })
+function checkSupportedIpcChannel(channel: IpcChannel) {
+  if (!Object.values(IpcChannel).includes(channel)) {
+    throw new Error('Not supported IPC channel')
+  }
+}
+
+async function callOnce<T extends IpcChannel>(channel: T, data?: IpcRequest<T>): Promise<IpcResponse<T>> {
+  checkSupportedIpcChannel(channel)
+  if (MOCK_API) {
+    return getMockResponse(channel, data) as IpcResponse<T>
+  }
+  return ipcRenderer.invoke(channel, data)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -16,13 +27,13 @@ const api = {
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
+    contextBridge.exposeInMainWorld('callApi', callOnce)
   } catch (error) {
     console.error(error)
   }
 } else {
-  // @ts-ignore (define in dts)
+  // @ts-expect-error (define in d.ts)
   window.electron = electronAPI
-  // @ts-ignore (define in dts)
-  window.api = api
+  // @ts-expect-error (define in d.ts)
+  window.callApi = callOnce
 }

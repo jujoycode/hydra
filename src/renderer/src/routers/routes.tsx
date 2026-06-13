@@ -1,0 +1,210 @@
+import { createRootRouteWithContext, createRoute, Outlet, redirect } from '@tanstack/react-router'
+import React from 'react'
+import { MainLayout } from '@/layouts/MainLayout'
+import { ProjectLayout } from '@/layouts/ProjectLayout'
+import { SettingsLayout } from '@/layouts/SettingsLayout'
+import { EmptyPage } from '@/pages/EmptyPage'
+import type { RouterContext } from './routerContext'
+
+// Lazy wrapper
+function lazyRoute(importFn: () => Promise<{ default: React.ComponentType }>) {
+  const Component = React.lazy(importFn)
+  return () => (
+    <React.Suspense fallback={<EmptyPage />}>
+      <Component />
+    </React.Suspense>
+  )
+}
+
+// Root Route
+export const rootRoute = createRootRouteWithContext<RouterContext>()({
+  component: Outlet
+})
+
+// Authenticated Layout Route
+export const authenticatedRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: '_authenticated',
+  beforeLoad: ({ context }) => {
+    const { isConnected, isAuthenticated, needsSetup } = context.auth
+    if (!isConnected) {
+      throw redirect({ to: '/workspace' })
+    }
+    if (!isAuthenticated) {
+      throw redirect({ to: needsSetup ? '/setup' : '/login' })
+    }
+  },
+  component: MainLayout
+})
+
+// Home
+export const indexRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: '/',
+  component: lazyRoute(() => import('@/components/pages/HomePage'))
+})
+
+// Projects
+export const projectsRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: '/projects',
+  component: lazyRoute(() => import('@/components/pages/ProjectsPage'))
+})
+
+// Project Layout
+export const projectLayoutRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: '/projects/$projectId',
+  component: ProjectLayout
+})
+
+export const projectIndexRoute = createRoute({
+  getParentRoute: () => projectLayoutRoute,
+  path: '/',
+  component: lazyRoute(() => import('@/components/pages/ProjectDetailPage'))
+})
+
+// Issues
+export const issuesRoute = createRoute({
+  getParentRoute: () => projectLayoutRoute,
+  path: '/issues',
+  component: lazyRoute(() => import('@/pages/IssuePage'))
+})
+
+export const issueDetailRoute = createRoute({
+  getParentRoute: () => projectLayoutRoute,
+  path: '/issues/$issueId',
+  component: lazyRoute(() => import('@/components/pages/IssueDetailPage'))
+})
+
+// Tasks
+export const tasksRoute = createRoute({
+  getParentRoute: () => projectLayoutRoute,
+  path: '/tasks',
+  component: lazyRoute(() => import('@/components/pages/TasksPage'))
+})
+
+// Project Settings
+export const projectSettingsRoute = createRoute({
+  getParentRoute: () => projectLayoutRoute,
+  path: '/settings',
+  component: lazyRoute(() => import('@/components/pages/ProjectSettingsPage'))
+})
+
+// My Issues
+export const myIssuesRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: '/my-issues',
+  component: lazyRoute(() => import('@/components/pages/MyIssuesPage'))
+})
+
+// Notifications
+export const notificationsRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: '/notifications',
+  component: lazyRoute(() => import('@/components/pages/NotificationsPage'))
+})
+
+// Members
+export const membersRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: '/members',
+  component: lazyRoute(() => import('@/components/pages/MembersPage'))
+})
+
+// Settings Layout
+export const settingsLayoutRoute = createRoute({
+  getParentRoute: () => authenticatedRoute,
+  path: '/settings',
+  component: SettingsLayout
+})
+
+export const accountRoute = createRoute({
+  getParentRoute: () => settingsLayoutRoute,
+  path: '/',
+  component: lazyRoute(() => import('@/components/pages/settings/AccountPage'))
+})
+
+export const settingsMembersRoute = createRoute({
+  getParentRoute: () => settingsLayoutRoute,
+  path: '/members',
+  component: lazyRoute(() => import('@/components/pages/MembersPage'))
+})
+
+export const settingsNotificationsRoute = createRoute({
+  getParentRoute: () => settingsLayoutRoute,
+  path: '/notifications',
+  component: lazyRoute(() => import('@/components/pages/NotificationsPage'))
+})
+
+export const settingsIntegrationsRoute = createRoute({
+  getParentRoute: () => settingsLayoutRoute,
+  path: '/integrations',
+  component: lazyRoute(() => import('@/components/pages/settings/IntegrationPage'))
+})
+
+// Workspace (public)
+export const workspaceRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/workspace',
+  beforeLoad: ({ context }) => {
+    const { isConnected, isAuthenticated } = context.auth
+    if (isConnected && isAuthenticated) {
+      throw redirect({ to: '/' })
+    }
+  },
+  component: lazyRoute(() => import('@/pages/WorkspacePage'))
+})
+
+// Login (public)
+export const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/login',
+  beforeLoad: ({ context }) => {
+    const { isConnected, isAuthenticated, needsSetup } = context.auth
+    if (!isConnected) throw redirect({ to: '/workspace' })
+    if (isAuthenticated) throw redirect({ to: '/' })
+    if (needsSetup) throw redirect({ to: '/setup' })
+  },
+  component: lazyRoute(() => import('@/components/pages/LoginPage'))
+})
+
+// Admin Setup (public)
+export const setupRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/setup',
+  beforeLoad: ({ context }) => {
+    const { isConnected, isAuthenticated, needsSetup } = context.auth
+    if (!isConnected) throw redirect({ to: '/workspace' })
+    if (isAuthenticated) throw redirect({ to: '/' })
+    if (!needsSetup) throw redirect({ to: '/login' })
+  },
+  component: lazyRoute(() => import('@/components/pages/AdminSetupPage'))
+})
+
+// Route Tree
+export const routeTree = rootRoute.addChildren([
+  authenticatedRoute.addChildren([
+    indexRoute,
+    projectsRoute,
+    myIssuesRoute,
+    notificationsRoute,
+    membersRoute,
+    projectLayoutRoute.addChildren([
+      projectIndexRoute,
+      issuesRoute,
+      issueDetailRoute,
+      tasksRoute,
+      projectSettingsRoute
+    ]),
+    settingsLayoutRoute.addChildren([
+      accountRoute,
+      settingsMembersRoute,
+      settingsNotificationsRoute,
+      settingsIntegrationsRoute
+    ])
+  ]),
+  workspaceRoute,
+  loginRoute,
+  setupRoute
+])

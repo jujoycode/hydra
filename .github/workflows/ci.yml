@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main, v3]
+  pull_request:
+    branches: [main, v3]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: hydra
+          MYSQL_ROOT_PASSWORD: mysql
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost -pmysql"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint:ci
+
+      - name: Test
+        run: pnpm test
+        env:
+          RUN_DB_TESTS: '1'
+          DB_HOST: localhost
+          DB_PORT: '5432'
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          RUN_DB_TESTS_MYSQL: '1'
+          MYSQL_HOST: localhost
+          MYSQL_PORT: '3306'
+          MYSQL_USER: root
+          MYSQL_PASSWORD: mysql
+
+      - name: Build
+        run: pnpm build

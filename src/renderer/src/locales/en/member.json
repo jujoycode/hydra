@@ -1,0 +1,51 @@
+{
+  "title": "Members",
+  "description": "Manage workspace members and invite new users.",
+  "button": {
+    "generateInvite": "Generate Invite",
+    "addMember": "Add Member"
+  },
+  "empty": {
+    "noMembers": "No members found",
+    "noMembersDescription": "Add a member to get started"
+  },
+  "label": {
+    "unknown": "Unknown",
+    "userSn": "Username",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "inviteCode": "Invite Code",
+    "expiration": "Expiration"
+  },
+  "placeholder": {
+    "userSn": "Login username",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "Enter a secure password"
+  },
+  "dialog": {
+    "addTitle": "Add Member",
+    "addDescription": "Create a new member with a login ID and initial password.",
+    "removeTitle": "Remove Member",
+    "removeDescription": "Are you sure you want to remove {{name}}? This action cannot be undone.",
+    "inviteTitle": "Generate Invite Code",
+    "inviteDescription": "Create an invite code that others can use to connect to this workspace."
+  },
+  "toast": {
+    "added": "Member added successfully",
+    "addFailed": "Failed to add member",
+    "removed": "Member removed successfully",
+    "removeFailed": "Failed to remove member",
+    "inviteCopied": "Invite code copied to clipboard",
+    "noWorkspace": "No workspace connected",
+    "generateFailed": "Failed to generate invite code"
+  },
+  "validation": {
+    "enterUserSn": "Enter a username",
+    "enterName": "Please enter a user name",
+    "enterEmail": "Please enter an email",
+    "enterPassword": "Please enter a password"
+  }
+}

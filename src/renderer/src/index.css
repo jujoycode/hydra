@@ -1,0 +1,480 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.625rem;
+
+  /* base — Notion warm-gray surface / ink text */
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #3a7457; /* green-600 */
+  --primary-foreground: #ffffff;
+  --secondary: #f6f5f4;
+  --secondary-foreground: #37352f;
+  --muted: #f6f5f4;
+  --muted-foreground: #787671;
+  --accent: #fafaf9;
+  --accent-foreground: #37352f;
+  --destructive: #e03131;
+  --destructive-foreground: #ffffff;
+  --border: #e5e3df;
+  --input: #e5e3df;
+  --input-strong: #c8c4be;
+  --ring: #3a7457; /* green-600 focus */
+
+  /* chart */
+  --chart-1: #0d99ff; /* blue */
+  --chart-2: #f76808; /* orange */
+  --chart-3: #30a46c; /* green */
+  --chart-4: #f5a623; /* amber */
+  --chart-5: #a259ff; /* violet */
+
+  /* sidebar */
+  --sidebar: #f6f5f4;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #3a7457;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f7f3; /* green-50 */
+  --sidebar-accent-foreground: #2f5e47; /* green-700 */
+  --sidebar-border: #e5e3df;
+  --sidebar-ring: #3a7457;
+
+  /* status — 배지 배경 */
+  --status-backlog: #f0eeec;
+  --status-todo: #dcecfa; /* 레거시 (사용처 없음) */
+  --status-in-progress: #dcecfa;
+  --status-review: #e6e0f5;
+  --status-done: #d9f3e1;
+  --status-blocked: #fde0ec;
+
+  /* status — 배지 텍스트 (배경 위 진한 동계열) */
+  --status-backlog-fg: #5d5b54;
+  --status-in-progress-fg: #005bb5;
+  --status-review-fg: #391c57;
+  --status-done-fg: #0f7a2a;
+  --status-blocked-fg: #a02e6d;
+
+  /* priority (텍스트 색 — WCAG AA) */
+  --priority-urgent: #c92a2a;
+  --priority-high: #b34700;
+  --priority-medium: #8a6a00;
+  --priority-low: #5d5b54;
+
+  /* arrow (relation_type 정합 — 보존) */
+  --arrow-blocks: oklch(0.6 0.2 350);
+  --arrow-is-blocked-by: oklch(0.7 0.18 55);
+  --arrow-relates-to: oklch(0.55 0.19 255);
+  --arrow-duplicate: oklch(0.55 0.02 260);
+  --arrow-parent: oklch(0.55 0.2 293);
+
+  /* feedback */
+  --success: #157f2a;
+  --success-foreground: #ffffff;
+  --warning: #c24e00;
+  --warning-foreground: #ffffff;
+  --info: #0075de;
+  --info-foreground: #ffffff;
+
+  /* on-color (호환 유지 — statusTokens는 더 이상 미사용) */
+  --on-accent-light: #ffffff;
+  --on-accent-dark: #1a1a1a;
+
+  /* Brand Green ramp */
+  --green-50: #f1f7f3;
+  --green-100: #e3efe8;
+  --green-200: #c7dfd2;
+  --green-300: #a3c9b6;
+  --green-400: #6fa98c;
+  --green-500: #4a8a6a;
+  --green-600: #3a7457;
+  --green-700: #2f5e47;
+  --green-800: #264b3a;
+  --green-900: #1e3c2f;
+
+  /* 멀티컬러 스펙트럼 — base / tint(배경) / text(틴트 위 텍스트) */
+  --mc-red: #e5484d;
+  --mc-red-tint: #fde0ec;
+  --mc-red-text: #a02e6d;
+  --mc-orange: #f76808;
+  --mc-orange-tint: #ffe8d4;
+  --mc-orange-text: #793400;
+  --mc-amber: #f5a623;
+  --mc-amber-tint: #fef7d6;
+  --mc-amber-text: #523410;
+  --mc-green: #30a46c;
+  --mc-green-tint: #d9f3e1;
+  --mc-green-text: #0f7a2a;
+  --mc-blue: #0d99ff;
+  --mc-blue-tint: #dcecfa;
+  --mc-blue-text: #005bb5;
+  --mc-violet: #a259ff;
+  --mc-violet-tint: #e6e0f5;
+  --mc-violet-text: #391c57;
+  --mc-pink: #ec4899;
+  --mc-pink-tint: #fde0ec;
+  --mc-pink-text: #a02e6d;
+
+  /* hairline / surface / stone 보조 */
+  --hairline-soft: #ede9e4;
+  --surface-soft: #fafaf9;
+  --stone: #a4a097;
+}
+
+.dark {
+  /* base — warm-gray dark surface */
+  --background: #191918;
+  --foreground: #ededec;
+  --card: #1f1e1d;
+  --card-foreground: #ededec;
+  --popover: #1f1e1d;
+  --popover-foreground: #ededec;
+  --primary: #6fa98c; /* green-400 */
+  --primary-foreground: #142019;
+  --secondary: #252422;
+  --secondary-foreground: #ededec;
+  --muted: #252422;
+  --muted-foreground: #9b9892;
+  --accent: #2b2a28;
+  --accent-foreground: #ededec;
+  --destructive: #ff6b6b;
+  --destructive-foreground: #142019;
+  --border: #3a3936;
+  --input: #3a3936;
+  --input-strong: #52504c;
+  --ring: #6fa98c;
+
+  /* chart — 명도 +보정 */
+  --chart-1: #4aa3ff;
+  --chart-2: #ff8a3d;
+  --chart-3: #54c08a;
+  --chart-4: #ffc24d;
+  --chart-5: #b985ff;
+
+  /* sidebar */
+  --sidebar: #1f1e1d;
+  --sidebar-foreground: #ededec;
+  --sidebar-primary: #6fa98c;
+  --sidebar-primary-foreground: #142019;
+  --sidebar-accent: #1e3c2f; /* green-900 */
+  --sidebar-accent-foreground: #a3c9b6; /* green-300 */
+  --sidebar-border: #3a3936;
+  --sidebar-ring: #6fa98c;
+
+  /* status — 배경 어둡게 */
+  --status-backlog: #2b2a28;
+  --status-todo: #102a44;
+  --status-in-progress: #102a44;
+  --status-review: #241836;
+  --status-done: #16331f;
+  --status-blocked: #3a1228;
+
+  /* status — 텍스트 밝게 */
+  --status-backlog-fg: #b8b5ad;
+  --status-in-progress-fg: #7cc0ff;
+  --status-review-fg: #c9b3ec;
+  --status-done-fg: #7fd49b;
+  --status-blocked-fg: #f0a0c8;
+
+  /* priority (어두운 배경 위 AA) */
+  --priority-urgent: #ff6b6b;
+  --priority-high: #ff9a4d;
+  --priority-medium: #e0b94d;
+  --priority-low: #a4a097;
+
+  /* arrow */
+  --arrow-blocks: oklch(0.7 0.18 350);
+  --arrow-is-blocked-by: oklch(0.78 0.14 55);
+  --arrow-relates-to: oklch(0.65 0.15 255);
+  --arrow-duplicate: oklch(0.62 0.02 260);
+  --arrow-parent: oklch(0.68 0.17 293);
+
+  /* feedback */
+  --success: #2ec45c;
+  --success-foreground: #142019;
+  --warning: #f08c3a;
+  --warning-foreground: #142019;
+  --info: #4aa3ff;
+  --info-foreground: #142019;
+
+  /* on-color */
+  --on-accent-light: #ffffff;
+  --on-accent-dark: #1a1a1a;
+
+  /* Brand Green ramp (다크 — 명도 보정) */
+  --green-50: #1e3c2f;
+  --green-100: #264b3a;
+  --green-200: #2f5e47;
+  --green-300: #3a7457;
+  --green-400: #4a8a6a;
+  --green-500: #6fa98c;
+  --green-600: #6fa98c;
+  --green-700: #a3c9b6;
+  --green-800: #c7dfd2;
+  --green-900: #e3efe8;
+
+  /* 멀티컬러 (tint 어둡게 / text 밝게) */
+  --mc-red: #ff6b6b;
+  --mc-red-tint: #3a1228;
+  --mc-red-text: #f0a0c8;
+  --mc-orange: #ff8a3d;
+  --mc-orange-tint: #3a2310;
+  --mc-orange-text: #ffb380;
+  --mc-amber: #ffc24d;
+  --mc-amber-tint: #332810;
+  --mc-amber-text: #f0cd7a;
+  --mc-green: #54c08a;
+  --mc-green-tint: #16331f;
+  --mc-green-text: #7fd49b;
+  --mc-blue: #4aa3ff;
+  --mc-blue-tint: #102a44;
+  --mc-blue-text: #7cc0ff;
+  --mc-violet: #b985ff;
+  --mc-violet-tint: #241836;
+  --mc-violet-text: #c9b3ec;
+  --mc-pink: #f06aab;
+  --mc-pink-tint: #3a1228;
+  --mc-pink-text: #f0a0c8;
+
+  /* hairline / surface / stone 보조 */
+  --hairline-soft: #2b2a28;
+  --surface-soft: #222120;
+  --stone: #7a776f;
+}
+
+@theme inline {
+  /* radius — 정밀·타이트(과한 둥글기 지양) */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+
+  /* spacing — p-page / px-section / gap-card 등 유틸 생성 */
+  --spacing-page: 1.5rem;
+  --spacing-section: 1rem;
+  --spacing-card: 1rem;
+
+  /* elevation — Apple식 부드러운 다층 그림자 */
+  --shadow-card: 0 1px 2px -1px rgb(17 24 39 / 0.06), 0 1px 3px 0 rgb(17 24 39 / 0.05);
+  --shadow-pop: 0 4px 16px -4px rgb(17 24 39 / 0.12), 0 2px 6px -2px rgb(17 24 39 / 0.08);
+  --shadow-glass: 0 8px 32px -8px rgb(17 24 39 / 0.16), 0 2px 8px -2px rgb(17 24 39 / 0.08);
+
+  /* motion — 통일된 easing/duration */
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* base */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-strong: var(--input-strong);
+  --color-ring: var(--ring);
+
+  /* chart */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* status 배경 */
+  --color-status-backlog: var(--status-backlog);
+  --color-status-todo: var(--status-todo);
+  --color-status-in-progress: var(--status-in-progress);
+  --color-status-review: var(--status-review);
+  --color-status-done: var(--status-done);
+  --color-status-blocked: var(--status-blocked);
+
+  /* status 텍스트 (5종 — todo 제외) */
+  --color-status-backlog-fg: var(--status-backlog-fg);
+  --color-status-in-progress-fg: var(--status-in-progress-fg);
+  --color-status-review-fg: var(--status-review-fg);
+  --color-status-done-fg: var(--status-done-fg);
+  --color-status-blocked-fg: var(--status-blocked-fg);
+
+  /* priority */
+  --color-priority-urgent: var(--priority-urgent);
+  --color-priority-high: var(--priority-high);
+  --color-priority-medium: var(--priority-medium);
+  --color-priority-low: var(--priority-low);
+
+  /* arrow */
+  --color-arrow-blocks: var(--arrow-blocks);
+  --color-arrow-is-blocked-by: var(--arrow-is-blocked-by);
+  --color-arrow-relates-to: var(--arrow-relates-to);
+  --color-arrow-duplicate: var(--arrow-duplicate);
+  --color-arrow-parent: var(--arrow-parent);
+
+  /* feedback */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  /* on-color */
+  --color-on-accent-light: var(--on-accent-light);
+  --color-on-accent-dark: var(--on-accent-dark);
+
+  /* green ramp */
+  --color-green-50: var(--green-50);
+  --color-green-100: var(--green-100);
+  --color-green-200: var(--green-200);
+  --color-green-300: var(--green-300);
+  --color-green-400: var(--green-400);
+  --color-green-500: var(--green-500);
+  --color-green-600: var(--green-600);
+  --color-green-700: var(--green-700);
+  --color-green-800: var(--green-800);
+  --color-green-900: var(--green-900);
+
+  /* 멀티컬러 7색 × {base, tint, text} */
+  --color-mc-red: var(--mc-red);
+  --color-mc-red-tint: var(--mc-red-tint);
+  --color-mc-red-text: var(--mc-red-text);
+  --color-mc-orange: var(--mc-orange);
+  --color-mc-orange-tint: var(--mc-orange-tint);
+  --color-mc-orange-text: var(--mc-orange-text);
+  --color-mc-amber: var(--mc-amber);
+  --color-mc-amber-tint: var(--mc-amber-tint);
+  --color-mc-amber-text: var(--mc-amber-text);
+  --color-mc-green: var(--mc-green);
+  --color-mc-green-tint: var(--mc-green-tint);
+  --color-mc-green-text: var(--mc-green-text);
+  --color-mc-blue: var(--mc-blue);
+  --color-mc-blue-tint: var(--mc-blue-tint);
+  --color-mc-blue-text: var(--mc-blue-text);
+  --color-mc-violet: var(--mc-violet);
+  --color-mc-violet-tint: var(--mc-violet-tint);
+  --color-mc-violet-text: var(--mc-violet-text);
+  --color-mc-pink: var(--mc-pink);
+  --color-mc-pink-tint: var(--mc-pink-tint);
+  --color-mc-pink-text: var(--mc-pink-text);
+
+  /* hairline / surface / stone */
+  --color-hairline-soft: var(--hairline-soft);
+  --color-surface-soft: var(--surface-soft);
+  --color-stone: var(--stone);
+}
+
+/* typography 유틸 */
+@utility text-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+@utility text-section {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+@utility text-cardtitle {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+@utility body-lg {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+@utility body-medium {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+@utility text-caption {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+@utility micro {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  @apply text-stone;
+}
+
+/* glassmorphism — 크롬/오버레이 표면 (반투명 + blur + vibrancy) */
+@utility glass {
+  background-color: color-mix(in srgb, var(--card) 72%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
+}
+@utility glass-panel {
+  background-color: color-mix(in srgb, var(--sidebar) 60%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+}
+
+/* 오버레이 등장 모션 */
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@utility animate-pop {
+  animation: pop-in 0.18s var(--ease-out-soft);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    background-color: transparent;
+  }
+  body {
+    @apply text-foreground;
+    /* 글래스: 셸 배경을 투명하게 둬 OS acrylic이 크롬(사이드바 등) 뒤로 비치게 한다.
+       콘텐츠 면(SidebarInset 등)은 bg-background로 불투명 유지 → 가독성. */
+    background-color: transparent;
+    font-family: 'Pretendard Variable', 'Pretendard', -apple-system, 'Noto Sans KR', sans-serif;
+    letter-spacing: -0.2px;
+    line-height: 1.6;
+  }
+}
+
+[data-column-id="actions"] th {
+  display: none;
+}

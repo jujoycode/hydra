@@ -1,0 +1,48 @@
+{
+  "title": "이슈",
+  "dialog": {
+    "createTitle": "새 이슈 생성",
+    "createDescription": "이슈의 세부 정보를 입력하여 새 이슈를 생성합니다."
+  },
+  "label": {
+    "project": "프로젝트",
+    "type": "이슈 타입",
+    "assignee": "담당자",
+    "priority": "우선순위",
+    "title": "제목",
+    "description": "내용",
+    "status": "상태"
+  },
+  "placeholder": {
+    "selectProject": "프로젝트 선택",
+    "selectType": "이슈 타입 선택",
+    "selectAssignee": "담당자 선택",
+    "selectPriority": "우선순위 선택",
+    "selectStatus": "상태 선택",
+    "title": "이슈 제목을 입력하세요",
+    "description": "이슈에 대한 설명을 작성해주세요...",
+    "detailedDescription": "이슈에 대한 상세 설명을 입력하세요",
+    "assigneeName": "담당자 이름",
+    "search": "이슈 제목으로 검색..."
+  },
+  "help": {
+    "editorNote": "* EditorJS 기능은 업데이트 예정입니다. 현재는 기본 텍스트 편집만 가능합니다."
+  },
+  "toast": {
+    "created": "이슈가 성공적으로 생성되었습니다",
+    "createFailed": "이슈 생성 실패: {{error}}",
+    "createError": "이슈 생성에 실패했습니다",
+    "updated": "이슈가 업데이트되었습니다",
+    "saveFailed": "저장에 실패했습니다",
+    "filesAttached": "파일이 첨부되었습니다",
+    "fileRemoved": "파일이 삭제되었습니다"
+  },
+  "validation": {
+    "selectProject": "프로젝트를 선택해주세요",
+    "enterTitle": "이슈 제목을 입력해주세요"
+  },
+  "button": {
+    "create": "이슈 생성",
+    "edit": "이슈 수정"
+  }
+}

@@ -1,0 +1,68 @@
+import { asc, eq } from 'drizzle-orm'
+import * as pgSchema from '../../schema/drizzle/schema'
+import type {
+  CreateMilestoneData,
+  MilestoneRecord,
+  MilestoneRepository,
+  UpdateMilestoneData
+} from '../interfaces/MilestoneRepository'
+import type { DrizzleDb, DrizzleSchema } from './executor'
+import { selectById } from './readAfterWrite'
+
+export class DrizzleMilestoneRepository implements MilestoneRepository {
+  constructor(
+    private db: DrizzleDb,
+    private schema: DrizzleSchema = pgSchema
+  ) {}
+
+  async create(data: CreateMilestoneData): Promise<MilestoneRecord> {
+    const { milestones } = this.schema
+    const now = new Date()
+    await this.db.insert(milestones).values({
+      milestone_id: data.milestoneId,
+      project_id: data.projectId,
+      milestone_title: data.milestoneTitle,
+      milestone_desc: data.milestoneDesc ?? null,
+      milestone_due_date: data.milestoneDueDate ?? null,
+      milestone_created_at: now,
+      milestone_updated_at: now
+    })
+    return selectById<MilestoneRecord>(this.db, milestones, milestones.milestone_id, data.milestoneId)
+  }
+
+  async findByProject(projectId: string): Promise<MilestoneRecord[]> {
+    const { milestones } = this.schema
+    const rows = await this.db
+      .select()
+      .from(milestones)
+      .where(eq(milestones.project_id, projectId))
+      .orderBy(asc(milestones.milestone_due_date))
+    return rows as MilestoneRecord[]
+  }
+
+  async findById(milestoneId: string): Promise<MilestoneRecord | null> {
+    const { milestones } = this.schema
+    const rows = await this.db.select().from(milestones).where(eq(milestones.milestone_id, milestoneId))
+    return (rows[0] as MilestoneRecord) ?? null
+  }
+
+  async update(milestoneId: string, data: UpdateMilestoneData): Promise<MilestoneRecord> {
+    const { milestones } = this.schema
+    const updateData: Record<string, unknown> = {
+      milestone_updated_at: new Date()
+    }
+    if (data.milestoneTitle !== undefined) updateData.milestone_title = data.milestoneTitle
+    if (data.milestoneDesc !== undefined) updateData.milestone_desc = data.milestoneDesc
+    if (data.milestoneDueDate !== undefined) updateData.milestone_due_date = data.milestoneDueDate
+    if (data.milestoneStatus !== undefined) updateData.milestone_status = data.milestoneStatus
+
+    await this.db.update(milestones).set(updateData).where(eq(milestones.milestone_id, milestoneId))
+    return selectById<MilestoneRecord>(this.db, milestones, milestones.milestone_id, milestoneId)
+  }
+
+  async delete(milestoneId: string): Promise<boolean> {
+    const { milestones } = this.schema
+    await this.db.delete(milestones).where(eq(milestones.milestone_id, milestoneId))
+    return true
+  }
+}

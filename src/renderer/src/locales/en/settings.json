@@ -1,0 +1,14 @@
+{
+  "title": "Settings",
+  "account": {
+    "title": "Account",
+    "profileTitle": "Profile",
+    "profileDescription": "Manage your user profile information.",
+    "clickToSelect": "Click to select"
+  },
+  "language": {
+    "title": "Language",
+    "description": "Select the application display language.",
+    "label": "Display Language"
+  }
+}

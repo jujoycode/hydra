@@ -1,39 +1,61 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
   "include": [
+    "src/main/core/interface/**/*.ts",
     "src/renderer/src/env.d.ts",
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.tsx",
     "src/preload/*.d.ts"
   ],
   "compilerOptions": {
-    "strict": true, 
-    "allowJs": false,
-    "skipLibCheck": true,
-    "isolatedModules": true,
-    "resolveJsonModule": true,
-    "target": "ESNext",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"], 
-    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+    "composite": true,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "customConditions": ["source"],
+    
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
     "jsx": "react-jsx",
-    "noEmit": true, 
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "allowJs": false,
+
+
+    /* Paths */
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["src/renderer/src/components/*"],
-      "@pages/*": ["src/renderer/src/pages/*"],
-      "@hooks/*": ["src/renderer/src/hooks/*"],
-      "@assets/*": ["src/renderer/assets/*"]
+      "@/*": ["src/*"],
+      "@/components/*": ["src/renderer/src/components/*"],
+      "@/atoms/*": ["src/renderer/src/components/atoms/*"],
+      "@/molecules/*": ["src/renderer/src/components/molecules/*"],
+      "@/organisms/*": ["src/renderer/src/components/organisms/*"],
+      "@/pages/*": ["src/renderer/src/components/pages/*"],
+      "@/layouts/*": ["src/renderer/src/components/layouts/*"],
+      "@/templates/*": ["src/renderer/src/components/templates/*"],
+      "@/lib/*": ["src/renderer/src/lib/*"],
+      "@/hooks/*": ["src/renderer/src/hooks/*"],
+      "@/types/*": ["src/renderer/src/types/*"],
+      "@/stores/*": ["src/renderer/src/stores/*"],
+      "@/interface/*": ["src/main/core/interface/*"],
+      "@/routers": ["src/renderer/src/routers"],
     },
-    "composite": true, 
-    // define class fields
-    "useDefineForClassFields": true, 
-    // ES 모듈 상호 운용성 비활성화
-    "esModuleInterop": false, 
-    // Default Export 전체 적용
-    "allowSyntheticDefaultImports": true, 
-    // 파일 이름 대소문자 강제
-    "forceConsistentCasingInFileNames": true,
+
   }
 }

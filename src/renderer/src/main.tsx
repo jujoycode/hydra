@@ -1,16 +1,48 @@
-import './global.css'
-import { Provider } from '@components/ui/provider'
-import { ColorModeProvider } from '@components/ui/color-mode'
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { RouterProvider } from '@tanstack/react-router'
+import { ThemeProvider } from 'next-themes'
+import { StrictMode, useEffect } from 'react'
+import { createRoot } from 'react-dom/client'
+import { Toaster } from '@/atoms/Sonner'
+import { queryClient } from '@/lib/queryClient'
+import { EmptyPage } from '@/pages/EmptyPage'
+import { router } from '@/routers'
+import { useAuthStore } from '@/stores/auth'
+import './index.css'
+import './locales'
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <Provider>
-      <ColorModeProvider>
-        <App />
-      </ColorModeProvider>
-    </Provider>
-  </React.StrictMode>
+function InnerApp() {
+  const { user, isConnected, isAuthenticated, needsSetup, disconnect, isBootstrapped, bootstrap } = useAuthStore()
+
+  // 앱 진입 시 1회 main 프로세스 상태와 동기화.
+  // main이 재시작되어 RepositoryContainer 가 비어있는 경우 persist 된 isConnected 를 초기화한다.
+  useEffect(() => {
+    if (!isBootstrapped) {
+      bootstrap()
+    }
+  }, [isBootstrapped, bootstrap])
+
+  if (!isBootstrapped) {
+    return <EmptyPage />
+  }
+
+  return (
+    <RouterProvider
+      router={router}
+      context={{ auth: { user, isConnected, isAuthenticated, needsSetup, disconnect } }}
+    />
+  )
+}
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <ThemeProvider attribute='class' defaultTheme='light' enableSystem={false}>
+      <QueryClientProvider client={queryClient}>
+        <InnerApp />
+        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+      </QueryClientProvider>
+      <Toaster />
+    </ThemeProvider>
+  </StrictMode>
 )
