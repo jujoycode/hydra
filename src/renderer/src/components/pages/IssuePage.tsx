@@ -1,17 +1,17 @@
 import { useParams } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useProjectIssues } from '@/hooks/use-issues'
 import { IssueDetailsDialog } from '@/organisms/dialogs/IssueDetailsDialog'
 import { IssueTable } from '@/organisms/issues/IssueTable'
 import type { Issue } from '@/types/issue'
-
-import DUMMY_ISSUES from '../../../../../dummy/issues.json'
 
 export default function IssuePage() {
   const { t } = useTranslation('issue')
   const { projectId } = useParams({ strict: false })
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null)
-  const [issues, _] = useState<Issue[]>(DUMMY_ISSUES as unknown as Issue[])
+
+  const { data: issues = [], isLoading, isError } = useProjectIssues(projectId)
 
   return (
     <div className='p-6 h-full flex flex-col'>
@@ -23,7 +23,11 @@ export default function IssuePage() {
       </div>
 
       <div className='flex-1 overflow-hidden'>
-        <IssueTable issues={issues} onSelectIssue={setSelectedIssue} />
+        {isError ? (
+          <p className='text-sm text-destructive'>Failed to load issues. Please try again.</p>
+        ) : (
+          <IssueTable issues={issues} onSelectIssue={setSelectedIssue} isLoading={isLoading} />
+        )}
       </div>
 
       <IssueDetailsDialog

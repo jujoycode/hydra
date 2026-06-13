@@ -31,6 +31,27 @@ export class DrizzleUserRepository implements UserRepository {
     return rows as UserRecord[]
   }
 
+  async findByProject(projectId: string): Promise<UserRecord[]> {
+    const { users, usersProjectsLink } = this.schema
+    const rows = await this.db
+      .select({
+        user_id: users.user_id,
+        user_sn: users.user_sn,
+        user_password_hash: users.user_password_hash,
+        user_status: users.user_status,
+        user_name: users.user_name,
+        user_email: users.user_email,
+        user_avatar_path: users.user_avatar_path,
+        user_role: users.user_role,
+        user_created_at: users.user_created_at,
+        user_updated_at: users.user_updated_at
+      })
+      .from(usersProjectsLink)
+      .innerJoin(users, eq(usersProjectsLink.user_id, users.user_id))
+      .where(eq(usersProjectsLink.project_id, projectId))
+    return rows as UserRecord[]
+  }
+
   async create(data: CreateUserData, executor: RepoExecutor = this.db): Promise<UserRecord> {
     const { users } = this.schema
     const ex = executor as DrizzleExecutor

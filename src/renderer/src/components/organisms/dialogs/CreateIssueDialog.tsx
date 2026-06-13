@@ -8,8 +8,9 @@ import { Input } from '@/atoms/Input'
 import { Label } from '@/atoms/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/atoms/Select'
 import { Textarea } from '@/atoms/Textarea'
+import { useProjectMembers } from '@/hooks/use-members'
 import { useProject } from '@/hooks/use-project'
-import type { Issue as IssueRecord, Project, User } from '@/interface/CoreInterface'
+import type { Issue as IssueRecord, Project } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
 import { useIssueStore } from '@/stores/issue'
 import type { IssuePriority } from '@/types/issue'
@@ -30,9 +31,6 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
   const issues = useIssueStore((state) => state.issues)
   const setIssues = useIssueStore((state) => state.setIssues)
 
-  // 멤버 목록 상태 관리
-  const [members, setMembers] = useState<User[]>([])
-
   // 이슈 생성 폼 상태 관리
   const [selectedProject, setSelectedProject] = useState<string>('')
   const [issueType, setIssueType] = useState<'bug' | 'feature'>('feature')
@@ -41,6 +39,9 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // 선택된 프로젝트의 멤버만 담당자 후보로 조회 (users_projects_link 기반)
+  const { data: members = [] } = useProjectMembers(open ? selectedProject : undefined)
 
   // 다이얼로그 초기화
   const resetForm = () => {
@@ -51,16 +52,6 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
     setTitle('')
     setDescription('')
   }
-
-  // TODO: 프로젝트 스코프 멤버 조회 IPC 핸들러가 추가되면 users_projects_link 기반으로 교체 (HYDRA-028).
-  // 다이얼로그가 열릴 때 멤버 목록 조회
-  useEffect(() => {
-    if (open) {
-      window.callApi(IpcChannel.AUTH_LIST_USERS).then((result) => {
-        if (result.data) setMembers(result.data)
-      })
-    }
-  }, [open])
 
   // 다이얼로그가 닫힐 때 폼 초기화
   useEffect(() => {

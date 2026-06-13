@@ -27,3 +27,4 @@
 | # | 제목 | 상태 |
 |---|------|------|
 | [0001](./0001-adopt-github-flow.md) | GitHub Flow 채택 (브랜치 & Git 워크플로) | Accepted |
+| [0002](./0002-renderer-data-fetching.md) | 렌더러 IPC 데이터 패칭 패턴 | Accepted |
