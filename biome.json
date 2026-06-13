@@ -15,6 +15,8 @@
       "!**/node_modules",
       "!**/out",
       "!**/dist",
+      "!**/coverage",
+      "!**/storybook-static",
       "!**/pnpm-lock.yaml",
       "!**/*.json",
       "!**/*.css",

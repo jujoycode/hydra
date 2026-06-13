@@ -3,6 +3,7 @@ pnpm-lock.yaml
 dist
 out
 coverage
+storybook-static
 .DS_Store
 *.log*
 .env
