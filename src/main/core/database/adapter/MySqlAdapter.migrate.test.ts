@@ -25,13 +25,13 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySqlAdapter migrations'
     }
   }, 30000)
 
-  it('applies the baseline migration (15 tables + journal)', async () => {
+  it('applies the baseline migration (16 tables + journal)', async () => {
     await adapter.runMigrations(MIGRATIONS)
     const db = adapter.getConnection()
     const [rows] = await db.execute(
       `SELECT COUNT(*) AS cnt FROM information_schema.tables WHERE table_schema = '${dbName}' AND table_name NOT LIKE '\\_\\_%'`
     )
-    expect(Number((rows as unknown as Array<{ cnt: number | string }>)[0].cnt)).toBe(15)
+    expect(Number((rows as unknown as Array<{ cnt: number | string }>)[0].cnt)).toBe(16)
   }, 30000)
 
   it('is idempotent on re-run', async () => {
