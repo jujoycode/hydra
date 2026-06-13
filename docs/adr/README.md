@@ -28,3 +28,4 @@
 |---|------|------|
 | [0001](./0001-adopt-github-flow.md) | GitHub Flow 채택 (브랜치 & Git 워크플로) | Accepted |
 | [0002](./0002-renderer-data-fetching.md) | 렌더러 IPC 데이터 패칭 패턴 | Accepted |
+| [0003](./0003-test-architecture.md) | 테스트 아키텍처 (TDD 재정립) | Accepted |
