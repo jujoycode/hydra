@@ -1,10 +1,12 @@
 import { CheckIcon, CircleDashedIcon, ClockIcon, EyeIcon, LockIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Badge } from '@/atoms/Badge'
+import type { IssueStatus } from '@/interface/CoreInterface'
 import { STATUS_CLASS, STATUS_LABEL } from '@/lib/statusTokens'
 import { cn } from '@/lib/utils'
 
-export type IssueState = 'backlog' | 'in_progress' | 'review' | 'done' | 'blocked'
+/** 이슈 상태값은 공유 인터페이스의 IssueStatus를 단일 출처로 사용한다. */
+export type IssueState = IssueStatus
 
 interface IssueBadgeProps {
   state: IssueState

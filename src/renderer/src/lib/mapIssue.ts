@@ -1,21 +1,17 @@
-import type { Issue as IssueRecord } from '@/interface/CoreInterface'
-import type { IssueState } from '@/molecules/issues/IssueBadge'
+import type { Issue as IssueRecord, IssueStatus } from '@/interface/CoreInterface'
+import { ISSUE_PRIORITIES, ISSUE_STATUSES } from '@/interface/CoreInterface'
 import type { Issue } from '@/types/issue'
 
-const ISSUE_STATES: readonly IssueState[] = ['backlog', 'in_progress', 'review', 'done', 'blocked']
-
-const toIssueState = (status: string | null): IssueState => {
+const toIssueState = (status: string | null): IssueStatus => {
   // 레거시 'open' 값은 backlog로 별칭 처리 (DB는 free varchar라 마이그레이션 불필요)
   if (status === 'open') return 'backlog'
-  return ISSUE_STATES.includes(status as IssueState) ? (status as IssueState) : 'backlog'
+  return ISSUE_STATUSES.includes(status as IssueStatus) ? (status as IssueStatus) : 'backlog'
 }
 
 const toIssueType = (category: string | null): Issue['type'] => (category === 'bug' ? 'bug' : 'feature')
 
-const toPriority = (priority: string | null): Issue['priority'] => {
-  if (priority === 'low' || priority === 'medium' || priority === 'high' || priority === 'urgent') return priority
-  return undefined
-}
+const toPriority = (priority: string | null): Issue['priority'] =>
+  ISSUE_PRIORITIES.includes(priority as (typeof ISSUE_PRIORITIES)[number]) ? (priority as Issue['priority']) : undefined
 
 /**
  * main 프로세스의 IssueRecord(snake_case)를 렌더러 Issue(IssueTable 입력)로 변환한다.
