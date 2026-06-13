@@ -63,7 +63,7 @@ jobs:
         run: pnpm lint:ci
 
       - name: Test
-        run: pnpm test
+        run: pnpm test:coverage
         env:
           RUN_DB_TESTS: '1'
           DB_HOST: localhost
