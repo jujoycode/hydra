@@ -14,7 +14,6 @@
     "userSn": "아이디",
     "name": "이름",
     "email": "이메일",
-    "dbRole": "데이터베이스 역할",
     "password": "비밀번호",
     "role": "역할",
     "inviteCode": "초대 코드",
@@ -24,17 +23,13 @@
     "userSn": "로그인 아이디",
     "name": "홍길동",
     "email": "hong@example.com",
-    "dbRole": "hydra_honggildong",
     "password": "안전한 비밀번호를 입력하세요"
-  },
-  "help": {
-    "dbRole": "이름에서 자동 생성됩니다. PostgreSQL 역할 이름으로 사용됩니다."
   },
   "dialog": {
     "addTitle": "멤버 추가",
-    "addDescription": "PostgreSQL 데이터베이스 역할과 함께 새 멤버를 생성합니다.",
+    "addDescription": "로그인 아이디와 초기 비밀번호로 새 멤버를 생성합니다.",
     "removeTitle": "멤버 삭제",
-    "removeDescription": "{{name}} 님을 삭제하시겠습니까? 연결된 PostgreSQL 역할도 함께 삭제됩니다. 이 작업은 되돌릴 수 없습니다.",
+    "removeDescription": "{{name}} 님을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
     "inviteTitle": "초대 코드 생성",
     "inviteDescription": "다른 사용자가 이 워크스페이스에 연결할 수 있는 초대 코드를 생성합니다."
   },

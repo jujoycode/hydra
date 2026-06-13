@@ -7,7 +7,6 @@ export interface UserRecord {
   user_status: string | null
   user_name: string | null
   user_email: string | null
-  user_db_role: string | null
   user_avatar_path: string | null
   user_role: 'admin' | 'member'
   user_created_at: Date | null

@@ -108,11 +108,19 @@ export class MySqlAdapter implements DatabaseAdapter {
     try {
       const conn = await pool.getConnection()
       try {
-        const [rows] = await conn.query<RowDataPacket[]>('SELECT @@character_set_database AS cs')
+        const [rows] = await conn.query<RowDataPacket[]>('SELECT @@character_set_database AS cs, VERSION() AS version')
         const cs = rows[0]?.cs as string | undefined
         if (cs !== 'utf8mb4') {
           console.warn(
             `[MySqlAdapter] database charset is "${cs}", expected utf8mb4 — new tables created outside Hydra may default to a non-utf8mb4 charset`
+          )
+        }
+        // MySQL 8.0+ 만 지원 (utf8mb4 기본, DATETIME(3), GET_LOCK 다중 락 등) — 미만이면 경고
+        const version = String(rows[0]?.version ?? '')
+        const major = Number.parseInt(version.split('.')[0] ?? '', 10)
+        if (Number.isFinite(major) && major < 8) {
+          console.warn(
+            `[MySqlAdapter] server version ${version} detected — Hydra supports MySQL 8.0+; behavior is undefined on older versions`
           )
         }
       } finally {

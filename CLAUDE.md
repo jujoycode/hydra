@@ -80,9 +80,10 @@ Bridge exposing `window.callApi` for typed IPC communication.
 - **Auth Guard**: Connection-based (`isConnected` from auth store), no JWT. `bootstrap()` syncs with main via `WORKSPACE_STATUS` IPC on app mount so that persisted state never diverges from main process state.
 
 ### Auth Model
-- No login/signup screen. DB connection = authentication.
-- Admin creates members via app → PostgreSQL ROLE created automatically
-- Invite system: base64 encoded non-sensitive workspace info
+- Two-step: workspace DB connection (shared service account) → app-level login (`user_sn` + scrypt password)
+- First connect to an empty DB shows an admin setup screen; admins create members in-app (no DB ROLEs)
+- Session persisted via Electron safeStorage ("remember me" extends expiry); re-verified on bootstrap
+- Invite system: base64 encoded non-sensitive workspace info (`host/port/dbName/dbms` — no credentials)
 
 ## Path Aliases (electron.vite.config.ts)
 

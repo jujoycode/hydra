@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { DatabaseError } from '../../error/DatabaseError'
+import { ErrorCode } from '../../interface/CoreInterface'
 import { createAdapter, toMigrationDialect } from './createAdapter'
 import { MySqlAdapter } from './MySqlAdapter'
 import { PostgresAdapter } from './PostgresAdapter'
@@ -12,6 +14,16 @@ describe('createAdapter', () => {
   })
   it('defaults to PostgresAdapter when dbms is omitted', () => {
     expect(createAdapter(undefined)).toBeInstanceOf(PostgresAdapter)
+  })
+  it('throws VALIDATION_ERROR for an unknown dbms value', () => {
+    let caught: unknown
+    try {
+      createAdapter('sqlite' as never)
+    } catch (e) {
+      caught = e
+    }
+    expect(caught).toBeInstanceOf(DatabaseError)
+    expect((caught as DatabaseError).code).toBe(ErrorCode.VALIDATION_ERROR)
   })
 })
 
