@@ -9,7 +9,7 @@ import { Input } from '@/components/atoms/Input'
 import { Label } from '@/components/atoms/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/Select'
 import { Separator } from '@/components/atoms/Separator'
-import { useIpcHandler } from '@/hooks/use-ipc'
+import { invokeApi } from '@/hooks/use-api'
 import { type DbmsType, IpcChannel } from '@/interface/CoreInterface'
 import { useAuthStore } from '@/stores/auth'
 import { useWorkspaceStore } from '@/stores/workspace'
@@ -21,11 +21,6 @@ export default function WorkspacePage() {
   const navigate = useNavigate()
   const { setConnected, setCurrentWorkspace, setNeedsSetup, setUser, setAuthenticated } = useAuthStore()
   const { workspaces, addWorkspace, removeWorkspace } = useWorkspaceStore()
-
-  const saveWorkspace = useIpcHandler(IpcChannel.WORKSPACE_SAVE)
-  const deleteWorkspace = useIpcHandler(IpcChannel.WORKSPACE_DELETE)
-  const connectWorkspace = useIpcHandler(IpcChannel.WORKSPACE_CONNECT)
-  const applyInvite = useIpcHandler(IpcChannel.INVITE_APPLY)
 
   const [showAddForm, setShowAddForm] = useState(false)
   const [showInviteForm, setShowInviteForm] = useState(false)
@@ -61,35 +56,39 @@ export default function WorkspacePage() {
   }
 
   const handleAddWorkspace = async () => {
-    const result = await saveWorkspace({
-      name: newWs.name,
-      host: newWs.host,
-      port: parseInt(newWs.port, 10),
-      dbName: newWs.dbName,
-      username: newWs.username,
-      dbms: newWs.dbms,
-      sslCertPath: newWs.sslCertPath || undefined
-    })
-    if (result.data) {
-      addWorkspace(result.data)
-      setShowAddForm(false)
-      setNewWs({
-        name: '',
-        host: 'localhost',
-        port: '5432',
-        dbName: '',
-        username: 'postgres',
-        dbms: 'postgresql',
-        sslCertPath: ''
+    try {
+      const data = await invokeApi(IpcChannel.WORKSPACE_SAVE, {
+        name: newWs.name,
+        host: newWs.host,
+        port: parseInt(newWs.port, 10),
+        dbName: newWs.dbName,
+        username: newWs.username,
+        dbms: newWs.dbms,
+        sslCertPath: newWs.sslCertPath || undefined
       })
-      toast.success(t('toast.added'))
+      if (data) {
+        addWorkspace(data)
+        setShowAddForm(false)
+        setNewWs({
+          name: '',
+          host: 'localhost',
+          port: '5432',
+          dbName: '',
+          username: 'postgres',
+          dbms: 'postgresql',
+          sslCertPath: ''
+        })
+        toast.success(t('toast.added'))
+      }
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     }
   }
 
   const handleConnect = async (ws: WorkspaceConfig) => {
     setConnecting(true)
     try {
-      const result = await connectWorkspace({
+      const status = await invokeApi(IpcChannel.WORKSPACE_CONNECT, {
         host: ws.host,
         port: ws.port,
         dbName: ws.dbName,
@@ -98,12 +97,12 @@ export default function WorkspacePage() {
         dbms: ws.dbms,
         sslCertPath: ws.sslCertPath
       })
-      if (result.data) {
+      if (status) {
         setConnected(true)
         setCurrentWorkspace(ws)
-        setNeedsSetup(result.data.needsSetup)
+        setNeedsSetup(status.needsSetup)
         toast.success(t('toast.connected'))
-        if (result.data.needsSetup) {
+        if (status.needsSetup) {
           navigate({ to: '/setup' })
           return
         }
@@ -117,6 +116,8 @@ export default function WorkspacePage() {
           navigate({ to: '/login' })
         }
       }
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     } finally {
       setConnecting(false)
       setPassword('')
@@ -126,28 +127,36 @@ export default function WorkspacePage() {
   }
 
   const handleApplyInvite = async () => {
-    const result = await applyInvite({ code: inviteCode })
-    if (result.data) {
-      setNewWs({
-        name: result.data.workspaceName,
-        host: result.data.host,
-        port: String(result.data.port),
-        dbName: result.data.dbName,
-        username: '',
-        dbms: result.data.dbms ?? 'postgresql',
-        sslCertPath: ''
-      })
-      setShowInviteForm(false)
-      setShowAddForm(true)
-      setInviteCode('')
-      toast.success(t('toast.inviteApplied'))
+    try {
+      const data = await invokeApi(IpcChannel.INVITE_APPLY, { code: inviteCode })
+      if (data) {
+        setNewWs({
+          name: data.workspaceName,
+          host: data.host,
+          port: String(data.port),
+          dbName: data.dbName,
+          username: '',
+          dbms: data.dbms ?? 'postgresql',
+          sslCertPath: ''
+        })
+        setShowInviteForm(false)
+        setShowAddForm(true)
+        setInviteCode('')
+        toast.success(t('toast.inviteApplied'))
+      }
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     }
   }
 
   const handleDelete = async (id: string) => {
-    await deleteWorkspace({ workspaceId: id })
-    removeWorkspace(id)
-    toast.success(t('toast.removed'))
+    try {
+      await invokeApi(IpcChannel.WORKSPACE_DELETE, { workspaceId: id })
+      removeWorkspace(id)
+      toast.success(t('toast.removed'))
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
+    }
   }
 
   return (

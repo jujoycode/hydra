@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { Button } from '@/atoms/Button'
 import { Input } from '@/atoms/Input'
 import { Textarea } from '@/atoms/Textarea'
-import { useIpcHandler } from '@/hooks/use-ipc'
+import { invokeApi } from '@/hooks/use-api'
 import { useProject } from '@/hooks/use-project'
 import { IpcChannel } from '@/interface/CoreInterface'
 import { InputField } from '@/molecules/InputField'
@@ -31,8 +31,6 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
   // hook
   const { projects, setProjects } = useProject()
   const navigate = useNavigate()
-  // handler
-  const projectCreateHandler = useIpcHandler(IpcChannel.PROJECT_CREATE)
 
   // Project key validation
   useEffect(() => {
@@ -78,28 +76,25 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
     setIsLoading(true)
 
     try {
-      const result = await projectCreateHandler({
+      const data = await invokeApi(IpcChannel.PROJECT_CREATE, {
         projectName: projectName.trim(),
         projectKey: projectKey.trim(),
         projectDesc: projectDesc.trim(),
         userId
       })
 
-      if (result.error) {
-        toast.error(t('toast.createFailed'))
-        handleClear()
-        return
-      }
-
       // Update project list
-      if (result.data && projects) {
-        setProjects([...projects, result.data])
+      if (data && projects) {
+        setProjects([...projects, data])
 
         toast.success(t('toast.created'))
         handleClear()
 
-        navigate({ to: '/projects/$projectId', params: { projectId: result.data.project_id } })
+        navigate({ to: '/projects/$projectId', params: { projectId: data.project_id } })
       }
+    } catch {
+      toast.error(t('toast.createFailed'))
+      handleClear()
     } finally {
       setIsLoading(false)
     }

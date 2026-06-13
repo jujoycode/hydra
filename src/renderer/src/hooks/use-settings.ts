@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { invokeApi } from '@/hooks/use-api'
 import { useAuth } from '@/hooks/use-auth'
-import { useIpcHandler } from '@/hooks/use-ipc'
 import { IpcChannel } from '@/interface/CoreInterface'
 
 export function useSettings() {
@@ -9,10 +9,6 @@ export function useSettings() {
   const [name, setName] = useState(user?.user_name || '')
   const [isLoading, setIsLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  // IPC 핸들러
-  const authUpdateUser = useIpcHandler(IpcChannel.AUTH_UPDATE_USER)
-  const storageUploadFile = useIpcHandler(IpcChannel.STORAGE_UPLOAD_FILE)
 
   const handleNameUpdate = async () => {
     if (!user) return
@@ -24,14 +20,10 @@ export function useSettings() {
 
     setIsLoading(true)
     try {
-      const { data, error } = await authUpdateUser({
+      const data = await invokeApi(IpcChannel.AUTH_UPDATE_USER, {
         userId: user.user_id,
         userName: name.trim()
       })
-
-      if (error) {
-        throw new Error(error.message)
-      }
 
       if (data) {
         setUser({
@@ -82,26 +74,18 @@ export function useSettings() {
       const filePath = `avatars/${user.user_id}.${fileExtension}`
 
       // Upload to storage
-      const { data, error } = await storageUploadFile({
+      const data = await invokeApi(IpcChannel.STORAGE_UPLOAD_FILE, {
         fileName: file.name,
         filePath,
         fileData: arrayBuffer
       })
 
-      if (error) {
-        throw new Error(error.message)
-      }
-
       if (data) {
         // 사용자 정보 업데이트
-        const updateResult = await authUpdateUser({
+        await invokeApi(IpcChannel.AUTH_UPDATE_USER, {
           userId: user.user_id,
           userAvatarKey: filePath
         })
-
-        if (updateResult.error) {
-          throw new Error(updateResult.error.message)
-        }
 
         // 사용자 상태 업데이트
         setUser({

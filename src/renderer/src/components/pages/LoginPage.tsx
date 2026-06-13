@@ -5,14 +5,13 @@ import { Button } from '@/components/atoms/Button'
 import { Input } from '@/components/atoms/Input'
 import { Label } from '@/components/atoms/Label'
 import { AuthLayout } from '@/components/templates/AuthLayout'
-import { useIpcHandler } from '@/hooks/use-ipc'
+import { invokeApi } from '@/hooks/use-api'
 import { IpcChannel } from '@/interface/CoreInterface'
 import { useAuthStore } from '@/stores/auth'
 
 export default function LoginPage() {
   const { t } = useTranslation('auth')
   const navigate = useNavigate()
-  const login = useIpcHandler(IpcChannel.AUTH_LOGIN)
   const { setUser, setAuthenticated } = useAuthStore()
   const [userSn, setUserSn] = useState('')
   const [password, setPassword] = useState('')
@@ -23,12 +22,14 @@ export default function LoginPage() {
     e.preventDefault()
     setSubmitting(true)
     try {
-      const result = await login({ userSn, password, rememberMe })
-      if (result.data) {
-        setUser(result.data)
+      const user = await invokeApi(IpcChannel.AUTH_LOGIN, { userSn, password, rememberMe })
+      if (user) {
+        setUser(user)
         setAuthenticated(true)
         navigate({ to: '/' })
       }
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     } finally {
       setSubmitting(false)
     }
