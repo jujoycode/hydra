@@ -104,7 +104,7 @@ Bridge exposing `window.callApi` for typed IPC communication.
 - **Branches**: GitHub Flow — short-lived branches off `main` (always releasable, protected), merge via PR (CI green + 1 approval, no self-approve). Naming by intent: `feature/*`, `bugfix/*`, `hotfix/*`, `docs/*`, `chore/*`, `refactor/*`, `test/*`. Default merge: squash; delete branch after merge. `legacy/*` = immutable archives. See `docs/adr/0001-adopt-github-flow.md`.
 - **DB naming** (`docs/design/convention-db.md`): snake_case tables (plural), snake_case columns (singular)
 - **Atomic Design**: atoms → molecules → organisms → templates → pages → layouts
-- **One file, one component/feature**
+- **Component folder structure**: 각 컴포넌트는 자기 이름의 폴더를 가진다 — `atoms/Skeleton/{ index.ts(barrel: export * from './Skeleton'), Skeleton.tsx, Skeleton.stories.tsx, Skeleton.test.tsx }`. import는 배럴 경유(`@/atoms/Skeleton`)라 폴더화해도 임포터는 안 바뀐다. 기존 평면 컴포넌트는 건드릴 때 점진 이관.
 
 ## V3 Features
 
