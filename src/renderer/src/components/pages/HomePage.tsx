@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TrendDataPoint } from '@/atoms/charts/AreaTrendChart'
 import type { StatusData } from '@/atoms/charts/StatusDonutChart'
+import { Skeleton } from '@/atoms/Skeleton'
 import { useAuth } from '@/hooks/use-auth'
 import { useDashboardIssues } from '@/hooks/use-issues'
 import { getCssVar } from '@/lib/statusTokens'
@@ -20,7 +21,7 @@ export default function HomePage() {
   const { t } = useTranslation('dashboard')
 
   // 사용자가 속한 프로젝트의 모든 이슈를 단일 쿼리로 조회 (N+1 제거)
-  const { data: allIssues = [] } = useDashboardIssues(user?.user_id)
+  const { data: allIssues = [], isLoading } = useDashboardIssues(user?.user_id)
 
   const { issueStats, statusData, trendData } = useMemo(() => {
     const statusCount = { open: 0, in_progress: 0, done: 0, review: 0, blocked: 0 }
@@ -72,6 +73,22 @@ export default function HomePage() {
   }, [allIssues, t])
 
   if (!user) return null
+
+  if (isLoading) {
+    return (
+      <div className='p-6 space-y-6'>
+        <div className='grid grid-cols-2 gap-4 sm:grid-cols-4'>
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className='h-24 w-full' />
+          ))}
+        </div>
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+          <Skeleton className='h-72 w-full' />
+          <Skeleton className='h-72 w-full' />
+        </div>
+      </div>
+    )
+  }
 
   return <HomePageTemplate user={user} issueStats={issueStats} statusData={statusData} trendData={trendData} />
 }
