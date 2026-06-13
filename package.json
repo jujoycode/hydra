@@ -31,7 +31,9 @@
     "docker:down": "docker-compose down",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
@@ -92,6 +94,8 @@
     "@electron-forge/maker-zip": "^7.11.1",
     "@electron-forge/shared-types": "^7.11.1",
     "@electron-toolkit/tsconfig": "^1.0.1",
+    "@storybook/react": "^10.4.4",
+    "@storybook/react-vite": "^10.4.4",
     "@tanstack/react-query-devtools": "^5.100.14",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -106,6 +110,7 @@
     "electron": "^35.1.5",
     "electron-vite": "^3.1.0",
     "jsdom": "^29.1.1",
+    "storybook": "^10.4.4",
     "typescript": "^5.8.3",
     "vite": "^6.2.6",
     "vitest": "^4.1.2"
