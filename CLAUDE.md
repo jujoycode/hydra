@@ -101,7 +101,7 @@ Bridge exposing `window.callApi` for typed IPC communication.
 
 ## Conventions
 
-- **Branches**: `feature/*`, `bugfix/*`, `hotfix/*`
+- **Branches**: GitHub Flow — short-lived branches off `main` (always releasable, protected), merge via PR (CI green + 1 approval, no self-approve). Naming by intent: `feature/*`, `bugfix/*`, `hotfix/*`, `docs/*`, `chore/*`, `refactor/*`, `test/*`. Default merge: squash; delete branch after merge. `legacy/*` = immutable archives. See `docs/adr/0001-adopt-github-flow.md`.
 - **DB naming** (`docs/design/convention-db.md`): snake_case tables (plural), snake_case columns (singular)
 - **Atomic Design**: atoms → molecules → organisms → templates → pages → layouts
 - **One file, one component/feature**
