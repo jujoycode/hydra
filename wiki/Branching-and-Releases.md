@@ -1,9 +1,15 @@
 # Branching & Releases
 
-## 기준 브랜치
+> 워크플로 규칙의 공식 결정은 [`docs/adr/0001-adopt-github-flow.md`](../docs/adr/0001-adopt-github-flow.md)에 있습니다.
 
-활성 개발의 기준 브랜치는 **`main`** 입니다. 멀티 DBMS 지원 + 인증 모델 재설계 작업(`v3`, Phase 1~5,
-PR #27~#31)이 `main`으로 승격되었습니다(PR #32).
+## 워크플로 — GitHub Flow
+
+- **`main`** 이 유일한 장수 브랜치이며 항상 릴리즈 가능합니다(protected).
+- 모든 작업은 최신 `main`에서 분기한 **짧은 브랜치**에서 진행하고, **PR로만** 병합합니다 (CI green + 승인 1).
+- 병합 후 소스 브랜치는 삭제합니다. 기본 병합 방식은 squash.
+- 릴리즈는 `main`에서 SemVer 태그(`vMAJOR.MINOR.PATCH`)로 만들며, 태그 push가 릴리즈 빌드를 트리거합니다.
+
+멀티 DBMS 지원 + 인증 모델 재설계 작업(`v3`, Phase 1~5, PR #27~#31)이 `main`으로 승격되었습니다(PR #32).
 
 ## Legacy 아카이브
 
@@ -17,24 +23,17 @@ PR #27~#31)이 `main`으로 승격되었습니다(PR #32).
 | `legacy/develop` | `develop` | 갈라진 옛 개발 라인 |
 | `legacy/docs` | `docs` | 갈라진 옛 문서 라인 |
 
-## 작업 브랜치 컨벤션
+## 작업 브랜치 네이밍 (의도별 접두사)
 
 - `feature/*` — 신규 기능
 - `bugfix/*` — 버그 수정
 - `hotfix/*` — 긴급 수정
+- `docs/*` — 문서
+- `chore/*` · `refactor/*` · `test/*` — 잡무 / 리팩터링 / 테스트
 
-## 정리 대기 항목
+## 정리 완료 (2026-06-13)
 
-다음 브랜치들은 `main`(또는 `legacy/*`)에 내용이 모두 보존되어 있어 삭제 후보입니다. 환경 제약으로
-자동 삭제가 막혀 있어, 저장소 관리자가 GitHub UI 또는 로컬에서 정리합니다.
+`v3` 승격 후, 머지된 `feature/*`(phase1~5)와 갈라진 원본(`ui-v2`/`develop`/`docs`)은 모두 삭제되었습니다.
+현재 원격에는 **`main` + `legacy/{main,ui-v2,develop,docs}`** 만 남아 있습니다.
 
-```bash
-# 이미 main에 머지된 작업 브랜치 + legacy로 아카이브된 원본
-git push origin --delete v3 \
-  feature/mysql-multidbms-phase1 feature/mysql-multidbms-phase2 \
-  feature/mysql-multidbms-phase3 feature/mysql-multidbms-phase4 \
-  feature/phase5-cleanup \
-  ui-v2 develop docs
-```
-
-> `legacy/*`는 보존 대상이므로 삭제하지 않습니다.
+> `legacy/*`는 불변 아카이브 — 삭제하거나 그 위에서 새 작업을 시작하지 않습니다.
