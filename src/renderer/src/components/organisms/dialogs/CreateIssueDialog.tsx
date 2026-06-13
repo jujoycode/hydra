@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { ChevronDown, ChevronsUp, ChevronUp, CircleDot, TriangleAlert, User2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,9 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/atoms/Textarea'
 import { useProjectMembers } from '@/hooks/use-members'
 import { useProject } from '@/hooks/use-project'
-import type { Issue as IssueRecord, Project } from '@/interface/CoreInterface'
+import type { Project } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
-import { useIssueStore } from '@/stores/issue'
+import { queryKeys } from '@/lib/queryKeys'
 import type { IssuePriority } from '@/types/issue'
 
 interface CreateIssueDialogProps {
@@ -27,9 +28,8 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
   // 프로젝트 상태 관리
   const { projects } = useProject()
 
-  // 이슈 store — 생성 성공 시 캐시된 리스트 갱신
-  const issues = useIssueStore((state) => state.issues)
-  const setIssues = useIssueStore((state) => state.setIssues)
+  // 생성 성공 시 이슈 쿼리 캐시를 무효화해 목록을 갱신한다(React Query 단일 출처).
+  const queryClient = useQueryClient()
 
   // 이슈 생성 폼 상태 관리
   const [selectedProject, setSelectedProject] = useState<string>('')
@@ -97,10 +97,8 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
         return
       }
 
-      // 캐시된 이슈 리스트에 신규 이슈 prepend (있을 때만)
-      if (result.data && issues) {
-        setIssues([result.data as IssueRecord, ...issues])
-      }
+      // 이슈 쿼리 캐시 무효화 → IssuePage/MyIssues/Home이 자동 갱신
+      queryClient.invalidateQueries({ queryKey: queryKeys.issues.all })
 
       toast.success(t('toast.created'))
       onOpenChange(false)

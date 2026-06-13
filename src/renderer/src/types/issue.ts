@@ -1,4 +1,4 @@
-import type { IssueCategory, IssuePriority, Issue as IssueRecord } from '@/interface/CoreInterface'
+import type { IssueCategory, IssuePriority } from '@/interface/CoreInterface'
 import type { IssueState } from '@/molecules/issues/IssueBadge'
 
 /**
@@ -53,11 +53,9 @@ export interface IssueTableMeta {
 }
 
 export interface IssueStoreState {
-  issues: IssueRecord[] | null
   selectedIssueId: string | null
   isLoading: boolean
   error: Error | null
-  setIssues: (issues: IssueRecord[] | null) => void
   setSelectedIssueId: (issueId: string | null) => void
   setLoading: (loading: boolean) => void
   setError: (error: Error | null) => void

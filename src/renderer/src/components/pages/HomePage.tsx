@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TrendDataPoint } from '@/atoms/charts/AreaTrendChart'
 import type { StatusData } from '@/atoms/charts/StatusDonutChart'
 import { useAuth } from '@/hooks/use-auth'
-import type { Issue, Project } from '@/interface/CoreInterface'
-import { IpcChannel } from '@/interface/CoreInterface'
+import { useDashboardIssues } from '@/hooks/use-issues'
 import { getCssVar } from '@/lib/statusTokens'
 import { HomePageTemplate } from '@/templates/HomePageTemplate'
 
@@ -19,79 +18,58 @@ const getStatusColors = () => ({
 export default function HomePage() {
   const { user } = useAuth()
   const { t } = useTranslation('dashboard')
-  const [issueStats, setIssueStats] = useState({
-    total: 0,
-    inProgress: 0,
-    done: 0,
-    review: 0,
-    blocked: 0
-  })
-  const [statusData, setStatusData] = useState<StatusData[]>([])
-  const [trendData, setTrendData] = useState<TrendDataPoint[]>([])
 
-  useEffect(() => {
-    if (!user) return
+  // 사용자가 속한 프로젝트의 모든 이슈를 단일 쿼리로 조회 (N+1 제거)
+  const { data: allIssues = [] } = useDashboardIssues(user?.user_id)
 
-    const loadData = async () => {
-      const projectResult = await window.callApi(IpcChannel.PROJECT_LIST, { userId: user.user_id })
-      const projects = Array.isArray(projectResult.data) ? (projectResult.data as Project[]) : []
+  const { issueStats, statusData, trendData } = useMemo(() => {
+    const statusCount = { open: 0, in_progress: 0, done: 0, review: 0, blocked: 0 }
+    for (const issue of allIssues) {
+      const status = issue.issue_status || 'open'
+      if (status in statusCount) statusCount[status as keyof typeof statusCount]++
+    }
 
-      const allIssues: Issue[] = []
-      for (const project of projects) {
-        const issueResult = await window.callApi(IpcChannel.ISSUE_LIST, { projectId: project.project_id })
-        const projectIssues = Array.isArray(issueResult.data) ? (issueResult.data as Issue[]) : []
-        allIssues.push(...projectIssues)
-      }
+    const statusColors = getStatusColors()
+    const status: StatusData[] = [
+      { name: t('status.inProgress'), value: statusCount.in_progress, color: statusColors.in_progress },
+      { name: t('status.done'), value: statusCount.done, color: statusColors.done },
+      { name: t('status.blocked'), value: statusCount.blocked, color: statusColors.blocked },
+      { name: t('status.review'), value: statusCount.review, color: statusColors.review }
+    ]
 
-      // 상태별 집계
-      const statusCount = { open: 0, in_progress: 0, done: 0, review: 0, blocked: 0 }
-      for (const issue of allIssues) {
-        const status = issue.issue_status || 'open'
-        if (status in statusCount) statusCount[status as keyof typeof statusCount]++
-      }
+    const now = new Date()
+    const months: TrendDataPoint[] = []
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      const monthName = date.toLocaleString('ko', { month: 'short' })
+      const monthStart = date.getTime()
+      const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0).getTime()
 
-      setIssueStats({
+      const created = allIssues.filter((issue) => {
+        const ts = new Date(issue.issue_created_at || 0).getTime()
+        return ts >= monthStart && ts <= monthEnd
+      }).length
+
+      const resolved = allIssues.filter((issue) => {
+        const ts = new Date(issue.issue_updated_at || 0).getTime()
+        return issue.issue_status === 'done' && ts >= monthStart && ts <= monthEnd
+      }).length
+
+      months.push({ name: monthName, created, resolved })
+    }
+
+    return {
+      issueStats: {
         total: allIssues.length,
         inProgress: statusCount.in_progress,
         done: statusCount.done,
         review: statusCount.review,
         blocked: statusCount.blocked
-      })
-
-      const statusColors = getStatusColors()
-      setStatusData([
-        { name: t('status.inProgress'), value: statusCount.in_progress, color: statusColors.in_progress },
-        { name: t('status.done'), value: statusCount.done, color: statusColors.done },
-        { name: t('status.blocked'), value: statusCount.blocked, color: statusColors.blocked },
-        { name: t('status.review'), value: statusCount.review, color: statusColors.review }
-      ])
-
-      // 추이 데이터 (최근 6개월)
-      const now = new Date()
-      const months: TrendDataPoint[] = []
-      for (let i = 5; i >= 0; i--) {
-        const date = new Date(now.getFullYear(), now.getMonth() - i, 1)
-        const monthName = date.toLocaleString('ko', { month: 'short' })
-        const monthStart = date.getTime()
-        const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0).getTime()
-
-        const created = allIssues.filter((issue) => {
-          const t = new Date(issue.issue_created_at || 0).getTime()
-          return t >= monthStart && t <= monthEnd
-        }).length
-
-        const resolved = allIssues.filter((issue) => {
-          const t = new Date(issue.issue_updated_at || 0).getTime()
-          return issue.issue_status === 'done' && t >= monthStart && t <= monthEnd
-        }).length
-
-        months.push({ name: monthName, created, resolved })
-      }
-      setTrendData(months)
+      },
+      statusData: status,
+      trendData: months
     }
-
-    loadData()
-  }, [user])
+  }, [allIssues, t])
 
   if (!user) return null
 
