@@ -6,14 +6,13 @@ import { Button } from '@/components/atoms/Button'
 import { Input } from '@/components/atoms/Input'
 import { Label } from '@/components/atoms/Label'
 import { AuthLayout } from '@/components/templates/AuthLayout'
-import { useIpcHandler } from '@/hooks/use-ipc'
+import { invokeApi } from '@/hooks/use-api'
 import { IpcChannel } from '@/interface/CoreInterface'
 import { useAuthStore } from '@/stores/auth'
 
 export default function AdminSetupPage() {
   const { t } = useTranslation('auth')
   const navigate = useNavigate()
-  const setupAdmin = useIpcHandler(IpcChannel.AUTH_SETUP_ADMIN)
   const { setUser, setAuthenticated, setNeedsSetup } = useAuthStore()
   const [form, setForm] = useState({ userSn: '', userName: '', userEmail: '', password: '', confirm: '' })
   const [submitting, setSubmitting] = useState(false)
@@ -26,18 +25,20 @@ export default function AdminSetupPage() {
     }
     setSubmitting(true)
     try {
-      const result = await setupAdmin({
+      const user = await invokeApi(IpcChannel.AUTH_SETUP_ADMIN, {
         userSn: form.userSn,
         userName: form.userName,
         userEmail: form.userEmail || undefined,
         password: form.password
       })
-      if (result.data) {
-        setUser(result.data)
+      if (user) {
+        setUser(user)
         setAuthenticated(true)
         setNeedsSetup(false)
         navigate({ to: '/' })
       }
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     } finally {
       setSubmitting(false)
     }

@@ -61,7 +61,7 @@ import type {
   UpdateProjectParams
 } from './types/project'
 import type { LinkFileParams, ListIssueFilesParams, UploadFileParams } from './types/storage'
-import type { OpenDialogOptions, OpenDialogReturnValue, OpenExternalUrlParams } from './types/system'
+import type { OpenDialogOptions, OpenDialogReturnValue } from './types/system'
 import type { CreateTaskParams, DeleteTaskParams, ListTasksParams, UpdateTaskParams } from './types/task'
 import type {
   WorkspaceConfig,
@@ -165,7 +165,6 @@ export enum IpcChannel {
   STORAGE_LIST_ISSUE_FILES = 'storageListIssueFiles',
 
   // SYSTEM-
-  SYSTEM_OPEN_EXTERNAL_URL = 'systemOpenExternalUrl',
   SYSTEM_OPEN_DIALOG = 'systemOpenDialog'
 }
 
@@ -461,10 +460,6 @@ export interface IpcPayloads extends BaseIpcPayloads {
   }
 
   // SYSTEM-
-  [IpcChannel.SYSTEM_OPEN_EXTERNAL_URL]: {
-    send: OpenExternalUrlParams
-    receive: BaseIpcResponse<null>
-  }
   [IpcChannel.SYSTEM_OPEN_DIALOG]: {
     send: OpenDialogOptions
     receive: BaseIpcResponse<OpenDialogReturnValue>

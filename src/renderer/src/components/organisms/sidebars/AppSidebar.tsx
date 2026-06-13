@@ -42,7 +42,7 @@ function WorkspaceHeader() {
 
   const handleDisconnect = async () => {
     await logout()
-    disconnect()
+    await disconnect()
     navigate({ to: '/workspace' })
   }
 
@@ -201,7 +201,7 @@ function UserFooter() {
 
   const handleDisconnect = async () => {
     await logout()
-    disconnect()
+    await disconnect()
     navigate({ to: '/workspace' })
   }
 
