@@ -59,3 +59,11 @@ export interface ListIssueParams {
 export interface GetIssueParams {
   issueId: string
 }
+
+export interface ListAssignedIssuesParams {
+  userId: string
+}
+
+export interface ListMemberProjectIssuesParams {
+  userId: string
+}

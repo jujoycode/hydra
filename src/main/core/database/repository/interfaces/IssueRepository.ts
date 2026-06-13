@@ -63,6 +63,8 @@ export interface IssueRepository {
   create(data: CreateIssueData): Promise<IssueRecord>
   findById(issueId: string): Promise<IssueRecord | null>
   findByProject(projectId: string): Promise<IssueRecord[]>
+  findByAssignee(userId: string): Promise<IssueRecord[]>
+  findByUserProjects(userId: string): Promise<IssueRecord[]>
   update(issueId: string, data: UpdateIssueData): Promise<IssueRecord>
   delete(issueId: string): Promise<boolean>
   countByProject(projectId: string): Promise<number>

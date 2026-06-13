@@ -24,7 +24,9 @@ import type {
   CreateIssueParams,
   DeleteIssueParams,
   GetIssueParams,
+  ListAssignedIssuesParams,
   ListIssueParams,
+  ListMemberProjectIssuesParams,
   UpdateIssueParams
 } from './types/issue'
 import type {
@@ -109,6 +111,8 @@ export enum IpcChannel {
   // ISSUE-
   ISSUE_CREATE = 'issueCreate',
   ISSUE_LIST = 'issueList',
+  ISSUE_LIST_ASSIGNED = 'issueListAssigned',
+  ISSUE_LIST_MEMBER_PROJECTS = 'issueListMemberProjects',
   ISSUE_GET = 'issueGet',
   ISSUE_UPDATE = 'issueUpdate',
   ISSUE_DELETE = 'issueDelete',
@@ -284,6 +288,14 @@ export interface IpcPayloads extends BaseIpcPayloads {
   // ISSUE-
   [IpcChannel.ISSUE_LIST]: {
     send: ListIssueParams
+    receive: BaseIpcResponse<IssueRecord[]>
+  }
+  [IpcChannel.ISSUE_LIST_ASSIGNED]: {
+    send: ListAssignedIssuesParams
+    receive: BaseIpcResponse<IssueRecord[]>
+  }
+  [IpcChannel.ISSUE_LIST_MEMBER_PROJECTS]: {
+    send: ListMemberProjectIssuesParams
     receive: BaseIpcResponse<IssueRecord[]>
   }
   [IpcChannel.ISSUE_GET]: {
