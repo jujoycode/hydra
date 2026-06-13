@@ -1,45 +1,17 @@
-import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Issue as IssueRecord, Project } from '@/interface/CoreInterface'
-import { IpcChannel } from '@/interface/CoreInterface'
-import { mapIssueRecordToIssue } from '@/lib/mapIssue'
+import { useMyIssues } from '@/hooks/use-issues'
 import { IssueDetailsDialog } from '@/organisms/dialogs/IssueDetailsDialog'
 import { IssueTable } from '@/organisms/issues/IssueTable'
 import { useAuthStore } from '@/stores/auth'
 import type { Issue } from '@/types/issue'
 
-async function fetchMyIssues(userId: string): Promise<Issue[]> {
-  const projectResult = await window.callApi(IpcChannel.PROJECT_LIST, { userId })
-  const projects = Array.isArray(projectResult.data) ? (projectResult.data as Project[]) : []
-
-  const records: IssueRecord[] = []
-  for (const project of projects) {
-    const issueResult = await window.callApi(IpcChannel.ISSUE_LIST, {
-      projectId: project.project_id,
-      assignedTo: userId
-    })
-    if (Array.isArray(issueResult.data)) records.push(...(issueResult.data as IssueRecord[]))
-  }
-
-  return records.map(mapIssueRecordToIssue)
-}
-
 export default function MyIssuesPage() {
   const { t } = useTranslation('nav')
   const { user } = useAuthStore()
-  const userId = user?.user_id
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null)
 
-  const {
-    data: myIssues = [],
-    isLoading,
-    isError
-  } = useQuery({
-    queryKey: ['my-issues', userId],
-    queryFn: () => fetchMyIssues(userId as string),
-    enabled: !!userId
-  })
+  const { data: myIssues = [], isLoading, isError } = useMyIssues(user?.user_id)
 
   return (
     <div className='p-6 h-full flex flex-col'>

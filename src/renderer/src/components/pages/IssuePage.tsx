@@ -1,34 +1,17 @@
-import { useQuery } from '@tanstack/react-query'
 import { useParams } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Issue as IssueRecord } from '@/interface/CoreInterface'
-import { IpcChannel } from '@/interface/CoreInterface'
-import { mapIssueRecordToIssue } from '@/lib/mapIssue'
+import { useProjectIssues } from '@/hooks/use-issues'
 import { IssueDetailsDialog } from '@/organisms/dialogs/IssueDetailsDialog'
 import { IssueTable } from '@/organisms/issues/IssueTable'
 import type { Issue } from '@/types/issue'
-
-async function fetchProjectIssues(projectId: string): Promise<Issue[]> {
-  const result = await window.callApi(IpcChannel.ISSUE_LIST, { projectId })
-  const records = Array.isArray(result.data) ? (result.data as IssueRecord[]) : []
-  return records.map(mapIssueRecordToIssue)
-}
 
 export default function IssuePage() {
   const { t } = useTranslation('issue')
   const { projectId } = useParams({ strict: false })
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null)
 
-  const {
-    data: issues = [],
-    isLoading,
-    isError
-  } = useQuery({
-    queryKey: ['project-issues', projectId],
-    queryFn: () => fetchProjectIssues(projectId as string),
-    enabled: !!projectId
-  })
+  const { data: issues = [], isLoading, isError } = useProjectIssues(projectId)
 
   return (
     <div className='p-6 h-full flex flex-col'>

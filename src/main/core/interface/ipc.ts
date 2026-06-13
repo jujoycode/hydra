@@ -56,6 +56,7 @@ import type {
   CreateProjectParams,
   DeleteProjectParams,
   GetProjectParams,
+  ListProjectMembersParams,
   ListProjectParams,
   UpdateProjectParams
 } from './types/project'
@@ -100,6 +101,7 @@ export enum IpcChannel {
   // PROJECT-
   PROJECT_CREATE = 'projectCreate',
   PROJECT_LIST = 'projectList',
+  PROJECT_LIST_MEMBERS = 'projectListMembers',
   PROJECT_GET = 'projectGet',
   PROJECT_UPDATE = 'projectUpdate',
   PROJECT_DELETE = 'projectDelete',
@@ -258,6 +260,10 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.PROJECT_LIST]: {
     send: ListProjectParams
     receive: BaseIpcResponse<ProjectRecord[]>
+  }
+  [IpcChannel.PROJECT_LIST_MEMBERS]: {
+    send: ListProjectMembersParams
+    receive: BaseIpcResponse<SafeUser[]>
   }
   [IpcChannel.PROJECT_GET]: {
     send: GetProjectParams

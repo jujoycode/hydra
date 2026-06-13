@@ -24,3 +24,7 @@ export interface ListProjectParams {
 export interface GetProjectParams {
   projectId: string
 }
+
+export interface ListProjectMembersParams {
+  projectId: string
+}
