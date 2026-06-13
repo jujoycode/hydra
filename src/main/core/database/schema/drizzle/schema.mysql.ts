@@ -239,3 +239,18 @@ export const inviteCodes = mysqlTable('invite_codes', {
   created_at: datetime('created_at', { fsp: 3 }).default(now3),
   expires_at: datetime('expires_at', { fsp: 3 })
 })
+
+// 활동 로그 테이블 (PG schema.ts 와 컬럼 패리티 — metadata는 JSON 문자열(text, 이식성))
+export const activityLogs = mysqlTable(
+  'activity_logs',
+  {
+    activity_id: uuidChar('activity_id').primaryKey(),
+    activity_entity_type: varchar('activity_entity_type', { length: 50 }).notNull(),
+    activity_entity_id: uuidChar('activity_entity_id').notNull(),
+    activity_action: varchar('activity_action', { length: 50 }).notNull(),
+    activity_actor_id: uuidChar('activity_actor_id').references(() => users.user_id),
+    activity_metadata: text('activity_metadata'),
+    activity_created_at: datetime('activity_created_at', { fsp: 3 }).default(now3)
+  },
+  (t) => [index('idx_activity_logs_entity').on(t.activity_entity_type, t.activity_entity_id)]
+)

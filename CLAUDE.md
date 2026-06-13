@@ -60,7 +60,7 @@ Electron three-process model:
   - `adapter/createAdapter.ts` — dbms → adapter factory
   - `repository/interfaces/` — UserRepository, ProjectRepository, IssueRepository, FileRepository, ...
   - `repository/drizzle/` — PostgreSQL implementations
-  - `schema/drizzle/schema.ts` — Drizzle table definitions. Tables (15): `users`, `projects`, `users_projects_link`, `milestones`, `issues`, `files`, `issues_files_link`, `comments`, `labels`, `issues_labels_link`, `tasks`, `issue_relations`, `notifications`, `integrations`, `invite_codes`. Naming rules: see `docs/design/convention-db.md`.
+  - `schema/drizzle/schema.ts` — Drizzle table definitions. Tables (16): `users`, `projects`, `users_projects_link`, `milestones`, `issues`, `files`, `issues_files_link`, `comments`, `labels`, `issues_labels_link`, `tasks`, `issue_relations`, `notifications`, `integrations`, `invite_codes`, `activity_logs`. Naming rules: see `docs/design/convention-db.md`.
   - `RepositoryContainer.ts` — Singleton DI container
 - **Workspace** (`core/workspace/WorkspaceManager.ts`): Encrypted config storage via Electron safeStorage
 
