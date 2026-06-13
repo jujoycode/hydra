@@ -3,6 +3,7 @@ import { createAdapter, toMigrationDialect } from '@/database/adapter/createAdap
 import { getMigrationsFolder } from '@/database/migrate/migrationsPath'
 import { RepositoryContainer } from '@/database/RepositoryContainer'
 import {
+  DrizzleActivityLogRepository,
   DrizzleCommentRepository,
   DrizzleFileRepository,
   DrizzleIntegrationRepository,
@@ -79,6 +80,7 @@ export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPAC
     const issueRelationRepo = new DrizzleIssueRelationRepository(db, schemaSet)
     const notificationRepo = new DrizzleNotificationRepository(db, schemaSet)
     const integrationRepo = new DrizzleIntegrationRepository(db, schemaSet)
+    const activityLogRepo = new DrizzleActivityLogRepository(db, schemaSet)
 
     container.initialize(
       adapter,
@@ -92,7 +94,8 @@ export class ConnectWorkspaceHandler extends CoreBaseHandler<IpcChannel.WORKSPAC
       taskRepo,
       issueRelationRepo,
       notificationRepo,
-      integrationRepo
+      integrationRepo,
+      activityLogRepo
     )
 
     // Phase 3: 연결 시 자동 admin 생성 제거. users 비어있으면 setup 필요.

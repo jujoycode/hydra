@@ -1,6 +1,7 @@
 // 리포지토리 컨테이너 - 싱글톤 패턴으로 DB 어댑터와 리포지토리 인스턴스 관리
 
 import type { DatabaseAdapter } from './adapter/DatabaseAdapter'
+import type { ActivityLogRepository } from './repository/interfaces/ActivityLogRepository'
 import type { CommentRepository } from './repository/interfaces/CommentRepository'
 import type { FileRepository } from './repository/interfaces/FileRepository'
 import type { IntegrationRepository } from './repository/interfaces/IntegrationRepository'
@@ -27,6 +28,7 @@ export class RepositoryContainer {
   private _issueRelations: IssueRelationRepository | null = null
   private _notifications: NotificationRepository | null = null
   private _integrations: IntegrationRepository | null = null
+  private _activityLogs: ActivityLogRepository | null = null
 
   private constructor() {}
 
@@ -49,7 +51,8 @@ export class RepositoryContainer {
     tasks: TaskRepository,
     issueRelations: IssueRelationRepository,
     notifications: NotificationRepository,
-    integrations: IntegrationRepository
+    integrations: IntegrationRepository,
+    activityLogs: ActivityLogRepository
   ): void {
     this.adapter = adapter
     this._users = users
@@ -63,6 +66,7 @@ export class RepositoryContainer {
     this._issueRelations = issueRelations
     this._notifications = notifications
     this._integrations = integrations
+    this._activityLogs = activityLogs
   }
 
   async teardown(): Promise<void> {
@@ -81,6 +85,7 @@ export class RepositoryContainer {
     this._issueRelations = null
     this._notifications = null
     this._integrations = null
+    this._activityLogs = null
   }
 
   get db(): DatabaseAdapter {
@@ -165,6 +170,13 @@ export class RepositoryContainer {
       throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
     }
     return this._integrations
+  }
+
+  get activityLogs(): ActivityLogRepository {
+    if (!this._activityLogs) {
+      throw new Error('RepositoryContainer is not initialized. Call initialize() first.')
+    }
+    return this._activityLogs
   }
 
   get isInitialized(): boolean {
