@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
-import tailwindcss from '@tailwindcss/vite'
 import type { StorybookConfig } from '@storybook/react-vite'
+import tailwindcss from '@tailwindcss/vite'
 
 // 렌더러 '@/' alias (vitest.config.ts와 동일 매핑) — Storybook의 vite가 인식하도록 주입한다.
 const rendererAliases: Record<string, string> = {
