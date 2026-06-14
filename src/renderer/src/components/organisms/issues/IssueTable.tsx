@@ -53,7 +53,7 @@ export function IssueTable({ issues, onSelectIssue, isLoading = false }: IssueTa
   return (
     <div className='h-full flex flex-col space-y-4'>
       {/* Single glass container wraps the entire table */}
-      <div className='glass-soft rounded-xl shadow-card overflow-hidden border border-border/70 flex-1 flex flex-col [&_tbody_tr]:hover:bg-primary/5 [&_tbody_td]:px-4 [&_tbody_td]:py-2.5 [&_tbody_tr]:border-b [&_tbody_tr]:border-border/60 [&_tbody_tr:last-child]:border-b-0'>
+      <div className='glass-soft rounded-xl shadow-card overflow-hidden border border-border/70 flex-1 flex flex-col'>
         <Table
           data={issues}
           columns={IssueColumns as ColumnDef<Issue>[]}
@@ -100,7 +100,10 @@ export function IssueTable({ issues, onSelectIssue, isLoading = false }: IssueTa
           // Table reference
           tableRef={tableRef}
           className='flex-1 h-full'
-          bodyClassName='!border-0 !rounded-none flex-1 overflow-y-auto'
+          bodyClassName='flex-1 overflow-y-auto'
+          bordered={false}
+          rowClassName='hover:bg-primary/5 border-border/60'
+          cellClassName='px-4 py-2.5'
         />
       </div>
     </div>

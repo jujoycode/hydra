@@ -99,6 +99,10 @@ export interface TableBaseProps<TData, TValue = unknown> {
   // 스타일 및 접근성
   className?: string
 
+  // 행/셀 커스텀 클래스 (cn/tailwind-merge로 병합 — 기존 클래스 선택적 오버라이드)
+  rowClassName?: string
+  cellClassName?: string
+
   // 테이블 기능 활성화 여부
   enableSorting?: boolean
   enableFiltering?: boolean
@@ -123,6 +127,8 @@ export function TableBase<TData, TValue = unknown>({
   meta,
   onRowClick,
   className,
+  rowClassName,
+  cellClassName,
   enableSorting = true,
   enableFiltering = true,
   enablePagination = true,
@@ -223,7 +229,8 @@ export function TableBase<TData, TValue = unknown>({
       TABLE_STYLES.row.base,
       TABLE_STYLES.row.height,
       row.getIsSelected() && TABLE_STYLES.row.selected,
-      onRowClick && TABLE_STYLES.row.clickable
+      onRowClick && TABLE_STYLES.row.clickable,
+      rowClassName
     )
   }
 
@@ -292,7 +299,10 @@ export function TableBase<TData, TValue = unknown>({
                   const widthClass = width ? (typeof width === 'string' ? width : '') : ''
 
                   return (
-                    <TableCell key={cell.id} className={cn(TABLE_STYLES.cell.base, alignClass, widthClass)}>
+                    <TableCell
+                      key={cell.id}
+                      className={cn(TABLE_STYLES.cell.base, cellClassName, alignClass, widthClass)}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   )
