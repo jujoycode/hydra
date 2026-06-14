@@ -7,6 +7,7 @@ import { Input } from '@/components/atoms/Input'
 import { Label } from '@/components/atoms/Label'
 import { RichTextEditor } from '@/components/atoms/RichTextEditor'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/Select'
+import { useActivityLog } from '@/hooks/use-activity'
 import { useAuth } from '@/hooks/use-auth'
 import type {
   Comment as CommentRecord,
@@ -17,6 +18,7 @@ import type {
   User as UserRecord
 } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
+import { ActivityTimeline } from '@/molecules/ActivityTimeline'
 
 const STATUS_OPTIONS = [
   { value: 'open', label: 'Open' },
@@ -52,6 +54,7 @@ export default function IssueDetailPage() {
   const { projectId, issueId } = useParams({ strict: false })
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { data: activities = [], isLoading: activityLoading } = useActivityLog('issue', issueId)
   const [issue, setIssue] = useState<IssueRecord | null>(null)
   const [members, setMembers] = useState<UserRecord[]>([])
   const [files, setFiles] = useState<FileRecord[]>([])
@@ -329,6 +332,12 @@ export default function IssueDetailPage() {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Activity timeline */}
+          <div className='mb-6'>
+            <Label className='mb-2 block'>Activity</Label>
+            <ActivityTimeline activities={activities} isLoading={activityLoading} />
           </div>
 
           {/* Comments */}
