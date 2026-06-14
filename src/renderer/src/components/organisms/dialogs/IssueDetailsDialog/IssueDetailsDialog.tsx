@@ -60,8 +60,8 @@ export function IssueDetailsDialog({
     }
   }, [issue, defaultIssue])
 
-  // 입력 필드 변경 핸들러
-  const handleChange = (field: keyof Issue, value: any) => {
+  // 입력 필드 변경 핸들러 — 필드 키에 맞는 값 타입만 허용한다
+  const handleChange = <K extends keyof Issue>(field: K, value: Issue[K]) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value

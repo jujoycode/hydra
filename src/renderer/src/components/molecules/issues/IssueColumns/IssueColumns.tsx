@@ -13,7 +13,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { createActionsColumn, createColumn } from '@/atoms/TableColumnDef'
 import { formatKoreanDate } from '@/lib/formatDate'
 import { PRIORITY_CLASS, PRIORITY_LABEL } from '@/lib/statusTokens'
-import { IssueBadge } from '@/molecules/issues/IssueBadge'
+import { IssueBadge, type IssueState } from '@/molecules/issues/IssueBadge'
 import { UserAvatar } from '@/molecules/users/UserAvatar'
 import type { Issue, IssuePriority, IssueTableMeta } from '@/types/issue'
 import i18n from '../../../../locales'
@@ -185,10 +185,10 @@ export const statusColumn = createColumn<Issue>({
   accessorKey: 'state',
   enableSorting: false,
   cell: ({ row }) => {
-    const state = row.getValue('state')
+    const state = row.getValue('state') as IssueState
     return (
       <div className='text-left'>
-        <IssueBadge state={state as any} size='sm' />
+        <IssueBadge state={state} size='sm' />
       </div>
     )
   }
