@@ -30,11 +30,12 @@ export default function AccountPage() {
   if (!user) return null
 
   return (
-    <div className='w-full space-y-6'>
+    <div className='w-full space-y-section'>
       {/* 프로필 섹션 */}
       <SettingCard
         title={t('account.profileTitle')}
         description={t('account.profileDescription')}
+        className='bg-transparent glass-soft border-border/70'
         footer={
           <div className='flex justify-end'>
             <Button onClick={handleNameUpdate} loading={isLoading} className='w-21'>
@@ -82,7 +83,11 @@ export default function AccountPage() {
       </SettingCard>
 
       {/* 언어 설정 */}
-      <SettingCard title={t('language.title')} description={t('language.description')}>
+      <SettingCard
+        title={t('language.title')}
+        description={t('language.description')}
+        className='bg-transparent glass-soft border-border/70'
+      >
         <div className='grid gap-2 max-w-xs'>
           <Label>{t('language.label')}</Label>
           <Select value={i18n.language} onValueChange={handleLanguageChange}>

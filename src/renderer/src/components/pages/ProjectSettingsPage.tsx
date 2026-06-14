@@ -73,23 +73,23 @@ export default function ProjectSettingsPage() {
 
   if (isLoading)
     return (
-      <div className='p-6'>
+      <div className='p-page'>
         <p className='text-muted-foreground'>Loading...</p>
       </div>
     )
   if (!project)
     return (
-      <div className='p-6'>
+      <div className='p-page'>
         <p className='text-muted-foreground'>Project not found</p>
       </div>
     )
 
   return (
-    <div className='p-6 h-full overflow-auto max-w-2xl'>
-      <h1 className='text-2xl font-bold mb-6'>Project Settings</h1>
+    <div className='p-page h-full overflow-auto max-w-2xl'>
+      <h1 className='text-2xl font-bold mb-section'>Project Settings</h1>
 
       {/* General */}
-      <div className='space-y-4 mb-8'>
+      <div className='space-y-section mb-section bg-transparent glass-soft border-border/70 border rounded-lg p-card shadow-card'>
         <h2 className='text-lg font-semibold'>General</h2>
         <div>
           <Label className='mb-1 block'>Project Name</Label>
@@ -115,7 +115,7 @@ export default function ProjectSettingsPage() {
       </div>
 
       {/* Danger Zone */}
-      <div className='border border-destructive/50 rounded-lg p-4'>
+      <div className='bg-transparent glass-soft border border-destructive/50 rounded-lg p-card shadow-card'>
         <h2 className='text-lg font-semibold text-destructive mb-2'>Danger Zone</h2>
         <p className='text-sm text-muted-foreground mb-4'>
           Once you delete a project, there is no going back. This will permanently delete the project and all associated

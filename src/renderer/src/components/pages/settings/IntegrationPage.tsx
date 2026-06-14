@@ -101,16 +101,20 @@ export default function IntegrationPage() {
 
   if (isLoading) {
     return (
-      <div className='w-full p-6'>
+      <div className='w-full p-page'>
         <p className='text-muted-foreground'>Loading...</p>
       </div>
     )
   }
 
   return (
-    <div className='w-full space-y-6'>
+    <div className='w-full space-y-section'>
       {/* Slack */}
-      <SettingCard title='Slack Integration' description='Send notifications to a Slack channel via incoming webhook'>
+      <SettingCard
+        title='Slack Integration'
+        description='Send notifications to a Slack channel via incoming webhook'
+        className='bg-transparent glass-soft border-border/70'
+      >
         <div className='space-y-4'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
@@ -149,7 +153,11 @@ export default function IntegrationPage() {
       </SettingCard>
 
       {/* GitHub */}
-      <SettingCard title='GitHub Integration' description='Connect to a GitHub repository for issue synchronization'>
+      <SettingCard
+        title='GitHub Integration'
+        description='Connect to a GitHub repository for issue synchronization'
+        className='bg-transparent glass-soft border-border/70'
+      >
         <div className='space-y-4'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
