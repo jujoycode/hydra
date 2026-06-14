@@ -6,9 +6,7 @@ import { toast } from 'sonner'
 import { Button } from '@/atoms/Button'
 import { Input } from '@/atoms/Input'
 import { Textarea } from '@/atoms/Textarea'
-import { invokeApi } from '@/hooks/use-api'
-import { useProject } from '@/hooks/use-project'
-import { IpcChannel } from '@/interface/CoreInterface'
+import { useCreateProject } from '@/hooks/use-projects'
 import { InputField } from '@/molecules/InputField'
 import { DialogTemplate } from '@/templates/DialogTemplate'
 
@@ -22,7 +20,6 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
   const { t } = useTranslation('project')
   const { t: tc } = useTranslation('common')
   // state
-  const [isLoading, setIsLoading] = useState(false)
   const [projectName, setProjectName] = useState('')
   const [projectKey, setProjectKey] = useState('')
   const [projectDesc, setProjectDesc] = useState('')
@@ -31,8 +28,9 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
   const keyValid = projectKey ? /^[A-Z]{3,5}$/.test(projectKey) : null
 
   // hook
-  const { projects, setProjects } = useProject()
+  const createProject = useCreateProject()
   const navigate = useNavigate()
+  const isLoading = createProject.isPending
 
   const handleClear = () => {
     setProjectName('')
@@ -64,30 +62,23 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
       return
     }
 
-    setIsLoading(true)
-
     try {
-      const data = await invokeApi(IpcChannel.PROJECT_CREATE, {
+      const data = await createProject.mutateAsync({
         projectName: projectName.trim(),
         projectKey: projectKey.trim(),
         projectDesc: projectDesc.trim(),
         userId
       })
 
-      // Update project list
-      if (data && projects) {
-        setProjects([...projects, data])
-
+      // 성공 시 목록 캐시는 훅에서 무효화된다. 생성한 프로젝트로 이동한다.
+      if (data) {
         toast.success(t('toast.created'))
         handleClear()
-
         navigate({ to: '/projects/$projectId', params: { projectId: data.project_id } })
       }
     } catch {
       toast.error(t('toast.createFailed'))
       handleClear()
-    } finally {
-      setIsLoading(false)
     }
   }
 

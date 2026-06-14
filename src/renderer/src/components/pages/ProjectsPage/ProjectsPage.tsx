@@ -2,7 +2,7 @@ import { Folders } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/hooks/use-auth'
-import { useProject } from '@/hooks/use-project'
+import { useProjects } from '@/hooks/use-projects'
 import type { Project } from '@/interface/CoreInterface'
 import { CreateProjectDialog } from '@/organisms/dialogs/CreateProjectDialog'
 import { ProjectTable } from '@/organisms/projects/ProjectTable'
@@ -15,7 +15,7 @@ export default function ProjectsPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [, setSelectedProject] = useState<Project | null>(null)
   const { user } = useAuth()
-  const { projects, isLoading } = useProject()
+  const { data: projects = [], isLoading } = useProjects(user?.user_id)
 
   // Count of projects created by the user
   // const myProjectsCount = projects ? projects.filter((project) => project.project_created_by === user?.id).length : 0
