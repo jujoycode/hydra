@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
 import { AlertCircle, CheckCircle2, Info } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/atoms/Button'
@@ -26,27 +26,18 @@ export function CreateProjectDialog({ open, onOpenChange, userId }: CreateProjec
   const [projectName, setProjectName] = useState('')
   const [projectKey, setProjectKey] = useState('')
   const [projectDesc, setProjectDesc] = useState('')
-  const [keyValid, setKeyValid] = useState<boolean | null>(null)
+
+  // 프로젝트 키 유효성은 입력값에서 렌더 중 파생한다(useState+useEffect 불필요)
+  const keyValid = projectKey ? /^[A-Z]{3,5}$/.test(projectKey) : null
 
   // hook
   const { projects, setProjects } = useProject()
   const navigate = useNavigate()
 
-  // Project key validation
-  useEffect(() => {
-    if (!projectKey) {
-      setKeyValid(null)
-      return
-    }
-
-    setKeyValid(/^[A-Z]{3,5}$/.test(projectKey))
-  }, [projectKey])
-
   const handleClear = () => {
     setProjectName('')
     setProjectKey('')
     setProjectDesc('')
-    setKeyValid(null)
     onOpenChange(false)
   }
 
