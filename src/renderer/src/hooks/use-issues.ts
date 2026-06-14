@@ -1,7 +1,16 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { IpcChannel } from '@/interface/CoreInterface'
 import { mapIssueRecordToIssue } from '@/lib/mapIssue'
 import { queryKeys } from '@/lib/queryKeys'
-import { useApiQuery } from './use-api'
+import { useApiMutation, useApiQuery } from './use-api'
+
+/** 이슈 생성 뮤테이션. 성공 시 이슈 쿼리를 모두 무효화한다(목록/내 이슈/대시보드 자동 갱신). */
+export function useCreateIssue() {
+  const queryClient = useQueryClient()
+  return useApiMutation(IpcChannel.ISSUE_CREATE, {
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.issues.all })
+  })
+}
 
 /** 프로젝트의 이슈 목록 (IssueTable 입력 형태로 매핑). */
 export function useProjectIssues(projectId: string | undefined) {

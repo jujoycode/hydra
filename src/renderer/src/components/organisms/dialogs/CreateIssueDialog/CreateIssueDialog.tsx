@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query'
 import { ChevronDown, ChevronsUp, ChevronUp, CircleDot, TriangleAlert, User2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -9,11 +8,10 @@ import { Input } from '@/atoms/Input'
 import { Label } from '@/atoms/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/atoms/Select'
 import { Textarea } from '@/atoms/Textarea'
+import { useCreateIssue } from '@/hooks/use-issues'
 import { useProjectMembers } from '@/hooks/use-members'
 import { useProjects } from '@/hooks/use-projects'
 import type { Project } from '@/interface/CoreInterface'
-import { IpcChannel } from '@/interface/CoreInterface'
-import { queryKeys } from '@/lib/queryKeys'
 import type { IssuePriority } from '@/types/issue'
 
 interface CreateIssueDialogProps {
@@ -28,8 +26,8 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
   // 프로젝트 목록 조회 (단일 출처: React Query)
   const { data: projects = [] } = useProjects(userId)
 
-  // 생성 성공 시 이슈 쿼리 캐시를 무효화해 목록을 갱신한다(React Query 단일 출처).
-  const queryClient = useQueryClient()
+  // 이슈 생성 뮤테이션 (성공 시 이슈 쿼리 무효화는 훅에서 처리)
+  const createIssue = useCreateIssue()
 
   // 이슈 생성 폼 상태 관리
   const [selectedProject, setSelectedProject] = useState<string>('')
@@ -38,7 +36,6 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
   const [priority, setPriority] = useState<IssuePriority>('medium')
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // 선택된 프로젝트의 멤버만 담당자 후보로 조회 (users_projects_link 기반)
   const { data: members = [] } = useProjectMembers(open ? selectedProject : undefined)
@@ -72,15 +69,13 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
       return
     }
 
-    setIsSubmitting(true)
+    const selectedProjectObj = projects.find((p: Project) => p.project_id === selectedProject)
+    if (!selectedProjectObj) return
+
+    const issueKey = `${selectedProjectObj.project_key}-${Date.now().toString(36).toUpperCase()}`
 
     try {
-      const selectedProjectObj = projects?.find((p: Project) => p.project_id === selectedProject)
-      if (!selectedProjectObj) return
-
-      const issueKey = `${selectedProjectObj.project_key}-${Date.now().toString(36).toUpperCase()}`
-
-      const result = await window.callApi(IpcChannel.ISSUE_CREATE, {
+      await createIssue.mutateAsync({
         issueId: '',
         projectId: selectedProject,
         issueKey,
@@ -92,21 +87,10 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
         assignedTo: assignee
       })
 
-      if (result.error) {
-        toast.error(t('toast.createFailed', { error: result.error.message }))
-        return
-      }
-
-      // 이슈 쿼리 캐시 무효화 → IssuePage/MyIssues/Home이 자동 갱신
-      queryClient.invalidateQueries({ queryKey: queryKeys.issues.all })
-
       toast.success(t('toast.created'))
       onOpenChange(false)
-    } catch (error) {
-      console.error('Issue creation failed:', error)
-      toast.error(t('toast.createError'))
-    } finally {
-      setIsSubmitting(false)
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     }
   }
 
@@ -267,8 +251,8 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
           <Button variant='outline' onClick={() => onOpenChange(false)}>
             {tc('button.cancel')}
           </Button>
-          <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? tc('button.connecting') : t('button.create')}
+          <Button onClick={handleSubmit} disabled={createIssue.isPending}>
+            {createIssue.isPending ? tc('button.connecting') : t('button.create')}
           </Button>
         </DialogFooter>
       </DialogContent>
