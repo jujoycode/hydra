@@ -1,5 +1,5 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
-import { CustomTooltip } from './CustomTooltip'
+import { CustomTooltip } from '@/atoms/charts/CustomTooltip'
 
 export interface StatusData {
   name: string
