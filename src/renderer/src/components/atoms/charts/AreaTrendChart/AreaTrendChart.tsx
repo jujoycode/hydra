@@ -1,5 +1,5 @@
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { CustomTooltip } from './CustomTooltip'
+import { CustomTooltip } from '@/atoms/charts/CustomTooltip'
 
 export interface TrendDataPoint {
   name: string
