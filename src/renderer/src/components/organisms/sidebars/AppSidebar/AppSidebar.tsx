@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger
 } from '@/atoms/DropdownMenu'
 import { useAuth } from '@/hooks/use-auth'
-import { useProject } from '@/hooks/use-project'
+import { useProjects } from '@/hooks/use-projects'
 import {
   Sidebar,
   SidebarContent,
@@ -113,7 +113,8 @@ function MainNavGroup() {
 }
 
 function ProjectsGroup() {
-  const { projects } = useProject()
+  const { user } = useAuth()
+  const { data: projects = [] } = useProjects(user?.user_id)
   const location = useLocation()
   const { t } = useTranslation('nav')
 

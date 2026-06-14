@@ -10,7 +10,7 @@ import { Label } from '@/atoms/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/atoms/Select'
 import { Textarea } from '@/atoms/Textarea'
 import { useProjectMembers } from '@/hooks/use-members'
-import { useProject } from '@/hooks/use-project'
+import { useProjects } from '@/hooks/use-projects'
 import type { Project } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
 import { queryKeys } from '@/lib/queryKeys'
@@ -25,8 +25,8 @@ interface CreateIssueDialogProps {
 export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDialogProps) {
   const { t } = useTranslation('issue')
   const { t: tc } = useTranslation('common')
-  // 프로젝트 상태 관리
-  const { projects } = useProject()
+  // 프로젝트 목록 조회 (단일 출처: React Query)
+  const { data: projects = [] } = useProjects(userId)
 
   // 생성 성공 시 이슈 쿼리 캐시를 무효화해 목록을 갱신한다(React Query 단일 출처).
   const queryClient = useQueryClient()
