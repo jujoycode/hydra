@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
 import type { StorybookConfig } from '@storybook/react-vite'
+import tailwindcss from '@tailwindcss/vite'
 
 // 렌더러 '@/' alias (vitest.config.ts와 동일 매핑) — Storybook의 vite가 인식하도록 주입한다.
 const rendererAliases: Record<string, string> = {
@@ -30,6 +31,8 @@ const config: StorybookConfig = {
       ...((viteConfig.resolve.alias as Record<string, string>) ?? {}),
       ...rendererAliases
     }
+    // 앱과 동일하게 Tailwind v4 플러그인을 주입해야 index.css의 유틸리티가 생성된다(스타일 누락 방지)
+    viteConfig.plugins = [...(viteConfig.plugins ?? []), tailwindcss()]
     return viteConfig
   }
 }
