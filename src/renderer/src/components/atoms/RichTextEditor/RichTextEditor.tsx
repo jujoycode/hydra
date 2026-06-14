@@ -3,7 +3,7 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Bold, Code, Heading2, Italic, List, ListOrdered, Redo, Strikethrough, Undo } from 'lucide-react'
 import { useEffect } from 'react'
-import { Button } from './Button'
+import { Button } from '@/atoms/Button'
 
 interface RichTextEditorProps {
   content: string

@@ -1,5 +1,5 @@
 import type { ColumnDef, SortDirection } from '@tanstack/react-table'
-import type { TableAlignment, TableColumnWidth } from './TableBase'
+import type { TableAlignment, TableColumnWidth } from '@/atoms/TableBase'
 
 // 컬럼 메타데이터 확장 인터페이스
 export interface ColumnMeta extends TableColumnWidth {

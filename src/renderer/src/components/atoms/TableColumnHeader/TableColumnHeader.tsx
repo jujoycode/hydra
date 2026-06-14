@@ -1,8 +1,8 @@
 import type { Column } from '@tanstack/react-table'
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
 import type React from 'react'
+import type { TableAlignment } from '@/atoms/TableBase'
 import { cn } from '@/lib/utils'
-import type { TableAlignment } from './TableBase'
 
 export interface TableColumnHeaderProps<TData, TValue> {
   /** 테이블 컬럼 인스턴스 */
