@@ -20,5 +20,9 @@ export const queryKeys = {
     all: ['notifications'] as const,
     list: (userId: string) => ['notifications', 'list', userId] as const,
     unreadCount: (userId: string) => ['notifications', 'unreadCount', userId] as const
+  },
+  tasks: {
+    all: ['tasks'] as const,
+    byIssue: (issueId: string) => ['tasks', 'issue', issueId] as const
   }
 } as const
