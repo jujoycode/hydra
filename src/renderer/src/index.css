@@ -250,20 +250,24 @@
 }
 
 @theme inline {
-  /* radius — 정밀·타이트(과한 둥글기 지양) */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 10px;
+  /* radius — Lovable-lite: 부드럽게(과한 둥글기는 지양) */
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
 
-  /* spacing — p-page / px-section / gap-card 등 유틸 생성 */
-  --spacing-page: 1.5rem;
-  --spacing-section: 1rem;
-  --spacing-card: 1rem;
+  /* spacing — p-page / gap-section / p-card / gap-card-gap 유틸 생성 */
+  --spacing-page: 1.5rem;     /* 24px (밀도 유지) */
+  --spacing-section: 1.25rem; /* 20px (16→20) */
+  --spacing-card: 1rem;       /* 16px */
+  --spacing-card-gap: 0.75rem;/* 12px */
 
-  /* elevation — Apple식 부드러운 다층 그림자 */
-  --shadow-card: 0 1px 2px -1px rgb(17 24 39 / 0.06), 0 1px 3px 0 rgb(17 24 39 / 0.05);
-  --shadow-pop: 0 4px 16px -4px rgb(17 24 39 / 0.12), 0 2px 6px -2px rgb(17 24 39 / 0.08);
+  /* elevation — 부드러운 floating 그림자 (glass 약화 보완) */
+  --shadow-xs: 0 1px 2px -1px rgb(17 24 39 / 0.06);
+  --shadow-card: 0 4px 16px -8px rgb(17 24 39 / 0.12), 0 1px 3px 0 rgb(17 24 39 / 0.05);
+  --shadow-pop: 0 10px 30px -12px rgb(17 24 39 / 0.16);
+  --shadow-panel: 0 16px 40px -14px rgb(17 24 39 / 0.18);
+  --shadow-glow: 0 6px 16px -6px rgb(58 116 87 / 0.45);
   --shadow-glass: 0 8px 32px -8px rgb(17 24 39 / 0.16), 0 2px 8px -2px rgb(17 24 39 / 0.08);
 
   /* motion — 통일된 easing/duration */
