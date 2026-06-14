@@ -53,6 +53,7 @@
       "@/hooks/*": ["src/renderer/src/hooks/*"],
       "@/types/*": ["src/renderer/src/types/*"],
       "@/stores/*": ["src/renderer/src/stores/*"],
+      "@/test/*": ["src/renderer/src/test/*"],
       "@/interface/*": ["src/main/core/interface/*"],
       "@/routers": ["src/renderer/src/routers"],
     },
