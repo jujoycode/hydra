@@ -11,7 +11,11 @@ export const queryKeys = {
   },
   projects: {
     all: ['projects'] as const,
+    detail: (projectId: string) => ['projects', projectId] as const,
     members: (projectId: string) => ['projects', projectId, 'members'] as const
+  },
+  milestones: {
+    byProject: (projectId: string) => ['milestones', 'project', projectId] as const
   },
   activity: {
     byEntity: (entityType: string, entityId: string) => ['activity', entityType, entityId] as const

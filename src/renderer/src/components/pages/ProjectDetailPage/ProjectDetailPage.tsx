@@ -1,9 +1,9 @@
 import { useParams } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '@/atoms/Button'
 import { Input } from '@/atoms/Input'
-import type { Issue, Milestone, Project } from '@/interface/CoreInterface'
-import { IpcChannel } from '@/interface/CoreInterface'
+import { useMilestoneMutations, useMilestones } from '@/hooks/use-milestones'
+import { useProjectDetail, useProjectIssueRecords } from '@/hooks/use-project-detail'
 import { formatKoreanDate } from '@/lib/formatDate'
 import { PRIORITY_CLASS, PRIORITY_LABEL, STATUS_CLASS, STATUS_LABEL } from '@/lib/statusTokens'
 import { cn } from '@/lib/utils'
@@ -29,30 +29,13 @@ function toIssueState(status: string | null | undefined): IssueState {
 
 export default function ProjectDetailPage() {
   const { projectId } = useParams({ strict: false })
-  const [project, setProject] = useState<Project | null>(null)
-  const [issues, setIssues] = useState<Issue[]>([])
-  const [milestones, setMilestones] = useState<Milestone[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const { data: project, isLoading } = useProjectDetail(projectId)
+  const { data: issues = [] } = useProjectIssueRecords(projectId)
+  const { data: milestones = [] } = useMilestones(projectId)
+  const { create: createMilestone } = useMilestoneMutations(projectId)
   const [showMilestoneForm, setShowMilestoneForm] = useState(false)
   const [milestoneTitle, setMilestoneTitle] = useState('')
   const [milestoneDueDate, setMilestoneDueDate] = useState('')
-
-  useEffect(() => {
-    if (!projectId) return
-    const load = async () => {
-      setIsLoading(true)
-      const [projectResult, issuesResult, milestonesResult] = await Promise.all([
-        window.callApi(IpcChannel.PROJECT_GET, { projectId }),
-        window.callApi(IpcChannel.ISSUE_LIST, { projectId }),
-        window.callApi(IpcChannel.MILESTONE_LIST, { projectId })
-      ])
-      if (projectResult.data) setProject(projectResult.data as Project)
-      if (Array.isArray(issuesResult.data)) setIssues(issuesResult.data as Issue[])
-      if (Array.isArray(milestonesResult.data)) setMilestones(milestonesResult.data as Milestone[])
-      setIsLoading(false)
-    }
-    load()
-  }, [projectId])
 
   if (isLoading)
     return (
@@ -75,17 +58,18 @@ export default function ProjectDetailPage() {
   const blockedIssues = issues.filter((i) => i.issue_status === 'blocked').length
 
   const handleCreateMilestone = async () => {
-    if (!milestoneTitle.trim()) return
-    const result = await window.callApi(IpcChannel.MILESTONE_CREATE, {
-      projectId: projectId!,
-      milestoneTitle: milestoneTitle.trim(),
-      milestoneDueDate: milestoneDueDate || undefined
-    })
-    if (result.data) {
-      setMilestones((prev) => [...prev, result.data as Milestone])
+    if (!milestoneTitle.trim() || !projectId) return
+    try {
+      await createMilestone.mutateAsync({
+        projectId,
+        milestoneTitle: milestoneTitle.trim(),
+        milestoneDueDate: milestoneDueDate || undefined
+      })
       setMilestoneTitle('')
       setMilestoneDueDate('')
       setShowMilestoneForm(false)
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     }
   }
 
