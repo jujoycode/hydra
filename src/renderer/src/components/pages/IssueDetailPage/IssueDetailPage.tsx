@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { ArrowLeft, Paperclip } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/atoms/Button'
 import { Input } from '@/components/atoms/Input'
@@ -8,15 +8,24 @@ import { Label } from '@/components/atoms/Label'
 import { RichTextEditor } from '@/components/atoms/RichTextEditor'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/Select'
 import { useActivityLog } from '@/hooks/use-activity'
+import { invokeApi } from '@/hooks/use-api'
 import { useAuth } from '@/hooks/use-auth'
-import type {
-  Comment as CommentRecord,
-  File as FileRecord,
-  Issue as IssueRecord,
-  IssueRelation as IssueRelationRecord,
-  Label as LabelRecord,
-  User as UserRecord
-} from '@/interface/CoreInterface'
+import {
+  useAllLabels,
+  useCommentMutations,
+  useComments,
+  useFileMutations,
+  useIssue,
+  useIssueFiles,
+  useIssueLabels,
+  useIssueMutations,
+  useIssueRelations,
+  useLabelMutations,
+  useRelationMutations
+} from '@/hooks/use-issue-detail'
+import { useProjectIssueRecords } from '@/hooks/use-project-detail'
+import { useUsers } from '@/hooks/use-users'
+import type { Issue as IssueRecord } from '@/interface/CoreInterface'
 import { IpcChannel } from '@/interface/CoreInterface'
 import { ActivityTimeline } from '@/molecules/ActivityTimeline'
 
@@ -50,110 +59,63 @@ function formatDate(d: Date | string | null) {
   })
 }
 
-export default function IssueDetailPage() {
-  const { projectId, issueId } = useParams({ strict: false })
+// 로드된 이슈를 초기값으로 받아 편집 폼/하위 데이터를 구성한다(서버→폼 동기화 useEffect 없음).
+function IssueDetailView({ issue, projectId }: { issue: IssueRecord; projectId: string | undefined }) {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const issueId = issue.issue_id
+
   const { data: activities = [], isLoading: activityLoading } = useActivityLog('issue', issueId)
-  const [issue, setIssue] = useState<IssueRecord | null>(null)
-  const [members, setMembers] = useState<UserRecord[]>([])
-  const [files, setFiles] = useState<FileRecord[]>([])
-  const [comments, setComments] = useState<CommentRecord[]>([])
+  const { data: members = [] } = useUsers()
+  const { data: comments = [] } = useComments(issueId)
+  const { data: issueLabels = [] } = useIssueLabels(issueId)
+  const { data: allLabels = [] } = useAllLabels()
+  const { data: relations = [] } = useIssueRelations(issueId)
+  const { data: files = [] } = useIssueFiles(issueId)
+  const { data: projectIssues = [] } = useProjectIssueRecords(projectId)
+
+  const { update } = useIssueMutations(issueId)
+  const commentMutations = useCommentMutations(issueId)
+  const labelMutations = useLabelMutations(issueId)
+  const relationMutations = useRelationMutations(issueId)
+  const fileMutations = useFileMutations(issueId)
+
   const [newComment, setNewComment] = useState('')
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
   const [editingContent, setEditingContent] = useState('')
-  const [issueLabels, setIssueLabels] = useState<LabelRecord[]>([])
-  const [allLabels, setAllLabels] = useState<LabelRecord[]>([])
-  const [relations, setRelations] = useState<IssueRelationRecord[]>([])
-  const [projectIssues, setProjectIssues] = useState<IssueRecord[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
 
-  // Editable fields
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [status, setStatus] = useState('open')
-  const [priority, setPriority] = useState('medium')
-  const [category, setCategory] = useState('feature')
-  const [assignee, setAssignee] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!issueId) return
-    const load = async () => {
-      setIsLoading(true)
-      const [
-        issueResult,
-        usersResult,
-        commentsResult,
-        issueLabelsResult,
-        allLabelsResult,
-        relationsResult,
-        projectIssuesResult
-      ] = await Promise.all([
-        window.callApi(IpcChannel.ISSUE_GET, { issueId }),
-        window.callApi(IpcChannel.AUTH_LIST_USERS),
-        window.callApi(IpcChannel.COMMENT_LIST, { issueId }),
-        window.callApi(IpcChannel.LABEL_LIST_BY_ISSUE, { issueId }),
-        window.callApi(IpcChannel.LABEL_LIST),
-        window.callApi(IpcChannel.ISSUE_RELATION_LIST, { issueId }),
-        window.callApi(IpcChannel.ISSUE_LIST, { projectId: projectId! })
-      ])
-      const issueData = issueResult.data as IssueRecord | null
-      if (issueData) {
-        setIssue(issueData)
-        setTitle(issueData.issue_title)
-        setDescription(issueData.issue_desc || '')
-        setStatus(issueData.issue_status || 'open')
-        setPriority(issueData.issue_priority || 'medium')
-        setCategory(issueData.issue_category || 'feature')
-        setAssignee(issueData.issue_assigned_to)
-      }
-      if (Array.isArray(usersResult.data)) setMembers(usersResult.data as UserRecord[])
-      if (Array.isArray(commentsResult.data)) setComments(commentsResult.data as CommentRecord[])
-      if (Array.isArray(issueLabelsResult.data)) setIssueLabels(issueLabelsResult.data as LabelRecord[])
-      if (Array.isArray(allLabelsResult.data)) setAllLabels(allLabelsResult.data as LabelRecord[])
-      if (Array.isArray(relationsResult.data)) setRelations(relationsResult.data as IssueRelationRecord[])
-      if (Array.isArray(projectIssuesResult.data)) setProjectIssues(projectIssuesResult.data as IssueRecord[])
-
-      // Fetch attached files
-      const filesResult = await window.callApi(IpcChannel.STORAGE_LIST_ISSUE_FILES, { issueId })
-      if (Array.isArray(filesResult.data)) setFiles(filesResult.data as FileRecord[])
-
-      setIsLoading(false)
-    }
-    load()
-  }, [issueId])
+  // Editable fields — 마운트 시 이슈에서 1회 초기화
+  const [title, setTitle] = useState(issue.issue_title)
+  const [description, setDescription] = useState(issue.issue_desc || '')
+  const [status, setStatus] = useState(issue.issue_status || 'open')
+  const [priority, setPriority] = useState(issue.issue_priority || 'medium')
+  const [category, setCategory] = useState(issue.issue_category || 'feature')
+  const [assignee, setAssignee] = useState<string | null>(issue.issue_assigned_to)
 
   const handleSave = async () => {
-    if (!issue || !user) return
-    setIsSaving(true)
-    const result = await window.callApi(IpcChannel.ISSUE_UPDATE, {
-      issueId: issue.issue_id,
-      issueTitle: title,
-      issueDesc: description,
-      issueStatus: status,
-      issuePriority: priority,
-      issueCategory: category,
-      assignedTo: assignee,
-      userId: user.user_id
-    })
-    if (result.error) {
-      toast.error(`Failed to save: ${result.error.message}`)
-    } else {
+    if (!user) return
+    try {
+      await update.mutateAsync({
+        issueId,
+        issueTitle: title,
+        issueDesc: description,
+        issueStatus: status,
+        issuePriority: priority,
+        issueCategory: category,
+        assignedTo: assignee,
+        userId: user.user_id
+      })
       toast.success('Issue updated')
-      setIssue(result.data as IssueRecord)
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     }
-    setIsSaving(false)
   }
 
   const handleFileAttach = async () => {
-    if (!issue) return
-    const dialogResult = await window.callApi(IpcChannel.SYSTEM_OPEN_DIALOG, {
+    const openResult = await invokeApi(IpcChannel.SYSTEM_OPEN_DIALOG, {
       properties: ['openFile', 'multiSelections'],
       filters: [{ name: 'All Files', extensions: ['*'] }]
     })
-
-    const openResult = dialogResult.data
     if (!openResult || openResult.canceled || !openResult.filePaths.length) return
 
     for (const filePath of openResult.filePaths) {
@@ -161,108 +123,59 @@ export default function IssueDetailPage() {
       const arrayBuffer = await response.arrayBuffer()
       const fileName = filePath.split(/[\\/]/).pop() || 'file'
 
-      const uploadResult = await window.callApi(IpcChannel.STORAGE_UPLOAD_FILE, {
-        fileName,
-        filePath,
-        fileData: arrayBuffer
-      })
-
-      if (uploadResult.data) {
-        const fileRecord = uploadResult.data as FileRecord
-        await window.callApi(IpcChannel.STORAGE_LINK_FILE, {
-          issueId: issue.issue_id,
-          fileId: fileRecord.file_id
-        })
+      const fileRecord = await invokeApi(IpcChannel.STORAGE_UPLOAD_FILE, { fileName, filePath, fileData: arrayBuffer })
+      if (fileRecord) {
+        await fileMutations.link.mutateAsync({ issueId, fileId: fileRecord.file_id })
       }
     }
-
-    const filesResult = await window.callApi(IpcChannel.STORAGE_LIST_ISSUE_FILES, { issueId: issue.issue_id })
-    if (Array.isArray(filesResult.data)) setFiles(filesResult.data as FileRecord[])
     toast.success('Files attached')
   }
 
   const handleFileRemove = async (fileId: string) => {
-    if (!issue) return
-    await window.callApi(IpcChannel.STORAGE_UNLINK_FILE, {
-      issueId: issue.issue_id,
-      fileId
-    })
-    setFiles((prev) => prev.filter((f) => f.file_id !== fileId))
+    await fileMutations.unlink.mutateAsync({ issueId, fileId })
     toast.success('File removed')
   }
 
   const handleAddComment = async () => {
-    if (!issue || !user || !newComment.trim()) return
-    const result = await window.callApi(IpcChannel.COMMENT_CREATE, {
-      issueId: issue.issue_id,
+    if (!user || !newComment.trim()) return
+    await commentMutations.create.mutateAsync({
+      issueId,
       commentContent: newComment.trim(),
       userId: user.user_id
     })
-    if (result.data) {
-      setComments((prev) => [result.data as CommentRecord, ...prev])
-      setNewComment('')
-    }
+    setNewComment('')
   }
 
   const handleUpdateComment = async (commentId: string) => {
     if (!user || !editingContent.trim()) return
-    const result = await window.callApi(IpcChannel.COMMENT_UPDATE, {
+    await commentMutations.update.mutateAsync({
       commentId,
       commentContent: editingContent.trim(),
       userId: user.user_id
     })
-    if (result.data) {
-      setComments((prev) => prev.map((c) => (c.comment_id === commentId ? (result.data as CommentRecord) : c)))
-      setEditingCommentId(null)
-      setEditingContent('')
-    }
+    setEditingCommentId(null)
+    setEditingContent('')
   }
 
-  const handleDeleteComment = async (commentId: string) => {
-    await window.callApi(IpcChannel.COMMENT_DELETE, { commentId })
-    setComments((prev) => prev.filter((c) => c.comment_id !== commentId))
+  const handleDeleteComment = (commentId: string) => {
+    commentMutations.remove.mutate({ commentId })
   }
 
-  const handleAddLabel = async (labelId: string) => {
-    if (!issue) return
-    await window.callApi(IpcChannel.LABEL_LINK, { issueId: issue.issue_id, labelId })
-    const label = allLabels.find((l) => l.label_id === labelId)
-    if (label) setIssueLabels((prev) => [...prev, label])
+  const handleAddLabel = (labelId: string) => {
+    labelMutations.link.mutate({ issueId, labelId })
   }
 
-  const handleRemoveLabel = async (labelId: string) => {
-    if (!issue) return
-    await window.callApi(IpcChannel.LABEL_UNLINK, { issueId: issue.issue_id, labelId })
-    setIssueLabels((prev) => prev.filter((l) => l.label_id !== labelId))
+  const handleRemoveLabel = (labelId: string) => {
+    labelMutations.unlink.mutate({ issueId, labelId })
   }
 
-  const handleAddRelation = async (targetIssueId: string, relationType: string) => {
-    if (!issue) return
-    const result = await window.callApi(IpcChannel.ISSUE_RELATION_CREATE, {
-      sourceIssueId: issue.issue_id,
-      targetIssueId,
-      relationType
-    })
-    if (result.data) setRelations((prev) => [...prev, result.data as IssueRelationRecord])
+  const handleAddRelation = (targetIssueId: string, relationType: string) => {
+    relationMutations.create.mutate({ sourceIssueId: issueId, targetIssueId, relationType })
   }
 
-  const handleRemoveRelation = async (relationId: string) => {
-    await window.callApi(IpcChannel.ISSUE_RELATION_DELETE, { relationId })
-    setRelations((prev) => prev.filter((r) => r.relation_id !== relationId))
+  const handleRemoveRelation = (relationId: string) => {
+    relationMutations.remove.mutate({ relationId })
   }
-
-  if (isLoading)
-    return (
-      <div className='p-6'>
-        <p className='text-muted-foreground'>Loading...</p>
-      </div>
-    )
-  if (!issue)
-    return (
-      <div className='p-6'>
-        <p className='text-muted-foreground'>Issue not found</p>
-      </div>
-    )
 
   return (
     <div className='p-6 h-full overflow-auto'>
@@ -286,8 +199,8 @@ export default function IssueDetailPage() {
             className='mt-1 text-2xl font-bold border-none shadow-none px-0 focus-visible:ring-0'
           />
         </div>
-        <Button onClick={handleSave} disabled={isSaving} size='sm'>
-          {isSaving ? 'Saving...' : 'Save'}
+        <Button onClick={handleSave} disabled={update.isPending} size='sm'>
+          {update.isPending ? 'Saving...' : 'Save'}
         </Button>
       </div>
 
@@ -558,8 +471,7 @@ export default function IssueDetailPage() {
             {relations.length > 0 && (
               <div className='space-y-1 mb-2'>
                 {relations.map((rel) => {
-                  const otherIssueId =
-                    rel.source_issue_id === issue.issue_id ? rel.target_issue_id : rel.source_issue_id
+                  const otherIssueId = rel.source_issue_id === issueId ? rel.target_issue_id : rel.source_issue_id
                   const otherIssue = projectIssues.find((i) => i.issue_id === otherIssueId)
                   const relLabel = rel.relation_type.replace(/_/g, ' ')
                   return (
@@ -597,7 +509,7 @@ export default function IssueDetailPage() {
                     projectIssues
                       .filter(
                         (i) =>
-                          i.issue_id !== issue.issue_id &&
+                          i.issue_id !== issueId &&
                           !relations.some((r) => r.source_issue_id === i.issue_id || r.target_issue_id === i.issue_id)
                       )
                       .map((i) => (
@@ -626,4 +538,24 @@ export default function IssueDetailPage() {
       </div>
     </div>
   )
+}
+
+export default function IssueDetailPage() {
+  const { projectId, issueId } = useParams({ strict: false })
+  const { data: issue, isLoading } = useIssue(issueId)
+
+  if (isLoading)
+    return (
+      <div className='p-6'>
+        <p className='text-muted-foreground'>Loading...</p>
+      </div>
+    )
+  if (!issue)
+    return (
+      <div className='p-6'>
+        <p className='text-muted-foreground'>Issue not found</p>
+      </div>
+    )
+
+  return <IssueDetailView issue={issue} projectId={projectId} />
 }
