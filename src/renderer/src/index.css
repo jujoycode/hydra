@@ -126,6 +126,9 @@
   --hairline-soft: #ede9e4;
   --surface-soft: #fafaf9;
   --stone: #a4a097;
+
+  /* Primary 그라데이션 (라이트) */
+  --gradient-primary: linear-gradient(135deg, #4a8a6a, #2f5e47);
 }
 
 .dark {
@@ -247,6 +250,9 @@
   --hairline-soft: #2b2a28;
   --surface-soft: #222120;
   --stone: #7a776f;
+
+  /* Primary 그라데이션 (다크 — 중간 그린, 너무 밝지 않게) */
+  --gradient-primary: linear-gradient(135deg, #3a7457, #6fa98c);
 }
 
 @theme inline {
@@ -434,16 +440,24 @@
   @apply text-stone;
 }
 
-/* glassmorphism — 크롬/오버레이 표면 (반투명 + blur + vibrancy) */
+/* glassmorphism — 약화 버전(불투명도↑·blur↓)으로 가독성 우선 */
+/* 오버레이(팝오버·드롭다운·다이얼로그·시트) */
 @utility glass {
-  background-color: color-mix(in srgb, var(--card) 72%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  backdrop-filter: blur(16px) saturate(180%);
+  background-color: color-mix(in srgb, var(--card) 88%, transparent);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  backdrop-filter: blur(10px) saturate(140%);
 }
+/* 크롬(사이드바·상단바) */
 @utility glass-panel {
-  background-color: color-mix(in srgb, var(--sidebar) 60%, transparent);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  backdrop-filter: blur(18px) saturate(180%);
+  background-color: color-mix(in srgb, var(--sidebar) 88%, transparent);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  backdrop-filter: blur(10px) saturate(140%);
+}
+/* 컨테이너/카드(목록 래퍼·대시보드 카드) — 가장 약한 glass */
+@utility glass-soft {
+  background-color: color-mix(in srgb, var(--card) 90%, transparent);
+  -webkit-backdrop-filter: blur(8px) saturate(130%);
+  backdrop-filter: blur(8px) saturate(130%);
 }
 
 /* 오버레이 등장 모션 */
@@ -459,6 +473,20 @@
 }
 @utility animate-pop {
   animation: pop-in 0.18s var(--ease-out-soft);
+}
+
+/* Primary 그라데이션 배경 */
+@utility gradient-primary {
+  background-image: var(--gradient-primary);
+}
+/* hover 시 살짝 떠오름 (버튼·카드) */
+@utility hover-lift {
+  transition: transform 0.15s var(--ease-out-soft), box-shadow 0.15s var(--ease-out-soft);
+  &:hover { transform: translateY(-1px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift { transition: none; }
+  .hover-lift:hover { transform: none; }
 }
 
 @layer base {
