@@ -1,88 +1,50 @@
 import { useNavigate, useParams } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/atoms/Button'
 import { Input } from '@/components/atoms/Input'
 import { Label } from '@/components/atoms/Label'
 import { Textarea } from '@/components/atoms/Textarea'
 import { useAuth } from '@/hooks/use-auth'
+import { useProjectDetail, useProjectMutations } from '@/hooks/use-project-detail'
 import type { Project } from '@/interface/CoreInterface'
-import { IpcChannel } from '@/interface/CoreInterface'
 
-export default function ProjectSettingsPage() {
-  const { projectId } = useParams({ strict: false })
+// 폼은 로드된 프로젝트를 초기값으로 받아 마운트 시 1회 초기화한다(useEffect로 서버→폼 동기화하지 않음).
+function ProjectSettingsForm({ project }: { project: Project }) {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [project, setProject] = useState<Project | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
+  const { update, remove } = useProjectMutations(project.project_id)
 
-  // Editable fields
-  const [name, setName] = useState('')
-  const [desc, setDesc] = useState('')
+  const [name, setName] = useState(project.project_name)
+  const [desc, setDesc] = useState(project.project_desc || '')
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
-  useEffect(() => {
-    if (!projectId) return
-    const load = async () => {
-      setIsLoading(true)
-      const result = await window.callApi(IpcChannel.PROJECT_GET, { projectId })
-      const data = result.data as Project | null
-      if (data) {
-        setProject(data)
-        setName(data.project_name)
-        setDesc(data.project_desc || '')
-      }
-      setIsLoading(false)
-    }
-    load()
-  }, [projectId])
-
   const handleSave = async () => {
-    if (!project || !user) return
-    setIsSaving(true)
-    const result = await window.callApi(IpcChannel.PROJECT_UPDATE, {
-      projectId: project.project_id,
-      userId: user.user_id,
-      projectName: name,
-      projectKey: project.project_key,
-      projectDesc: desc
-    })
-    if (result.error) {
-      toast.error(`Failed: ${result.error.message}`)
-    } else {
+    if (!user) return
+    try {
+      await update.mutateAsync({
+        projectId: project.project_id,
+        userId: user.user_id,
+        projectName: name,
+        projectKey: project.project_key,
+        projectDesc: desc
+      })
       toast.success('Project updated')
-      setProject(result.data as Project)
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     }
-    setIsSaving(false)
   }
 
   const handleDelete = async () => {
-    if (!project || !user) return
-    const result = await window.callApi(IpcChannel.PROJECT_DELETE, {
-      projectId: project.project_id,
-      userId: user.user_id
-    })
-    if (result.error) {
-      toast.error(`Failed: ${result.error.message}`)
-    } else {
+    if (!user) return
+    try {
+      await remove.mutateAsync({ projectId: project.project_id, userId: user.user_id })
       toast.success('Project deleted')
       navigate({ to: '/projects' })
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     }
   }
-
-  if (isLoading)
-    return (
-      <div className='p-6'>
-        <p className='text-muted-foreground'>Loading...</p>
-      </div>
-    )
-  if (!project)
-    return (
-      <div className='p-6'>
-        <p className='text-muted-foreground'>Project not found</p>
-      </div>
-    )
 
   return (
     <div className='p-6 h-full overflow-auto max-w-2xl'>
@@ -109,8 +71,8 @@ export default function ProjectSettingsPage() {
             className='min-h-[100px]'
           />
         </div>
-        <Button onClick={handleSave} disabled={isSaving}>
-          {isSaving ? 'Saving...' : 'Save Changes'}
+        <Button onClick={handleSave} disabled={update.isPending}>
+          {update.isPending ? 'Saving...' : 'Save Changes'}
         </Button>
       </div>
 
@@ -124,7 +86,7 @@ export default function ProjectSettingsPage() {
         {showDeleteConfirm ? (
           <div className='flex items-center gap-2'>
             <p className='text-sm text-destructive font-medium'>Are you sure?</p>
-            <Button variant='destructive' size='sm' onClick={handleDelete}>
+            <Button variant='destructive' size='sm' onClick={handleDelete} disabled={remove.isPending}>
               Yes, delete
             </Button>
             <Button variant='outline' size='sm' onClick={() => setShowDeleteConfirm(false)}>
@@ -139,4 +101,24 @@ export default function ProjectSettingsPage() {
       </div>
     </div>
   )
+}
+
+export default function ProjectSettingsPage() {
+  const { projectId } = useParams({ strict: false })
+  const { data: project, isLoading } = useProjectDetail(projectId)
+
+  if (isLoading)
+    return (
+      <div className='p-6'>
+        <p className='text-muted-foreground'>Loading...</p>
+      </div>
+    )
+  if (!project)
+    return (
+      <div className='p-6'>
+        <p className='text-muted-foreground'>Project not found</p>
+      </div>
+    )
+
+  return <ProjectSettingsForm project={project} />
 }
