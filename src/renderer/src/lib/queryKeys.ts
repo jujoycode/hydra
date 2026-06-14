@@ -7,7 +7,21 @@ export const queryKeys = {
     all: ['issues'] as const,
     byProject: (projectId: string) => ['issues', 'project', projectId] as const,
     mine: (userId: string) => ['issues', 'mine', userId] as const,
-    dashboard: (userId: string) => ['issues', 'dashboard', userId] as const
+    dashboard: (userId: string) => ['issues', 'dashboard', userId] as const,
+    detail: (issueId: string) => ['issues', 'detail', issueId] as const
+  },
+  comments: {
+    byIssue: (issueId: string) => ['comments', 'issue', issueId] as const
+  },
+  labels: {
+    all: ['labels'] as const,
+    byIssue: (issueId: string) => ['labels', 'issue', issueId] as const
+  },
+  relations: {
+    byIssue: (issueId: string) => ['relations', 'issue', issueId] as const
+  },
+  files: {
+    byIssue: (issueId: string) => ['files', 'issue', issueId] as const
   },
   projects: {
     all: ['projects'] as const,
