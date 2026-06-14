@@ -1,3 +1,4 @@
+import type { ActivityLogRecord } from '../database/repository/interfaces/ActivityLogRepository'
 import type { CommentRecord } from '../database/repository/interfaces/CommentRepository'
 import type { FileRecord } from '../database/repository/interfaces/FileRepository'
 import type { IntegrationRecord } from '../database/repository/interfaces/IntegrationRepository'
@@ -9,6 +10,7 @@ import type { NotificationRecord } from '../database/repository/interfaces/Notif
 import type { ProjectRecord } from '../database/repository/interfaces/ProjectRepository'
 import type { TaskRecord } from '../database/repository/interfaces/TaskRepository'
 import type { SafeUser } from '../database/repository/interfaces/UserRepository'
+import type { ListActivityParams } from './types/activity'
 import type {
   AuthDeleteUserParams,
   AuthUpdateUserParams,
@@ -116,6 +118,9 @@ export enum IpcChannel {
   ISSUE_GET = 'issueGet',
   ISSUE_UPDATE = 'issueUpdate',
   ISSUE_DELETE = 'issueDelete',
+
+  // ACTIVITY-
+  ACTIVITY_LIST = 'activityList',
 
   // ISSUE_RELATION-
   ISSUE_RELATION_CREATE = 'issueRelationCreate',
@@ -297,6 +302,10 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.ISSUE_LIST_MEMBER_PROJECTS]: {
     send: ListMemberProjectIssuesParams
     receive: BaseIpcResponse<IssueRecord[]>
+  }
+  [IpcChannel.ACTIVITY_LIST]: {
+    send: ListActivityParams
+    receive: BaseIpcResponse<ActivityLogRecord[]>
   }
   [IpcChannel.ISSUE_GET]: {
     send: GetIssueParams

@@ -2,6 +2,7 @@ import Chalk from 'chalk'
 import { ipcMain } from 'electron/main'
 import { BaseError } from '@/error/BaseError'
 import { type BaseErrorType, ErrorCode } from '@/interface/CoreInterface'
+import * as activityHandlers from './activity'
 import * as authHandlers from './auth'
 import * as commentHandlers from './comments'
 import * as integrationHandlers from './integrations'
@@ -18,6 +19,7 @@ import * as taskHandlers from './tasks'
 import * as workspaceHandlers from './workspace'
 
 const handlerModules = [
+  activityHandlers,
   authHandlers,
   commentHandlers,
   integrationHandlers,
