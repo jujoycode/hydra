@@ -4,7 +4,8 @@
   "description": "Light and convenient project/issue management",
   "type": "module",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "jujoycode",
+  "license": "MIT",
   "scripts": {
     "format": "biome format --write .",
     "lint": "biome check --write .",

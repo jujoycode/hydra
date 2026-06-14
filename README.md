@@ -1,5 +1,7 @@
 # Hydra
 
+> **[English](./README.en.md)** · 한국어
+
 Electron 기반 경량 프로젝트/이슈 관리 데스크톱 앱. 오프라인 우선, 멀티 워크스페이스, 오픈소스.
 사용자가 **자신의 PostgreSQL 또는 MySQL 8 데이터베이스**를 직접 연결해서 사용합니다.
 
@@ -110,4 +112,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON hydra.* TO 'hydra_app'@'%';
 
 ## Contributing
 
-코드 스타일(Biome), 네이밍, DB 컨벤션은 [Contributing](./wiki/Contributing.md)과 [`CLAUDE.md`](./CLAUDE.md)를 참고하세요.
+기여 가이드는 [`CONTRIBUTING.md`](./CONTRIBUTING.md)를, 행동 강령은 [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md)를 참고하세요. 코드 스타일/컨벤션 상세는 [Contributing wiki](./wiki/Contributing.md)와 [`CLAUDE.md`](./CLAUDE.md)에 있습니다.
+
+## License
+
+[MIT](./LICENSE) © jujoycode
