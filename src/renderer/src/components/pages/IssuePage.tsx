@@ -14,8 +14,8 @@ export default function IssuePage() {
   const [issues, _] = useState<Issue[]>(DUMMY_ISSUES as unknown as Issue[])
 
   return (
-    <div className='p-6 h-full flex flex-col'>
-      <div className='flex justify-between items-center mb-6'>
+    <div className='p-page h-full flex flex-col space-y-section'>
+      <div className='flex justify-between items-center'>
         <div className='flex flex-col gap-1'>
           <p className='text-sm text-muted-foreground mt-2'>projects / {projectId}</p>
           <h1 className='text-2xl font-bold'>{t('title')}</h1>
