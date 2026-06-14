@@ -1,5 +1,5 @@
 import { Copy, LinkIcon, Loader2, Trash2, UserPlus } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Badge } from '@/atoms/Badge'
@@ -9,8 +9,8 @@ import { Input } from '@/atoms/Input'
 import { Label } from '@/atoms/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/atoms/Select'
 import { Textarea } from '@/atoms/Textarea'
+import { useUserMutations, useUsers } from '@/hooks/use-users'
 import type { User as UserRecord } from '@/interface/CoreInterface'
-import { IpcChannel } from '@/interface/CoreInterface'
 import { useAuthStore } from '@/stores/auth'
 
 function formatDate(date: Date | string | null): string {
@@ -26,13 +26,13 @@ function formatDate(date: Date | string | null): string {
 export default function MembersPage() {
   const { t } = useTranslation('member')
   const { t: tc } = useTranslation('common')
-  const [members, setMembers] = useState<UserRecord[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const { data: members = [], isLoading } = useUsers()
+  const { createMember, deleteUser, generateInvite } = useUserMutations()
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [isInviteOpen, setIsInviteOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<UserRecord | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const isSubmitting = createMember.isPending || deleteUser.isPending || generateInvite.isPending
   const { currentWorkspace } = useAuthStore()
 
   // Add member form state
@@ -45,19 +45,6 @@ export default function MembersPage() {
   // Invite state
   const [expiresInHours, setExpiresInHours] = useState('24')
   const [inviteCode, setInviteCode] = useState('')
-
-  const loadMembers = useCallback(async () => {
-    setIsLoading(true)
-    const result = await window.callApi(IpcChannel.AUTH_LIST_USERS, undefined)
-    if (Array.isArray(result.data)) {
-      setMembers(result.data)
-    }
-    setIsLoading(false)
-  }, [])
-
-  useEffect(() => {
-    loadMembers()
-  }, [loadMembers])
 
   const resetAddForm = () => {
     setUserSn('')
@@ -85,25 +72,21 @@ export default function MembersPage() {
       return
     }
 
-    setIsSubmitting(true)
-    const result = await window.callApi(IpcChannel.AUTH_CREATE_MEMBER, {
-      userSn: userSn.trim(),
-      userName: userName.trim(),
-      userEmail: userEmail.trim(),
-      initialPassword: initialPassword.trim(),
-      userRole
-    })
-    setIsSubmitting(false)
-
-    if (result.error) {
-      toast.error(result.error.message || t('toast.addFailed'))
-      return
+    try {
+      await createMember.mutateAsync({
+        userSn: userSn.trim(),
+        userName: userName.trim(),
+        userEmail: userEmail.trim(),
+        initialPassword: initialPassword.trim(),
+        userRole
+      })
+    } catch {
+      return // 에러는 invokeApi가 토스트로 안내한다.
     }
 
     toast.success(t('toast.added'))
     setIsAddOpen(false)
     resetAddForm()
-    loadMembers()
   }
 
   const handleConfirmDelete = (member: UserRecord) => {
@@ -114,22 +97,15 @@ export default function MembersPage() {
   const handleDelete = async () => {
     if (!deleteTarget) return
 
-    setIsSubmitting(true)
-    const result = await window.callApi(IpcChannel.AUTH_DELETE_USER, {
-      id: deleteTarget.user_id,
-      shouldSoftDelete: false
-    })
-    setIsSubmitting(false)
-
-    if (result.error) {
-      toast.error(result.error.message || t('toast.removeFailed'))
-      return
+    try {
+      await deleteUser.mutateAsync({ id: deleteTarget.user_id, shouldSoftDelete: false })
+    } catch {
+      return // 에러는 invokeApi가 토스트로 안내한다.
     }
 
     toast.success(t('toast.removed'))
     setIsDeleteOpen(false)
     setDeleteTarget(null)
-    loadMembers()
   }
 
   const handleGenerateInvite = async () => {
@@ -138,24 +114,18 @@ export default function MembersPage() {
       return
     }
 
-    setIsSubmitting(true)
-    const result = await window.callApi(IpcChannel.INVITE_GENERATE, {
-      workspaceName: currentWorkspace.name,
-      host: currentWorkspace.host,
-      port: currentWorkspace.port,
-      dbName: currentWorkspace.dbName,
-      dbms: currentWorkspace.dbms ?? 'postgresql',
-      expiresInHours: Number(expiresInHours)
-    })
-    setIsSubmitting(false)
-
-    if (result.error) {
-      toast.error(result.error.message || t('toast.generateFailed'))
-      return
-    }
-
-    if (result.data) {
-      setInviteCode(result.data.code)
+    try {
+      const data = await generateInvite.mutateAsync({
+        workspaceName: currentWorkspace.name,
+        host: currentWorkspace.host,
+        port: currentWorkspace.port,
+        dbName: currentWorkspace.dbName,
+        dbms: currentWorkspace.dbms ?? 'postgresql',
+        expiresInHours: Number(expiresInHours)
+      })
+      if (data) setInviteCode(data.code)
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     }
   }
 

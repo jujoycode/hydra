@@ -27,5 +27,8 @@ export const queryKeys = {
   },
   integrations: {
     all: ['integrations'] as const
+  },
+  users: {
+    all: ['users'] as const
   }
 } as const
