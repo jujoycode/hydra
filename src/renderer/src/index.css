@@ -129,6 +129,13 @@
 
   /* Primary 그라데이션 (라이트) */
   --gradient-primary: linear-gradient(135deg, #4a8a6a, #2f5e47);
+
+  /* elevation raw (light) */
+  --elev-xs: 0 1px 2px -1px rgb(17 24 39 / 0.06);
+  --elev-card: 0 4px 16px -8px rgb(17 24 39 / 0.12), 0 1px 3px 0 rgb(17 24 39 / 0.05);
+  --elev-pop: 0 10px 30px -12px rgb(17 24 39 / 0.16);
+  --elev-panel: 0 16px 40px -14px rgb(17 24 39 / 0.18);
+  --elev-glass: 0 8px 32px -8px rgb(17 24 39 / 0.16), 0 2px 8px -2px rgb(17 24 39 / 0.08);
 }
 
 .dark {
@@ -253,6 +260,13 @@
 
   /* Primary 그라데이션 (다크 — 중간 그린, 너무 밝지 않게) */
   --gradient-primary: linear-gradient(135deg, #3a7457, #6fa98c);
+
+  /* elevation raw (dark — 더 진하고 넓게) */
+  --elev-xs: 0 1px 2px -1px rgb(0 0 0 / 0.40);
+  --elev-card: 0 6px 20px -8px rgb(0 0 0 / 0.50), 0 1px 3px 0 rgb(0 0 0 / 0.40);
+  --elev-pop: 0 12px 34px -12px rgb(0 0 0 / 0.60);
+  --elev-panel: 0 20px 46px -14px rgb(0 0 0 / 0.65);
+  --elev-glass: 0 10px 36px -8px rgb(0 0 0 / 0.60), 0 2px 8px -2px rgb(0 0 0 / 0.50);
 }
 
 @theme inline {
@@ -268,13 +282,13 @@
   --spacing-card: 1rem;       /* 16px */
   --spacing-card-gap: 0.75rem;/* 12px */
 
-  /* elevation — 부드러운 floating 그림자 (glass 약화 보완) */
-  --shadow-xs: 0 1px 2px -1px rgb(17 24 39 / 0.06);
-  --shadow-card: 0 4px 16px -8px rgb(17 24 39 / 0.12), 0 1px 3px 0 rgb(17 24 39 / 0.05);
-  --shadow-pop: 0 10px 30px -12px rgb(17 24 39 / 0.16);
-  --shadow-panel: 0 16px 40px -14px rgb(17 24 39 / 0.18);
+  /* elevation — 부드러운 floating 그림자 (테마별 --elev-* raw var 참조) */
+  --shadow-xs: var(--elev-xs);
+  --shadow-card: var(--elev-card);
+  --shadow-pop: var(--elev-pop);
+  --shadow-panel: var(--elev-panel);
   --shadow-glow: 0 6px 16px -6px rgb(58 116 87 / 0.45);
-  --shadow-glass: 0 8px 32px -8px rgb(17 24 39 / 0.16), 0 2px 8px -2px rgb(17 24 39 / 0.08);
+  --shadow-glass: var(--elev-glass);
 
   /* motion — 통일된 easing/duration */
   --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);

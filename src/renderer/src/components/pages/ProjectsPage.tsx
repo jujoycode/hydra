@@ -26,7 +26,7 @@ export default function ProjectsPage() {
   if (!user) return null
 
   return (
-    <div className='flex flex-col h-full overflow-hidden p-12 pt-8 pb-4'>
+    <div className='flex flex-col h-full overflow-hidden p-page'>
       {/* Header area */}
       <div className='flex items-center justify-between'>
         <div>

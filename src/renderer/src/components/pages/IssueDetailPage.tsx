@@ -2,6 +2,7 @@ import { useNavigate, useParams } from '@tanstack/react-router'
 import { ArrowLeft, Paperclip } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { Avatar, AvatarFallback } from '@/atoms/Avatar'
 import { Button } from '@/components/atoms/Button'
 import { Input } from '@/components/atoms/Input'
 import { Label } from '@/components/atoms/Label'
@@ -365,9 +366,9 @@ export default function IssueDetailPage() {
                     <div key={comment.comment_id} className='rounded border p-3'>
                       <div className='flex items-center justify-between mb-2'>
                         <div className='flex items-center gap-2'>
-                          <div className='w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium'>
-                            {authorName[0].toUpperCase()}
-                          </div>
+                          <Avatar className='size-6 shrink-0'>
+                            <AvatarFallback>{authorName[0].toUpperCase()}</AvatarFallback>
+                          </Avatar>
                           <span className='text-sm font-medium'>{authorName}</span>
                           <span className='text-xs text-muted-foreground'>
                             {formatDate(comment.comment_created_at)}
