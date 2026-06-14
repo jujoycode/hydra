@@ -236,4 +236,33 @@ export class MySqlAdapter implements DatabaseAdapter {
     }
     return this.db.transaction(async (tx) => fn(tx), { isolationLevel: 'read committed' })
   }
+
+  // PG pg_advisory_xact_lock 대응물. MySQL GET_LOCK은 세션 스코프라 트랜잭션 커밋으로 자동 해제되지 않는다.
+  // 따라서 PG처럼 트랜잭션 "안"에서 잡고 끝내면 안 된다: READ COMMITTED에서 락을 커밋 전에 풀면
+  // 두 번째 대기자가 첫 트랜잭션의 미커밋 INSERT를 못 본 채 임계구역에 진입할 수 있다.
+  // → 별도 커넥션에서 락을 잡고 트랜잭션 전체(커밋 포함)를 감싼 뒤, 커밋 이후에 해제한다 (runMigrations와 동일 원칙).
+  async transactionWithAdvisoryLock<T>(lockKey: number, fn: (tx: unknown) => Promise<T>): Promise<T> {
+    if (!this.db || !this.pool) {
+      throw new Error('Database not connected. Call connect() first.')
+    }
+    // 락 이름을 DB 스코프로 제한 + 64자 제한 truncate (마이그레이션 락과 동일 규칙)
+    const lockName = `hydra_advisory:${this.database}:${lockKey}`.slice(0, 64)
+    const conn = await this.pool.getConnection()
+    try {
+      const [rows] = await conn.query<RowDataPacket[]>('SELECT GET_LOCK(?, 10) AS got', [lockName])
+      if (Number(rows[0]?.got) !== 1) {
+        throw new DatabaseError(ErrorCode.DB_ERROR, 'Could not acquire advisory lock (contention or timeout)', null)
+      }
+      // 락을 conn에 쥔 채 별도 풀 커넥션에서 트랜잭션을 실행/커밋한다
+      return await this.transaction(fn)
+    } finally {
+      try {
+        await conn.query('SELECT RELEASE_LOCK(?)', [lockName])
+        conn.release()
+      } catch {
+        // RELEASE_LOCK 실패는 사실상 죽은 커넥션 — 풀에 되돌리지 않고 폐기 (락은 세션 종료로 자동 해제)
+        conn.destroy()
+      }
+    }
+  }
 }
