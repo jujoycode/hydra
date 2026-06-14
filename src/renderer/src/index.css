@@ -453,7 +453,7 @@
   -webkit-backdrop-filter: blur(10px) saturate(140%);
   backdrop-filter: blur(10px) saturate(140%);
 }
-/* 컨테이너/카드(목록 래퍼·대시보드 카드) — 가장 약한 glass */
+/* 컨테이너/카드(목록 래퍼·대시보드 카드) — 가장 불투명한 glass (glass 효과 최소) */
 @utility glass-soft {
   background-color: color-mix(in srgb, var(--card) 90%, transparent);
   -webkit-backdrop-filter: blur(8px) saturate(130%);
@@ -483,10 +483,10 @@
 @utility hover-lift {
   transition: transform 0.15s var(--ease-out-soft), box-shadow 0.15s var(--ease-out-soft);
   &:hover { transform: translateY(-1px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hover-lift { transition: none; }
-  .hover-lift:hover { transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    &:hover { transform: none; }
+  }
 }
 
 @layer base {
