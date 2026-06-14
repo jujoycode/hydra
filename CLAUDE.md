@@ -105,6 +105,7 @@ Bridge exposing `window.callApi` for typed IPC communication.
 - **DB naming** (`docs/design/convention-db.md`): snake_case tables (plural), snake_case columns (singular)
 - **Atomic Design**: atoms → molecules → organisms → templates → pages → layouts
 - **Component folder structure**: 각 컴포넌트는 자기 이름의 폴더를 가진다 — `atoms/Skeleton/{ index.ts(barrel: export * from './Skeleton'), Skeleton.tsx, Skeleton.stories.tsx, Skeleton.test.tsx }`. import는 배럴 경유(`@/atoms/Skeleton`)라 폴더화해도 임포터는 안 바뀐다. atoms·molecules·templates·organisms·pages·layouts 전 레이어 전환 완료(평면 컴포넌트 없음); 신규 컴포넌트는 처음부터 이 구조로 생성한다. 스토리는 프레젠테이셔널(atoms/molecules/simple-templates/charts)에만 생성하고, 커넥티드(organisms/pages/layouts)는 폴더 구조만 유지한다. `export default` 컴포넌트의 배럴은 `export { default }`도 함께 재노출한다(lazyRoute 호환).
+- **Testing**: Vitest 2-project(main: node / renderer: jsdom). 렌더러 jsdom 폴리필(ResizeObserver, matchMedia)은 `vitest.setup.ts`. 모든 `*.stories.tsx`는 `src/renderer/src/components/stories.smoke.test.tsx`가 `composeStories`로 자동 스모크 렌더(새 스토리 추가 시 별도 테스트 불필요). 커넥티드 컴포넌트는 `@/test/test-utils`의 `renderWithProviders`(Theme+Query+i18n)로 테스트한다. 자세한 계층은 `docs/adr/0003-*`.
 
 ## V3 Features
 

@@ -28,6 +28,7 @@ const rendererAliases = {
   '@/hooks': resolve('src/renderer/src/hooks'),
   '@/types': resolve('src/renderer/src/types'),
   '@/stores': resolve('src/renderer/src/stores'),
+  '@/test': resolve('src/renderer/src/test'),
   '@/utils': resolve('src/renderer/src/utils'),
   '@/constants': resolve('src/renderer/src/constants'),
   '@/interface': resolve('src/main/core/interface')
@@ -60,7 +61,13 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/main/**/*.ts', 'src/renderer/src/**/*.{ts,tsx}'],
-      exclude: ['**/*.test.{ts,tsx}', '**/*.stories.{ts,tsx}', '**/index.ts', 'src/renderer/src/**/*.d.ts'],
+      exclude: [
+        '**/*.test.{ts,tsx}',
+        '**/*.stories.{ts,tsx}',
+        '**/index.ts',
+        'src/renderer/src/**/*.d.ts',
+        'src/renderer/src/test/**'
+      ],
       // 회귀 방지 floor. 미테스트 UI 표면이 커서 초기값은 낮다 — 테스트가 늘면 단계적으로 상향(ratchet).
       // CI는 DB 통합 테스트까지 실행하므로 실제 수치는 이 floor보다 높다.
       thresholds: {
