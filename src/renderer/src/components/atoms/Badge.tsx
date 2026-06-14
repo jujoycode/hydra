@@ -2,7 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import type * as React from 'react'
 import { cn } from '@/lib/utils'
 
-export const badgeVariants = cva('inline-flex items-center rounded-sm font-medium transition-colors', {
+export const badgeVariants = cva('inline-flex items-center rounded-full font-medium transition-colors', {
   variants: {
     variant: {
       solid: '',
