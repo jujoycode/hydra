@@ -1,69 +1,33 @@
 import { useParams } from '@tanstack/react-router'
 import { Plus, Trash2 } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '@/atoms/Button'
 import { Checkbox } from '@/atoms/Checkbox'
 import { Input } from '@/atoms/Input'
 import { useAuth } from '@/hooks/use-auth'
-import type { Issue, Task } from '@/interface/CoreInterface'
-import { IpcChannel } from '@/interface/CoreInterface'
-
-interface IssueWithTasks {
-  issue: Issue
-  tasks: Task[]
-}
+import { useProjectTasks, useTaskMutations } from '@/hooks/use-tasks'
 
 export default function TasksPage() {
   const { projectId } = useParams({ strict: false })
   const { user } = useAuth()
-  const [issuesWithTasks, setIssuesWithTasks] = useState<IssueWithTasks[]>([])
+  const { issuesWithTasks, isLoading } = useProjectTasks(projectId)
+  const { create, update, remove } = useTaskMutations()
   const [newTaskInputs, setNewTaskInputs] = useState<Record<string, string>>({})
-  const [isLoading, setIsLoading] = useState(true)
 
-  const loadData = useCallback(async () => {
-    if (!projectId) return
-    setIsLoading(true)
-
-    const issueResult = await window.callApi(IpcChannel.ISSUE_LIST, { projectId })
-    const issues = Array.isArray(issueResult.data) ? (issueResult.data as Issue[]) : []
-
-    const results: IssueWithTasks[] = []
-    for (const issue of issues) {
-      const taskResult = await window.callApi(IpcChannel.TASK_LIST, { issueId: issue.issue_id })
-      const tasks = Array.isArray(taskResult.data) ? (taskResult.data as Task[]) : []
-      results.push({ issue, tasks })
-    }
-
-    setIssuesWithTasks(results)
-    setIsLoading(false)
-  }, [projectId])
-
-  useEffect(() => {
-    loadData()
-  }, [loadData])
-
-  const handleToggleTask = async (taskId: string, completed: boolean) => {
-    await window.callApi(IpcChannel.TASK_UPDATE, { taskId, taskCompleted: !completed })
-    await loadData()
+  const handleToggleTask = (taskId: string, completed: boolean) => {
+    update.mutate({ taskId, taskCompleted: !completed })
   }
 
-  const handleDeleteTask = async (taskId: string) => {
-    await window.callApi(IpcChannel.TASK_DELETE, { taskId })
-    await loadData()
+  const handleDeleteTask = (taskId: string) => {
+    remove.mutate({ taskId })
   }
 
   const handleAddTask = async (issueId: string) => {
     const title = newTaskInputs[issueId]?.trim()
     if (!title || !user) return
 
-    await window.callApi(IpcChannel.TASK_CREATE, {
-      issueId,
-      taskTitle: title,
-      userId: user.user_id
-    })
-
+    await create.mutateAsync({ issueId, taskTitle: title, userId: user.user_id })
     setNewTaskInputs((prev) => ({ ...prev, [issueId]: '' }))
-    await loadData()
   }
 
   const handleKeyDown = (e: React.KeyboardEvent, issueId: string) => {
