@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { installMockCallApi } from '../../../../__testutils__/mockCallApi'
 import { IpcChannel } from '@/interface/CoreInterface'
 import { SidebarProvider } from '@/organisms/sidebars/Sidebar'
 import { useAuthStore } from '@/stores/auth'
 import { fireEvent, render, screen } from '@/test/test-utils'
+import { installMockCallApi } from '../../../../__testutils__/mockCallApi'
 import { AppSidebar } from './AppSidebar'
 
 // 레포에 라우터 테스트 하니스가 없어 라우터 훅/Link를 가벼운 스텁으로 모킹한다.
