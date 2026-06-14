@@ -9,7 +9,7 @@ import { PRIORITY_CLASS, PRIORITY_LABEL, STATUS_CLASS, STATUS_LABEL } from '@/li
 import { cn } from '@/lib/utils'
 import type { IssueState } from '@/molecules/issues/IssueBadge'
 import type { IssuePriority } from '@/types/issue'
-import i18n from '../../locales'
+import i18n from '../../../locales'
 
 /** DB의 issue_status('open' 별칭 포함)를 IssueState 토큰 키로 정규화 */
 function toIssueState(status: string | null | undefined): IssueState {
