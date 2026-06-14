@@ -9,7 +9,7 @@ interface SettingCardProps {
   className?: string
 }
 
-export const SettingCard: React.FC<SettingCardProps> = ({ title, description, children, footer, className }) => {
+export function SettingCard({ title, description, children, footer, className }: SettingCardProps) {
   return (
     <Card className={className}>
       <CardHeader className='pb-4'>
