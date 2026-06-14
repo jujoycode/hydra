@@ -1,5 +1,6 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, shell } from 'electron'
+import { UpdateSourceType, updateElectronApp } from 'update-electron-app'
 import { CoreConstant } from '@/constant/CoreConstant'
 import { initHandler } from '@/handler/initHandler'
 import { CoreUtil } from '@/util/CoreUtil'
@@ -49,6 +50,14 @@ function createWindow() {
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
   const startTime = performance.now()
+
+  // 프로덕션(패키징된 앱)에서만 GitHub Releases 기반 자동 업데이트 (macOS/Windows; Linux 미지원)
+  if (app.isPackaged) {
+    updateElectronApp({
+      updateSource: { type: UpdateSourceType.ElectronPublicUpdateService, repo: 'jujoycode/hydra' },
+      updateInterval: '1 hour'
+    })
+  }
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
