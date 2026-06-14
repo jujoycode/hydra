@@ -262,7 +262,7 @@ export default function IssueDetailPage() {
     )
 
   return (
-    <div className='p-6 h-full overflow-auto'>
+    <div className='p-page h-full overflow-auto'>
       {/* Back button */}
       <button
         type='button'
@@ -290,7 +290,7 @@ export default function IssueDetailPage() {
 
       <div className='grid grid-cols-3 gap-8'>
         {/* Main content */}
-        <div className='col-span-2 space-y-6'>
+        <div className='col-span-2 space-y-section'>
           <div>
             <Label className='mb-2 block'>Description</Label>
             <RichTextEditor content={description} onChange={setDescription} placeholder='Add a description...' />
@@ -429,7 +429,7 @@ export default function IssueDetailPage() {
         </div>
 
         {/* Sidebar */}
-        <div className='space-y-4'>
+        <div className='space-y-card'>
           {/* Status */}
           <div>
             <Label className='mb-1 block text-xs text-muted-foreground'>Status</Label>
@@ -603,7 +603,7 @@ export default function IssueDetailPage() {
           </div>
 
           {/* Timestamps */}
-          <div className='pt-4 border-t space-y-2'>
+          <div className='pt-4 border-t border-border/60 space-y-2'>
             <div className='flex justify-between text-xs'>
               <span className='text-muted-foreground'>Created</span>
               <span>{formatDate(issue.issue_created_at)}</span>
