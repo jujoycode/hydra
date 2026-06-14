@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { Bell, ChevronDown, Home, ListChecks, LogOut, Moon, Plus, Settings, Sun, Users } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Avatar, AvatarFallback } from '@/atoms/Avatar'
 import {
@@ -12,6 +13,7 @@ import {
 } from '@/atoms/DropdownMenu'
 import { useAuth } from '@/hooks/use-auth'
 import { useProjects } from '@/hooks/use-projects'
+import { CreateProjectDialog } from '@/organisms/dialogs/CreateProjectDialog'
 import {
   Sidebar,
   SidebarContent,
@@ -117,15 +119,12 @@ function ProjectsGroup() {
   const { data: projects = [] } = useProjects(user?.user_id)
   const location = useLocation()
   const { t } = useTranslation('nav')
-
-  const handleCreateProject = () => {
-    // 추후 CreateProjectDialog 열기 연동
-  }
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
 
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{t('projects')}</SidebarGroupLabel>
-      <SidebarGroupAction title={t('addProject')} onClick={handleCreateProject}>
+      <SidebarGroupAction title={t('addProject')} onClick={() => setIsCreateOpen(true)}>
         <Plus />
         <span className='sr-only'>{t('addProject')}</span>
       </SidebarGroupAction>
@@ -155,6 +154,7 @@ function ProjectsGroup() {
           )}
         </SidebarMenu>
       </SidebarGroupContent>
+      {user && <CreateProjectDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} userId={user.user_id} />}
     </SidebarGroup>
   )
 }
