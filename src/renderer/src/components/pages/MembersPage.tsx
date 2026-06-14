@@ -2,6 +2,7 @@ import { Copy, LinkIcon, Loader2, Trash2, UserPlus } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { Avatar, AvatarFallback } from '@/atoms/Avatar'
 import { Badge } from '@/atoms/Badge'
 import { Button } from '@/atoms/Button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/atoms/Dialog'
@@ -171,8 +172,8 @@ export default function MembersPage() {
   }
 
   return (
-    <div className='p-6 h-full overflow-auto'>
-      <div className='flex justify-between items-center mb-6'>
+    <div className='p-page h-full overflow-auto'>
+      <div className='flex justify-between items-center mb-section'>
         <div>
           <h1 className='text-2xl font-bold'>{t('title')}</h1>
           <p className='text-sm text-muted-foreground mt-1'>{t('description')}</p>
@@ -200,13 +201,16 @@ export default function MembersPage() {
           <p className='text-sm mt-1'>{t('empty.noMembersDescription')}</p>
         </div>
       ) : (
-        <div className='rounded-lg border'>
+        <div className='glass-soft rounded-xl shadow-card overflow-hidden border border-border/70'>
           {members.map((member) => (
-            <div key={member.user_id} className='flex items-center justify-between p-4 border-b last:border-b-0'>
+            <div
+              key={member.user_id}
+              className='flex items-center justify-between px-4 py-2.5 border-b border-border/60 last:border-b-0 hover:bg-primary/5 transition-colors'
+            >
               <div className='flex items-center gap-3'>
-                <div className='w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium shrink-0'>
-                  {(member.user_name || '?')[0].toUpperCase()}
-                </div>
+                <Avatar className='size-9 shrink-0'>
+                  <AvatarFallback>{(member.user_name || '?')[0].toUpperCase()}</AvatarFallback>
+                </Avatar>
                 <div>
                   <p className='font-medium'>{member.user_name || t('label.unknown')}</p>
                   <p className='text-sm text-muted-foreground'>{member.user_email || '-'}</p>

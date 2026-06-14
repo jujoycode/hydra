@@ -42,8 +42,8 @@ export default function MyIssuesPage() {
   })
 
   return (
-    <div className='p-6 h-full flex flex-col'>
-      <div className='flex justify-between items-center mb-6'>
+    <div className='p-page h-full flex flex-col'>
+      <div className='flex justify-between items-center mb-section'>
         <div className='flex flex-col gap-1'>
           <h1 className='text-2xl font-bold'>{t('myIssues')}</h1>
           <p className='text-sm text-muted-foreground mt-1'>
