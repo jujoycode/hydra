@@ -12,5 +12,8 @@ export const queryKeys = {
   projects: {
     all: ['projects'] as const,
     members: (projectId: string) => ['projects', projectId, 'members'] as const
+  },
+  activity: {
+    byEntity: (entityType: string, entityId: string) => ['activity', entityType, entityId] as const
   }
 } as const
