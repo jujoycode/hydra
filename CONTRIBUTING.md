@@ -1,5 +1,7 @@
 # Contributing to Hydra
 
+> **[English](./CONTRIBUTING.en.md)** · 한국어
+
 Hydra에 기여해 주셔서 감사합니다! 이 문서는 개발 환경, 워크플로, 코드 규약을 요약합니다.
 
 ## 개발 환경
