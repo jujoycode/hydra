@@ -110,7 +110,8 @@ function SidebarProvider({
   )
 
   return (
-    <SidebarContext.Provider value={contextValue}>
+    // React 19: Context를 직접 Provider로 사용(<Context.Provider> 불필요)
+    <SidebarContext value={contextValue}>
       <TooltipProvider delayDuration={0}>
         <div
           data-slot='sidebar-wrapper'
@@ -127,7 +128,7 @@ function SidebarProvider({
           {children}
         </div>
       </TooltipProvider>
-    </SidebarContext.Provider>
+    </SidebarContext>
   )
 }
 

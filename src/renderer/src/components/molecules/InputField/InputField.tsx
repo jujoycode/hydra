@@ -116,13 +116,14 @@ export function InputField({ id, label, error, children, className, ...props }: 
   const fieldId = id || generatedId
 
   return (
-    <InputFieldContext.Provider value={{ id: fieldId, error }}>
+    // React 19: Context를 직접 Provider로 사용(<Context.Provider> 불필요)
+    <InputFieldContext value={{ id: fieldId, error }}>
       <div className={cn('grid gap-2', className)} {...props}>
         {label && <Label htmlFor={fieldId}>{label}</Label>}
         {children}
         {error && <p className='text-destructive text-sm'>{error}</p>}
       </div>
-    </InputFieldContext.Provider>
+    </InputFieldContext>
   )
 }
 
