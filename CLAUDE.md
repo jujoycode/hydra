@@ -69,14 +69,14 @@ Bridge exposing `window.callApi` for typed IPC communication.
 
 ### Renderer (`src/renderer/src/`)
 - **Routing** (`routers/routes.tsx`): TanStack Router (HashHistory). Route tree:
-  - Public: `/workspace` (workspace selection/connection)
+  - Public: `/workspace` (connection), `/login`, `/setup` (admin first-run)
   - Authenticated (`MainLayout`):
-    - `/` — Home, `/projects`, `/my-issues` *(placeholder)*, `/notifications`, `/members`
-    - `/projects/$projectId` (`ProjectLayout`) → `/`, `/issues`, `/issues/$issueId`, `/tasks`, `/tasks/$taskId` *(placeholder)*, `/settings`, `/settings/$settingId` *(placeholder)*
-    - `/settings` (`SettingsLayout`) → `/` (account), `/members`, `/notifications` *(placeholder)*, `/integrations`
+    - `/` — Home, `/projects`, `/my-issues`, `/notifications`, `/members`
+    - `/projects/$projectId` (`ProjectLayout`) → `/`, `/issues`, `/issues/$issueId`, `/tasks`, `/settings`
+    - `/settings` (`SettingsLayout`) → `/` (account), `/members`, `/notifications` *(reuses NotificationsPage; 전용 알림설정 토글 UI 미구현)*, `/integrations`
 - **Components**: Atomic Design — `atoms/` (shadcn/ui), `molecules/`, `organisms/`, `templates/`, `pages/`, `layouts/` (MainLayout, ProjectLayout, SettingsLayout)
 - **Rich text**: Tiptap (issue descriptions, comments). **Toasts**: sonner. **Resizable panels**: react-resizable-panels.
-- **Stores** (`stores/`): `auth.ts` (connection state + `bootstrap()`), `workspace.ts`, `project.ts`, `issue.ts`, `panel.ts` (detail panel), `sidebar.ts` (sidebar toggle). Notifications are fetched via direct IPC (no dedicated store).
+- **Stores** (`stores/`): `auth.ts` (connection/session state + `bootstrap()`), `workspace.ts`, `issue.ts` (selected-issue UI state), `panel.ts` (detail panel), `sidebar.ts` (sidebar toggle) — UI/연결 상태 전용. **서버 데이터**는 TanStack Query 도메인 훅(`hooks/use-*.ts`)으로 패칭한다(스토어 아님; `project.ts`는 React Query 이관으로 삭제됨). 자세히는 `docs/adr/0002-renderer-data-fetching.md`.
 - **Auth Guard**: Connection-based (`isConnected` from auth store), no JWT. `bootstrap()` syncs with main via `WORKSPACE_STATUS` IPC on app mount so that persisted state never diverges from main process state.
 
 ### Auth Model
