@@ -16,7 +16,7 @@ import { PRIORITY_CLASS, PRIORITY_LABEL } from '@/lib/statusTokens'
 import { IssueBadge } from '@/molecules/issues/IssueBadge'
 import { UserAvatar } from '@/molecules/users/UserAvatar'
 import type { Issue, IssuePriority, IssueTableMeta } from '@/types/issue'
-import i18n from '../../../locales'
+import i18n from '../../../../locales'
 
 // Type Column
 export const typeColumn = createColumn<Issue, 'bug' | 'feature'>({
