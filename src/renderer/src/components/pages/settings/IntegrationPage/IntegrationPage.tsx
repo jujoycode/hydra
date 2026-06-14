@@ -1,72 +1,49 @@
 import { Github, Send, Slack } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/atoms/Button'
 import { Checkbox } from '@/atoms/Checkbox'
 import { Input } from '@/atoms/Input'
 import { Label } from '@/atoms/Label'
+import { useIntegrationMutations, useIntegrations } from '@/hooks/use-integrations'
 import type { Integration as IntegrationRecord } from '@/interface/CoreInterface'
-import { IpcChannel } from '@/interface/CoreInterface'
 import { SettingCard } from '@/molecules/cards/SettingCard'
 
-export default function IntegrationPage() {
-  const [isLoading, setIsLoading] = useState(true)
-
-  // Slack state
-  const [slackUrl, setSlackUrl] = useState('')
-  const [slackEnabled, setSlackEnabled] = useState(false)
-  const [isSavingSlack, setIsSavingSlack] = useState(false)
-  const [isTesting, setIsTesting] = useState(false)
-
-  // GitHub state
-  const [githubToken, setGithubToken] = useState('')
-  const [githubRepo, setGithubRepo] = useState('')
-  const [githubEnabled, setGithubEnabled] = useState(false)
-  const [isSavingGithub, setIsSavingGithub] = useState(false)
-
-  useEffect(() => {
-    loadIntegrations()
-  }, [])
-
-  const loadIntegrations = async () => {
-    setIsLoading(true)
-    const result = await window.callApi(IpcChannel.INTEGRATION_LIST)
-    if (Array.isArray(result.data)) {
-      const records = result.data as IntegrationRecord[]
-      const slack = records.find((i) => i.integration_type === 'slack')
-      if (slack) {
-        try {
-          const config = JSON.parse(slack.integration_config)
-          setSlackUrl(config.webhookUrl || '')
-        } catch {}
-        setSlackEnabled(slack.integration_enabled ?? false)
-      }
-      const github = records.find((i) => i.integration_type === 'github')
-      if (github) {
-        try {
-          const config = JSON.parse(github.integration_config)
-          setGithubToken(config.token || '')
-          setGithubRepo(config.repo || '')
-        } catch {}
-        setGithubEnabled(github.integration_enabled ?? false)
-      }
-    }
-    setIsLoading(false)
+function parseConfig(record: IntegrationRecord | undefined): Record<string, string> {
+  if (!record) return {}
+  try {
+    return JSON.parse(record.integration_config)
+  } catch {
+    return {}
   }
+}
+
+// 폼은 로드된 레코드를 초기값으로 받아 마운트 시 1회 초기화한다(useEffect로 서버→폼 동기화하지 않음).
+function IntegrationForm({ records }: { records: IntegrationRecord[] }) {
+  const { save, testSlack } = useIntegrationMutations()
+
+  const slack = records.find((i) => i.integration_type === 'slack')
+  const github = records.find((i) => i.integration_type === 'github')
+  const slackConfig = parseConfig(slack)
+  const githubConfig = parseConfig(github)
+
+  const [slackUrl, setSlackUrl] = useState(slackConfig.webhookUrl ?? '')
+  const [slackEnabled, setSlackEnabled] = useState(slack?.integration_enabled ?? false)
+  const [githubToken, setGithubToken] = useState(githubConfig.token ?? '')
+  const [githubRepo, setGithubRepo] = useState(githubConfig.repo ?? '')
+  const [githubEnabled, setGithubEnabled] = useState(github?.integration_enabled ?? false)
 
   const handleSaveSlack = async () => {
-    setIsSavingSlack(true)
-    const result = await window.callApi(IpcChannel.INTEGRATION_SAVE, {
-      integrationType: 'slack',
-      integrationConfig: JSON.stringify({ webhookUrl: slackUrl }),
-      integrationEnabled: slackEnabled
-    })
-    if (result.error) {
-      toast.error(`Failed: ${result.error.message}`)
-    } else {
+    try {
+      await save.mutateAsync({
+        integrationType: 'slack',
+        integrationConfig: JSON.stringify({ webhookUrl: slackUrl }),
+        integrationEnabled: slackEnabled
+      })
       toast.success('Slack settings saved')
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     }
-    setIsSavingSlack(false)
   }
 
   const handleTestSlack = async () => {
@@ -74,37 +51,21 @@ export default function IntegrationPage() {
       toast.error('Enter a webhook URL first')
       return
     }
-    setIsTesting(true)
-    const result = await window.callApi(IpcChannel.INTEGRATION_TEST_SLACK, { webhookUrl: slackUrl })
-    if (result.data) {
-      toast.success('Test message sent to Slack!')
-    } else {
-      toast.error(result.error?.message || 'Failed to send test message')
-    }
-    setIsTesting(false)
+    const ok = await testSlack.mutateAsync({ webhookUrl: slackUrl }).catch(() => false)
+    if (ok) toast.success('Test message sent to Slack!')
   }
 
   const handleSaveGithub = async () => {
-    setIsSavingGithub(true)
-    const result = await window.callApi(IpcChannel.INTEGRATION_SAVE, {
-      integrationType: 'github',
-      integrationConfig: JSON.stringify({ token: githubToken, repo: githubRepo }),
-      integrationEnabled: githubEnabled
-    })
-    if (result.error) {
-      toast.error(`Failed: ${result.error.message}`)
-    } else {
+    try {
+      await save.mutateAsync({
+        integrationType: 'github',
+        integrationConfig: JSON.stringify({ token: githubToken, repo: githubRepo }),
+        integrationEnabled: githubEnabled
+      })
       toast.success('GitHub settings saved')
+    } catch {
+      // 에러는 invokeApi가 토스트로 안내한다.
     }
-    setIsSavingGithub(false)
-  }
-
-  if (isLoading) {
-    return (
-      <div className='w-full p-6'>
-        <p className='text-muted-foreground'>Loading...</p>
-      </div>
-    )
   }
 
   return (
@@ -137,12 +98,17 @@ export default function IntegrationPage() {
           </div>
 
           <div className='flex gap-2'>
-            <Button onClick={handleSaveSlack} disabled={isSavingSlack} size='sm'>
-              {isSavingSlack ? 'Saving...' : 'Save'}
+            <Button onClick={handleSaveSlack} disabled={save.isPending} size='sm'>
+              {save.isPending ? 'Saving...' : 'Save'}
             </Button>
-            <Button onClick={handleTestSlack} disabled={isTesting || !slackUrl.trim()} variant='outline' size='sm'>
+            <Button
+              onClick={handleTestSlack}
+              disabled={testSlack.isPending || !slackUrl.trim()}
+              variant='outline'
+              size='sm'
+            >
               <Send className='size-3 mr-1' />
-              {isTesting ? 'Sending...' : 'Test'}
+              {testSlack.isPending ? 'Sending...' : 'Test'}
             </Button>
           </div>
         </div>
@@ -184,11 +150,25 @@ export default function IntegrationPage() {
             <p className='text-xs text-muted-foreground mt-1'>Format: owner/repo (e.g., jujoycode/hydra)</p>
           </div>
 
-          <Button onClick={handleSaveGithub} disabled={isSavingGithub} size='sm'>
-            {isSavingGithub ? 'Saving...' : 'Save'}
+          <Button onClick={handleSaveGithub} disabled={save.isPending} size='sm'>
+            {save.isPending ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </SettingCard>
     </div>
   )
+}
+
+export default function IntegrationPage() {
+  const { data: records = [], isLoading } = useIntegrations()
+
+  if (isLoading) {
+    return (
+      <div className='w-full p-6'>
+        <p className='text-muted-foreground'>Loading...</p>
+      </div>
+    )
+  }
+
+  return <IntegrationForm records={records} />
 }

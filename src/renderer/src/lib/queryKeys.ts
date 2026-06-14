@@ -24,5 +24,8 @@ export const queryKeys = {
   tasks: {
     all: ['tasks'] as const,
     byIssue: (issueId: string) => ['tasks', 'issue', issueId] as const
+  },
+  integrations: {
+    all: ['integrations'] as const
   }
 } as const
