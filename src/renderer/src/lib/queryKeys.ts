@@ -15,5 +15,10 @@ export const queryKeys = {
   },
   activity: {
     byEntity: (entityType: string, entityId: string) => ['activity', entityType, entityId] as const
+  },
+  notifications: {
+    all: ['notifications'] as const,
+    list: (userId: string) => ['notifications', 'list', userId] as const,
+    unreadCount: (userId: string) => ['notifications', 'unreadCount', userId] as const
   }
 } as const
