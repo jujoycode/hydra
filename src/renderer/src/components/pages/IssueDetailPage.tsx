@@ -250,13 +250,13 @@ export default function IssueDetailPage() {
 
   if (isLoading)
     return (
-      <div className='p-6'>
+      <div className='p-page'>
         <p className='text-muted-foreground'>Loading...</p>
       </div>
     )
   if (!issue)
     return (
-      <div className='p-6'>
+      <div className='p-page'>
         <p className='text-muted-foreground'>Issue not found</p>
       </div>
     )
@@ -274,7 +274,7 @@ export default function IssueDetailPage() {
       </button>
 
       {/* Header */}
-      <div className='flex items-start justify-between mb-6'>
+      <div className='flex items-start justify-between mb-section'>
         <div className='flex-1'>
           <span className='text-sm text-muted-foreground font-mono'>{issue.issue_key}</span>
           <Input
