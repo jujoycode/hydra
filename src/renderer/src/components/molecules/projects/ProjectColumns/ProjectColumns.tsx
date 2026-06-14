@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { createActionsColumn, createColumn } from '@/atoms/TableColumnDef'
 import type { Project } from '@/interface/CoreInterface'
 import { formatKoreanDate } from '@/lib/formatDate'
-import i18n from '../../../locales'
+import i18n from '../../../../locales'
 
 // Project name column
 export const projectNameColumn = createColumn<Project, string>({
