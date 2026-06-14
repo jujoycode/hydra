@@ -1,10 +1,9 @@
 import { useNavigate } from '@tanstack/react-router'
 import { Bell, CheckCheck, Loader2, MessageSquare, Target, Trash2, UserCheck } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/atoms/Button'
+import { useNotificationMutations, useNotifications } from '@/hooks/use-notifications'
 import type { Notification } from '@/interface/CoreInterface'
-import { IpcChannel } from '@/interface/CoreInterface'
 import { formatRelativeKorean } from '@/lib/formatDate'
 import { useAuthStore } from '@/stores/auth'
 
@@ -26,32 +25,13 @@ function NotificationIcon({ type }: { type: string }) {
 export default function NotificationsPage() {
   const navigate = useNavigate()
   const { user } = useAuthStore()
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  const loadNotifications = useCallback(async () => {
-    if (!user) return
-    setIsLoading(true)
-    const result = await window.callApi(IpcChannel.NOTIFICATION_LIST, { userId: user.user_id })
-    if (Array.isArray(result.data)) {
-      setNotifications(result.data)
-    }
-    setIsLoading(false)
-  }, [user])
-
-  useEffect(() => {
-    loadNotifications()
-  }, [loadNotifications])
+  const { data: notifications = [], isLoading } = useNotifications(user?.user_id)
+  const { markRead, markAllRead, remove } = useNotificationMutations(user?.user_id)
 
   const handleClick = async (notification: Notification) => {
     // 읽지 않은 알림이면 읽음 처리
     if (!notification.notification_read) {
-      await window.callApi(IpcChannel.NOTIFICATION_MARK_READ, {
-        notificationId: notification.notification_id
-      })
-      setNotifications((prev) =>
-        prev.map((n) => (n.notification_id === notification.notification_id ? { ...n, notification_read: true } : n))
-      )
+      await markRead.mutateAsync({ notificationId: notification.notification_id })
     }
 
     // 링크가 있으면 이동
@@ -62,19 +42,13 @@ export default function NotificationsPage() {
 
   const handleMarkAllAsRead = async () => {
     if (!user) return
-    const result = await window.callApi(IpcChannel.NOTIFICATION_MARK_ALL_READ, { userId: user.user_id })
-    if (result.data) {
-      setNotifications((prev) => prev.map((n) => ({ ...n, notification_read: true })))
-      toast.success('모든 알림을 읽음 처리했습니다')
-    }
+    await markAllRead.mutateAsync({ userId: user.user_id })
+    toast.success('모든 알림을 읽음 처리했습니다')
   }
 
-  const handleDelete = async (e: React.MouseEvent, notificationId: string) => {
+  const handleDelete = (e: React.MouseEvent, notificationId: string) => {
     e.stopPropagation()
-    const result = await window.callApi(IpcChannel.NOTIFICATION_DELETE, { notificationId })
-    if (result.data) {
-      setNotifications((prev) => prev.filter((n) => n.notification_id !== notificationId))
-    }
+    remove.mutate({ notificationId })
   }
 
   const unreadCount = notifications.filter((n) => !n.notification_read).length
