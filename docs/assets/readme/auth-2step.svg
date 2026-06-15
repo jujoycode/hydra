@@ -1,0 +1,51 @@
+<svg width="1100" height="380" viewBox="0 0 1100 380" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow2" markerWidth="12" markerHeight="12" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L9 5 L0 10 z" fill="#6366F1"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="380" rx="18" fill="#F8FAFC"/>
+  <text x="550" y="46" text-anchor="middle" font-size="22" font-weight="800" fill="#0F172A">Two-step authentication</text>
+  <text x="550" y="72" text-anchor="middle" font-size="14" fill="#64748B">Workspace connection is separated from app login &#8212; connecting to the DB is not "being logged in"</text>
+
+  <!-- Step 1 -->
+  <g transform="translate(70, 110)">
+    <rect width="420" height="220" rx="16" fill="#EEF2FF" stroke="#C7D2FE"/>
+    <circle cx="44" cy="46" r="22" fill="#6366F1"/>
+    <text x="44" y="53" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">1</text>
+    <text x="80" y="42" font-size="18" font-weight="700" fill="#312E81">Workspace connection</text>
+    <text x="80" y="64" font-size="13" fill="#4F46E5">shared service account &#8594; DB</text>
+
+    <g font-size="13" fill="#334155">
+      <rect x="28" y="86" width="364" height="34" rx="9" fill="#fff" stroke="#E2E8F0"/>
+      <text x="44" y="108" font-weight="600">host &#8226; port &#8226; dbName &#8226; dbms + credentials</text>
+      <rect x="28" y="128" width="364" height="34" rx="9" fill="#fff" stroke="#E2E8F0"/>
+      <text x="44" y="150" font-weight="600">encrypted via Electron safeStorage</text>
+      <rect x="28" y="170" width="364" height="34" rx="9" fill="#fff" stroke="#E2E8F0"/>
+      <text x="44" y="192" font-weight="600">empty DB &#8594; admin setup screen</text>
+    </g>
+  </g>
+
+  <!-- arrow between -->
+  <line x1="500" y1="220" x2="600" y2="220" stroke="#6366F1" stroke-width="3" marker-end="url(#arrow2)"/>
+  <text x="550" y="208" text-anchor="middle" font-size="12" font-weight="700" fill="#6366F1">then</text>
+
+  <!-- Step 2 -->
+  <g transform="translate(610, 110)">
+    <rect width="420" height="220" rx="16" fill="#ECFEFF" stroke="#A5F3FC"/>
+    <circle cx="44" cy="46" r="22" fill="#06B6D4"/>
+    <text x="44" y="53" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">2</text>
+    <text x="80" y="42" font-size="18" font-weight="700" fill="#155E75">App login</text>
+    <text x="80" y="64" font-size="13" fill="#0E7490">personal account &#8594; session</text>
+
+    <g font-size="13" fill="#334155">
+      <rect x="28" y="86" width="364" height="34" rx="9" fill="#fff" stroke="#E2E8F0"/>
+      <text x="44" y="108" font-weight="600">user_sn + scrypt password hash</text>
+      <rect x="28" y="128" width="364" height="34" rx="9" fill="#fff" stroke="#E2E8F0"/>
+      <text x="44" y="150" font-weight="600">session persisted, "remember me"</text>
+      <rect x="28" y="170" width="364" height="34" rx="9" fill="#fff" stroke="#E2E8F0"/>
+      <text x="44" y="192" font-weight="600">re-verified on bootstrap (no DB ROLEs)</text>
+    </g>
+  </g>
+</svg>
