@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="rose" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6b0a2"/><stop offset="1" stop-color="#cf8a7c"/></linearGradient>
+    <linearGradient id="greenA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#97a481"/><stop offset="1" stop-color="#6c7a55"/></linearGradient>
+    <linearGradient id="greenB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a9774"/><stop offset="1" stop-color="#5f6c4b"/></linearGradient>
+    <linearGradient id="belly" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5d6c9"/><stop offset="1" stop-color="#e3a596"/></linearGradient>
+  </defs>
+  <g fill="none" stroke="#2e3326" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- BODY (dusty rose blob) -->
+    <path d="M176 472 C156 446 156 408 174 384 C158 360 166 320 200 312 C238 304 286 304 318 318 C350 330 350 366 336 388 C354 414 350 450 334 472 Z" fill="url(#rose)"/>
+    <path d="M232 452 C256 460 286 458 306 448" stroke-width="7"/>
+    <circle cx="216" cy="412" r="5" fill="#2e3326" stroke="none"/>
+
+    <!-- FAR LEFT neck+head (original paths preserved) -->
+    <path d="M214 322 C176 312 130 320 104 296 C74 268 60 224 84 196 C106 170 84 144 56 152 C28 160 24 196 44 214 C58 226 74 222 78 206 C86 222 104 230 124 224 C150 248 170 282 200 296 C204 310 210 318 214 322 Z" fill="url(#greenB)"/>
+    <circle cx="56" cy="184" r="5.5" fill="#2e3326" stroke="none"/>
+    <path d="M34 178 l-10 -2" stroke-width="7"/>
+    <path d="M30 196 l-16 -2 m16 2 l-12 8" stroke-width="6.5" stroke="#cf6b6b"/>
+
+    <!-- FAR RIGHT neck+head (original paths preserved) -->
+    <path d="M300 318 C338 308 386 318 414 296 C446 270 462 224 438 194 C414 166 438 140 466 148 C494 156 498 194 478 212 C464 224 448 220 444 204 C436 222 416 230 396 222 C370 248 350 282 318 296 C312 308 306 314 300 318 Z" fill="url(#greenB)"/>
+    <circle cx="466" cy="180" r="5.5" fill="#2e3326" stroke="none"/>
+    <path d="M488 174 l10 -2" stroke-width="7"/>
+    <path d="M492 192 l16 -2 m-16 2 l12 8" stroke-width="6.5" stroke="#cf6b6b"/>
+
+    <!-- LEFT-CENTER neck (pink belly) -->
+    <path d="M224 320 C210 264 200 206 200 160 C200 120 168 104 142 122 C120 138 128 168 152 170 C176 172 178 206 182 254 C186 290 196 310 210 322 Z" fill="url(#greenA)"/>
+    <path d="M214 312 C202 260 194 206 194 162 C194 134 172 126 160 140 C176 150 168 162 158 166 C176 176 168 210 172 256 C176 288 184 300 200 308 Z" fill="url(#belly)"/>
+    <path d="M176 196 l24 2 M174 226 l28 2 M174 256 l28 2 M178 286 l26 2" stroke-width="6"/>
+    <circle cx="150" cy="146" r="5.5" fill="#2e3326" stroke="none"/>
+    <path d="M126 142 l-12 0" stroke-width="7"/>
+
+    <!-- RIGHT-CENTER neck (pink belly) -->
+    <path d="M290 320 C304 264 314 206 314 160 C314 120 346 104 372 122 C394 138 386 168 362 170 C338 172 336 206 332 254 C328 290 318 310 304 322 Z" fill="url(#greenA)"/>
+    <path d="M300 312 C312 260 320 206 320 162 C320 134 342 126 354 140 C338 150 346 162 356 166 C338 176 346 210 342 256 C338 288 330 300 314 308 Z" fill="url(#belly)"/>
+    <path d="M314 196 l24 2 M312 226 l28 2 M312 256 l28 2 M316 286 l26 2" stroke-width="6"/>
+    <circle cx="364" cy="146" r="5.5" fill="#2e3326" stroke="none"/>
+    <path d="M388 142 l12 0" stroke-width="7"/>
+
+    <!-- TOP CENTER HEAD (tallest) -->
+    <path d="M250 312 C246 256 244 196 250 146 C254 110 240 78 258 56 C272 38 304 38 320 58 C334 76 326 100 304 106 C328 116 332 116 348 100 C360 88 380 92 384 110 C388 130 372 144 350 142 C328 156 320 192 314 230 C310 270 300 298 286 318 Z" fill="url(#greenA)"/>
+    <circle cx="276" cy="88" r="6.5" fill="#2e3326" stroke="none"/>
+    <circle cx="306" cy="86" r="5.5" fill="#2e3326" stroke="none"/>
+    <path d="M364 116 l22 -4 m-22 4 l20 10 m-20 -10 l24 2" stroke-width="6.5" stroke="#cf6b6b"/>
+
+  </g>
+</svg>

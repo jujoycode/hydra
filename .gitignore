@@ -16,3 +16,6 @@ src/main/core/database/prisma/generated
 
 # Superpowers brainstorm artifacts
 .superpowers
+
+# Brand/mascot exploration scratch (sources live in assets/brand/)
+.mascot-lab

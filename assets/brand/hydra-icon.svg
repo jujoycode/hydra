@@ -1,43 +1,17 @@
-<svg width="1280" height="400" viewBox="0 0 1280 400" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="400" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#0F172A"/>
-      <stop offset="0.55" stop-color="#1E1B4B"/>
-      <stop offset="1" stop-color="#083344"/>
-    </linearGradient>
-    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#6366F1"/>
-      <stop offset="1" stop-color="#06B6D4"/>
-    </linearGradient>
-    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#06B6D4" stop-opacity="0.45"/>
-      <stop offset="1" stop-color="#06B6D4" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="mglow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#f4eee2" stop-opacity="0.22"/>
-      <stop offset="1" stop-color="#f4eee2" stop-opacity="0"/>
-    </radialGradient>
-    <!-- mascot gradients -->
+    <linearGradient id="badge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef4ec"/><stop offset="1" stop-color="#dbe7d7"/></linearGradient>
     <linearGradient id="rose" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6b0a2"/><stop offset="1" stop-color="#cf8a7c"/></linearGradient>
     <linearGradient id="greenA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#97a481"/><stop offset="1" stop-color="#6c7a55"/></linearGradient>
     <linearGradient id="greenB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a9774"/><stop offset="1" stop-color="#5f6c4b"/></linearGradient>
     <linearGradient id="belly" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5d6c9"/><stop offset="1" stop-color="#e3a596"/></linearGradient>
   </defs>
 
-  <rect width="1280" height="400" rx="20" fill="url(#bg)"/>
+  <!-- soft rounded-square badge background -->
+  <rect x="20" y="20" width="472" height="472" rx="112" fill="url(#badge)" stroke="#2e3326" stroke-width="12"/>
 
-  <!-- dotted grid texture -->
-  <g fill="#38BDF8" opacity="0.10">
-    <circle cx="120" cy="60" r="2"/><circle cx="180" cy="60" r="2"/><circle cx="240" cy="60" r="2"/>
-    <circle cx="120" cy="120" r="2"/><circle cx="180" cy="120" r="2"/><circle cx="240" cy="120" r="2"/>
-    <circle cx="120" cy="180" r="2"/><circle cx="180" cy="180" r="2"/><circle cx="240" cy="180" r="2"/>
-    <circle cx="1040" cy="340" r="2"/><circle cx="1100" cy="340" r="2"/><circle cx="1160" cy="340" r="2"/>
-  </g>
-
-  <!-- ====== Hydra mascot ====== -->
-  <circle cx="938" cy="196" r="186" fill="url(#glow)"/>
-  <circle cx="938" cy="200" r="180" fill="url(#mglow)"/>
-  <g transform="translate(769 36) scale(0.66)">
+  <!-- g1r mascot, scaled + centered with padding -->
+  <g transform="translate(51 52) scale(0.8)">
     <g fill="none" stroke="#2e3326" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
       <path d="M176 472 C156 446 156 408 174 384 C158 360 166 320 200 312 C238 304 286 304 318 318 C350 330 350 366 336 388 C354 414 350 450 334 472 Z" fill="url(#rose)"/>
       <path d="M232 452 C256 460 286 458 306 448" stroke-width="7"/>
@@ -64,33 +38,6 @@
       <circle cx="276" cy="88" r="6.5" fill="#2e3326" stroke="none"/>
       <circle cx="306" cy="86" r="5.5" fill="#2e3326" stroke="none"/>
       <path d="M364 116 l22 -4 m-22 4 l20 10 m-20 -10 l24 2" stroke-width="6.5" stroke="#cf6b6b"/>
-    </g>
-  </g>
-
-  <!-- ====== Wordmark + tagline ====== -->
-  <g transform="translate(96, 150)">
-    <text x="0" y="0" font-size="92" font-weight="800" fill="#F8FAFC" letter-spacing="-2">Hydra</text>
-    <rect x="2" y="22" width="118" height="6" rx="3" fill="url(#accent)"/>
-    <text x="0" y="70" font-size="27" font-weight="600" fill="#CBD5E1">Lightweight project &amp; issue management,</text>
-    <text x="0" y="106" font-size="27" font-weight="600" fill="#CBD5E1">offline-first &#8226; multi-workspace &#8226; bring-your-own-DB.</text>
-
-    <g transform="translate(0, 150)" font-size="15" font-weight="600">
-      <g>
-        <rect x="0" y="0" width="116" height="34" rx="17" fill="#1E293B" stroke="#334155"/>
-        <text x="58" y="22" text-anchor="middle" fill="#93C5FD">Electron</text>
-      </g>
-      <g transform="translate(128,0)">
-        <rect x="0" y="0" width="118" height="34" rx="17" fill="#1E293B" stroke="#334155"/>
-        <text x="59" y="22" text-anchor="middle" fill="#67E8F9">React 19</text>
-      </g>
-      <g transform="translate(258,0)">
-        <rect x="0" y="0" width="142" height="34" rx="17" fill="#1E293B" stroke="#334155"/>
-        <text x="71" y="22" text-anchor="middle" fill="#A5B4FC">TypeScript</text>
-      </g>
-      <g transform="translate(412,0)">
-        <rect x="0" y="0" width="184" height="34" rx="17" fill="#1E293B" stroke="#334155"/>
-        <text x="92" y="22" text-anchor="middle" fill="#7DD3FC">PostgreSQL / MySQL</text>
-      </g>
     </g>
   </g>
 </svg>
