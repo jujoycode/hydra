@@ -1,0 +1,68 @@
+<svg width="1100" height="400" viewBox="0 0 1100 400" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow3" markerWidth="12" markerHeight="12" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L9 5 L0 10 z" fill="#8B5CF6"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="400" rx="18" fill="#F8FAFC"/>
+  <text x="550" y="46" text-anchor="middle" font-size="22" font-weight="800" fill="#0F172A">Multi-DBMS through one adapter interface</text>
+  <text x="550" y="72" text-anchor="middle" font-size="14" fill="#64748B">Handlers depend on repository interfaces; a factory picks the adapter by workspace dbms</text>
+
+  <!-- handlers -->
+  <g transform="translate(70, 150)">
+    <rect width="220" height="110" rx="14" fill="#EEF2FF" stroke="#C7D2FE"/>
+    <text x="110" y="44" text-anchor="middle" font-size="16" font-weight="700" fill="#3730A3">IPC Handlers</text>
+    <text x="110" y="70" text-anchor="middle" font-size="12" fill="#4F46E5">CoreBaseHandler</text>
+    <text x="110" y="90" text-anchor="middle" font-size="12" fill="#4F46E5">this.repos</text>
+  </g>
+
+  <!-- interface -->
+  <g transform="translate(360, 150)">
+    <rect width="240" height="110" rx="14" fill="#FAF5FF" stroke="#E9D5FF"/>
+    <text x="120" y="40" text-anchor="middle" font-size="15" font-weight="700" fill="#6B21A8">Repository interfaces</text>
+    <text x="120" y="64" text-anchor="middle" font-size="12" fill="#7C3AED">User / Project / Issue / File</text>
+    <text x="120" y="86" text-anchor="middle" font-size="12" fill="#7C3AED">DatabaseAdapter</text>
+  </g>
+
+  <!-- factory -->
+  <g transform="translate(360, 296)">
+    <rect width="240" height="58" rx="12" fill="#F5F3FF" stroke="#DDD6FE"/>
+    <text x="120" y="27" text-anchor="middle" font-size="13" font-weight="700" fill="#6D28D9">createAdapter(dbms)</text>
+    <text x="120" y="46" text-anchor="middle" font-size="11" fill="#7C3AED">factory &#8594; picks implementation</text>
+  </g>
+
+  <!-- Postgres adapter -->
+  <g transform="translate(700, 96)">
+    <rect width="330" height="120" rx="14" fill="#EFF6FF" stroke="#BFDBFE"/>
+    <g stroke="#2563EB" stroke-width="2.5" fill="#DBEAFE" transform="translate(56, 60)">
+      <ellipse cx="0" cy="-30" rx="34" ry="11"/>
+      <path d="M-34 -30 V 30 a34 11 0 0 0 68 0 V -30"/>
+      <path d="M-34 0 a34 11 0 0 0 68 0" fill="none"/>
+    </g>
+    <text x="118" y="50" font-size="16" font-weight="700" fill="#1E40AF">PostgresAdapter</text>
+    <text x="118" y="74" font-size="12" fill="#2563EB">Drizzle + pg</text>
+    <text x="118" y="94" font-size="12" fill="#2563EB">wrapPgError &#8594; DatabaseError</text>
+  </g>
+
+  <!-- MySQL adapter -->
+  <g transform="translate(700, 234)">
+    <rect width="330" height="120" rx="14" fill="#FFF7ED" stroke="#FED7AA"/>
+    <g stroke="#EA580C" stroke-width="2.5" fill="#FFEDD5" transform="translate(56, 60)">
+      <ellipse cx="0" cy="-30" rx="34" ry="11"/>
+      <path d="M-34 -30 V 30 a34 11 0 0 0 68 0 V -30"/>
+      <path d="M-34 0 a34 11 0 0 0 68 0" fill="none"/>
+    </g>
+    <text x="118" y="50" font-size="16" font-weight="700" fill="#9A3412">MySqlAdapter</text>
+    <text x="118" y="74" font-size="12" fill="#EA580C">Drizzle + mysql2</text>
+    <text x="118" y="94" font-size="12" fill="#EA580C">dbms: 'mysql' &#8226; utf8mb4</text>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#8B5CF6" stroke-width="3" marker-end="url(#arrow3)">
+    <line x1="294" y1="205" x2="356" y2="205"/>
+    <line x1="600" y1="190" x2="696" y2="150"/>
+    <line x1="600" y1="300" x2="696" y2="290"/>
+  </g>
+  <line x1="480" y1="260" x2="480" y2="294" stroke="#8B5CF6" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#arrow3)"/>
+</svg>
