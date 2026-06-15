@@ -1,10 +1,11 @@
 # Hydra 마일스톤: v1.0.0 OSS 출시
 
-> 최종 재정립: 2026-06-13 · 현행화: 2026-06-14 | 기준 브랜치: `main` | 목표: v1.0.0 오픈소스 출시(+ 인스톨러 릴리즈)
+> 최종 재정립: 2026-06-13 · 현행화: 2026-06-15 | 기준 브랜치: `main` | 목표: v1.0.0 오픈소스 출시(+ 인스톨러 릴리즈)
 > 이 문서는 **v1.0.0 마일스톤의 단일 기준(canonical)** 이다.
 > `docs/design/roadmap-v1.md`(장기 비전)와 `docs/project/backlog.md`(티켓)는 이 문서에 종속된다.
+> **다음 버전(v1.1.0)의 기준은 [`docs/project/milestones-v1.1.md`](./milestones-v1.1.md)** 이다.
 >
-> **2026-06-14 현황 요약: M1·M2·M3 완료(코드 확인). 남은 마일스톤은 M4(OSS 출시 & 릴리즈)뿐이며, 릴리즈 인프라도 대부분 완성 — README 스크린샷/GIF, UI 영문 최종 감사, `v1.0.0` 태그/Release 발행만 남음(현재 git 태그 0개).**
+> **2026-06-15 현황 요약: M1·M2·M3 완료(코드 확인). 남은 마일스톤은 M4(OSS 출시 & 릴리즈)뿐이며, 릴리즈 인프라도 대부분 완성 — 남은 디자인 디테일 마감, E2E 스모크 테스트, README 스크린샷/GIF, UI 영문 최종 감사, `v1.0.0` 태그/Release 발행이 출시 게이트(현재 git 태그 0개).**
 
 ## 배경 — 왜 재정립했나
 
@@ -135,12 +136,15 @@ integrations 시크릿 at-rest 암호화, 스프린트, 오프라인 싱크, 데
 - ✅ **문서**: LICENSE, CONTRIBUTING.md, CODE_OF_CONDUCT.md 존재 (저장소 루트)
 - ✅ **릴리즈 자동화**: `.github/workflows/release.yml` — tag push → 3플랫폼(Win/macOS/Linux) 인스톨러
 - ✅ **Electron auto-updater**: `update-electron-app` 배선 완료(`src/main/index.ts`)
+- ⬜ **남은 디자인 디테일 마감** — 출시 전 UI 디테일 정리(잔여 갭 HYDRA-030 `projectDesc` 버그, HYDRA-031 `stores/issue.ts` 삭제, HYDRA-032 `CreateIssueDialog`→Tiptap 일관화, HYDRA-033 GitHub 카피 정정, HYDRA-029 lint 경고 ≤10)
+- ⬜ **E2E 스모크 테스트** — 핵심 사용자 여정(워크스페이스 연결 → 로그인 → 프로젝트/이슈 생성 → 상태 변경 → 댓글)을 패키징된 앱 기준으로 검증. Electron E2E 러너(Playwright `_electron` 또는 WebdriverIO) 신규 도입. *출시 직전 회귀 게이트*
 - ⬜ **README 스크린샷/GIF 추가** (현재 이미지 0개)
 - ⬜ **UI 문자열 영문 최종 감사**
-- ⬜ (출시 전 권장) 잔여 갭 처리 — `UpdateProjectHandler` `projectDesc` 버그, `stores/issue.ts` 삭제
 - ⬜ **최종 품질 검토** + `v1.0.0` 태그 + GitHub Release (**현재 git 태그 0개 — 미발행**)
 
 ### 완료 조건
+- 남은 디자인 디테일 마감 + 잔여 갭(HYDRA-030/031/032/033/029) 처리
+- E2E 스모크가 핵심 여정을 패키징 빌드에서 통과(CI 게이트)
 - 문서 완비(LICENSE/CONTRIBUTING/CoC + README 스크린샷)
 - 태그 push 시 자동 빌드 → 3플랫폼 인스톨러 생성
 - `v1.0.0` 태그 + GitHub Release 게시
@@ -166,7 +170,7 @@ M4 (OSS 출시 & 릴리즈)      ← M1~M3 동결 후 → v1.0.0 태그
 | M1 | 코어 루프 마감 | IssuePage 실데이터, 담당자 프로젝트멤버화, 빈 상태 일관성 | S~M | ✅ 완료 |
 | M2 | 테스트 아키텍처 재정립 | 17개 → ~30개 확장, 인프라/플로우 재커버 + 스토리 스모크 | M~L | ✅ 완료 |
 | M3 | 협업 뷰 | 활동 로그/타임라인, 칸반 + 뷰 토글 (test-first) | M~L | ✅ 완료 |
-| M4 | OSS 출시 & 릴리즈 | LICENSE/문서, 릴리즈 자동화, auto-updater, v1.0.0 | M | 🚧 진행 중 |
+| M4 | OSS 출시 & 릴리즈 | 디자인 디테일 마감, E2E 스모크, README 스크린샷, 릴리즈 자동화, v1.0.0 태그 | M | 🚧 진행 중 |
 
 ## v1.1+ 보류 항목
 
