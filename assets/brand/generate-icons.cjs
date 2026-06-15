@@ -19,7 +19,7 @@ const SRC = {
   128: 'icon_128',
   256: 'icon_256',
   512: 'icon_512',
-  1024: 'icon_1024',
+  1024: 'icon_1024'
 }
 const png = (s) => read(SRC[s])
 
