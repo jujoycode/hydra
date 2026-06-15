@@ -38,6 +38,7 @@ export interface UserRepository {
   findById(userId: string): Promise<UserRecord | null>
   findBySn(userSn: string): Promise<UserRecord | null>
   findAll(): Promise<UserRecord[]>
+  findByProject(projectId: string): Promise<UserRecord[]>
   create(data: CreateUserData, executor?: RepoExecutor): Promise<UserRecord>
   update(userId: string, data: UpdateUserData): Promise<UserRecord>
   delete(userId: string): Promise<boolean>

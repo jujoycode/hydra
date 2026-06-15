@@ -1,5 +1,11 @@
 # Hydra Backlog Tickets
 
+> ⚠️ **개별 티켓의 완료 상태는 대부분 낡았다.** 2026-06-14 코드 감사 결과, 아래 Critical/High 다수
+> (HYDRA-002·004·005·006·008·014·023·028 등)는 **이미 구현 완료**이며, M1·M2·M3 마일스톤도 모두 완료됐다.
+> 남은 v1.0.0 작업은 **M4(OSS 출시 & 릴리즈)뿐**이다. 현재 작업의 단일 기준은
+> **[`docs/project/milestones-v1.md`](./milestones-v1.md)** (v1.0.0 마일스톤)이며, 이 백로그는 개별 아이디어
+> 참고용으로 남긴다. 실제 미완료 갭은 milestones-v1.md의 "현황" 섹션과 아래 **🆕 신규 발견** 섹션을 신뢰할 것.
+
 > 생성일: 2026-04-01 | 기준 브랜치: `v3`
 > 비용 기준: S(1~2일), M(3~5일), L(1~2주), XL(2주+)
 
@@ -339,9 +345,44 @@
 
 - **비용**: S
 - **우선순위**: 🟡 Medium
-- **설명**: `pnpm lint`에서 기존 error 1 + warnings 34건 (BUG-002 subagent 발견). 주 대상: `DashboardTab.tsx`, `tanstack-table.d.ts`, renderer a11y / key prop 경고 등.
-- **관련 파일**: 다수 — `pnpm lint` 실행 후 리포트 기준
-- **완료 조건**: `pnpm lint` 0 error, 경고 10건 이하
+- **설명**: (2026-06-14 갱신) `pnpm lint`(=`biome check --write`) 자동 수정 후 **0 error / 27 warning** 잔존. 주 대상: `useExhaustiveDependencies`(CreateIssueDialog/IssueDetailsDialog 등), 배열 index key, renderer a11y. 진짜 미해결은 이 27 warning이다.
+- **⚠️ 주의**: `pnpm lint`는 `--write`라 **파일을 자동 수정**한다(읽기 전용 확인은 `pnpm exec biome check .`). read-only 모드는 줄바꿈(CRLF↔LF) 불일치 때문에 다수 "error"를 보고하나 이는 자동 수정 대상 아티팩트로 27 warning과 별개다.
+- **관련 파일**: 다수 — `pnpm exec biome check .` 리포트 기준
+- **완료 조건**: 경고 10건 이하 (auto-fixable 포맷/줄바꿈은 `pnpm lint`가 처리)
+
+---
+
+## 🆕 신규 발견 (2026-06-14 코드 감사)
+
+> 직접 코드 확인으로 검증된 미기록 항목. M4(출시) 전 처리 권장 순.
+
+### HYDRA-030: 🐛 [데이터 손실] 프로젝트 설명 저장 누락
+
+- **비용**: S (한 줄)
+- **우선순위**: 🟠 High
+- **설명**: `UpdateProjectHandler.handler`가 `repos.projects.update`에 `projectName`/`modifiedBy`만 전달, **`projectDesc`를 누락**(`UpdateProjectHandler.ts:15-18`). `ProjectSettingsPage`는 `projectDesc`를 전송하고(`ProjectSettingsPage.tsx:30`), `UpdateProjectParams`·`DrizzleProjectRepository.update`(`project_desc` 세팅)는 모두 지원하므로, 핸들러에서 `projectDesc: params.projectDesc`만 넘기면 해결. 현재는 "Project updated" toast가 떠도 설명이 저장되지 않는 사일런트 실패.
+- **완료 조건**: 프로젝트 설명 수정이 DB에 반영, 회귀 테스트 추가
+
+### HYDRA-031: dead code — `stores/issue.ts` 삭제
+
+- **비용**: S
+- **우선순위**: 🟢 Low
+- **설명**: React Query 이관(PR #79) 후 `stores/issue.ts`(`useIssueStore`)를 import하는 컴포넌트가 0개. `stores/project.ts`가 #81에서 삭제된 것과 동일하게 정리 대상. localStorage 잔존 키도 함께 정리.
+- **완료 조건**: 파일 삭제 + 미사용 `types/issue.ts` 항목 정리, 빌드/테스트 통과
+
+### HYDRA-032: CreateIssueDialog 리치 텍스트 일관화 + stale 문구 제거
+
+- **비용**: S
+- **우선순위**: 🟡 Medium
+- **설명**: `CreateIssueDialog`는 평문 `Textarea` + "EditorJS 기능 업데이트 예정"(i18n `issue.help.editorNote`) 유지 중. `IssueDetailPage`는 이미 Tiptap `RichTextEditor` 사용. 생성 플로우도 `RichTextEditor`로 통일하거나 최소한 오해 소지 있는 안내문 제거.
+- **관련 파일**: `CreateIssueDialog.tsx:254-261`, `locales/{en,ko}/issue.json:29`
+- **완료 조건**: 생성/상세 에디터 일관, stale 문구 제거
+
+### HYDRA-033: GitHub 인테그레이션 — sync 로직 부재 (토큰만 저장)
+
+- **비용**: L · **우선순위**: 🟢 Low (v1.1+, HYDRA-019b와 연계)
+- **설명**: `IntegrationPage`가 GitHub 토큰 + `owner/repo`를 저장하고 카드에 "issue synchronization"이라 광고하지만, `src/main`에 동기화 핸들러/클라이언트/잡이 전무. 저장만 되고 사용되지 않는 stub. v1.0.0에서는 UI 문구를 실제 범위에 맞게 조정(또는 "coming soon" 표기)하고, 실제 동기화는 v1.1+로.
+- **완료 조건**: (v1.0) 과장된 카피 정정 / (v1.1) GitHub API 클라이언트 + 이슈 매핑 + 동기화 트리거
 
 ---
 

@@ -22,14 +22,20 @@ export const useAuthStore = create<AuthState>()(
       setAuthenticated: (v: boolean) => set({ isAuthenticated: v }),
       setNeedsSetup: (v: boolean) => set({ needsSetup: v }),
 
-      disconnect: () =>
-        set({
-          user: null,
-          isConnected: false,
-          isAuthenticated: false,
-          needsSetup: false,
-          currentWorkspace: null
-        }),
+      disconnect: async () => {
+        try {
+          // main 프로세스의 워크스페이스 연결(어댑터/풀)을 실제로 해제한다.
+          await window.callApi(IpcChannel.WORKSPACE_DISCONNECT)
+        } finally {
+          set({
+            user: null,
+            isConnected: false,
+            isAuthenticated: false,
+            needsSetup: false,
+            currentWorkspace: null
+          })
+        }
+      },
 
       reset: () =>
         set({

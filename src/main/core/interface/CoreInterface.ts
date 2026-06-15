@@ -1,4 +1,5 @@
 export * from './ipc'
+export * from './types/activity'
 export * from './types/auth'
 export * from './types/comment'
 export * from './types/integration'

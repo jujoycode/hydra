@@ -1,4 +1,4 @@
-import type { Issue as IssueRecord } from '@/interface/CoreInterface'
+import type { IssueCategory, IssuePriority } from '@/interface/CoreInterface'
 import type { IssueState } from '@/molecules/issues/IssueBadge'
 
 /**
@@ -8,7 +8,7 @@ export interface Issue {
   /** 이슈의 고유 식별자 */
   id: string
   /** 이슈 종류 (버그 또는 기능) */
-  type: 'bug' | 'feature'
+  type: IssueCategory
   /** 이슈 키 (예: HYDRA-123) */
   key: string
   /** 이슈 제목 */
@@ -33,7 +33,7 @@ export interface Issue {
   /** 이슈 설명 (선택사항) */
   description?: string
   /** 이슈 우선순위 (선택사항) */
-  priority?: 'low' | 'medium' | 'high' | 'urgent'
+  priority?: IssuePriority
   /** 이슈 태그 목록 (선택사항) */
   tags?: string[]
 }
@@ -41,8 +41,8 @@ export interface Issue {
 /** 이슈 타입 타입 */
 export type IssueType = Issue['type']
 
-/** 이슈 우선순위 타입 (null/undefined 제외) */
-export type IssuePriority = NonNullable<Issue['priority']>
+/** 이슈 우선순위 타입 (공유 인터페이스 재노출) */
+export type { IssuePriority }
 
 /**
  * TanStack Table의 메타 속성에 사용되는 이슈 테이블 메타 인터페이스
@@ -53,11 +53,9 @@ export interface IssueTableMeta {
 }
 
 export interface IssueStoreState {
-  issues: IssueRecord[] | null
   selectedIssueId: string | null
   isLoading: boolean
   error: Error | null
-  setIssues: (issues: IssueRecord[] | null) => void
   setSelectedIssueId: (issueId: string | null) => void
   setLoading: (loading: boolean) => void
   setError: (error: Error | null) => void

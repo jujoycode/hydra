@@ -26,7 +26,7 @@ export interface AuthState {
   setError: (error: Error | null) => void
   setAuthenticated: (v: boolean) => void
   setNeedsSetup: (v: boolean) => void
-  disconnect: () => void
+  disconnect: () => Promise<void>
   reset: () => void
   logout: () => Promise<void>
   bootstrap: () => Promise<void>

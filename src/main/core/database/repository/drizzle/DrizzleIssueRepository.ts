@@ -1,6 +1,6 @@
 // Drizzle 기반 이슈 리포지토리 구현
 
-import { and, asc, desc, eq, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm'
 import * as pgSchema from '../../schema/drizzle/schema'
 import type {
   CreateIssueData,
@@ -49,6 +49,24 @@ export class DrizzleIssueRepository implements IssueRepository {
   async findByProject(projectId: string): Promise<IssueRecord[]> {
     const { issues } = this.schema
     const rows = await this.db.select().from(issues).where(eq(issues.project_id, projectId))
+    return rows as IssueRecord[]
+  }
+
+  // 담당자에게 할당된 이슈 (전 프로젝트). 단일 쿼리 — N+1 회피.
+  async findByAssignee(userId: string): Promise<IssueRecord[]> {
+    const { issues } = this.schema
+    const rows = await this.db.select().from(issues).where(eq(issues.issue_assigned_to, userId))
+    return rows as IssueRecord[]
+  }
+
+  // 사용자가 속한 프로젝트의 모든 이슈 (대시보드용). 멤버십 서브쿼리로 단일 쿼리 — N+1 회피.
+  async findByUserProjects(userId: string): Promise<IssueRecord[]> {
+    const { issues, usersProjectsLink } = this.schema
+    const memberProjects = this.db
+      .select({ projectId: usersProjectsLink.project_id })
+      .from(usersProjectsLink)
+      .where(eq(usersProjectsLink.user_id, userId))
+    const rows = await this.db.select().from(issues).where(inArray(issues.project_id, memberProjects))
     return rows as IssueRecord[]
   }
 

@@ -1,5 +1,7 @@
 export { CreateIssueHandler } from './CreateIssueHandler'
 export { DeleteIssueHandler } from './DeleteIssueHandler'
 export { GetIssueHandler } from './GetIssueHandler'
+export { ListAssignedIssuesHandler } from './ListAssignedIssuesHandler'
 export { ListIssueHandler } from './ListIssueHandler'
+export { ListMemberProjectIssuesHandler } from './ListMemberProjectIssuesHandler'
 export { UpdateIssueHandler } from './UpdateIssueHandler'

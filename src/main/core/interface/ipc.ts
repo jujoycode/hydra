@@ -1,3 +1,4 @@
+import type { ActivityLogRecord } from '../database/repository/interfaces/ActivityLogRepository'
 import type { CommentRecord } from '../database/repository/interfaces/CommentRepository'
 import type { FileRecord } from '../database/repository/interfaces/FileRepository'
 import type { IntegrationRecord } from '../database/repository/interfaces/IntegrationRepository'
@@ -9,6 +10,7 @@ import type { NotificationRecord } from '../database/repository/interfaces/Notif
 import type { ProjectRecord } from '../database/repository/interfaces/ProjectRepository'
 import type { TaskRecord } from '../database/repository/interfaces/TaskRepository'
 import type { SafeUser } from '../database/repository/interfaces/UserRepository'
+import type { ListActivityParams } from './types/activity'
 import type {
   AuthDeleteUserParams,
   AuthUpdateUserParams,
@@ -24,7 +26,9 @@ import type {
   CreateIssueParams,
   DeleteIssueParams,
   GetIssueParams,
+  ListAssignedIssuesParams,
   ListIssueParams,
+  ListMemberProjectIssuesParams,
   UpdateIssueParams
 } from './types/issue'
 import type {
@@ -56,11 +60,12 @@ import type {
   CreateProjectParams,
   DeleteProjectParams,
   GetProjectParams,
+  ListProjectMembersParams,
   ListProjectParams,
   UpdateProjectParams
 } from './types/project'
 import type { LinkFileParams, ListIssueFilesParams, UploadFileParams } from './types/storage'
-import type { OpenDialogOptions, OpenDialogReturnValue, OpenExternalUrlParams } from './types/system'
+import type { OpenDialogOptions, OpenDialogReturnValue } from './types/system'
 import type { CreateTaskParams, DeleteTaskParams, ListTasksParams, UpdateTaskParams } from './types/task'
 import type {
   WorkspaceConfig,
@@ -100,6 +105,7 @@ export enum IpcChannel {
   // PROJECT-
   PROJECT_CREATE = 'projectCreate',
   PROJECT_LIST = 'projectList',
+  PROJECT_LIST_MEMBERS = 'projectListMembers',
   PROJECT_GET = 'projectGet',
   PROJECT_UPDATE = 'projectUpdate',
   PROJECT_DELETE = 'projectDelete',
@@ -107,9 +113,14 @@ export enum IpcChannel {
   // ISSUE-
   ISSUE_CREATE = 'issueCreate',
   ISSUE_LIST = 'issueList',
+  ISSUE_LIST_ASSIGNED = 'issueListAssigned',
+  ISSUE_LIST_MEMBER_PROJECTS = 'issueListMemberProjects',
   ISSUE_GET = 'issueGet',
   ISSUE_UPDATE = 'issueUpdate',
   ISSUE_DELETE = 'issueDelete',
+
+  // ACTIVITY-
+  ACTIVITY_LIST = 'activityList',
 
   // ISSUE_RELATION-
   ISSUE_RELATION_CREATE = 'issueRelationCreate',
@@ -163,7 +174,6 @@ export enum IpcChannel {
   STORAGE_LIST_ISSUE_FILES = 'storageListIssueFiles',
 
   // SYSTEM-
-  SYSTEM_OPEN_EXTERNAL_URL = 'systemOpenExternalUrl',
   SYSTEM_OPEN_DIALOG = 'systemOpenDialog'
 }
 
@@ -259,6 +269,10 @@ export interface IpcPayloads extends BaseIpcPayloads {
     send: ListProjectParams
     receive: BaseIpcResponse<ProjectRecord[]>
   }
+  [IpcChannel.PROJECT_LIST_MEMBERS]: {
+    send: ListProjectMembersParams
+    receive: BaseIpcResponse<SafeUser[]>
+  }
   [IpcChannel.PROJECT_GET]: {
     send: GetProjectParams
     receive: BaseIpcResponse<ProjectRecord | null>
@@ -280,6 +294,18 @@ export interface IpcPayloads extends BaseIpcPayloads {
   [IpcChannel.ISSUE_LIST]: {
     send: ListIssueParams
     receive: BaseIpcResponse<IssueRecord[]>
+  }
+  [IpcChannel.ISSUE_LIST_ASSIGNED]: {
+    send: ListAssignedIssuesParams
+    receive: BaseIpcResponse<IssueRecord[]>
+  }
+  [IpcChannel.ISSUE_LIST_MEMBER_PROJECTS]: {
+    send: ListMemberProjectIssuesParams
+    receive: BaseIpcResponse<IssueRecord[]>
+  }
+  [IpcChannel.ACTIVITY_LIST]: {
+    send: ListActivityParams
+    receive: BaseIpcResponse<ActivityLogRecord[]>
   }
   [IpcChannel.ISSUE_GET]: {
     send: GetIssueParams
@@ -455,10 +481,6 @@ export interface IpcPayloads extends BaseIpcPayloads {
   }
 
   // SYSTEM-
-  [IpcChannel.SYSTEM_OPEN_EXTERNAL_URL]: {
-    send: OpenExternalUrlParams
-    receive: BaseIpcResponse<null>
-  }
   [IpcChannel.SYSTEM_OPEN_DIALOG]: {
     send: OpenDialogOptions
     receive: BaseIpcResponse<OpenDialogReturnValue>

@@ -222,3 +222,18 @@ export const inviteCodes = pgTable('invite_codes', {
   created_at: timestamp('created_at', { precision: 3 }).defaultNow(),
   expires_at: timestamp('expires_at', { precision: 3 })
 })
+
+// 활동 로그 테이블 (이슈 상태/담당자 변경·댓글 등 자동 기록 — metadata는 JSON 문자열(text, 이식성))
+export const activityLogs = pgTable(
+  'activity_logs',
+  {
+    activity_id: uuid('activity_id').primaryKey(),
+    activity_entity_type: varchar('activity_entity_type', { length: 50 }).notNull(),
+    activity_entity_id: uuid('activity_entity_id').notNull(),
+    activity_action: varchar('activity_action', { length: 50 }).notNull(),
+    activity_actor_id: uuid('activity_actor_id').references(() => users.user_id),
+    activity_metadata: text('activity_metadata'),
+    activity_created_at: timestamp('activity_created_at', { precision: 3 }).defaultNow()
+  },
+  (t) => [index('idx_activity_logs_entity').on(t.activity_entity_type, t.activity_entity_id)]
+)

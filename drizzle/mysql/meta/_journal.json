@@ -15,6 +15,13 @@
       "when": 1781246395940,
       "tag": "0001_bent_martin_li",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1781371517206,
+      "tag": "0002_illegal_shotgun",
+      "breakpoints": true
     }
   ]
 }
