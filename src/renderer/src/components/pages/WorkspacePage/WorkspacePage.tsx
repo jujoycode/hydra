@@ -161,7 +161,7 @@ export default function WorkspacePage() {
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-background'>
-      <div className='w-full max-w-md space-y-6 p-6'>
+      <div className='w-full max-w-md space-y-section p-page'>
         <div className='text-center space-y-2'>
           <h1 className='text-3xl font-bold'>{t('title')}</h1>
           <p className='text-muted-foreground'>{t('description')}</p>
@@ -171,7 +171,10 @@ export default function WorkspacePage() {
         {workspaces.length > 0 && (
           <div className='space-y-2'>
             {workspaces.map((ws) => (
-              <Card key={ws.id} className='cursor-pointer hover:border-primary transition-colors'>
+              <Card
+                key={ws.id}
+                className='bg-transparent glass-soft border-border/70 cursor-pointer hover:border-primary transition-colors'
+              >
                 <CardHeader className='p-4 pb-2'>
                   <div className='flex items-center justify-between'>
                     <CardTitle className='text-sm'>{ws.name}</CardTitle>
@@ -227,7 +230,7 @@ export default function WorkspacePage() {
 
         {/* Add Workspace Form */}
         {showAddForm ? (
-          <Card>
+          <Card className='bg-transparent glass-soft border-border/70'>
             <CardHeader className='p-4 pb-2'>
               <CardTitle className='text-sm'>{t('dialog.newTitle')}</CardTitle>
             </CardHeader>
@@ -297,7 +300,7 @@ export default function WorkspacePage() {
             </CardContent>
           </Card>
         ) : showInviteForm ? (
-          <Card>
+          <Card className='bg-transparent glass-soft border-border/70'>
             <CardHeader className='p-4 pb-2'>
               <CardTitle className='text-sm'>{t('dialog.inviteTitle')}</CardTitle>
             </CardHeader>

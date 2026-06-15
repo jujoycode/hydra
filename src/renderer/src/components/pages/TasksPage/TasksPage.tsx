@@ -38,7 +38,7 @@ export default function TasksPage() {
 
   if (isLoading) {
     return (
-      <div className='p-6 h-full flex items-center justify-center'>
+      <div className='p-page h-full flex items-center justify-center'>
         <p className='text-muted-foreground'>Loading tasks...</p>
       </div>
     )
@@ -51,8 +51,8 @@ export default function TasksPage() {
   )
 
   return (
-    <div className='p-6 h-full flex flex-col'>
-      <div className='flex justify-between items-center mb-6'>
+    <div className='p-page h-full flex flex-col'>
+      <div className='flex justify-between items-center mb-section'>
         <div className='flex flex-col gap-1'>
           <p className='text-sm text-muted-foreground mt-2'>projects / {projectId}</p>
           <h1 className='text-2xl font-bold'>Tasks</h1>
@@ -62,13 +62,13 @@ export default function TasksPage() {
         </div>
       </div>
 
-      <div className='flex-1 overflow-auto space-y-6'>
+      <div className='flex-1 overflow-auto space-y-section'>
         {issuesWithTasks.length === 0 && (
           <p className='text-muted-foreground text-center py-12'>No issues found in this project.</p>
         )}
 
         {issuesWithTasks.map(({ issue, tasks }) => (
-          <div key={issue.issue_id} className='border rounded-lg p-4'>
+          <div key={issue.issue_id} className='glass-soft rounded-xl shadow-card border border-border/70 p-card'>
             <div className='flex items-center gap-2 mb-3'>
               <span className='text-xs font-mono text-muted-foreground'>{issue.issue_key}</span>
               <h2 className='font-semibold'>{issue.issue_title}</h2>

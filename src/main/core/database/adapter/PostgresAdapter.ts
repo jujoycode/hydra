@@ -1,6 +1,7 @@
 // PostgreSQL 어댑터 - drizzle-orm + pg Pool 기반 구현
 
 import fs from 'node:fs'
+import { sql } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
@@ -151,5 +152,17 @@ export class PostgresAdapter implements DatabaseAdapter {
       throw new Error('Database not connected. Call connect() first.')
     }
     return this.db.transaction(async (tx) => fn(tx))
+  }
+
+  // pg_advisory_xact_lock: 트랜잭션 스코프 락 — 같은 트랜잭션 커밋/롤백 시 자동 해제되므로
+  // 락을 트랜잭션 안에서 잡으면 충분하다 (MySqlAdapter는 세션 스코프 GET_LOCK이라 다르게 처리)
+  async transactionWithAdvisoryLock<T>(lockKey: number, fn: (tx: unknown) => Promise<T>): Promise<T> {
+    if (!this.db) {
+      throw new Error('Database not connected. Call connect() first.')
+    }
+    return this.db.transaction(async (tx) => {
+      await tx.execute(sql`SELECT pg_advisory_xact_lock(${lockKey})`)
+      return fn(tx)
+    })
   }
 }

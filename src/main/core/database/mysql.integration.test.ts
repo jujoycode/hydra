@@ -200,7 +200,56 @@ describe.runIf(process.env.RUN_DB_TESTS_MYSQL === '1')('MySQL cross-engine integ
     expect(res.data[0].issue_title).toBe('findme bug')
   }, 30000)
 
-  // ── 6. 와일드카드 리터럴 매치: '%'가 LIKE 와일드카드가 아닌 리터럴로 처리됨 ──────────
+  // ── 7. advisory lock 트랜잭션: SetupAdminHandler 경로 (PG pg_advisory_xact_lock 대신 MySQL GET_LOCK) ──
+  // 회귀: 과거 SetupAdminHandler가 PG 전용 pg_advisory_xact_lock을 직접 실행해 MySQL에서
+  // errno 1305(FUNCTION does not exist)로 깨졌다. 어댑터가 다이얼렉트별 락을 캡슐화하는지 검증.
+  it('transactionWithAdvisoryLock runs the callback in a real tx without pg_advisory_xact_lock', async () => {
+    const userRepo = new DrizzleUserRepository(db, schema)
+    const userId = randomUUID()
+
+    const created = await adapter.transactionWithAdvisoryLock(481975, async (tx) => {
+      const u = await userRepo.create(
+        {
+          userId,
+          userSn: `sn-lock-${userId}`,
+          passwordHash: 'lockhash',
+          userName: 'lock-tester',
+          userRole: 'admin'
+        },
+        tx
+      )
+      return u
+    })
+
+    expect(created.user_id).toBe(userId)
+    expect(await userRepo.findById(userId)).not.toBeNull()
+  }, 30000)
+
+  // ── 8. advisory lock 트랜잭션 롤백: 콜백 throw 시 임계구역 쓰기가 롤백된다 ────────────
+  it('transactionWithAdvisoryLock rolls back the insert when the callback throws', async () => {
+    const userRepo = new DrizzleUserRepository(db, schema)
+    const userId = randomUUID()
+
+    await expect(
+      adapter.transactionWithAdvisoryLock(481975, async (tx) => {
+        await userRepo.create(
+          {
+            userId,
+            userSn: `sn-lock-rb-${userId}`,
+            passwordHash: 'lockhash2',
+            userName: 'lock-rollback',
+            userRole: 'admin'
+          },
+          tx
+        )
+        throw new Error('boom-in-lock')
+      })
+    ).rejects.toThrow('boom-in-lock')
+
+    expect(await userRepo.findById(userId)).toBeNull()
+  }, 30000)
+
+  // ── 9. 와일드카드 리터럴 매치: '%'가 LIKE 와일드카드가 아닌 리터럴로 처리됨 ──────────
   it('findByProjectFiltered() treats "%" in search term as a literal character, not a wildcard', async () => {
     const userRepo = new DrizzleUserRepository(db, schema)
     const projectRepo = new DrizzleProjectRepository(db, schema)

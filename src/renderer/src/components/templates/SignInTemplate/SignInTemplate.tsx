@@ -8,7 +8,7 @@ interface SignInTemplateProps extends React.ComponentProps<'div'> {
 
 export function SignInTemplate({ className, children, ...props }: SignInTemplateProps) {
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn('flex flex-col gap-section', className)} {...props}>
       <Card className='overflow-hidden p-0'>
         <CardContent className='grid p-0 md:grid-cols-2'>
           <form className='p-6 md:p-8'>{children}</form>

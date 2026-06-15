@@ -31,6 +31,17 @@ export interface TableProps<TData, TValue = unknown> extends TableBaseProps<TDat
   bodyClassName?: string
   searchClassName?: string
   tableRef?: React.Ref<TableInstance<TData>>
+
+  /**
+   * 내부 wrapper에 border/rounding을 적용할지 여부 (기본값 true).
+   * false로 설정하면 외부 컨테이너가 border/rounding을 제공하는 경우에 사용.
+   */
+  bordered?: boolean
+
+  /** 바디 행(tr)에 추가할 클래스 — cn/tailwind-merge로 기존 스타일에 병합 */
+  rowClassName?: string
+  /** 바디 셀(td)에 추가할 클래스 — cn/tailwind-merge로 기존 스타일에 병합 */
+  cellClassName?: string
 }
 
 /**
@@ -71,7 +82,10 @@ export function Table<TData, TValue = unknown>({
   footerClassName,
   bodyClassName,
   searchClassName,
-  tableRef
+  tableRef,
+  bordered = true,
+  rowClassName,
+  cellClassName
 }: TableProps<TData, TValue>) {
   // 테이블 인스턴스 참조
   const tableInstanceRef = React.useRef<TableInstance<TData>>(null)
@@ -139,7 +153,7 @@ export function Table<TData, TValue = unknown>({
       )}
 
       {/* 메인 테이블 */}
-      <div className={cn('rounded-md border overflow-hidden', bodyClassName)}>
+      <div className={cn(bordered ? 'rounded-md border overflow-hidden' : 'overflow-hidden', bodyClassName)}>
         <TableBase
           data={data}
           columns={columns}
@@ -151,6 +165,8 @@ export function Table<TData, TValue = unknown>({
           enablePagination={enablePagination}
           emptyComponent={emptyComponent}
           emptyMessage={emptyMessage}
+          rowClassName={rowClassName}
+          cellClassName={cellClassName}
           tableRef={handleTableRef}
         />
       </div>

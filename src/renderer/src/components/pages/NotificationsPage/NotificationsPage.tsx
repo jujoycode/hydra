@@ -55,7 +55,7 @@ export default function NotificationsPage() {
 
   return (
     <div className='p-page h-full overflow-auto'>
-      <div className='flex justify-between items-center mb-6'>
+      <div className='flex justify-between items-center mb-section'>
         <div>
           <h1 className='text-title'>알림</h1>
           <p className='text-caption text-muted-foreground mt-1'>
@@ -81,11 +81,11 @@ export default function NotificationsPage() {
           <p className='text-caption mt-1'>모두 확인했습니다!</p>
         </div>
       ) : (
-        <div className='rounded-lg border'>
+        <div className='glass-soft rounded-xl shadow-card overflow-hidden border border-border/70'>
           {notifications.map((notification) => (
             <div
               key={notification.notification_id}
-              className={`flex items-start gap-3 p-4 border-b last:border-b-0 cursor-pointer transition-colors hover:bg-muted/50 ${
+              className={`flex items-start gap-3 px-4 py-2.5 border-b border-border/60 last:border-b-0 cursor-pointer transition-colors hover:bg-primary/5 ${
                 !notification.notification_read ? 'bg-muted/30' : ''
               }`}
               onClick={() => handleClick(notification)}

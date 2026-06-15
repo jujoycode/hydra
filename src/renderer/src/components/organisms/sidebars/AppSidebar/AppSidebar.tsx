@@ -54,7 +54,7 @@ function WorkspaceHeader() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton size='lg' className='data-[state=open]:bg-sidebar-accent'>
-              <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-xs font-bold shrink-0'>
+              <div className='flex aspect-square size-8 items-center justify-center rounded-md gradient-primary text-primary-foreground text-xs font-bold shrink-0'>
                 {currentWorkspace?.name?.charAt(0)?.toUpperCase() ?? 'H'}
               </div>
               {state === 'expanded' && (
@@ -138,7 +138,7 @@ function ProjectsGroup() {
               <SidebarMenuItem key={project.project_id}>
                 <SidebarMenuButton asChild isActive={isActive} tooltip={project.project_name}>
                   <Link to={to}>
-                    <span className='flex size-4 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground text-[10px] font-bold'>
+                    <span className='flex size-4 shrink-0 items-center justify-center rounded-md gradient-primary text-primary-foreground text-[10px] font-bold'>
                       {initial}
                     </span>
                     <span>{project.project_name}</span>

@@ -52,55 +52,60 @@ export function IssueTable({ issues, onSelectIssue, isLoading = false }: IssueTa
 
   return (
     <div className='h-full flex flex-col space-y-4'>
-      {/* Using integrated Table component */}
-      <Table
-        data={issues}
-        columns={IssueColumns as ColumnDef<Issue>[]}
-        onRowClick={handleRowClick}
-        isLoading={isLoading}
-        loadingMessage='Loading issues...'
-        emptyComponent={<TableEmpty message='No issues' description='Create a new issue to get started' />}
-        initialState={{
-          pagination: {
-            pageSize: 8
-          },
-          sorting: [{ id: 'key', desc: true }]
-        }}
-        // Search and filtering settings
-        search={{
-          searchColumn: 'title',
-          placeholder: 'Search issue by title...',
-          searchWidth: 'w-64 md:w-80',
-          selectOptions: [
-            {
-              column: 'type',
-              title: 'Type',
-              options: [
-                { value: 'bug', label: 'Bug' },
-                { value: 'feature', label: 'Feature' }
-              ]
+      {/* Single glass container wraps the entire table */}
+      <div className='glass-soft rounded-xl shadow-card overflow-hidden border border-border/70 flex-1 flex flex-col'>
+        <Table
+          data={issues}
+          columns={IssueColumns as ColumnDef<Issue>[]}
+          onRowClick={handleRowClick}
+          isLoading={isLoading}
+          loadingMessage='Loading issues...'
+          emptyComponent={<TableEmpty message='No issues' description='Create a new issue to get started' />}
+          initialState={{
+            pagination: {
+              pageSize: 8
             },
-            {
-              column: 'state',
-              title: 'Status',
-              options: [
-                { value: 'in_progress', label: 'In Progress' },
-                { value: 'done', label: 'Done' },
-                { value: 'blocked', label: 'Blocked' },
-                { value: 'review', label: 'Review' }
-              ]
-            }
-          ]
-        }}
-        // Pagination settings
-        pagination={{
-          rowsPerPageOptions: [8, 16, 24, 32]
-        }}
-        // Table reference
-        tableRef={tableRef}
-        className='flex-1'
-        bodyClassName='flex-1 overflow-y-auto'
-      />
+            sorting: [{ id: 'key', desc: true }]
+          }}
+          // Search and filtering settings
+          search={{
+            searchColumn: 'title',
+            placeholder: 'Search issue by title...',
+            searchWidth: 'w-64 md:w-80',
+            selectOptions: [
+              {
+                column: 'type',
+                title: 'Type',
+                options: [
+                  { value: 'bug', label: 'Bug' },
+                  { value: 'feature', label: 'Feature' }
+                ]
+              },
+              {
+                column: 'state',
+                title: 'Status',
+                options: [
+                  { value: 'in_progress', label: 'In Progress' },
+                  { value: 'done', label: 'Done' },
+                  { value: 'blocked', label: 'Blocked' },
+                  { value: 'review', label: 'Review' }
+                ]
+              }
+            ]
+          }}
+          // Pagination settings
+          pagination={{
+            rowsPerPageOptions: [8, 16, 24, 32]
+          }}
+          // Table reference
+          tableRef={tableRef}
+          className='flex-1 h-full'
+          bodyClassName='flex-1 overflow-y-auto'
+          bordered={false}
+          rowClassName='hover:bg-primary/5 border-border/60'
+          cellClassName='px-4 py-2.5'
+        />
+      </div>
     </div>
   )
 }

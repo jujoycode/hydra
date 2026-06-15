@@ -74,9 +74,9 @@ export default function ProjectDetailPage() {
   }
 
   return (
-    <div className='p-page h-full overflow-auto'>
+    <div className='p-page h-full overflow-auto space-y-section'>
       {/* Header */}
-      <div className='mb-6'>
+      <div>
         <div className='flex items-center gap-2 text-sm text-muted-foreground mb-1'>
           <span>{project.project_key}</span>
         </div>
@@ -85,7 +85,7 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className='grid grid-cols-5 gap-3 mb-6'>
+      <div className='grid grid-cols-5 gap-3'>
         <StatCard label='전체' value={totalIssues} />
         <StatCard label={STATUS_LABEL.backlog} value={openIssues} className='text-status-in-progress-fg' />
         <StatCard label={STATUS_LABEL.in_progress} value={inProgressIssues} className='text-priority-medium' />
@@ -122,7 +122,7 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* Milestones */}
-      <div className='rounded-lg border mt-6'>
+      <div className='rounded-lg border'>
         <div className='p-4 border-b flex items-center justify-between'>
           <h2 className='text-section'>마일스톤</h2>
           <Button variant='outline' size='sm' onClick={() => setShowMilestoneForm(!showMilestoneForm)}>

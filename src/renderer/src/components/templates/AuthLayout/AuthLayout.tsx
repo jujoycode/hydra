@@ -14,8 +14,8 @@ export function AuthLayout({ title, subtitle, children }: { title: string; subti
         <div className='text-xs text-zinc-600'>v3 workspace</div>
       </div>
       {/* Form panel */}
-      <div className='flex w-full items-center justify-center bg-background p-6 md:w-1/2'>
-        <div className='w-full max-w-sm space-y-6'>
+      <div className='flex w-full items-center justify-center bg-background p-page md:w-1/2'>
+        <div className='w-full max-w-sm space-y-section bg-transparent glass-soft border border-border/70 rounded-lg p-card shadow-card'>
           <div className='space-y-1'>
             <h1 className='text-xl font-bold text-foreground'>{title}</h1>
             <p className='text-sm text-muted-foreground'>{subtitle}</p>

@@ -2,6 +2,7 @@ import { useNavigate, useParams } from '@tanstack/react-router'
 import { ArrowLeft, Paperclip } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { Avatar, AvatarFallback } from '@/atoms/Avatar'
 import { Button } from '@/components/atoms/Button'
 import { Input } from '@/components/atoms/Input'
 import { Label } from '@/components/atoms/Label'
@@ -178,7 +179,7 @@ function IssueDetailView({ issue, projectId }: { issue: IssueRecord; projectId: 
   }
 
   return (
-    <div className='p-6 h-full overflow-auto'>
+    <div className='p-page h-full overflow-auto'>
       {/* Back button */}
       <button
         type='button'
@@ -190,7 +191,7 @@ function IssueDetailView({ issue, projectId }: { issue: IssueRecord; projectId: 
       </button>
 
       {/* Header */}
-      <div className='flex items-start justify-between mb-6'>
+      <div className='flex items-start justify-between mb-section'>
         <div className='flex-1'>
           <span className='text-sm text-muted-foreground font-mono'>{issue.issue_key}</span>
           <Input
@@ -206,7 +207,7 @@ function IssueDetailView({ issue, projectId }: { issue: IssueRecord; projectId: 
 
       <div className='grid grid-cols-3 gap-8'>
         {/* Main content */}
-        <div className='col-span-2 space-y-6'>
+        <div className='col-span-2 space-y-section'>
           <div>
             <Label className='mb-2 block'>Description</Label>
             <RichTextEditor content={description} onChange={setDescription} placeholder='Add a description...' />
@@ -287,9 +288,9 @@ function IssueDetailView({ issue, projectId }: { issue: IssueRecord; projectId: 
                     <div key={comment.comment_id} className='rounded border p-3'>
                       <div className='flex items-center justify-between mb-2'>
                         <div className='flex items-center gap-2'>
-                          <div className='w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium'>
-                            {authorName[0].toUpperCase()}
-                          </div>
+                          <Avatar className='size-6 shrink-0'>
+                            <AvatarFallback>{authorName[0].toUpperCase()}</AvatarFallback>
+                          </Avatar>
                           <span className='text-sm font-medium'>{authorName}</span>
                           <span className='text-xs text-muted-foreground'>
                             {formatDate(comment.comment_created_at)}
@@ -351,7 +352,7 @@ function IssueDetailView({ issue, projectId }: { issue: IssueRecord; projectId: 
         </div>
 
         {/* Sidebar */}
-        <div className='space-y-4'>
+        <div className='space-y-card'>
           {/* Status */}
           <div>
             <Label className='mb-1 block text-xs text-muted-foreground'>Status</Label>
@@ -524,7 +525,7 @@ function IssueDetailView({ issue, projectId }: { issue: IssueRecord; projectId: 
           </div>
 
           {/* Timestamps */}
-          <div className='pt-4 border-t space-y-2'>
+          <div className='pt-4 border-t border-border/60 space-y-2'>
             <div className='flex justify-between text-xs'>
               <span className='text-muted-foreground'>Created</span>
               <span>{formatDate(issue.issue_created_at)}</span>

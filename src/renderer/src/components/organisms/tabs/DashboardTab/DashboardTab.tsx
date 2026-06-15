@@ -35,7 +35,7 @@ export const DashboardTab = ({ issueStats, statusData, trendData }: DashboardTab
   return (
     <div className='h-full overflow-auto p-page'>
       {/* 통계 카드 */}
-      <div className='grid grid-cols-4 gap-3 mb-6'>
+      <div className='grid grid-cols-4 gap-card-gap mb-section'>
         <StatCard
           title={t('stats.totalIssues')}
           value={issueStats.total}
@@ -64,7 +64,7 @@ export const DashboardTab = ({ issueStats, statusData, trendData }: DashboardTab
       </div>
 
       {/* 차트 영역 */}
-      <div className='grid grid-cols-5 gap-4'>
+      <div className='grid grid-cols-5 gap-section'>
         <div className='col-span-2'>
           <ChartCard title={t('chart.statusDistribution')}>
             <StatusDonutChart data={statusData} height={220} />

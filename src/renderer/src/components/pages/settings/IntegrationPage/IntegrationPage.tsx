@@ -69,9 +69,13 @@ function IntegrationForm({ records }: { records: IntegrationRecord[] }) {
   }
 
   return (
-    <div className='w-full space-y-6'>
+    <div className='w-full space-y-section'>
       {/* Slack */}
-      <SettingCard title='Slack Integration' description='Send notifications to a Slack channel via incoming webhook'>
+      <SettingCard
+        title='Slack Integration'
+        description='Send notifications to a Slack channel via incoming webhook'
+        className='bg-transparent glass-soft border-border/70'
+      >
         <div className='space-y-4'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
@@ -115,7 +119,11 @@ function IntegrationForm({ records }: { records: IntegrationRecord[] }) {
       </SettingCard>
 
       {/* GitHub */}
-      <SettingCard title='GitHub Integration' description='Connect to a GitHub repository for issue synchronization'>
+      <SettingCard
+        title='GitHub Integration'
+        description='Connect to a GitHub repository for issue synchronization'
+        className='bg-transparent glass-soft border-border/70'
+      >
         <div className='space-y-4'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>

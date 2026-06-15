@@ -9,7 +9,7 @@ interface ChartCardProps {
 
 export const ChartCard = ({ title, description, children }: ChartCardProps) => {
   return (
-    <Card>
+    <Card className='bg-transparent glass-soft border-border/70'>
       <CardHeader className='pb-2'>
         <CardTitle className='text-sm font-medium'>{title}</CardTitle>
         {description && <p className='text-xs text-muted-foreground'>{description}</p>}
