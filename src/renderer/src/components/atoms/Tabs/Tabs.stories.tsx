@@ -2,34 +2,33 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './Tabs'
 
 /**
- * 같은 영역에서 여러 패널을 전환하는 탭. Radix Tabs 기반의 합성 컴포넌트다.
- *
- * - `TabsList`/`TabsTrigger`(value)로 탭 버튼을, `TabsContent`(value)로 패널을 정의한다.
- * - 루트 `Tabs`는 `defaultValue`(비제어) 또는 `value`/`onValueChange`(제어)로 활성 탭을 정한다.
- * - 활성 트리거는 `bg-background` + 그림자로 강조된다.
+ * 한 자리에서 여러 패널을 갈아 끼우는 탭으로, Radix Tabs 기반의 합성 컴포넌트다. 탭 버튼은 TabsList
+ * 안에 TabsTrigger를 넣어 만들고, 각 버튼의 value와 같은 value를 가진 TabsContent가 그 패널이 된다.
+ * 어느 탭이 켜질지는 루트 Tabs에서 정하는데, 처음 값만 던지려면 defaultValue를, 직접 쥐려면 value와
+ * onValueChange를 쓴다. 켜진 트리거는 bg-background에 그림자가 붙어 도드라진다.
  */
 const meta: Meta<typeof Tabs> = {
   title: 'Atoms/Tabs',
   component: Tabs,
   argTypes: {
     defaultValue: {
-      description: '비제어형 초기 활성 탭 value.',
+      description: '처음 켜둘 탭의 value만 정하고 나머지는 맡긴다.',
       control: 'text',
       table: { type: { summary: 'string' } }
     },
     value: {
-      description: '제어형 활성 탭 value.',
+      description: '활성 탭을 직접 쥐고 있을 때의 value.',
       control: 'text',
       table: { type: { summary: 'string' } }
     },
     orientation: {
-      description: '탭 배치 방향. 키보드 내비게이션 축에 영향을 준다.',
+      description: '탭이 늘어서는 방향. 방향키로 이동하는 축도 여기 따라간다.',
       control: 'inline-radio',
       options: ['horizontal', 'vertical'],
       table: { type: { summary: 'horizontal | vertical' }, defaultValue: { summary: 'horizontal' } }
     },
     onValueChange: {
-      description: '활성 탭 변경 콜백.',
+      description: '다른 탭으로 바뀔 때마다 불린다.',
       control: false,
       table: { category: 'Events', type: { summary: '(value: string) => void' } }
     }
@@ -38,7 +37,7 @@ const meta: Meta<typeof Tabs> = {
 export default meta
 type Story = StoryObj<typeof Tabs>
 
-/** 두 개의 탭을 전환하는 기본 예시. */
+/** 탭 두 개를 오가는 기본 모양. */
 export const Default: Story = {
   render: () => (
     <Tabs defaultValue='overview' className='w-80'>
@@ -52,7 +51,7 @@ export const Default: Story = {
   )
 }
 
-/** 세 개 이상의 탭과 비활성(disabled) 트리거를 포함한 예. */
+/** 탭이 셋 이상이고 그중 하나는 disabled로 잠긴 경우. */
 export const ManyTabs: Story = {
   render: () => (
     <Tabs defaultValue='issues' className='w-96'>

@@ -2,34 +2,32 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './Tooltip'
 
 /**
- * 트리거에 호버/포커스하면 짧은 보조 설명을 띄우는 툴팁. Radix Tooltip 기반이다.
- *
- * - `TooltipTrigger`(트리거 요소) + `TooltipContent`(말풍선)로 구성한다.
- * - 루트 `Tooltip`이 자체 `TooltipProvider`를 감싸므로 단독 사용이 가능하지만,
- *   `delayDuration`을 공유하려면 상위에 `TooltipProvider`를 두는 것이 좋다(기본 delay 0).
- * - `TooltipContent`의 `side`/`sideOffset`로 위치를 조정한다.
+ * 트리거에 마우스를 올리거나 포커스가 가면 짧은 설명을 띄우는 툴팁으로, Radix Tooltip 기반이다.
+ * 트리거 역할인 TooltipTrigger와 말풍선인 TooltipContent를 짝지어 쓴다. 루트 Tooltip이 안에서
+ * TooltipProvider를 감싸주니 단독으로도 동작하지만, 여러 툴팁이 delayDuration을 함께 쓰게 하려면
+ * 상위에 TooltipProvider를 한 번 두는 편이 낫다. 뜨는 위치는 TooltipContent의 side와 sideOffset으로 잡는다.
  */
 const meta: Meta<typeof Tooltip> = {
   title: 'Atoms/Tooltip',
   component: Tooltip,
   argTypes: {
     open: {
-      description: '제어형 열림 상태.',
+      description: '열고 닫는 걸 직접 쥐고 있을 때.',
       control: 'boolean',
       table: { type: { summary: 'boolean' } }
     },
     defaultOpen: {
-      description: '비제어형 초기 열림 상태.',
+      description: '처음 열려 있을지만 정하고 나머지는 맡긴다.',
       control: 'boolean',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } }
     },
     delayDuration: {
-      description: '호버 후 툴팁이 뜨기까지의 지연(ms). Provider 기본은 0이다.',
+      description: '마우스를 올리고 툴팁이 뜨기까지 기다리는 시간. Provider 기본값은 0이다.',
       control: 'number',
       table: { type: { summary: 'number' }, defaultValue: { summary: '0' } }
     },
     onOpenChange: {
-      description: '열림 상태 변경 콜백.',
+      description: '열리거나 닫힐 때마다 불린다.',
       control: false,
       table: { category: 'Events', type: { summary: '(open: boolean) => void' } }
     }
@@ -38,7 +36,7 @@ const meta: Meta<typeof Tooltip> = {
 export default meta
 type Story = StoryObj<typeof Tooltip>
 
-/** 트리거에 호버하면 말풍선이 뜨는 기본 예시. */
+/** 트리거에 마우스를 올리면 말풍선이 뜨는 기본 모양. */
 export const Default: Story = {
   render: () => (
     <TooltipProvider>
@@ -50,7 +48,7 @@ export const Default: Story = {
   )
 }
 
-/** side로 툴팁이 트리거 오른쪽에 뜨도록 한 예. */
+/** side를 줘서 툴팁을 트리거 오른쪽에 띄운 경우. */
 export const SidePlacement: Story = {
   render: () => (
     <TooltipProvider>

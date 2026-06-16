@@ -2,11 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Badge } from './Badge'
 
 /**
- * 상태/라벨/카운트 등 짧은 메타 정보를 표시하는 알약형 태그. CVA로 variant·size·colorScheme 3축을 조합한다.
- *
- * - `variant`는 채움 방식(진한 채움/틴트/보더 등), `colorScheme`은 색 계열, `size`는 패딩/글자 크기를 정한다.
- * - 모든 조합은 AA 대비를 지키도록 동계열 텍스트 색을 사용한다(solid도 흰 전경 대신 어두운 동계열 텍스트).
- * - 선택적 `icon`을 children 앞에 렌더한다.
+ * 상태나 개수처럼 짧은 정보를 보여주는 알약 모양 태그다. 채우는 방식은 variant로, 색은
+ * colorScheme으로, 크기는 size로 고른다. 어떤 조합을 써도 글자색은 배경과 같은 계열의 진한
+ * 톤이라 대비가 충분하다. solid조차 흰 글자가 아니라 어두운 동계열 글자를 쓴다. icon을 넘기면
+ * 글자 왼쪽에 붙는다.
  */
 const meta: Meta<typeof Badge> = {
   title: 'Atoms/Badge',
@@ -14,7 +13,8 @@ const meta: Meta<typeof Badge> = {
   args: { children: 'Badge' },
   argTypes: {
     variant: {
-      description: '채움 스타일. solid=진한 동계열 채움, subtle/surface=틴트 배경, outline=보더, plain=배경 없음.',
+      description:
+        '채우는 방식. solid는 진하게 채우고, subtle과 surface는 옅게 깔고, outline은 테두리만, plain은 글자만 남긴다.',
       control: 'select',
       options: ['solid', 'subtle', 'outline', 'surface', 'plain'],
       table: {
@@ -23,13 +23,13 @@ const meta: Meta<typeof Badge> = {
       }
     },
     size: {
-      description: '패딩과 글자 크기. xs→lg 순으로 커진다.',
+      description: '크기. xs가 가장 작고 lg로 갈수록 커진다.',
       control: 'select',
       options: ['xs', 'sm', 'md', 'lg'],
       table: { type: { summary: 'xs | sm | md | lg' }, defaultValue: { summary: 'sm' } }
     },
     colorScheme: {
-      description: '색 계열. variant와 조합되어 배경/텍스트/보더 색을 결정한다.',
+      description: '색 계열. variant와 맞물려 배경과 글자, 테두리 색이 정해진다.',
       control: 'select',
       options: ['gray', 'red', 'orange', 'yellow', 'green', 'teal', 'blue', 'cyan', 'purple', 'pink'],
       table: {
@@ -38,12 +38,12 @@ const meta: Meta<typeof Badge> = {
       }
     },
     children: {
-      description: '뱃지에 표시할 텍스트/노드.',
+      description: '태그에 들어갈 텍스트나 노드.',
       control: 'text',
       table: { type: { summary: 'ReactNode' } }
     },
     icon: {
-      description: 'children 앞에 렌더할 선택적 아이콘 노드.',
+      description: '글자 앞에 붙일 아이콘. 없어도 된다.',
       control: false,
       table: { type: { summary: 'ReactNode' } }
     }
@@ -52,17 +52,17 @@ const meta: Meta<typeof Badge> = {
 export default meta
 type Story = StoryObj<typeof Badge>
 
-/** 기본값(subtle · sm · gray). 가장 흔한 메타 라벨용. */
+/** 가장 자주 보게 될 기본 모양. subtle, sm, gray 조합이다. */
 export const Default: Story = {}
 
-/** 보더만 그리는 outline variant. */
+/** 테두리만 두른 모양. */
 export const Outline: Story = { args: { variant: 'outline' } }
 
-/** 진한 동계열 채움(solid)에 색 계열을 적용한 예. */
+/** 진하게 채운 뒤 색을 입혀봤다. */
 export const Solid: Story = { args: { variant: 'solid', colorScheme: 'green', children: 'Open' } }
 
-/** colorScheme로 색 계열을 바꾼 subtle 뱃지. 상태 색 구분에 사용한다. */
+/** 색만 바꿔 상태를 구분하는 경우. */
 export const ColorScheme: Story = { args: { colorScheme: 'red', children: 'Blocked' } }
 
-/** size를 키운 큰 뱃지. */
+/** 한 단계 키운 뱃지. */
 export const Large: Story = { args: { size: 'lg' } }

@@ -2,33 +2,32 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './Collapsible'
 
 /**
- * 트리거를 눌러 영역을 펼치거나 접는 접이식 컨테이너. Radix Collapsible을 그대로 재노출한다.
- *
- * - `CollapsibleTrigger`를 클릭하면 `CollapsibleContent`가 토글된다.
- * - `open`/`onOpenChange`로 제어하거나 `defaultOpen`으로 초기 상태만 지정한다.
- * - 스타일이 없는 비스타일 프리미티브라 className으로 직접 꾸민다.
+ * 트리거를 눌러 영역을 접었다 펼치는 컨테이너로, Radix Collapsible을 그대로 다시 내보낸 것이다.
+ * CollapsibleTrigger를 클릭하면 CollapsibleContent가 토글된다. 열고 닫는 걸 직접 쥐려면 open과
+ * onOpenChange를 쓰고, 처음 상태만 정해두고 나머지를 맡기려면 defaultOpen만 넘기면 된다. 스타일이
+ * 없는 프리미티브라 모양은 className으로 직접 입혀야 한다.
  */
 const meta: Meta<typeof Collapsible> = {
   title: 'Atoms/Collapsible',
   component: Collapsible,
   argTypes: {
     open: {
-      description: '제어형 열림 상태.',
+      description: '열림 상태를 직접 쥐고 흔들 때.',
       control: 'boolean',
       table: { type: { summary: 'boolean' } }
     },
     defaultOpen: {
-      description: '비제어형 초기 열림 상태.',
+      description: '처음 열려 있을지만 정하고 나머지는 맡긴다.',
       control: 'boolean',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } }
     },
     disabled: {
-      description: 'true면 토글을 막는다.',
+      description: '켜면 토글이 막힌다.',
       control: 'boolean',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } }
     },
     onOpenChange: {
-      description: '열림 상태 변경 콜백.',
+      description: '열리거나 닫힐 때마다 불린다.',
       control: false,
       table: { category: 'Events', type: { summary: '(open: boolean) => void' } }
     }
@@ -37,7 +36,7 @@ const meta: Meta<typeof Collapsible> = {
 export default meta
 type Story = StoryObj<typeof Collapsible>
 
-/** 기본 접힘 상태에서 트리거로 토글한다. */
+/** 접힌 채로 시작해 트리거로 여닫는 기본 모양. */
 export const Default: Story = {
   render: () => (
     <Collapsible className='w-80'>
@@ -47,7 +46,7 @@ export const Default: Story = {
   )
 }
 
-/** defaultOpen으로 처음부터 펼쳐진 상태. */
+/** defaultOpen을 줘서 처음부터 펼쳐져 있는 경우. */
 export const DefaultOpen: Story = {
   render: () => (
     <Collapsible defaultOpen className='w-80'>

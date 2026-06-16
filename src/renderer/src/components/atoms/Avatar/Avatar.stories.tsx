@@ -2,18 +2,17 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Avatar, AvatarFallback, AvatarImage } from './Avatar'
 
 /**
- * 사용자/멤버를 표현하는 원형 아바타. Radix Avatar 위에 Hydra 토큰을 입혔다.
- *
- * - `Avatar`는 `size-8` 원형 컨테이너이며 `className`으로 크기를 덮어쓴다.
- * - `AvatarImage`(src)가 로드되면 이미지를, 실패/미지정이면 `AvatarFallback`(이니셜)을 그라데이션 배경으로 보여준다.
- * - 합성 컴포넌트라 `Avatar` 루트에 노출할 의미 있는 prop은 `className`뿐이다.
+ * 멤버를 나타내는 원형 아바타로, Radix Avatar에 Hydra 토큰을 입힌 것이다. 기본은 size-8짜리 원이고
+ * 크기는 className으로 덮어쓴다. AvatarImage의 src가 잘 로드되면 그 이미지를 쓰고, 로드에 실패하거나
+ * src가 아예 없으면 AvatarFallback의 이니셜을 그라데이션 배경 위에 대신 보여준다. 합성 컴포넌트라
+ * 루트에서 만질 만한 건 className 정도다.
  */
 const meta: Meta<typeof Avatar> = {
   title: 'Atoms/Avatar',
   component: Avatar,
   argTypes: {
     className: {
-      description: '컨테이너 크기/모양 오버라이드. 기본은 size-8 원형이며 size-* 유틸로 키우거나 줄인다.',
+      description: '컨테이너 크기와 모양을 덮어쓴다. 기본 size-8에서 size-* 유틸로 키우거나 줄이면 된다.',
       control: 'text',
       table: { type: { summary: 'string' } }
     }
@@ -22,7 +21,7 @@ const meta: Meta<typeof Avatar> = {
 export default meta
 type Story = StoryObj<typeof Avatar>
 
-/** 이미지 src가 정상 로드된 경우. 이미지가 fallback을 가린다. */
+/** src가 제대로 로드돼서 이미지가 fallback을 덮은 경우. */
 export const WithImage: Story = {
   render: () => (
     <Avatar>
@@ -32,7 +31,7 @@ export const WithImage: Story = {
   )
 }
 
-/** 이미지가 없을 때 이니셜 fallback(그라데이션 배경)이 표시된다. */
+/** 이미지가 없어서 이니셜 fallback이 그라데이션 배경으로 뜨는 모양. */
 export const Fallback: Story = {
   render: () => (
     <Avatar>
@@ -41,7 +40,7 @@ export const Fallback: Story = {
   )
 }
 
-/** className으로 크기를 키운 큰 아바타. 프로필 헤더 등에 사용한다. */
+/** className으로 키운 큰 아바타. 프로필 헤더처럼 크게 보여줄 자리에 쓴다. */
 export const Large: Story = {
   render: () => (
     <Avatar className='size-16'>
