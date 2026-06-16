@@ -23,7 +23,7 @@ const rendererAliases: Record<string, string> = {
 
 const config: StorybookConfig = {
   stories: ['../src/renderer/src/**/*.stories.@(ts|tsx)'],
-  addons: [],
+  addons: ['@storybook/addon-docs'],
   framework: { name: '@storybook/react-vite', options: {} },
   viteFinal: async (viteConfig) => {
     viteConfig.resolve = viteConfig.resolve ?? {}
