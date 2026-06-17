@@ -1,5 +1,6 @@
 import { CoreBaseHandler } from '@/base/CoreBaseHandler'
-import { ErrorCode, type InviteApplyParams, type InviteCodeInfo, IpcChannel } from '@/interface/CoreInterface'
+import { ValidationError } from '@/error/ValidationError'
+import { type InviteApplyParams, type InviteCodeInfo, IpcChannel } from '@/interface/CoreInterface'
 
 export class ApplyInviteHandler extends CoreBaseHandler<IpcChannel.INVITE_APPLY> {
   constructor() {
@@ -15,14 +16,7 @@ export class ApplyInviteHandler extends CoreBaseHandler<IpcChannel.INVITE_APPLY>
 
     // 초대 코드 만료 확인
     if (info.expiresAt && new Date(info.expiresAt) < new Date()) {
-      return {
-        data: null,
-        error: {
-          code: ErrorCode.VALIDATION_ERROR,
-          message: 'Invite code has expired',
-          data: null
-        }
-      }
+      throw new ValidationError('Invite code has expired', null)
     }
 
     return { data: info, error: null }
