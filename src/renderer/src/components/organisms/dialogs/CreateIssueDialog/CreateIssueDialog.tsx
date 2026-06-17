@@ -6,8 +6,8 @@ import { Button } from '@/atoms/Button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/atoms/Dialog'
 import { Input } from '@/atoms/Input'
 import { Label } from '@/atoms/Label'
+import { RichTextEditor } from '@/atoms/RichTextEditor'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/atoms/Select'
-import { Textarea } from '@/atoms/Textarea'
 import { useCreateIssue } from '@/hooks/use-issues'
 import { useProjectMembers } from '@/hooks/use-members'
 import { useProjects } from '@/hooks/use-projects'
@@ -235,14 +235,12 @@ export function CreateIssueDialog({ open, onOpenChange, userId }: CreateIssueDia
               {t('label.description')}
             </Label>
             <div className='col-span-3'>
-              <Textarea
-                id='description'
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+              <RichTextEditor
+                content={description}
+                onChange={setDescription}
                 placeholder={t('placeholder.description')}
-                className='min-h-[240px] resize-y'
+                className='min-h-[240px]'
               />
-              <p className='text-xs text-muted-foreground mt-1'>{t('help.editorNote')}</p>
             </div>
           </div>
         </div>
