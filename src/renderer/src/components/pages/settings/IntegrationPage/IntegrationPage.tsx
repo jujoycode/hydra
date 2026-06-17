@@ -121,7 +121,7 @@ function IntegrationForm({ records }: { records: IntegrationRecord[] }) {
       {/* GitHub */}
       <SettingCard
         title='GitHub Integration'
-        description='Connect to a GitHub repository for issue synchronization'
+        description='Store a GitHub personal access token for this workspace'
         className='bg-transparent glass-soft border-border/70'
       >
         <div className='space-y-4'>

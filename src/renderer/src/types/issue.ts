@@ -51,13 +51,3 @@ export interface IssueTableMeta {
   /** 이슈 선택 시 호출되는 함수 */
   onSelectIssue: (issue: Issue) => void
 }
-
-export interface IssueStoreState {
-  selectedIssueId: string | null
-  isLoading: boolean
-  error: Error | null
-  setSelectedIssueId: (issueId: string | null) => void
-  setLoading: (loading: boolean) => void
-  setError: (error: Error | null) => void
-  reset: () => void
-}
