@@ -2,9 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { BubbleChart } from './BubbleChart'
 
 /**
- * 세 개의 축(X 카테고리/숫자, Y 값, Z 버블 크기)으로 데이터를 산점도 버블로 표현한다.
- * 예를 들어 이슈 유형별 중요도(Y)와 개수(버블 크기)를 동시에 비교할 때 사용한다.
- * 색상은 토큰을 런타임 hex로 읽어 라이트/다크 테마를 자동으로 따른다.
+ * 세 축으로 데이터를 흩뿌리는 산점도다. X는 카테고리나 숫자, Y는 값, 버블 크기는 또 다른 값이
+ * 맡는다. 이슈 유형별로 중요도는 Y에, 개수는 버블 크기에 태워 한눈에 비교하는 식으로 쓴다. 색은
+ * 토큰을 런타임 hex로 읽어 라이트와 다크 테마를 알아서 따라간다.
  */
 const meta: Meta<typeof BubbleChart> = {
   title: 'Atoms/Charts/BubbleChart',
@@ -19,17 +19,17 @@ const meta: Meta<typeof BubbleChart> = {
   argTypes: {
     data: {
       description:
-        '버블 데이터 배열. 각 항목은 { name, value, count }(+추가 필드 허용). 기본 설정에서 name→X, value→Y, count→버블 크기에 매핑된다.',
+        '버블 데이터. 항목은 name, value, count로 이뤄지고 필드를 더 붙여도 된다. 기본 설정에서는 name이 X축, value가 Y축, count가 버블 크기로 들어간다.',
       control: 'object',
       table: { type: { summary: 'Array<{ name: string; value: number; count: number }>' } }
     },
     colors: {
-      description: '버블 색상 배열. 인덱스를 순환 적용한다. 미지정 시 차트 토큰 기반 기본 팔레트.',
+      description: '버블 색상. 인덱스를 돌려가며 적용하고, 안 주면 차트 토큰 기반 기본 팔레트를 쓴다.',
       control: 'object',
       table: { type: { summary: 'string[]' }, defaultValue: { summary: '토큰 기반 기본 팔레트' } }
     },
     height: {
-      description: '차트 높이(px).',
+      description: '차트 높이.',
       control: { type: 'number' },
       table: { type: { summary: 'number' }, defaultValue: { summary: '200' } }
     },
@@ -42,7 +42,7 @@ const meta: Meta<typeof BubbleChart> = {
       }
     },
     xAxisConfig: {
-      description: 'X축 설정. { dataKey, name, type }. type은 카테고리/숫자 축을 결정한다.',
+      description: 'X축 설정. dataKey와 name을 잡고, type으로 카테고리 축인지 숫자 축인지 정한다.',
       control: 'object',
       table: {
         type: { summary: "{ dataKey: string; name: string; type: 'category' | 'number' }" },
@@ -50,7 +50,7 @@ const meta: Meta<typeof BubbleChart> = {
       }
     },
     yAxisConfig: {
-      description: 'Y축 설정. { dataKey, name }. 항상 숫자 축이다.',
+      description: 'Y축 설정. dataKey와 name을 잡으며 언제나 숫자 축이다.',
       control: 'object',
       table: {
         type: { summary: '{ dataKey: string; name: string }' },
@@ -58,7 +58,7 @@ const meta: Meta<typeof BubbleChart> = {
       }
     },
     zAxisConfig: {
-      description: 'Z축(버블 크기) 설정. { dataKey, name, range }. range는 [최소, 최대] 픽셀 크기.',
+      description: '버블 크기를 정하는 Z축 설정. dataKey와 name을 잡고, range로 버블의 최소와 최대 크기를 준다.',
       control: 'object',
       table: {
         type: { summary: '{ dataKey: string; name: string; range: [number, number] }' },
@@ -66,7 +66,7 @@ const meta: Meta<typeof BubbleChart> = {
       }
     },
     tooltipFormatter: {
-      description: '툴팁 값 포매터. (value, name) => [표시값, 표시라벨].',
+      description: '툴팁 값 포매터. value와 name을 받아 화면에 띄울 값과 라벨을 돌려준다.',
       control: false,
       table: { type: { summary: '(value: any, name: string) => [string, string]' } }
     }
@@ -75,7 +75,7 @@ const meta: Meta<typeof BubbleChart> = {
 export default meta
 type Story = StoryObj<typeof BubbleChart>
 
-/** 이슈 유형별 중요도(Y)와 개수(버블 크기) 기본 예시. */
+/** 이슈 유형별로 중요도는 Y에, 개수는 버블 크기에 태운 기본 모양. */
 export const Default: Story = {
   args: {
     data: [
@@ -87,7 +87,7 @@ export const Default: Story = {
   }
 }
 
-/** 단색 팔레트로 모든 버블을 동일 색상으로 통일한 예시. */
+/** 팔레트를 한 색만 줘서 버블 색을 통일한 경우. */
 export const SingleColor: Story = {
   args: {
     data: [
@@ -99,7 +99,7 @@ export const SingleColor: Story = {
   }
 }
 
-/** 데이터가 비어 있을 때. 축만 그려지고 버블은 표시되지 않는다. */
+/** 데이터가 없으면 축만 남고 버블은 안 그려진다. */
 export const Empty: Story = {
   args: {
     data: []

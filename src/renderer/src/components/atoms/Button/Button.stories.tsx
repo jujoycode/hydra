@@ -3,11 +3,10 @@ import { ArrowRight } from 'lucide-react'
 import { Button } from './Button'
 
 /**
- * 모든 클릭 액션의 기본 단위. shadcn/ui 버튼을 Hydra 토큰(gradient-primary, glow)으로 확장했다.
- *
- * - `variant`로 시각적 강조 수준을, `size`로 높이/패딩을 제어한다.
- * - `loading`이 true면 스피너 + "Please wait" 문구를 보여주고 자동으로 비활성화된다.
- * - `asChild`를 켜면 `<button>` 대신 자식 엘리먼트(예: `<a>`)에 스타일을 위임한다(Radix Slot).
+ * 클릭 액션의 기본 단위로, shadcn/ui 버튼에 Hydra 토큰인 gradient-primary와 glow를 더했다. 얼마나
+ * 강조할지는 variant로, 높이와 패딩은 size로 고른다. loading을 켜면 스피너와 함께 "Please wait"가 뜨고
+ * 그동안 클릭이 알아서 막힌다. asChild를 주면 button 대신 안에 넣은 엘리먼트, 가령 a 태그에 스타일만
+ * 얹는다.
  */
 const meta: Meta<typeof Button> = {
   title: 'Atoms/Button',
@@ -16,7 +15,7 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       description:
-        '시각적 강조 수준. 기본(gradient) → outline/secondary/ghost(보조) → destructive(파괴) → link(텍스트)',
+        '강조 정도. default가 그라데이션으로 가장 세고, outline이나 secondary, ghost는 보조용, destructive는 위험한 액션, link는 텍스트처럼 보인다.',
       control: 'select',
       options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'],
       table: {
@@ -25,60 +24,64 @@ const meta: Meta<typeof Button> = {
       }
     },
     size: {
-      description: '버튼 높이/패딩 프리셋. `icon`은 정사각형(아이콘 전용)',
+      description: '높이와 패딩 프리셋. icon은 아이콘 하나만 넣는 정사각형이다.',
       control: 'inline-radio',
       options: ['default', 'sm', 'lg', 'icon'],
       table: { type: { summary: 'default | sm | lg | icon' }, defaultValue: { summary: 'default' } }
     },
     loading: {
-      description: 'true면 스피너와 "Please wait"를 표시하고 클릭을 막는다.',
+      description: '켜면 스피너와 "Please wait"가 뜨면서 클릭이 막힌다.',
       control: 'boolean',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } }
     },
     asChild: {
-      description: '렌더 엘리먼트를 자식으로 위임(Radix Slot). 링크 등에 버튼 스타일을 입힐 때 사용.',
+      description: '실제 렌더는 안에 넣은 자식 엘리먼트가 맡는다. 링크에 버튼 모양을 입히고 싶을 때.',
       control: 'boolean',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } }
     },
     disabled: {
-      description: '상호작용을 막고 50% 투명도로 표시한다.',
+      description: '누를 수 없게 막고 절반쯤 흐려진다.',
       control: 'boolean',
       table: { type: { summary: 'boolean' } }
     },
-    children: { description: '버튼 라벨/내용', control: 'text', table: { type: { summary: 'ReactNode' } } }
+    children: {
+      description: '버튼 안에 들어가는 라벨이나 내용.',
+      control: 'text',
+      table: { type: { summary: 'ReactNode' } }
+    }
   }
 }
 export default meta
 type Story = StoryObj<typeof Button>
 
-/** 기본 그라데이션 버튼. 화면당 1개의 주요 액션에만 사용한다. */
+/** 기본 그라데이션 버튼. 화면에서 가장 중요한 액션 하나에만 쓰는 게 좋다. */
 export const Default: Story = {}
 
-/** 보조 액션용 — 테두리 + 배경 강조. */
+/** 테두리에 옅은 배경을 깐 보조 액션용. */
 export const Secondary: Story = { args: { variant: 'secondary' } }
 
-/** 삭제·취소 등 되돌리기 어려운 파괴적 액션. */
+/** 삭제처럼 한 번 누르면 되돌리기 힘든 액션. */
 export const Destructive: Story = { args: { variant: 'destructive', children: 'Delete' } }
 
-/** 중립적인 테두리 버튼. */
+/** 배경 없이 테두리만 두른 중립적인 버튼. */
 export const Outline: Story = { args: { variant: 'outline' } }
 
-/** 배경 없이 hover 시에만 강조되는 최소 강조 버튼. */
+/** 평소엔 밋밋하다가 hover할 때만 살짝 드러나는 버튼. */
 export const Ghost: Story = { args: { variant: 'ghost' } }
 
-/** 인라인 텍스트 링크처럼 보이는 버튼. */
+/** 본문 속 링크처럼 보이는 버튼. */
 export const Link: Story = { args: { variant: 'link', children: 'Learn more' } }
 
-/** 좁은 영역(툴바, 테이블 행)용 작은 버튼. */
+/** 툴바나 테이블 행처럼 좁은 자리에 들어가는 작은 버튼. */
 export const Small: Story = { args: { size: 'sm' } }
 
-/** 강조가 필요한 폼 제출 등에 쓰는 큰 버튼. */
+/** 폼 제출처럼 확실히 눈에 띄어야 하는 자리에 쓰는 큰 버튼. */
 export const Large: Story = { args: { size: 'lg' } }
 
-/** 비동기 처리 중 상태 — 클릭이 자동으로 막힌다. */
+/** 비동기 작업이 도는 동안의 모습. 그동안 클릭은 알아서 막힌다. */
 export const Loading: Story = { args: { loading: true } }
 
-/** 라벨과 함께 아이콘을 배치한 예시. */
+/** 라벨 옆에 아이콘을 같이 둔 경우. */
 export const WithIcon: Story = {
   args: {
     children: (

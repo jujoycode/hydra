@@ -3,10 +3,9 @@ import { Input } from '../Input'
 import { Label } from './Label'
 
 /**
- * 폼 컨트롤에 붙는 접근성 라벨. Radix Label 기반이라 `htmlFor`로 입력과 연결된다.
- *
- * - 연결된 입력이 disabled면(peer/group-data) 라벨도 흐려지고 클릭이 막힌다.
- * - `flex` + `gap-2`라 아이콘이나 보조 텍스트를 children으로 나란히 둘 수 있다.
+ * 폼 컨트롤에 붙이는 접근성 라벨로, Radix Label 기반이라 htmlFor로 입력과 묶인다. 연결된 입력이
+ * disabled면 peer와 group-data 덕에 라벨까지 같이 흐려지고 클릭도 막힌다. 안쪽이 flex에 gap-2라
+ * 아이콘이나 보조 텍스트를 children으로 나란히 넣어도 잘 붙는다.
  */
 const meta: Meta<typeof Label> = {
   title: 'Atoms/Label',
@@ -14,12 +13,12 @@ const meta: Meta<typeof Label> = {
   args: { children: 'Email' },
   argTypes: {
     htmlFor: {
-      description: '연결할 폼 컨트롤의 id. 클릭 시 해당 컨트롤에 포커스를 준다.',
+      description: '묶을 폼 컨트롤의 id. 라벨을 클릭하면 그 컨트롤로 포커스가 간다.',
       control: 'text',
       table: { type: { summary: 'string' } }
     },
     children: {
-      description: '라벨 텍스트/노드.',
+      description: '라벨에 들어가는 텍스트나 노드.',
       control: 'text',
       table: { type: { summary: 'ReactNode' } }
     }
@@ -28,10 +27,10 @@ const meta: Meta<typeof Label> = {
 export default meta
 type Story = StoryObj<typeof Label>
 
-/** 단독 라벨 텍스트. */
+/** 입력과 묶지 않고 텍스트만 둔 모양. */
 export const Default: Story = {}
 
-/** htmlFor로 입력과 연결한 예. 라벨 클릭 시 입력에 포커스된다. */
+/** htmlFor로 입력과 묶은 경우. 라벨을 누르면 입력으로 포커스가 간다. */
 export const WithInput: Story = {
   render: () => (
     <div className='grid w-72 gap-2'>

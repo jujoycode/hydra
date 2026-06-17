@@ -3,8 +3,8 @@ import { Button } from '@/atoms/Button'
 import { SettingCard } from './SettingCard'
 
 /**
- * 설정 화면의 한 섹션을 담는 카드. 제목 + 선택적 설명 헤더, 본문(children),
- * 그리고 footer가 있으면 상단 구분선이 그어진 우측 정렬 푸터(보통 저장 버튼)를 렌더한다.
+ * 설정 화면의 섹션 하나를 통째로 담는 카드다. 제목과 (있으면) 설명이 헤더에 오고 그 아래 본문이
+ * 들어간다. footer를 넘기면 위에 구분선을 긋고 오른쪽으로 정렬한 푸터를 붙이는데, 보통 저장 버튼이 온다.
  */
 const meta: Meta<typeof SettingCard> = {
   title: 'Molecules/SettingCard',
@@ -18,27 +18,27 @@ const meta: Meta<typeof SettingCard> = {
   ],
   argTypes: {
     title: {
-      description: '카드 헤더 제목',
+      description: '카드 헤더에 들어가는 제목.',
       control: 'text',
       table: { type: { summary: 'string' } }
     },
     description: {
-      description: '제목 아래 보조 설명(선택)',
+      description: '제목 밑에 붙이는 설명. 없어도 된다.',
       control: 'text',
       table: { type: { summary: 'string' } }
     },
     children: {
-      description: '본문에 렌더되는 설정 폼/콘텐츠(ReactNode)',
+      description: '본문에 들어갈 설정 폼이나 콘텐츠.',
       control: false,
       table: { type: { summary: 'ReactNode' } }
     },
     footer: {
-      description: '설정 시 상단 구분선 + 우측 정렬 푸터로 렌더된다(보통 저장 버튼). 없으면 푸터를 생략한다.',
+      description: '넘기면 구분선과 함께 오른쪽 정렬 푸터로 나온다. 안 주면 푸터를 통째로 뺀다.',
       control: false,
       table: { type: { summary: 'ReactNode' } }
     },
     className: {
-      description: 'Card 루트에 합쳐지는 추가 클래스',
+      description: 'Card 루트에 덧붙일 클래스.',
       control: 'text',
       table: { type: { summary: 'string' } }
     }
@@ -47,7 +47,7 @@ const meta: Meta<typeof SettingCard> = {
 export default meta
 type Story = StoryObj<typeof SettingCard>
 
-/** 제목 + 설명 + 본문 + 저장 버튼 푸터를 모두 갖춘 기본 카드. */
+/** 제목, 설명, 본문, 저장 버튼 푸터까지 다 붙은 기본 카드. */
 export const Default: Story = {
   args: {
     title: 'Profile',
@@ -57,7 +57,7 @@ export const Default: Story = {
   }
 }
 
-/** footer가 없어 푸터/구분선이 생략된 카드. */
+/** footer를 안 줘서 푸터와 구분선이 빠진 카드. */
 export const WithoutFooter: Story = {
   args: {
     title: 'Danger zone',

@@ -2,23 +2,22 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Separator } from './Separator'
 
 /**
- * 콘텐츠를 시각적으로 가르는 1px 구분선. Radix Separator 기반이다.
- *
- * - `orientation`으로 가로/세로를 정한다(세로는 부모 높이를 채우므로 높이 있는 컨테이너 필요).
- * - 기본 `decorative=true`라 스크린리더에 노출되지 않는다. 의미상 분리가 필요하면 `decorative=false`.
+ * 콘텐츠 사이를 가르는 1px 구분선으로, Radix Separator 기반이다. orientation으로 가로나 세로를 정하는데,
+ * 세로선은 부모 높이를 따라가므로 높이가 잡힌 컨테이너 안에 둬야 보인다. 기본값인 decorative가 켜져 있어
+ * 스크린리더에는 안 잡히고, 의미상 꼭 나눠 읽혀야 하는 자리라면 decorative를 꺼주면 된다.
  */
 const meta: Meta<typeof Separator> = {
   title: 'Atoms/Separator',
   component: Separator,
   argTypes: {
     orientation: {
-      description: '구분선 방향. horizontal=가로 1px, vertical=세로 1px.',
+      description: '선의 방향. horizontal이면 가로로 눕고 vertical이면 세로로 선다.',
       control: 'inline-radio',
       options: ['horizontal', 'vertical'],
       table: { type: { summary: 'horizontal | vertical' }, defaultValue: { summary: 'horizontal' } }
     },
     decorative: {
-      description: 'true면 장식용으로 간주되어 접근성 트리에서 제외된다.',
+      description: '켜면 그냥 장식으로 보고 접근성 트리에서 빼버린다.',
       control: 'boolean',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'true' } }
     }
@@ -27,7 +26,7 @@ const meta: Meta<typeof Separator> = {
 export default meta
 type Story = StoryObj<typeof Separator>
 
-/** 가로 구분선으로 위/아래 영역을 나눈다. */
+/** 가로선으로 위아래를 가른 모양. */
 export const Horizontal: Story = {
   render: () => (
     <div className='w-64'>
@@ -38,7 +37,7 @@ export const Horizontal: Story = {
   )
 }
 
-/** 세로 구분선으로 좌/우 영역을 나눈다. 부모에 높이가 필요하다. */
+/** 세로선으로 좌우를 가른 모양. 부모에 높이가 있어야 보인다. */
 export const Vertical: Story = {
   render: () => (
     <div className='flex h-8 items-center'>
