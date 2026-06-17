@@ -26,7 +26,7 @@
     "search": "Search issue by title..."
   },
   "help": {
-    "editorNote": "* EditorJS features are coming soon. Currently only basic text editing is available."
+    "editorNote": "* Currently only basic text editing is available."
   },
   "toast": {
     "created": "Issue created successfully",
