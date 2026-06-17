@@ -2,10 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './Card'
 
 /**
- * 관련된 내용을 한 덩어리로 묶어 구획하는 컨테이너로, 둥근 모서리에 보더와 shadow-card가 붙는다.
- * 여러 파트를 조합해 쓴다. 머리말은 CardHeader 안에 CardTitle이나 CardDescription, CardAction을 넣고,
- * 본문은 CardContent, 맨 아래는 CardFooter다. CardHeader가 컨테이너 쿼리 그리드라 CardAction을 두면
- * 액션이 우측 상단에 알아서 붙는다. 전부 div라 손댈 만한 건 className과 평범한 div 속성뿐이다.
+ * 관련된 내용을 한 덩어리로 묶어 구획하는 컨테이너로, 둥근 모서리에 보더와 shadow-card가 적용된다.
+ * 여러 파트를 조합해 사용한다. 머리말은 CardHeader 안에 CardTitle, CardDescription, CardAction을 넣고,
+ * 본문은 CardContent, 하단은 CardFooter로 구성한다. CardHeader가 컨테이너 쿼리 그리드이므로 CardAction을
+ * 두면 액션이 우측 상단에 정렬된다. 모두 div이므로 조정 가능한 속성은 className과 표준 div 속성이다.
  */
 const meta: Meta<typeof Card> = {
   title: 'Atoms/Card',
@@ -21,7 +21,7 @@ const meta: Meta<typeof Card> = {
 export default meta
 type Story = StoryObj<typeof Card>
 
-/** 머리말, 본문, 푸터를 다 갖춘 기본 카드. */
+/** 머리말, 본문, 푸터를 모두 갖춘 기본 카드. */
 export const Default: Story = {
   render: () => (
     <Card className='w-80'>
@@ -35,7 +35,7 @@ export const Default: Story = {
   )
 }
 
-/** 헤더에 CardAction을 넣어 우측 상단에 버튼을 붙인 경우. */
+/** 헤더에 CardAction을 넣어 우측 상단에 버튼을 배치한 경우. */
 export const WithAction: Story = {
   render: () => (
     <Card className='w-80'>

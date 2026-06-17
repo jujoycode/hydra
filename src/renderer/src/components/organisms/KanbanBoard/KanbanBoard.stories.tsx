@@ -16,26 +16,26 @@ const issue = (over: Partial<Issue>): Issue => ({
 })
 
 /**
- * dnd-kit으로 만든 칸반 보드다. backlog, in_progress, review, done, blocked 같은 상태마다 컬럼이 하나씩
- * 있고 이슈는 자기 state에 맞는 컬럼으로 들어간다. 카드를 다른 컬럼으로 끌어다 놓으면 onMove가 새 상태를 들고
- * 불리고, 카드를 그냥 누르면 onSelectIssue가 불린다. 프로젝트 보드에서 이슈를 상태별로 펼쳐 보거나 옮길 때 쓴다.
+ * dnd-kit으로 구현한 칸반 보드이다. backlog, in_progress, review, done, blocked 상태마다 컬럼이 하나씩
+ * 있으며 이슈는 각자의 state에 해당하는 컬럼에 배치된다. 카드를 다른 컬럼으로 끌어다 놓으면 onMove가 새 상태와
+ * 함께 호출되고, 카드를 클릭하면 onSelectIssue가 호출된다. 프로젝트 보드에서 이슈를 상태별로 보거나 옮길 때 사용한다.
  */
 const meta: Meta<typeof KanbanBoard> = {
   title: 'Organisms/KanbanBoard',
   component: KanbanBoard,
   argTypes: {
     issues: {
-      description: '보드에 뿌릴 이슈 목록인데, 각자 state 값을 보고 알아서 컬럼에 나뉘어 들어간다.',
+      description: '보드에 표시할 이슈 목록이며, 각자의 state 값에 따라 컬럼에 분배된다.',
       control: 'object',
       table: { type: { summary: 'Issue[]' } }
     },
     onMove: {
-      description: '카드를 다른 상태 컬럼에 떨어뜨렸을 때 불린다.',
+      description: '카드를 다른 상태 컬럼에 놓았을 때 호출된다.',
       control: false,
       table: { type: { summary: '(issueId: string, newState: IssueStatus) => void' } }
     },
     onSelectIssue: {
-      description: '카드를 클릭하면 불린다. 굳이 안 넘겨도 된다.',
+      description: '카드를 클릭하면 호출된다. 선택 사항이다.',
       control: false,
       table: { type: { summary: '(issue: Issue) => void' } }
     }
@@ -45,7 +45,7 @@ const meta: Meta<typeof KanbanBoard> = {
 export default meta
 type Story = StoryObj<typeof KanbanBoard>
 
-/** 다섯 컬럼에 이슈를 하나씩 깔아둔 기본 보드. */
+/** 다섯 개 컬럼에 이슈를 하나씩 배치한 기본 보드이다. */
 export const Default: Story = {
   args: {
     issues: [
@@ -58,5 +58,5 @@ export const Default: Story = {
   }
 }
 
-/** 이슈가 하나도 없어서 빈 컬럼만 남은 상태. */
+/** 이슈가 하나도 없어 빈 컬럼만 표시되는 상태이다. */
 export const Empty: Story = { args: { issues: [] } }
