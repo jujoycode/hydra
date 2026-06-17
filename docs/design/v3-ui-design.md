@@ -243,11 +243,11 @@ line-height: 1.5;          /* 한글 행간 */
 
 | Type | Arrow Style | Color | Use Case |
 |------|------------|-------|----------|
-| **Blocks** | 점선 + 화살촉 | `#ef4444` 빨강 | A 완료 → B 시작 가능 |
-| **Blocked by** | 점선 + 화살촉 | `#f97316` 주황 | Blocks의 역방향 |
-| **Related** | 실선 + 화살촉 | `#2563eb` 파랑 | 서로 관련된 이슈 (양방향) |
-| **Duplicate** | 점선 + 화살촉 | `#6b7280` 회색 | 동일 이슈 중복 |
-| **Parent → Child** | 실선 + 화살촉 | `#8b5cf6` 보라 | 상위/하위 이슈 관계 |
+| **Blocks** | 점선 + 화살촉 | `--arrow-blocks` 마젠타 | A 완료 → B 시작 가능 |
+| **Blocked by** | 점선 + 화살촉 | `--arrow-is-blocked-by` 주황 | Blocks의 역방향 |
+| **Related** | 실선 + 화살촉 | `--arrow-relates-to` 파랑 | 서로 관련된 이슈 (양방향) |
+| **Duplicate** | 점선 + 화살촉 | `--arrow-duplicate` 회색 | 동일 이슈 중복 |
+| **Parent → Child** | 실선 + 화살촉 | `--arrow-parent` 보라 | 상위/하위 이슈 관계 |
 
 - **구현**: SVG `<path>` + bezier curve overlay (xyflow 미사용)
 - **SVG marker**: `<marker>` 요소로 화살촉 정의
@@ -342,12 +342,14 @@ Root
     ├── /projects/:projectId
     │   ├── / → OverviewPage
     │   ├── /issues → IssuePage (List/Board/Timeline tabs)
+    │   ├── /tasks → TasksPage
     │   └── /settings → ProjectSettingsPage
     │
     ├── /settings
     │   ├── / → AccountPage
     │   ├── /members → MembersPage
-    │   └── /notifications → NotificationSettingsPage
+    │   ├── /notifications → NotificationSettingsPage
+    │   └── /integrations → IntegrationPage
     │
     └── /members → MembersPage
 ```
