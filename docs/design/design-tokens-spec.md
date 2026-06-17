@@ -277,7 +277,7 @@
 
 ## 5. 정적 매핑 객체 (purge 보호 — 권장 패턴)
 
-동적 `bg-status-${value}` 합성은 Tailwind purge에서 누락되므로 **정적 매핑**을 단일 지점에 둔다(코드 제안):
+동적 `bg-status-${value}` 합성은 Tailwind purge에서 누락되므로 **정적 매핑**을 단일 지점에 둔다(코드는 제안 수준).
 
 ```ts
 // 예: src/renderer/src/lib/statusTokens.ts (제안)

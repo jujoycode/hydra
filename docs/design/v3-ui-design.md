@@ -2,9 +2,9 @@
 
 ## Context
 
-Hydra v3는 기존 UI를 Linear 스타일로 전면 리뉴얼하는 프로젝트이다.
-미니멀하고 빠른 네비게이션, 키보드 중심 조작, 인라인 디테일 패널을 핵심으로 한다.
-신규 기능(Kanban 보드, 타임라인, 멤버 관리, 실시간 알림)을 추가하고,
+Hydra v3는 기존 UI를 Linear 스타일로 전면 리뉴얼하는 프로젝트다.
+미니멀하고 빠른 네비게이션, 키보드 중심 조작, 인라인 디테일 패널을 핵심으로 삼는다.
+Kanban 보드, 타임라인, 멤버 관리, 실시간 알림 같은 신규 기능을 추가하고
 한글 최적화와 일관된 디자인 시스템을 적용한다.
 
 ## Design Principles
@@ -62,7 +62,7 @@ line-height: 1.5;          /* 한글 행간 */
 
 ## Dark Mode Strategy (CSS-only)
 
-다크모드는 **JS 분기 없이 CSS만으로** 처리한다. 컴포넌트 코드에 `isDark` 같은 조건부 로직을 넣지 않는다.
+다크모드는 **JS 분기 없이 CSS만으로** 처리한다. 컴포넌트 코드에는 `isDark` 같은 조건부 로직을 두지 않는다.
 
 ### 구현 방식
 
@@ -202,7 +202,7 @@ line-height: 1.5;          /* 한글 행간 */
 
 ### 4. Project Detail
 
-사이드바에서 프로젝트 선택 시 서브 네비게이션 표시:
+사이드바에서 프로젝트를 선택하면 서브 네비게이션이 표시된다.
 
 #### 4.1 Overview
 - 프로젝트 요약: 이슈 수, 진행률
@@ -287,7 +287,7 @@ line-height: 1.5;          /* 한글 행간 */
 
 #### 알림 인프라: PostgreSQL LISTEN/NOTIFY
 
-Hydra는 설치형이며 별도 서버 없이 각 클라이언트가 직접 PostgreSQL에 연결한다.
+Hydra는 설치형이라 별도 서버 없이 각 클라이언트가 직접 PostgreSQL에 연결한다.
 실시간 알림은 **PostgreSQL 내장 LISTEN/NOTIFY** 메커니즘으로 구현한다.
 
 **동작 방식:**
@@ -310,7 +310,7 @@ Hydra는 설치형이며 별도 서버 없이 각 클라이언트가 직접 Post
 ## Icon Strategy
 
 ### Lucide React (기본)
-모노크롬 UI 아이콘. 사이드바, 액션 버튼, 필터, 테이블 헤더 등.
+모노크롬 UI 아이콘으로, 사이드바, 액션 버튼, 필터, 테이블 헤더 등에 쓴다.
 
 ```
 Home, ListChecks, Bell, FolderKanban, Settings, Users, Plus,
