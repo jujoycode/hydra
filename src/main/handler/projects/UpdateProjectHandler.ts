@@ -14,6 +14,7 @@ export class UpdateProjectHandler extends CoreBaseHandler<IpcChannel.PROJECT_UPD
     // 2. 프로젝트 업데이트 (public.projects)
     const project = await this.repos.projects.update(params.projectId, {
       projectName: params.projectName,
+      projectDesc: params.projectDesc,
       modifiedBy: params.userId
     })
 
