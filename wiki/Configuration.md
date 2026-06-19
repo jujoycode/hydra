@@ -2,9 +2,9 @@
 
 ## 환경 변수 (`.env`)
 
-`.env`는 **drizzle CLI 전용**입니다 (`pnpm db:push`, `pnpm db:generate`, `pnpm db:studio`).
-**앱 런타임의 DB 접속과는 분리**되어 있습니다 — 런타임 접속 정보는 앱 UI의 워크스페이스 연결 화면에서
-입력하고 safeStorage에 암호화 저장됩니다.
+`.env`는 **drizzle CLI 전용**입니다(`pnpm db:push`, `pnpm db:generate`, `pnpm db:studio`).
+**앱 런타임의 DB 접속과는 분리**되어 있습니다. 런타임 접속 정보는 앱 UI의 워크스페이스 연결 화면에서
+입력하며 safeStorage에 암호화되어 저장됩니다.
 
 `.env.example`을 복사해서 시작하세요:
 
@@ -12,16 +12,16 @@
 cp .env.example .env
 ```
 
-로컬 개발용 포트 변경 시:
-- PostgreSQL: `docker-compose.yml`의 포트와 `.env`의 `DB_PORT`를 함께 수정 (예: `'15432:5432'`).
-- MySQL: `docker-compose.yml`에 mysql 서비스를 추가하고 `MYSQL_PORT` 등으로 호스트 포트 조정 (예: `'3307:3306'`).
+로컬 개발용 포트를 바꿀 때는 다음을 따르세요.
+- PostgreSQL: `docker-compose.yml`의 포트와 `.env`의 `DB_PORT`를 함께 수정합니다(예: `'15432:5432'`).
+- MySQL: `docker-compose.yml`에 mysql 서비스를 추가하고 `MYSQL_PORT` 등으로 호스트 포트를 조정합니다(예: `'3307:3306'`).
 
 ## 워크스페이스 설정
 
-- 워크스페이스 = 하나의 DB 연결. `WorkspaceConfig`에 `dbms`(`postgres`/`mysql`), host, port, dbName,
+- 하나의 워크스페이스는 하나의 DB 연결입니다. `WorkspaceConfig`에 `dbms`(`postgres` 또는 `mysql`), host, port, dbName,
   자격증명 등이 담깁니다.
-- safeStorage로 암호화 저장되며, 앱은 여러 워크스페이스를 저장하고 전환할 수 있습니다.
-- DBMS를 바꾸면 폼의 기본 포트/계정이 자동 전환됩니다 (PG 5432 / MySQL 3306).
+- safeStorage로 암호화되어 저장되며, 앱은 여러 워크스페이스를 저장하고 전환할 수 있습니다.
+- DBMS를 바꾸면 폼의 기본 포트와 계정이 자동으로 전환됩니다(PG 5432, MySQL 3306).
 
 ## 명령어
 
@@ -41,5 +41,5 @@ cp .env.example .env
 
 ## 패키징 주의
 
-생성된 마이그레이션(`drizzle/`)은 패키징 빌드의 `extraResource`로 포함됩니다 — 배포된 앱이 연결 시
+생성된 마이그레이션(`drizzle/`)은 패키징 빌드의 `extraResource`로 포함됩니다. 배포된 앱이 연결할 때
 마이그레이션을 적용할 수 있도록 하기 위함입니다.
