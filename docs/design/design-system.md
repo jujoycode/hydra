@@ -2,9 +2,9 @@
 
 ## Context
 
-Hydra는 "가볍고 심플한" 셀프호스팅 이슈 트래커다(Linear/Plane 지향, 미니멀). 디자인 토큰은 `src/renderer/src/index.css` 한 파일에 OKLCH 기반으로 정의되어 있고, Tailwind CSS v4의 `@theme inline` 블록을 통해 유틸리티 클래스로 노출된다.
+Hydra는 가볍고 심플한 셀프호스팅 이슈 트래커다(Linear, Plane을 지향하는 미니멀 노선). 디자인 토큰은 `src/renderer/src/index.css` 한 파일에 OKLCH 기반으로 정의되어 있으며, Tailwind CSS v4의 `@theme inline` 블록을 통해 유틸리티 클래스로 노출된다.
 
-이 문서는 4개 렌즈(색·대비 / 시맨틱 토큰 / 스케일·테마 구조 / 토큰 우회 컴플라이언스)의 감사 결과를 단일 보이스로 통합한 **디자인 시스템 정비안**이다. 토큰의 OKLCH 권장값, `@theme inline` 노출 방식, 스케일 표준, `.nord` 처리 결정, 그리고 가이드 #3(인라인 색 금지·토큰으로 조율) 위반 핫스팟의 마이그레이션 체크리스트를 담는다.
+이 문서는 색과 대비, 시맨틱 토큰, 스케일과 테마 구조, 토큰 우회 컴플라이언스라는 네 가지 렌즈의 감사 결과를 단일 보이스로 통합한 **디자인 시스템 정비안**이다. 토큰의 OKLCH 권장값, `@theme inline` 노출 방식, 스케일 표준, `.nord` 처리 결정, 그리고 가이드 #3(인라인 색 금지, 토큰으로 조율) 위반 핫스팟의 마이그레이션 체크리스트를 담는다.
 
 > **이 문서의 범위**: 설계 전용. 실제 `.ts/.tsx/.css` 소스는 수정하지 않는다. 모든 코드 변경은 '제안'/diff 스니펫으로만 기술한다. 토큰 전체 표와 복붙용 `@theme inline` 최종본은 동반 문서 [`design-tokens-spec.md`](./design-tokens-spec.md)를 참조.
 
@@ -78,7 +78,7 @@ Hydra는 "가볍고 심플한" 셀프호스팅 이슈 트래커다(Linear/Plane 
 
 ### 3.3 Chart 토큰 (라·다크 hue 재배치 문제 + 재설계 방향)
 
-**문제**: 같은 시리즈가 테마 전환 시 전혀 다른 색으로 보인다. 다크 chart-5(hue 16, 빨강)는 destructive(hue 22~27)와 근접해 "오류=빨강"과 혼동된다.
+**문제**: 같은 시리즈가 테마를 전환하면 전혀 다른 색으로 보인다. 다크 chart-5(hue 16, 빨강)는 destructive(hue 22~27)와 근접해 오류를 뜻하는 빨강과 혼동된다.
 
 | 시리즈 | 라이트 (현재) | 다크 (현재) | 라이트 hue → 다크 hue |
 |--------|---------------|-------------|------------------------|
@@ -111,7 +111,7 @@ Hydra는 "가볍고 심플한" 셀프호스팅 이슈 트래커다(Linear/Plane 
 
 ### 4.1 (a) `@theme inline` 노출 — 모든 토큰화의 선결조건 (D-1)
 
-현재 `--status-*`, `--priority-*`, `--arrow-*`는 `:root`/`.dark`에 정의돼 있으나 `@theme inline` 블록에 매핑이 없어 `bg-status-done` 같은 유틸이 **생성되지 않는다**. 그 결과 코드 소비가 0건이고 모든 상태/우선순위 색이 팔레트로 우회된다. 아래 매핑을 추가하면 즉시 유틸로 사용 가능해진다.
+현재 `--status-*`, `--priority-*`, `--arrow-*`는 `:root`와 `.dark`에 정의돼 있으나 `@theme inline` 블록에 매핑이 없어 `bg-status-done` 같은 유틸이 **생성되지 않는다**. 그 결과 코드 소비가 0건이고 모든 상태와 우선순위 색이 팔레트로 우회되고 만다. 아래 매핑을 추가하면 곧바로 유틸로 사용할 수 있다.
 
 **제안 diff** (`src/renderer/src/index.css`, `@theme inline` 블록 끝에 추가):
 
@@ -154,13 +154,13 @@ Hydra는 "가볍고 심플한" 셀프호스팅 이슈 트래커다(Linear/Plane 
 
 ### 4.2 (b) urgent/high 분리 + arrow 색 충돌 해소
 
-**urgent == high 문제 (D-4)**: 두 우선순위가 픽셀 단위로 동일하다. urgent는 채도 높은 적색을 유지하고, high를 주황으로 이동해 4단계가 단조 그라데이션을 이루게 한다.
+**urgent == high 문제 (D-4)**: 두 우선순위가 픽셀 단위로 동일하다. urgent는 채도 높은 적색을 유지하고, high를 주황으로 옮겨 네 단계가 단조로운 그라데이션을 이루게 한다.
 
-**arrow-blocks == priority red 문제 (A-5)**: 관계 'blocks'와 우선순위가 한 화면(이슈 상세)에 공존할 때 같은 빨강으로 보인다. arrow는 별도 의미축이므로 hue를 분리한다. (또는 관계는 아이콘+방향으로 구분하고 색은 보조 강조로만 쓴다 — open question.)
+**arrow-blocks == priority red 문제 (A-5)**: 관계 'blocks'와 우선순위가 한 화면(이슈 상세)에 함께 놓이면 같은 빨강으로 보인다. arrow는 별도의 의미축이므로 hue를 분리한다. 또는 관계를 아이콘과 방향으로 구분하고 색은 보조 강조로만 쓰는 방안도 있다(open question).
 
 ### 4.3 (c) success / warning / info 신설 (A-4)
 
-상태 표현 색이 destructive(빨강) 하나뿐이라 토스트·검증 경고·정보 배너가 인라인 색으로 우회한다. **기존 status 색을 승격**하면 중복 없이 해결된다:
+상태 표현 색이 destructive(빨강) 하나뿐이라 토스트, 검증 경고, 정보 배너가 인라인 색으로 우회한다. **기존 status 색을 승격**하면 중복 없이 해결된다.
 
 - `--success` ← `--status-done` (녹색 162h)
 - `--warning` ← `--status-in-progress` / `--priority-medium` (노랑 85h)
@@ -168,12 +168,12 @@ Hydra는 "가볍고 심플한" 셀프호스팅 이슈 트래커다(Linear/Plane 
 
 ### 4.4 (d) `-foreground` 변형
 
-base 토큰은 모두 `(색 + -foreground)` 쌍을 갖지만 status/priority/arrow는 배경색만 있어, 배지 텍스트 가독성이 토큰으로 보장되지 않는다(컴포넌트가 `text-white` 임의 지정). 미니멀 원칙상 **계열별 단일 on-color 두 개**로 단순화한다:
+base 토큰은 모두 `(색 + -foreground)` 쌍을 갖지만 status, priority, arrow는 배경색만 있어 배지 텍스트 가독성이 토큰으로 보장되지 않는다. 컴포넌트가 `text-white`를 임의로 지정하는 식이다. 미니멀 원칙상 **계열별 단일 on-color 두 개**로 단순화한다.
 
 - `--on-accent-light: oklch(0.985 0 0)` (밝은 텍스트 — 진한 배지 위)
 - `--on-accent-dark: oklch(0.20 0 0)` (어두운 텍스트 — 밝은 배지 위)
 
-각 시맨틱 배경의 명도에 따라 둘 중 하나를 매핑한다. `subtle` 배지(연한 배경 + 진한 텍스트)는 같은 hue의 토큰을 `text-*`로 재사용한다.
+각 시맨틱 배경의 명도에 따라 둘 중 하나를 매핑한다. `subtle` 배지(연한 배경에 진한 텍스트)는 같은 hue의 토큰을 `text-*`로 재사용한다.
 
 > **[정합성 — 동반 문서와 일치 필수]** 위 `--on-accent-*` 2-토큰안을 채택할 경우, `@theme inline`에 `--color-on-accent-light: var(--on-accent-light)` / `--color-on-accent-dark: var(--on-accent-dark)`를 **반드시 함께 노출**해야 유틸(`text-on-accent-light`)이 생성된다(동반 spec §3에 누락 시 §4.4와 모순). 또한 동반 문서 §5의 `STATUS_CLASS` 예시가 `text-white`(raw 색, 가이드 #3 위반)를 쓰고 있는데, 이는 본 절의 토큰안과 직접 충돌한다 — `review/blocked`의 on-color도 `text-on-accent-light`(또는 `text-success-foreground` 류 시맨틱 foreground)로 통일한다. 두 토큰안(계열별 단일 on-color) vs. 시맨틱별 `-foreground`(success/warning/info-foreground)는 **하나만** 채택하고 양 문서를 동기화해야 한다(open question — 미니멀 원칙상 2-토큰안 권장).
 
@@ -201,7 +201,7 @@ base 토큰은 모두 `(색 + -foreground)` 쌍을 갖지만 status/priority/arr
 
 #### Arrow (렌더러 관계 리터럴과 이름 정합 — B-1)
 
-관계 값의 단일 소스는 [IssueDetailPage.tsx:586](../../src/renderer/src/components/pages/IssueDetailPage.tsx)의 `['blocks', 'is_blocked_by', 'relates_to']` 배열이다(DB `relation_type`은 free varchar이라 강제력 없음). 현재 UI는 이 3개만 생성·소비한다.
+관계 값의 단일 소스는 [IssueDetailPage.tsx:586](../../src/renderer/src/components/pages/IssueDetailPage.tsx)의 `['blocks', 'is_blocked_by', 'relates_to']` 배열이다(DB `relation_type`은 free varchar이라 강제력은 없다). 현재 UI는 이 세 가지만 생성하고 소비한다.
 
 | 토큰 (구 → 신) | 라이트 권장 | 다크 권장 | 관계 리터럴 |
 |----------------|-------------|-----------|----------------|
@@ -262,7 +262,7 @@ base 토큰은 모두 `(색 + -foreground)` 쌍을 갖지만 status/priority/arr
 
 ### 5.2 Spacing (토큰화 — S-1)
 
-페이지 패딩이 제각각이다. 다수파(WorkspacePage, MyIssuesPage, ProjectDetailPage, MembersPage, NotificationsPage 등 10개 페이지)는 `p-6` 계열을 쓰지만, **`ProjectsPage.tsx:29`는 `p-12 pt-8 pb-4`** (좌우 3rem, 상 2rem, 하 1rem)로 크게 이탈하고 내부 `:42`는 다시 `pt-8`을 중복으로 준다. 시맨틱 spacing 별칭을 도입해 조율한다.
+페이지 패딩이 제각각이다. 다수파(WorkspacePage, MyIssuesPage, ProjectDetailPage, MembersPage, NotificationsPage 등 10개 페이지)는 `p-6` 계열을 쓴다. 반면 **`ProjectsPage.tsx:29`는 `p-12 pt-8 pb-4`**(좌우 3rem, 상 2rem, 하 1rem)로 크게 이탈하며, 내부 `:42`는 다시 `pt-8`을 중복으로 준다. 시맨틱 spacing 별칭을 도입해 조율한다.
 
 > **[정정 — S-1 스폿체크]** 원래 표기 `pt-8 pb-4`는 ProjectsPage 루트의 좌우 `p-12`를 누락한 것이다. 실제 루트는 `p-12 pt-8 pb-4`이며, 표준화 시 `p-12`(과한 좌우 패딩)를 먼저 `p-page`(또는 변수형 `p-(--spacing-page)`)로 끌어내려야 한다.
 
@@ -278,11 +278,11 @@ base 토큰은 모두 `(색 + -foreground)` 쌍을 갖지만 status/priority/arr
 
 > **[Tailwind v4]** `--spacing-<key>` 를 등록하면 `p-/px-/m-/gap-/w-/h-` 등 spacing 기반 유틸이 자동 생성된다 → `p-page`, `gap-section`, `p-card`. 변수 임의값 `p-(--spacing-page)`도 유효하나 단축형이 정식.
 
-페이지 루트는 `p-page`(또는 변수형 `p-(--spacing-page)`)(또는 공용 `PageContainer` 템플릿)로 일괄. 우선 `ProjectsPage`(`p-12 pt-8 pb-4` + 내부 중복 `pt-8`)를 표준 `p-6`로 수렴, 카드 내부 `p-3/p-4/p-8` 혼재를 `p-card` 기준으로 정리한다.
+페이지 루트는 `p-page`(또는 변수형 `p-(--spacing-page)`)나 공용 `PageContainer` 템플릿으로 일괄 적용한다. 우선 `ProjectsPage`(`p-12 pt-8 pb-4`에 내부 중복 `pt-8`)를 표준 `p-6`로 수렴시키고, 카드 내부에 섞여 있는 `p-3`, `p-4`, `p-8`을 `p-card` 기준으로 정리한다.
 
 ### 5.3 Typography (타입 스케일 — S-2)
 
-H1이 `text-2xl/3xl/xl`, 섹션 헤더가 `semibold/medium`으로 혼재한다. 의미 기반 유틸을 도입한다.
+H1이 `text-2xl`, `text-3xl`, `text-xl`로 갈리고 섹션 헤더도 `semibold`와 `medium`이 섞여 있다. 의미 기반 유틸을 도입한다.
 
 **제안 스니펫** (`@layer components`):
 
